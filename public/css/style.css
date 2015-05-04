@@ -1,0 +1,363 @@
+body {
+	background-color: rgb(230, 243, 242);
+	background-image: url(/images/skulls_lightblue.png);
+  /*background-image: url(/images/login_background.png); */
+  /*background-size: 100% 100%;*/
+  /*background-attachment: fixed;*/
+	font-size: 12px;
+}
+
+#logo img {
+	height: 100px;
+  display:inline-block;
+  float: left;
+}
+
+#header {
+	height: 120px;
+	padding: 10px 35px;
+}
+
+#login_wrapper {
+  width: 400px;
+  margin: auto;
+}
+
+#form_wrapper {
+  width: 340px;
+  margin: 30px auto;
+  text-align: center;
+  padding: 30px 60px;
+  overflow: hidden;
+  moz-box-shadow: 0 1px 5px rgba(0,0,0,.6);
+  -webkit-box-shadow: 0 1px 5px rgba(0,0,0,.6);
+  box-shadow: 0 1px 5px rgba(0,0,0,.6);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #FAFAFA;
+}
+
+#login_img {
+  width: 100px;
+  border-radius: 50%;
+  margin: 0px auto 30px auto;
+}
+
+#login_panel img {
+  height: 80px;
+  border-radius: 50%;
+  float:left;
+  margin-left: 10px;
+}
+
+#login_panel #loginfo {
+  font-size: 15px;
+  display:inline-block;
+  height: 80px;
+  float:left;
+  text-align: right;
+  padding-top: 20px;
+}
+
+#login_panel {
+  height: 100%;
+  padding: 10px;
+  float: right;
+  display:inline-block;
+}
+
+.wrapper {
+	width: 95%;
+	padding: 10px;
+	overflow: hidden;
+	moz-box-shadow: 0 1px 5px rgba(0,0,0,.6);
+  -webkit-box-shadow: 0 1px 5px rgba(0,0,0,.6);
+  box-shadow: 0 1px 5px rgba(0,0,0,.6);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #FAFAFA;
+  /*opacity : 0.97;*/
+}
+
+#footer {
+	height: 50px;
+	padding: 10px 0px;
+	text-align: center;
+}
+
+.navb {
+	height: 35px;
+	padding: 5px 5px 5px 10px;
+	margin-bottom: 0px;
+	background-color: #F7C879;
+	border: 1px solid #E2C391;
+}
+
+.navb .title {
+	line-height: 25px;
+	font-size: 16px;
+	display: inline-block;
+	float: left;
+}
+
+#contacts.navb {
+  border: 1px solid #F5A38F;
+  background: -webkit-linear-gradient(top, #FFB3AA , #C87C73); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #FFB3AA, #C87C73); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #FFB3AA, #C87C73); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #FFB3AA , #C87C73); /* Standard syntax */
+}
+
+#tickets.navb {
+  border: 1px solid #EAC2A0;
+  background: -webkit-linear-gradient(top, #FFD3AF , #D3A37B); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #FFD3AF, #D3A37B); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #FFD3AF, #D3A37B); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #FFD3AF , #D3A37B); /* Standard syntax */
+}
+
+#equipments.navb {
+  border: 1px solid #E4DBB9;
+  background: -webkit-linear-gradient(top, #F9E7A1 , #DFC974); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #F9E7A1, #DFC974); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #F9E7A1, #DFC974); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #F9E7A1 , #DFC974); /* Standard syntax */
+}
+
+#hotels.navb {
+	border: 1px solid #8FA7F7;
+  background: -webkit-linear-gradient(top, #AABEFF , #748AD0); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #AABEFF, #748AD0); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #AABEFF, #748AD0); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #AABEFF , #748AD0); /* Standard syntax */
+}
+
+#services.navb {
+  border: 1px solid #8EE8E2;
+  background: -webkit-linear-gradient(top, #B6EAE6 , #81CFC7); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #B6EAE6, #81CFC7); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #B6EAE6, #81CFC7); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #B6EAE6 , #81CFC7); /* Standard syntax */
+}
+
+/* HTML tables */
+thead {
+	background-color: #FFFFFF;
+}
+
+.table {
+	margin-bottom: 0px;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+  background-color: #F0EFEF;
+}
+
+.table-striped>tbody>tr:nth-of-type(even) {
+  background-color: #F9F9F9;
+}
+
+tbody tr:hover {
+  background-color: #d9edf7 !important;	
+}
+
+/* Links */
+a:visited, a:link, a:active, a:visited {
+	color: #181093;
+/*	font-weight: 500;
+*/	cursor: pointer;
+}
+
+/* Submit Button Like Link */
+.nobutton {
+	background:none!important;
+	border:none; 
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+	padding: 0px;
+}
+
+/*Check Mark*/
+.fa-check-circle-o {
+  font-size: 14px;
+  color: #DDD;
+  margin:0px;
+}
+
+/* Expandable divs */
+.expander {
+	cursor: pointer;
+	font-size: 20px;
+	padding:5px 10px;
+	margin-top: 10px;
+}
+
+.to_expand {
+	display: none;
+}
+
+.no-content {
+	padding: 5px 20px;
+	background-color: #d9edf7;
+	font-size: 15;
+}
+
+/* User form */
+.errors {
+	margin: 0px 0px 20px 0px;	
+}
+
+/* Ticket page */
+
+.ticket_foot_details {
+  font-size: 9px;
+}
+
+.ticket_post {
+  border-bottom: 1px solid #ddd;
+}
+
+#ticket_content {
+	padding: 30px 10px;
+	background-color: #FFFDD9;
+  border:1px solid #E8E49B;
+	margin: 20px 0px;
+}
+
+.post_content {
+	margin: 10px 0px;
+}
+
+#profile_picture_thumb {
+	width: 100px;
+}
+
+#company_form, #contact_form {
+	clear: both;
+}
+
+/* Navbar */
+.navbar-default {
+  background-color: #FCC970;
+  border: 1px solid #E4C48C;
+  margin-bottom: 10px;
+  border-radius: 0px;
+  background: -webkit-linear-gradient(top, #FCC970 , #DBB168); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #FCC970, #DBB168); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #FCC970, #DBB168); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #FCC970 , #DBB168); /* Standard syntax */
+}
+.navbar-default .navbar-brand {
+  color: #333333;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+  color: #744b07;
+}
+.navbar-default .navbar-text {
+  color: #333333;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #333333;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #744b07;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  color: #744b07;
+  background-color: #FFDC9E;
+  font-size: 13px;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+  color: #744b07;
+  background-color: #e5ab49;
+}
+.navbar-default .navbar-toggle {
+  border-color: #e5ab49;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+  background-color: #e5ab49;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #333333;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+  border-color: #E2B554;
+}
+.navbar-default .navbar-link {
+  color: #333333;
+}
+.navbar-default .navbar-link:hover {
+  color: #744b07;
+}
+.navbar-nav>li>.dropdown-menu {
+  background-color: #FFF5D7;
+}
+
+.dropdown-menu>li>a:hover {
+  background-color: #FFEAAC;
+}
+
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #333333;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #744b07;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #744b07;
+    background-color: #e5ab49;
+  }
+}
+
+.action {
+	font-size: 12px;
+	padding: 3px 20px;
+}
+
+.action:hover {
+	background-color: none;
+}
+
+/* navbar collapse */
+@media (max-width: 1205px) {
+    .navbar-header {
+        float: none;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-nav {
+        float: none!important;
+        margin: 7.5px -15px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .navbar-text {
+        float: none;
+        margin: 15px 0;
+    }
+    /* since 3.1.0 */
+    .navbar-collapse.collapse.in { 
+        display: block!important;
+    }
+    .collapsing {
+        overflow: hidden!important;
+    }
+}

@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: Convergence
+        psr4_prefix: Convergence
+        src_path: app
