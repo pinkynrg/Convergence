@@ -20,7 +20,7 @@ class Employee extends Model {
 	{
 		$this->first_name = $this->first_name ? $this->first_name : '[first name missing]';
 		$this->last_name = $this->last_name ? $this->last_name : '[last name missing]';
-		return $this->first_name." ".$this->last_name;
+		return $this->last_name." ".$this->first_name;
 	}
 
 }

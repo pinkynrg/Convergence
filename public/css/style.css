@@ -70,7 +70,7 @@ body {
 .wrapper {
 	width: 95%;
 	padding: 10px;
-	overflow: hidden;
+	/*overflow: hidden;*/
 	moz-box-shadow: 0 1px 5px rgba(0,0,0,.6);
   -webkit-box-shadow: 0 1px 5px rgba(0,0,0,.6);
   box-shadow: 0 1px 5px rgba(0,0,0,.6);
@@ -100,6 +100,12 @@ body {
 	font-size: 16px;
 	display: inline-block;
 	float: left;
+}
+
+.filters {
+  height: 50px;
+  padding: 7px;
+  background-color: #D8EFE8;
 }
 
 #contacts.navb {
@@ -145,6 +151,10 @@ body {
 /* HTML tables */
 thead {
 	background-color: #FFFFFF;
+}
+
+.orderable th {
+  cursor: pointer;
 }
 
 .table {

@@ -2,8 +2,6 @@
 
 @section('content')
 
-	<div>
-		@include('customers.customers', array("customers" => $customers))
-	</div>
+	@include('customers.customers', array("customers" => $customers))
 	
 @endsection

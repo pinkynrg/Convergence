@@ -34,8 +34,28 @@ class EquipmentsController extends Controller {
 		return "equipment destroy method hasn't been created yet";
 	}
 
-	public function ajaxEquipmentsRequest() {
-		$data['equipments'] = Equipment::paginate(50);
+	public function ajaxEquipmentsRequest($params = "") {
+		
+        parse_str($params,$params);
+
+		$equipments = Equipment::select("equipments.*");
+		$equipments->leftJoin("customers","customers.id","=","equipments.customer_id");
+		$equipments->leftJoin("equipment_types","equipment_types.id","=","equipments.equipment_type_id");
+
+		// apply search
+        if (isset($params['search'])) {
+            $equipments->where('name','like','%'.$params['search'].'%');
+        }
+
+        // apply ordering
+        if (isset($params['order'])) {
+            $equipments->orderBy($params['order']['column'],$params['order']['type']);
+        }
+
+		$equipments = $equipments->paginate(50);
+
+		$data['equipments'] = $equipments;
+
         return view('equipments/equipments',$data);
 	}
 }

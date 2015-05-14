@@ -43,12 +43,15 @@
 
 			</ul>
 
-			<form class="navbar-form navbar-right" role="search">
-				<div class="form-group">
-					<input type="text" class="form-control">
+			@if (isset($active_search))
+
+				<div class="navbar-form navbar-right" role="search">
+					<div class="form-group">
+						<input type="text" class="form-control search" placeholder="search">
+					</div>
 				</div>
-				<button type="submit" class="btn btn-default"> <i class="fa fa-search"></i> Search </button>
-			</form>
+
+			@endif
 
 			@if (isset($menu_actions) && count($menu_actions))
 

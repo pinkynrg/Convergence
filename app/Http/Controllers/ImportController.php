@@ -123,13 +123,13 @@
 				foreach ($employees as $e) {
 
 					if (strpos(trim($e['First_name'])," ") === false) {
-						$first_name = $e['Name'];
-						$last_name = $e['Last_name'];
+						$first_name = trim($e['Name']);
+						$last_name = trim($e['Last_name']);
 					}
 					else {
-						$exploded = explode(" ",$e['First_name']);
-						$first_name = $exploded[0];
-						$last_name = implode(" ",array_slice($exploded,1));
+						$exploded = explode(" ",trim($e['First_name']));
+						$first_name = trim($exploded[0]);
+						$last_name = trim(implode(" ",array_slice($exploded,1)));
 					}
 
 					$query = "INSERT INTO employees (id,first_name,last_name,department_id,title_id,phone,extension,speed_dial,email,created_at,updated_at) 
@@ -213,7 +213,7 @@
 
 			$table = 'tickets';
 
-			$query = mssql_query("SELECT * FROM [dbo].[Tickets] WHERE datalength(Name_Contact) != 0");
+			$query = mssql_query("SELECT * FROM [dbo].[Tickets] WHERE datalength(Name_Contact) != 0 AND Priority != ''");
 			$successes = $errors = 0;
 
 			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $tickets[] = $row;
@@ -225,10 +225,11 @@
 				foreach ($tickets as $t) {
 
 					$contact_id = $this->findMatchingContactId($t);
+					$ticket_title = trim($t['Ticket_Title']);
 					$ticket_post = str_replace('&#65533;','',strip_tags($t['Ticket_Post']));
 
 					$query = "INSERT INTO tickets (id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,customer_id,contact_id,created_at,updated_at) 
-					 		  VALUES ('".$t['Id']."','".$t['Ticket_Title']."','".$ticket_post."','".$t['Creator']."','".$t['Id_Assignee']."','".$t['Status']."','".$t['Priority']."','".$t['Id_System']."','".$t['Id_Equipment']."','".$t['Id_Customer']."','".$contact_id."','".$t['Date_Creation']."','".$t['Date_Update']."')";
+					 		  VALUES ('".$t['Id']."','".$ticket_title."','".$ticket_post."','".$t['Creator']."','".$t['Id_Assignee']."','".$t['Status']."','".$t['Priority']."','".$t['Id_System']."','".$t['Id_Equipment']."','".$t['Id_Customer']."','".$contact_id."','".$t['Date_Creation']."','".$t['Date_Update']."')";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;

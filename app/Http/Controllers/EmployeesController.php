@@ -11,6 +11,7 @@ use Form;
 class EmployeesController extends Controller {
 	public function index() {
         $data['menu_actions'] = [Form::addItem(route('employees.create'), 'Add employee')];
+		$data['active_search'] = true;
 		$data['employees'] = Employee::paginate(50);
 		return view('employees/index',$data);
 	}
@@ -54,8 +55,30 @@ class EmployeesController extends Controller {
 		return redirect()->route('employees.index');
 	}
 
-	public function ajaxEmployeesRequest() {
-		$data['employees'] = Employee::paginate(50);
+	public function ajaxEmployeesRequest($params = "") {
+
+        parse_str($params,$params);
+
+		$employees = Employee::select("employees.*");
+		$employees->leftJoin("departments","departments.id","=","employees.department_id");
+		$employees->leftJoin("titles","titles.id","=","employees.title_id");
+
+		// apply search
+        if (isset($params['search'])) {
+            $employees->where('last_name','like','%'.$params['search'].'%');
+            $employees->orWhere('first_name','like','%'.$params['search'].'%');
+        }
+
+        // apply ordering
+        if (isset($params['order'])) {
+            $employees->orderBy($params['order']['column'],$params['order']['type']);
+        }
+
+		//paginate
+		$employees = $employees->paginate(50);
+
+		$data['employees'] = $employees;
+
         return view('employees/employees',$data);
 	}
 }

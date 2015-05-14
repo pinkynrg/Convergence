@@ -1,6 +1,10 @@
 <?php namespace Convergence\Http\Controllers;
 
 use Convergence\Models\Ticket;
+use Convergence\Models\Customer;
+use Convergence\Models\Employee;
+use Convergence\Models\Division;
+use Convergence\Models\Status;
 use Requests;
 use Form;
 
@@ -15,7 +19,12 @@ class TicketsController extends Controller {
 	 */
 	public function index() {
 		$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
+		$data['active_search'] = true;
 		$data['tickets'] = Ticket::orderBy('id','desc')->paginate(50);
+		$data['customers'] = Customer::orderBy('company_name','asc')->get();
+		$data['employees'] = Employee::orderBy('last_name','asc')->orderBy('first_name','asc')->get();
+		$data['divisions'] = Division::orderBy('name','asc')->get();
+		$data['statuses'] = Status::orderBy('id','asc')->get();
 		return view('tickets/index',$data);
 	}
 
@@ -87,10 +96,54 @@ class TicketsController extends Controller {
 		$ticket->delete();
 		return redirect()->route('tickets.index');
 	}
-
-	public function ajaxTicketsRequest()
+	
+	/**
+	 * Return list of tickets for an ajax request
+	 *
+	 * @return Response
+	 */
+	public function ajaxTicketsRequest($params = "")
     {
-        $data['tickets'] = Ticket::orderBy('id','desc')->paginate(50);
+    	parse_str($params,$params);
+
+    	$tickets = Ticket::select('tickets.*');
+    	$tickets->leftJoin('employees as creators','tickets.creator_id','=','creators.id');
+    	$tickets->leftJoin('employees as assignees','tickets.assignee_id','=','assignees.id');
+    	$tickets->leftJoin('statuses','tickets.status_id','=','statuses.id');
+    	$tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
+    	$tickets->leftJoin('customers','tickets.customer_id','=','customers.id');
+    	$tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
+
+    	// apply filters
+    	if (isset($params['filters'])) {
+    		foreach ($params['filters'] as $key => $filter) {
+    			
+    			$tickets->where(function($query) use ($filter,$key) {
+    				for ($i=0; $i<count($filter); $i++) {
+	    				if ($i == 0)
+	    					$query->where($key,'=',$filter[$i]);
+	    				else
+	    					$query->orWhere($key,'=',$filter[$i]);
+    				}
+    			});
+    		}
+    	}
+
+    	// apply search
+    	if (isset($params['search'])) {
+    		$tickets->where('title','like','%'.$params['search'].'%');
+    	}
+
+    	// apply ordering
+    	if (isset($params['order'])) {
+    		$tickets->orderBy($params['order']['column'],$params['order']['type']);
+    	}
+
+    	// paginate
+   		$tickets = $tickets->paginate(50);
+
+	    $data['tickets'] = $tickets;
+
         return view('tickets/tickets',$data);
     }
 }

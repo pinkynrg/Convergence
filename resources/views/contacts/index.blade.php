@@ -6,14 +6,6 @@
 	    <div class="alert alert-success">{{ Session::get('message') }}</div>
 	@endif
 
-	<div class="navb">
-
-		<span class="title">Contacts</span>
-		
-	</div>
-
-	<div>
-		@include('contacts/contacts', array('contacts' => $contacts))
-	</div>
+	@include('contacts/contacts', array('contacts' => $contacts))
 	
 @endsection

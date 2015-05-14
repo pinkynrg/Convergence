@@ -20,18 +20,20 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'importer.import']);
 
 	Route::get('/', ['uses'=>'TicketsController@index', 'as'=>'root']);
+
 	Route::resource('customers','CustomersController',['middleware' => 'auth']);
 	Route::get('contacts/create/{customer_id}', ['uses' => 'ContactsController@create', 'as' => 'contacts.create']);
 	Route::resource('contacts','ContactsController', array('except' => array('create')));
 	Route::resource('employees','EmployeesController');
 	Route::resource('tickets','TicketsController');
 	Route::resource('equipments','EquipmentsController');
-	Route::get('ajax/tickets/tickets', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'tickets.tickets.ajax']);
-	Route::get('ajax/contacts/contacts', ['uses' => 'ContactsController@ajaxContactsRequest', 'as' => 'contacts.contacts.ajax']);
-	Route::get('ajax/customers/customers', ['uses' => 'CustomersController@ajaxCustomersRequest', 'as' => 'customers.customers.ajax']);
-	Route::get('ajax/customers/{customer_id}', ['uses' => 'CustomersController@ajaxContactsRequest', 'as' => 'customers.contacts.ajax']);
-	Route::get('ajax/customers/tickets/{customer_id}', ['uses' => 'CustomersController@ajaxTicketsRequest', 'as' => 'customers.tickets.ajax']);
-	Route::get('ajax/customers/equipments/{customer_id}', ['uses' => 'CustomersController@ajaxEquipmentsRequest', 'as' => 'customers.equipments.ajax']);
-	Route::get('ajax/employees/employees', ['uses' => 'EmployeesController@ajaxEmployeesRequest', 'as' => 'employees.employees.ajax']);
-	Route::get('ajax/equipments/equipments', ['uses' => 'EquipmentsController@ajaxEquipmentsRequest', 'as' => 'equipments.equipments.ajax']);
+
+	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);
+	Route::get('ajax/contacts/{params?}', ['uses' => 'ContactsController@ajaxContactsRequest', 'as' => 'ajax.contacts']);
+	Route::get('ajax/customers/{params?}', ['uses' => 'CustomersController@ajaxCustomersRequest', 'as' => 'ajax.customers']);
+	Route::get('ajax/customers/contacts/{customer_id}/{params?}', ['uses' => 'CustomersController@ajaxContactsRequest', 'as' => 'ajax.customers.contacts']);
+	Route::get('ajax/customers/tickets/{customer_id}/{params?}', ['uses' => 'CustomersController@ajaxTicketsRequest', 'as' => 'ajax.customers.tickets']);
+	Route::get('ajax/customers/equipments/{customer_id}/{params?}', ['uses' => 'CustomersController@ajaxEquipmentsRequest', 'as' => 'ajax.customers.equipments']);
+	Route::get('ajax/employees/{params?}', ['uses' => 'EmployeesController@ajaxEmployeesRequest', 'as' => 'ajax.employees']);
+	Route::get('ajax/equipments/{params?}', ['uses' => 'EquipmentsController@ajaxEquipmentsRequest', 'as' => 'ajax.equipments']);
 });

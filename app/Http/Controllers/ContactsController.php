@@ -10,6 +10,7 @@ use Form;
 class ContactsController extends Controller {
 
 	public function index() {
+		$data['active_search'] = true;
         $data['contacts'] = Contact::paginate(50);
         $data['title'] = "Convergence - Contacts";
         return view('contacts/index', $data);
@@ -51,8 +52,26 @@ class ContactsController extends Controller {
 		return redirect()->route('customers.show',$contact->customer_id);
 	}
 
-	public function ajaxContactsRequest() {
-        $data['contacts'] = Contact::paginate(50);
+	public function ajaxContactsRequest($params = "") {
+
+        parse_str($params,$params);
+
+		$contacts = Contact::select("contacts.*");
+		$contacts->leftJoin("customers","customers.id","=","contacts.customer_id");
+
+		// apply search
+        if (isset($params['search'])) {
+            $contacts->where('name','like','%'.$params['search'].'%');
+        }
+
+        // apply ordering
+        if (isset($params['order'])) {
+            $contacts->orderBy($params['order']['column'],$params['order']['type']);
+        }
+
+        $contacts = $contacts->paginate(50);
+
+        $data['contacts'] = $contacts;
         return view('contacts/contacts',$data);
     }
 
