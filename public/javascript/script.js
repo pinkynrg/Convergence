@@ -1,4 +1,10 @@
+"use strict"
+
 $(document).ready(function() {
+
+	$('.selectpicker').selectpicker('deselectAll');
+	$("input[type='text'].search").val("");
+
 	//activate tooltips
 	$('[data-toggle="tooltip"]').tooltip();
 	
@@ -25,31 +31,50 @@ $(document).ready(function() {
 	}
 
 	// trigger ajax request when searching
-	$("input[type='text'].search").live("keyup", function () {
-		ajaxUpdate($(this).closest("div[ajax-route]"));
+	$("input[type='text'].search").on("keyup", function () {
+		var $target = $(this).closest("div[ajax-route]");
+		ajaxUpdate($target);
 	});
 
 	// trigger ajax request when ordering
-	$("tr.orderable th").live("click", function () {
+	$("tr.orderable th").on("click", function () {
+		var $target = $(this).closest("div[ajax-route]");
 		toggleOrder($(this));
-		ajaxUpdate($(this).closest("div[ajax-route]"));
+		ajaxUpdate($target);
 	});
 
 	// trigger ajax request when filtering
-	$("select.selectpicker.multifilter").live("change", function () {
-		ajaxUpdate($(this).closest("div[ajax-route]"));
+	$("select.selectpicker.multifilter").on("change", function () {
+		var $target = $(this).closest("div[ajax-route]");
+		ajaxUpdate($target);
+	});
+
+	// reset filters
+	$("input#reset_filters").on("click", function() {
+		var $target = $(this).closest("div[ajax-route]");
+		resetFilter($target);
 	});
 
 	// trigger ajax request when changing page
 	$(".ajax_pagination li").live('click',function (e) {
+		var $target = $(this).closest("div[ajax-route]");
 		e.preventDefault();
 		togglePage($(this));
-		ajaxUpdate($(this).closest("div[ajax-route]"));
+		ajaxUpdate($target);
+		if ($(this).closest(".ajax_pagination").attr('scrollup') == 'true') {
+			scrollUp(500);
+		}
 	});
 
+	function resetFilter($this) {
+		var $target = $this.closest("div[ajax-route]");
+		$target.find('.selectpicker').selectpicker('deselectAll');
+		ajaxUpdate($target);
+	}
+
 	function ajaxUpdate($target) {
-		params = getParams($target);
-		url = $target.attr("ajax-route");
+		var params = getParams($target);
+		var url = $target.attr("ajax-route");
 		url = getUrl(url,params);
 		ajaxRequest(url,$target);
 	}
@@ -80,7 +105,7 @@ $(document).ready(function() {
 	}
 
 	function getParams($target) {
-		var params = [];
+		var params = {};
 		
 		params['order'] = {};
 		params['filters'] = {};
@@ -119,21 +144,21 @@ $(document).ready(function() {
 		return params;
 	}
 
-	function getUrl(url) {
+	function getUrl(url, params) {
 
 		url = url + "/";
 		
 		if (params['search'] != "") url = url + "&" + "search" + "=" + encodeURIComponent(params['search']);
 		
 		if ( params['order'] != {} ) {
-			for (key in params['order']) {
+			for (var key in params['order']) {
 				url = url + "&" + encodeURIComponent("order[column]=") + encodeURIComponent(key) + "&" + encodeURIComponent("order[type]") + "=" + encodeURIComponent(params['order'][key]);
 			}
 		}
 
 		if ( params['filters'] != {} ) {
-			for (key in params['filters']) {
-				for (subkey in params['filters'][key]) {
+			for (var key in params['filters']) {
+				for (var subkey in params['filters'][key]) {
 					url = url + "&" + encodeURIComponent("filters["+key+"]["+subkey+"]") + "=" + encodeURIComponent(params['filters'][key][subkey]);
 				}
 			}
@@ -151,7 +176,8 @@ $(document).ready(function() {
 		$.get(url, function (data) {
 			console.log(url);
 			$target.find(".content table tbody").html($(data).find('tbody').html());
-			$target.find(".ajax_pagination").html($(data).find('.ajax_pagination').html());
+			$target.find(".ajax_pagination[scrollup='true']").html($(data).find(".ajax_pagination[scrollup='true']").html());
+			$target.find(".ajax_pagination[scrollup='false']").html($(data).find(".ajax_pagination[scrollup='false']").html());
 		});
 
 	}

@@ -34,6 +34,8 @@
 			@endforeach
 		</select>
 
+		<input type="button" class="btn btn-default" id="reset_filters" value="Reset Filters">
+
 	</div>
 
 	@include('tickets/tickets', array('tickets' => $tickets))

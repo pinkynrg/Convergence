@@ -1,4 +1,9 @@
 <div class="content">
+
+	<div class="ajax_pagination" scrollup="false">
+		{!! $employees->render() !!}
+	</div>
+
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">

@@ -32,7 +32,7 @@
 		</tbody>
 	</table>	
 
-	<div class="ajax_pagination">
+	<div class="ajax_pagination" scrollup="false">
 		{!! $contacts->render() !!}
 	</div>
 </div>

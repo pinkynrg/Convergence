@@ -1,4 +1,9 @@
 <div class="content">
+
+	<div class="ajax_pagination" scrollup="false">
+		{!! $equipments->render() !!}
+	</div>
+
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
@@ -30,7 +35,7 @@
 		</tbody>
 	</table>
 
-	<div class="ajax_pagination" scrollup="true" route="{{ route('ajax.equipments') }}">
+	<div class="ajax_pagination" scrollup="true">
 		{!! $equipments->render() !!}
 	</div>
 </div>

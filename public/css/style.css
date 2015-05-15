@@ -105,7 +105,28 @@ body {
 .filters {
   height: 50px;
   padding: 7px;
-  background-color: #D8EFE8;
+  background: -webkit-linear-gradient(top, #D8EFE8 , #E9F7F3); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #D8EFE8, #E9F7F3); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #D8EFE8, #E9F7F3); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #D8EFE8 , #E9F7F3); /* Standard syntax */
+  border: 1px solid #CAE0DA;
+}
+
+#reset_filters {
+  float: right;
+}
+
+.searching {
+  background-color: yellow;
+}
+
+.pagination {
+  margin: 0px;
+}
+
+.ajax_pagination {
+  padding: 10px 0px;
+  height: 50px;
 }
 
 #contacts.navb {

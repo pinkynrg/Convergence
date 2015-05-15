@@ -27,7 +27,7 @@
 		</tbody>
 	</table>	
 
-	<div class="ajax_pagination">
+	<div class="ajax_pagination" scrollup="false">
 		{!! $tickets->render() !!}
 	</div>
 </div>
