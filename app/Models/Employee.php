@@ -16,6 +16,11 @@ class Employee extends Model {
 		return $this->belongsTo('Convergence\Models\Title');		
 	}
 
+	public function phone() 
+	{
+		return preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "+1 ($1) $2-$3", $this->phone);
+	}
+
 	public function name() 
 	{
 		$this->first_name = $this->first_name ? $this->first_name : '[first name missing]';

@@ -14,10 +14,10 @@
 		@foreach ($contacts as $contact)
 
 			<tr>
-				<td> <a href="{{ route('contacts.show', $contact->id) }}"> {{ $contact->name ? $contact->name : '-' }} </a> </td>
-				<td class="hidden-xs"> {{ $contact->phone ? $contact->phone : '-' }} </td>
-				<td class="hidden-xs"> {{ $contact->cellphone ? $contact->cellphone : '-' }} </td>
-				<td> {{ $contact->email ? $contact->email : '-' }} </td>
+				<td> <a href="{{ route('contacts.show', $contact->id) }}"> {{ $contact->name }} </a> </td>
+				<td class="hidden-xs"> {{ $contact->phone }} </td>
+				<td class="hidden-xs"> {{ $contact->cellphone }} </td>
+				<td> {{ $contact->email }} </td>
 				<td>
 					@if ($customer->main_contact_id == $contact->id) 
 						<i class="fa fa-check-circle-o" style="color: #5EBA0A"></i> 

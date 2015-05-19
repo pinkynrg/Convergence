@@ -1,4 +1,9 @@
 <div class="content">
+
+	<div class="ajax_pagination" scrollup="false">
+		{!! $contacts->render() !!}
+	</div>
+
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
@@ -16,8 +21,8 @@
 			<tr>
 				<td> <a href="{{route('contacts.show', $contact->id) }}"> {{  $contact->name }} </a> </td>
 				<td> {{ $contact->customer->company_name }} </td>
-				<td> {{ $contact->phone }} </td>
-				<td> {{ $contact->cellphone }} </td>
+				<td> {{ $contact->phone() }} </td>
+				<td> {{ $contact->cellphone() }} </td>
 				<td> {{ $contact->email }} </td>
 			</tr>
 
@@ -26,7 +31,8 @@
 		</tbody>
 	</table>
 
-	<div class="ajax_pagination">
+	<div class="ajax_pagination" scrollup="true">
 		{!! $contacts->render() !!}
 	</div>
+
 </div>

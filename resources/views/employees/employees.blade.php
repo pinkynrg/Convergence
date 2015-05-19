@@ -22,7 +22,7 @@
 				<td> <a href="{{ route('employees.show', $employee->id) }}"> {{ $employee->name() }} </a> </td>
 				<td> {{ $employee->department->name }} </td>
 				<td class="hidden-xs"> {{ $employee->title->name }} </td>
-				<td> {{ $employee->phone }} </td>
+				<td> {{ $employee->phone() }} </td>
 				<td> {{ $employee->email }} </td>
 			</tr>
 

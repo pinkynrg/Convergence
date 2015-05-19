@@ -25,7 +25,7 @@
 					<th>E-mail</th><td> {{ $employee->email }} </td>
 				</tr>
 				<tr>
-					<th>Phone</th><td> {{ $employee->phone }} </td>
+					<th>Phone</th><td> {{ $employee->phone() }} </td>
 				</tr>
 			</table>
 

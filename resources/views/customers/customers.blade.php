@@ -21,7 +21,7 @@
 
 			<tr>
 				<td> <a href="{{route('customers.show', $customer->id) }}"> {{  $customer->company_name }} </a> </td>
-				<td> {{ isset($customer->main_contact->id) ? $customer->main_contact->cellphone : '-' }} </td>
+				<td> {{ isset($customer->main_contact->id) ? $customer->main_contact->cellphone() : '' }} </td>
 				<td class="hidden-xs hidden-sm"> {{ $customer->country }} </td>
 				<td class="hidden-xs"> {{ $customer->city }} </td>
 				<td class="hidden-xs"> {{ $customer->address }} </td>
