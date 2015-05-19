@@ -22,11 +22,13 @@
 
 			$result = false;
 
-			$query = "DELETE FROM ".$table." WHERE 1 = 1";
+			$query1 = "SET foreign_key_checks = 0";
+			$query2 = "DELETE FROM ".$table." WHERE 1 = 1";
+			$query3 = "SET foreign_key_checks = 1";
 
 			echo "[".date("Y-m-d H:i:s")."]";
 
-			if (mysqli_query($this->conn, $query) === TRUE) {
+			if (mysqli_query($this->conn, $query1) === TRUE && mysqli_multi_query($this->conn, $query2) === TRUE && mysqli_multi_query($this->conn, $query3) === TRUE) {
 				echo "<span style='color:green'> ".$table." table truncated successfully. </span>";
 				$result = true;
 			}
@@ -66,6 +68,22 @@
 			return $id ? $id : null;
 		}
 
+		private function trimAndNullIfEmpty($row) {
+			
+			foreach ($row as $key => $value) {
+				$row[$key] = trim($row[$key]);
+				$row[$key] = strtolower($row[$key]) == 'test' ? '' : $row[$key];
+				$row[$key] = strtolower($row[$key]) == 'void' ? '' : $row[$key];
+				$row[$key] = strtolower($row[$key]) == 'test - void' ? '' : $row[$key];
+				$row[$key] = strtolower($row[$key]) == 'tba' ? '' : $row[$key];
+				$row[$key] = strtolower($row[$key]) == 'tbd' ? '' : $row[$key];
+				$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
+				$row[$key] = strtolower($row[$key]) == '' ? 'NULL' : "\"".$row[$key]."\"";
+			}
+
+			return $row;
+		}
+
 
 		private function importCustomers() {
 
@@ -73,7 +91,6 @@
 
 			$query = mssql_query('SELECT * FROM [dbo].[Customers]');
 			$successes = $errors = 0;
-
 
 			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $customers[] = $row;
 
@@ -83,21 +100,22 @@
 
 				foreach ($customers as $c) {
 
-					$c['Id_Employee_Account_Manager'] = $c['Id_Employee_Account_Manager'] == '' ? 'NULL' : "'".$c['Id_Employee_Account_Manager']."'";
-					$c['ZipCode'] = $c['ZipCode'] == 'UNKNOWN' ? '' : $c['ZipCode'];
+					$c = $this->trimAndNullIfEmpty($c);
 					
-					$query_contact = mssql_query("SELECT id_Contact FROM Contact WHERE CAST(Contact.Name AS VARCHAR(50)) = '".$c['Contact']."'");
+					$query_contact = mssql_query("SELECT id_Contact FROM Contact WHERE CAST(Contact.Name AS VARCHAR(50)) = ".$c['Contact']);
 					$result = mssql_fetch_array($query_contact, MSSQL_ASSOC);
 					$c['Main_Contact_Id'] = ($result['id_Contact'] == '' || $c['Contact'] == '') ? 'NULL' : $result['id_Contact'];
 
 					$query = "INSERT INTO customers (id, company_name, address, country, city, state, zip_code, airport, account_manager_id,main_contact_id,plant_requirment,created_at,updated_at) 
-						VALUES ('".$c['Id']."','".$c['Customer']."','".$c['Address']."','".$c['Country']."','".$c['City']."','".$c['State']."',
-						'".$c['ZipCode']."','".$c['Airport']."',".$c['Id_Employee_Account_Manager'].",".$c['Main_Contact_Id'].",'".$c['Plant_Requirement']."','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+						VALUES (".$c['Id'].",".$c['Customer'].",".$c['Address'].",".$c['Country'].",".$c['City'].",".$c['State'].",
+						".$c['ZipCode'].",".$c['Airport'].",".$c['Id_Employee_Account_Manager'].",".$c['Main_Contact_Id'].",".$c['Plant_Requirement'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 					
 					if (mysqli_query($this->conn, $query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -123,22 +141,30 @@
 				foreach ($employees as $e) {
 
 					if (strpos(trim($e['First_name'])," ") === false) {
-						$first_name = trim($e['Name']);
-						$last_name = trim($e['Last_name']);
+						$e['First_Name'] = trim($e['Name']);
+						$e['Last_Name'] = trim($e['Last_name']);
 					}
 					else {
 						$exploded = explode(" ",trim($e['First_name']));
-						$first_name = trim($exploded[0]);
-						$last_name = trim(implode(" ",array_slice($exploded,1)));
+						$e['First_Name'] = trim($exploded[0]);
+						$e['Last_Name'] = trim(implode(" ",array_slice($exploded,1)));
 					}
 
+					$e['Phone'] = str_replace(array("1-","+1"),"",$e['Phone']);
+					$e['Phone'] = str_replace(array(".","-"," ","(",")"),"",$e['Phone']);
+					$e['Phone'] = (strlen($e['Phone']) < 10 || strlen($e['Phone']) > 10) ? "" : $e['Phone'];
+
+					$e = $this->trimAndNullIfEmpty($e);
+
 					$query = "INSERT INTO employees (id,first_name,last_name,department_id,title_id,phone,extension,speed_dial,email,created_at,updated_at) 
-					VALUES ('".$e['Id']."','".$first_name."','".$last_name."','".$e['Department']."','".$e['Title']."','".$e['Phone']."','".$e['Extension']."','".$e['Speed_Dial']."','".$e['Email']."','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+					VALUES (".$e['Id'].",".$e['First_Name'].",".$e['Last_Name'].",".$e['Department'].",".$e['Title'].",".$e['Phone'].",".$e['Extension'].",".$e['Speed_Dial'].",".$e['Email'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -149,7 +175,7 @@
 
 		}
 
-		private function importEmployeeDepartments() {
+		private function importDepartments() {
 
 			$table = 'departments';
 
@@ -164,12 +190,16 @@
 
 				foreach ($departments as $d) {
 
-					$query = "INSERT INTO departments (id,name,created_at,updated_at) VALUES ('".$d['Id']."','".$d['Department']."','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
-					
+					$d = $this->trimAndNullIfEmpty($d);
+
+					$query = "INSERT INTO departments (id,name) VALUES (".$d['Id'].",".$d['Department'].")";	
+
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -179,7 +209,7 @@
 			}
 		}
 
-		private function importEmployeeTitles() {
+		private function importTitles() {
 
 			$table = 'titles';
 			
@@ -194,12 +224,16 @@
 
 				foreach ($titles as $t) {
 
-					$query = "INSERT INTO titles (id,name,created_at,updated_at) VALUES ('".$t['Id']."','".$t['Title']."','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+					$t = $this->trimAndNullIfEmpty($t);
+
+					$query = "INSERT INTO titles (id,name) VALUES (".$t['Id'].",".$t['Title'].");";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -224,17 +258,20 @@
 
 				foreach ($tickets as $t) {
 
-					$contact_id = $this->findMatchingContactId($t);
-					$ticket_title = trim($t['Ticket_Title']);
-					$ticket_post = str_replace('&#65533;','',strip_tags($t['Ticket_Post']));
+					$t['Contact_Id'] = $this->findMatchingContactId($t);
+					$t['Ticket_Post'] = str_replace('&#65533;','',strip_tags($t['Ticket_Post']));
+
+					$t = $this->trimAndNullIfEmpty($t);
 
 					$query = "INSERT INTO tickets (id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,customer_id,contact_id,created_at,updated_at) 
-					 		  VALUES ('".$t['Id']."','".$ticket_title."','".$ticket_post."','".$t['Creator']."','".$t['Id_Assignee']."','".$t['Status']."','".$t['Priority']."','".$t['Id_System']."','".$t['Id_Equipment']."','".$t['Id_Customer']."','".$contact_id."','".$t['Date_Creation']."','".$t['Date_Update']."')";
+					 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Creator'].",".$t['Id_Assignee'].",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$t['Contact_Id'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -259,13 +296,17 @@
 
 				foreach ($statuses as $s) {
 
+					$s = $this->trimAndNullIfEmpty($s);
+
 					$query = "INSERT INTO statuses (id,name) 
-							  VALUES ('".$s['Id']."','".$s['Status']."')";
+							  VALUES (".$s['Id'].",".$s['Status'].")";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -291,13 +332,17 @@
 
 				foreach ($priorities as $p) {
 
+					$p = $this->trimAndNullIfEmpty($p);
+
 					$query = "INSERT INTO priorities (id,name) 
-							  VALUES ('".$p['Id']."','".$p['Priority']."')";
+							  VALUES (".$p['Id'].",".$p['Priority'].")";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -322,13 +367,17 @@
 
 				foreach ($divisions as $d) {
 
+					$d = $this->trimAndNullIfEmpty($d);
+
 					$query = "INSERT INTO divisions (id,name) 
-							  VALUES ('".$d['Id']."','".$d['Type']."')";
+							  VALUES (".$d['Id'].",".$d['Type'].")";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -353,13 +402,17 @@
 
 				foreach ($equipments as $e) {
 
+					$e = $this->trimAndNullIfEmpty($e);
+
 					$query = "INSERT INTO equipments (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, customer_id) 
-							  VALUES ('".$e['Id']."','".$e['NickName']."','".$e['CC_Number']."','".$e['Serial_Number']."','".$e['Equipment_Type']."','".$e['Notes']."','".$e['WarrantyExpiration']."','".$e['CompanyId']."')";
+							  VALUES (".$e['Id'].",".$e['NickName'].",".$e['CC_Number'].",".$e['Serial_Number'].",".$e['Equipment_Type'].",".$e['Notes'].",".$e['WarrantyExpiration'].",".$e['CompanyId'].")";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -385,6 +438,9 @@
 
 				foreach ($equipmentTypes as $e) {
 
+					// not used since there is a TBA record that can't be NULL
+					//$e = $this->trimAndNullIfEmpty($e);
+
 					$query = "INSERT INTO equipment_types (id,name) 
 							  VALUES ('".$e['Id']."','".$e['Name']."')";
 					
@@ -392,6 +448,8 @@
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -423,23 +481,30 @@
 					foreach ($temp as $part) 
 						$c['Name'] .= ucfirst($part)." ";
 
-					$c['Name'] = trim($c['Name']);
+					$c['Phone'] = str_replace(array("1-","+1"),"",$c['Phone']);
+					$c['Phone'] = str_replace(array(".","-"," ","(",")"),"",$c['Phone']);
+					$c['Phone'] = (strlen($c['Phone']) < 10 || strlen($c['Phone']) > 10) ? "" : $c['Phone'];
+
+					$c['CellPhone'] = str_replace(array("1-","+1"),"",$c['CellPhone']);
+					$c['CellPhone'] = str_replace(array(".","-"," ","(",")"),"",$c['CellPhone']);
+					$c['CellPhone'] = (strlen($c['CellPhone']) < 10 || strlen($c['CellPhone']) > 10) ? "" : $c['CellPhone'];
 
 					$c['Email'] = strtolower($c['Email']);
 
-					if ($c['Name'] != '') {				
+					$c = $this->trimAndNullIfEmpty($c);
 
-						$query = "INSERT INTO contacts (id,customer_id,name,phone,cellphone,email) 
-								  VALUES ('".$c['Id_Contact']."','".$c['Id_Customer']."','".$c['Name']."','".$c['Phone']."','".$c['CellPhone']."','".$c['Email']."')";
-						
-						if (mysqli_query($this->conn,$query) === TRUE) {
-							$successes++;
-						}
-						else {
-							$errors++;
-						}
+					$query = "INSERT INTO contacts (id,customer_id,name,phone,cellphone,email) 
+							  VALUES (".$c['Id_Contact'].",".$c['Id_Customer'].",".$c['Name'].",".$c['Phone'].",".$c['CellPhone'].",".$c['Email'].")";
+					
+					if (mysqli_query($this->conn,$query) === TRUE) {
+						$successes++;
 					}
-				}
+					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
+						$errors++;
+					}
+			}
 
 				$this->logger($successes,$errors,$table);
 
@@ -461,15 +526,21 @@
 
 				foreach ($posts as $p) {
 
-					$creation_date = $p['Date_Creation']." ".$p['Time'];
+					$p['Creation_Date'] = $p['Date_Creation']." ".$p['Time'];
+
+					$p['Post'] = str_replace('&#65533;','',strip_tags($p['Post']));
+
+					$p = $this->trimAndNullIfEmpty($p);
 
 					$query = "INSERT INTO posts (id,ticket_id,post,author_id,is_public,created_at,updated_at) 
-							  VALUES ('".$p['Id']."','".$p['Id_Ticket']."','".$p['Post']."','".$p['Author']."','".$p['Post_Public']."','".$creation_date."','".date("Y-m-d H:i:s")."')";
+							  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Author'].",".$p['Post_Public'].",".$p['Creation_Date'].",'".date("Y-m-d H:i:s")."')";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -478,6 +549,45 @@
 
 			}
 		}
+
+		private function importServices() {
+
+			$table = 'services';
+			$successes = $errors = 0;
+
+			$query = mssql_query('SELECT * FROM [saa].[Service_Request]');
+
+			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $services[] = $row;
+
+			mssql_free_result($query);
+
+			if ($this->truncate($table)) {
+
+				foreach ($services as $s) {
+
+					$s['Id_hotel'] = $s['Id_hotel'] == "0" ? "" : $s['Id_hotel'];
+
+					$s = $this->trimAndNullIfEmpty($s);
+
+					$query = "INSERT INTO services (customer_id,contact_id,job_number_internal,job_number_onsite,job_number_remote,employee_id,hotel_id,created_at,updated_at) 
+							  VALUES (".$s['Id_company'].",".$s['Id_contact'].",".$s['assigment_internal'].",".$s['assigment_onsite'].",".$s['remote_install_job_number'].",".$s['assigment_contact'].",".$s['Id_hotel'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+					
+					if (mysqli_query($this->conn,$query) === TRUE) {
+						$successes++;
+					}
+					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
+						$errors++;
+					}
+
+				}
+
+				$this->logger($successes,$errors,$table);
+
+			}
+		}
+
 
 		private function importUsers() {
 
@@ -501,13 +611,17 @@
 
 				foreach ($users as $u) {
 
+					$u = $this->trimAndNullIfEmpty($u);
+
 					$query = "INSERT INTO users (owner_id,owner_type,username,password,created_at,updated_at) 
-							  VALUES ('".$u['Id_Contact']."','Convergence\\\Models\\\Contact','".$u['Customer_User']."','".$u['Customer_Password']."','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+							  VALUES (".$u['Id_Contact'].",'Convergence\\\Models\\\Contact',".$u['Customer_User'].",".$u['Customer_Password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -522,13 +636,17 @@
 
 				foreach ($users as $u) {
 
+					$u = $this->trimAndNullIfEmpty($u);
+
 					$query = "INSERT INTO users (owner_id,owner_type,username,password,created_at,updated_at) 
-							  VALUES ('".$u['Employee_Id']."','Convergence\\\Models\\\Employee','".$u['User_name']."','".$u['User_password']."','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+							  VALUES (".$u['Employee_Id'].",'Convergence\\\Models\\\Employee',".$u['User_name'].",".$u['User_password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
 					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
 						$errors++;
 					}
 				}
@@ -569,25 +687,21 @@
 				}
 			}
 			else {
-				$this->importCustomers();
-				$this->importEmployees();
-				$this->importEmployeeDepartments();
-				$this->importEmployeeTitles();
-				$this->importTickets();
-				$this->importStatus();
-				$this->importPriorities();
+				$this->importDepartments();
 				$this->importDivisions();
-				$this->importEquipments();
 				$this->importEquipmentTypes();
+				$this->importPriorities();
+				$this->importStatus();
+				$this->importTitles();
+				$this->importEmployees();
+				$this->importCustomers();
 				$this->importContacts();
+				$this->importEquipments();
+				$this->importTickets();
 				$this->importPosts();
+				$this->importServices();
 				$this->importUsers();
 			}
-			
-			
-
-			
-
 		}
 	}
 
