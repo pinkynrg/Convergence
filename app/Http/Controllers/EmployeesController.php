@@ -71,6 +71,7 @@ class EmployeesController extends Controller {
 
         // apply ordering
         if (isset($params['order'])) {
+    		$employees->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
             $employees->orderBy($params['order']['column'],$params['order']['type']);
         }
 

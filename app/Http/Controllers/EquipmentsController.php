@@ -49,6 +49,7 @@ class EquipmentsController extends Controller {
 
         // apply ordering
         if (isset($params['order'])) {
+    		$equipments->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
             $equipments->orderBy($params['order']['column'],$params['order']['type']);
         }
 

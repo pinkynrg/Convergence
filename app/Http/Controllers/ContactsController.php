@@ -66,6 +66,7 @@ class ContactsController extends Controller {
 
         // apply ordering
         if (isset($params['order'])) {
+    		$contacts->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
             $contacts->orderBy($params['order']['column'],$params['order']['type']);
         }
 

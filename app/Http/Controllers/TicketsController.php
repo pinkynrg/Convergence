@@ -136,6 +136,7 @@ class TicketsController extends Controller {
 
     	// apply ordering
     	if (isset($params['order'])) {
+    		$tickets->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
     		$tickets->orderBy($params['order']['column'],$params['order']['type']);
     	}
 
