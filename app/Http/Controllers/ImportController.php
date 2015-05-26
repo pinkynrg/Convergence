@@ -72,6 +72,7 @@
 			
 			foreach ($row as $key => $value) {
 				$row[$key] = trim($row[$key]);
+				$row[$key] = strtolower($row[$key]) == 'n/a' ? '' : $row[$key];
 				$row[$key] = strtolower($row[$key]) == 'test' ? '' : $row[$key];
 				$row[$key] = strtolower($row[$key]) == 'void' ? '' : $row[$key];
 				$row[$key] = strtolower($row[$key]) == 'test - void' ? '' : $row[$key];
@@ -149,7 +150,8 @@
 						$e['First_Name'] = trim($exploded[0]);
 						$e['Last_Name'] = trim(implode(" ",array_slice($exploded,1)));
 					}
-
+					
+					$e['Email'] = strtolower($e['Email']);
 					$e['Phone'] = str_replace(array("1-","+1"),"",$e['Phone']);
 					$e['Phone'] = str_replace(array(".","-"," ","(",")"),"",$e['Phone']);
 					$e['Phone'] = (strlen($e['Phone']) < 10 || strlen($e['Phone']) > 10) ? "" : $e['Phone'];

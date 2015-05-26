@@ -15,8 +15,8 @@
 
 			<tr>
 				<td> <a href="{{ route('contacts.show', $contact->id) }}"> {{ $contact->name }} </a> </td>
-				<td class="hidden-xs"> {{ $contact->phone }} </td>
-				<td class="hidden-xs"> {{ $contact->cellphone }} </td>
+				<td class="hidden-xs"> {{ $contact->phone() }} </td>
+				<td class="hidden-xs"> {{ $contact->cellphone() }} </td>
 				<td> {{ $contact->email }} </td>
 				<td>
 					@if ($customer->main_contact_id == $contact->id) 
