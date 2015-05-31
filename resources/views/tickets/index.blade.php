@@ -4,9 +4,9 @@
 	
 	<div class="filters">
 		
-		<select column="customer_id" class="selectpicker multifilter" multiple title="Filter Customers" data-count-selected-text="Customers Filter Active" data-selected-text-format="count>0">			
-			@foreach ($customers as $customer)
-				<option value="{{ $customer->id }}"> {{ $customer->company_name }} </option>
+		<select column="company_id" class="selectpicker multifilter" multiple title="Filter Company" data-count-selected-text="Company Filter Active" data-selected-text-format="count>0">			
+			@foreach ($companies as $company)
+				<option value="{{ $company->id }}"> {{ $company->name }} </option>
 			@endforeach
 		</select>
 

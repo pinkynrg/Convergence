@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model {
 
+	protected $table = 'tickets';
+
 	public function status()
 	{
 		return $this->belongsTo('Convergence\Models\Status');
@@ -16,17 +18,17 @@ class Ticket extends Model {
 
 	public function assignee()
 	{
-		return $this->belongsTo('Convergence\Models\Employee');		
+		return $this->belongsTo('Convergence\Models\Person');		
 	}
 
 	public function creator()
 	{
-		return $this->belongsTo('Convergence\Models\Employee');		
+		return $this->belongsTo('Convergence\Models\Person');		
 	}
 
-	public function customer()
+	public function company()
 	{
-		return $this->belongsTo('Convergence\Models\Customer');		
+		return $this->belongsTo('Convergence\Models\Company');		
 	}
 
 	public function division()
@@ -36,7 +38,7 @@ class Ticket extends Model {
 
 	public function contact() 
 	{
-		return $this->belongsTo('Convergence\Models\Contact');
+		return $this->belongsTo('Convergence\Models\Person');
 	}
 
 	public function posts() 

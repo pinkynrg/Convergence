@@ -24,19 +24,19 @@ class CreateTicketsTable extends Migration {
 			$table->integer('priority_id')->unsigned();
 			$table->integer('division_id')->unsigned();
 			$table->integer('equipment_id')->unsigned();
-			$table->integer('customer_id')->unsigned();
-			$table->integer('contact_id')->unsigned()->nullable;		
+			$table->integer('company_id')->unsigned();
+			$table->integer('contact_id')->unsigned()->nullable();		
 			$table->timestamps();
 		});
 
 		Schema::table('tickets',function(Blueprint $table) {
-			$table->foreign('creator_id')->references('id')->on('employees');
-			$table->foreign('assignee_id')->references('id')->on('employees');
+			$table->foreign('creator_id')->references('id')->on('people');
+			$table->foreign('assignee_id')->references('id')->on('people');
 			$table->foreign('status_id')->references('id')->on('statuses');
 			$table->foreign('priority_id')->references('id')->on('priorities');
 			$table->foreign('division_id')->references('id')->on('divisions');
-			$table->foreign('customer_id')->references('id')->on('customers');
-			$table->foreign('contact_id')->references('id')->on('contacts');
+			$table->foreign('company_id')->references('id')->on('companies');
+			$table->foreign('contact_id')->references('id')->on('people');
 		});		}
 
 	/**

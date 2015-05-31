@@ -8,15 +8,15 @@
 		</tr>
 		<tr>
 			<th>Creator</th>
-			<td> {!! $ticket->creator->name() != '' ? HTML::link(route('employees.show', $ticket->creator->id), $ticket->creator->name()) : '-' !!} </td>
+			<td> {!! $ticket->creator->name() != '' ? HTML::link(route('people.show', $ticket->creator->id), $ticket->creator->name()) : '-' !!} </td>
 			<th>Contact Name</th>
-			<td> {!! isset($ticket->contact->name) ? HTML::link(route('contacts.show', $ticket->contact->id), $ticket->contact->name) : '-' !!} </td>
+			<td> {!! $ticket->contact() != '' ? HTML::link(route('people.show', $ticket->contact->id), $ticket->contact->name()) : '-' !!} </td>
 		</tr>
 		<tr>
 			<th>Customer</th>
-			<td>{!! isset($ticket->customer->company_name) ? HTML::link(route('customers.show', $ticket->customer->id), $ticket->customer->company_name) : '-' !!}</td>
+			<td>{!! isset($ticket->company->name) ? HTML::link(route('companies.show', $ticket->company->id), $ticket->company->name) : '-' !!}</td>
 			<th>Phone</th>
-			<td>{{ isset($ticket->contact->phone) ? $ticket->contact->phone : '-' }}</td>
+			<td>{{ isset($ticket->contact->phone) ? $ticket->contact->phone() : '-' }}</td>
 		</tr>
 		<tr>
 			<th>Suport Type</th>
@@ -34,13 +34,13 @@
 			<th>CC</th>
 			<td>{{ isset($ticket->cc) ? $ticket->cc : '-' }}</td>
 			<th>Group Email</th>
-			<td>{{ isset($ticket->customer->group_email) ? $ticket->customer->group_email : '-' }}</td>
+			<td>{{ isset($ticket->company->group_email) ? $ticket->company->group_email : '-' }}</td>
 		</tr>
 		<tr>
 			<th>Division</th>
 			<td>{{ isset($ticket->division->name) ? $ticket->division->name : '-' }}</td>
 			<th>Account Manager</th>
-			<td>{!! isset($ticket->customer->account_manager_id) ? HTML::link(route('employees.show', $ticket->customer->account_manager_id), $ticket->customer->account_manager->name()) : '-' !!}</td>
+			<td>{!! isset($ticket->company->account_manager_id) ? HTML::link(route('people.show', $ticket->company->account_manager_id), $ticket->company->account_manager->name()) : '-' !!}</td>
 		</tr>
 	</table>
 
@@ -55,7 +55,7 @@
 		    </a>
 		  </div>
 		  <div class="media-body">
-		    <h4 class="media-heading"> <a href="{{ route('employees.show', $post->author->id) }}"> {{ $post->author->name() }} </a> </h4>
+		    <h4 class="media-heading"> <a href="{{ route('people.show', $post->author->id) }}"> {{ $post->author->name() }} </a> </h4>
 		    <div> {{ date("d F Y",strtotime($post->created_at)) }} @ {{ date("g:ha",strtotime($post->created_at)) }} </div>
 		    <div class="post_content"> {{ $post->post }} </div>
 		  </div>
