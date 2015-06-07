@@ -24,10 +24,6 @@ class CreatePersonRequest extends Request {
 		return [
 			'first_name' => 'required|string',
 			'last_name' => 'required|string',  
-			'department_id' => 'required|numeric', 
-			'title_id' => 'required|numeric',
-			'phone' => 'numeric',
-			'email' => 'email'
 		];
 	}
 

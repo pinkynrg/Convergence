@@ -29,6 +29,15 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		return $text;
 	}
 
+	public function BSHidden($name, $value = null, $options = array()) {
+		$bootstrap_class = "form-control";
+		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
+		$text = "<div class='col-lg-3 col-sm-4'>";
+		$text .= $this->hidden($name, $value, $options);
+		$text .= "</div>";
+		return $text;
+	}
+
 	public function BSTextArea($name, $value = null, $options = array()) {
 		$bootstrap_class = "form-control";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
@@ -45,11 +54,47 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		if (isset($options['key']) && isset($options['value'])) {
 			$temp = $list;
 			$list = array();
+			$key_path = explode('.',$options['key']);
+			$value_path = explode('.',$options['value']);
 			foreach ($temp as $elem) {
-				if (isset($elem->{$options['value']}))
-					$list[$elem->{$options['key']}] = $elem->{$options['value']};
-				elseif (method_exists($elem, $options['value'] ))
-					$list[$elem->{$options['key']}] = $elem->{$options['value']}();
+
+				$key = $elem;
+				$value = $elem;
+
+				for ($i = 0; $i < count($key_path); $i++)  {
+					$subkey = $key_path[$i];
+					if (isset($key->{$subkey})) {
+						$key = $key[$subkey];
+					}
+					elseif (method_exists($key,$subkey) && ($i == count($key_path)-1)) {
+						$key = $key->{$subkey}();
+					}
+					elseif (is_object($key[$subkey])) {
+						$key = $key->{$subkey};
+					}
+					else {
+						$key = null;
+					}
+				}
+
+				for ($i = 0; $i < count($value_path); $i++)  {
+					$subvalue = $value_path[$i];
+					if (isset($value->{$subvalue})) {
+						$value = $value->{$subvalue};
+					}
+					elseif (method_exists($value,$subvalue) && ($i == count($value_path)-1)) {
+						$value = $value->{$subvalue}();
+					}
+					elseif (is_object($value->{$subvalue})) {
+						$value = $value->{$subvalue};
+					}
+					else {
+						$value = null;
+					}
+				}
+
+				if (!is_null($key) && !is_null($value))
+					$list[$key] = $value;
 			}
 		}
 

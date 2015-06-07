@@ -19,6 +19,10 @@ class CreateCompanyPersonTable extends Migration {
 			$table->integer('company_id')->unsigned();
 			$table->integer('department_id')->unsigned()->nullable();
 			$table->integer('title_id')->unsigned()->nullable();
+			$table->string('phone')->nullable();
+			$table->string('extension')->nullable();
+			$table->string('cellphone')->nullable();
+			$table->string('email')->nullable();
 			$table->timestamps();
 		});
 

@@ -12,22 +12,9 @@ use Convergence\Http\Requests\UpdatePersonRequest;
 use Request;
 use Input;
 use Form;
+use DB;
 
 class PeopleController extends Controller {
-	
-	public function employees() {
-        $data['menu_actions'] = [Form::addItem(route('people.create',1), 'Add employee')];
-		$data['active_search'] = true;
-		$data['employees'] = CompanyPerson::where('company_id','=',1)->paginate(50);
-		return view('people/index/employees',$data);
-	}
-
-	public function contacts() {
-        $data['menu_actions'] = [Form::addItem(route('people.create',1), 'Add contact')];
-		$data['active_search'] = true;
-		$data['contacts'] = CompanyPerson::where('company_id','!=',1)->paginate(50);
-		return view('people/index/contacts',$data);
-	}
 
 	public function show($id) {
         $data['menu_actions'] = [
@@ -38,33 +25,8 @@ class PeopleController extends Controller {
 		return view('people/show', $data);
 	}
 
-	public function create($id) {
-		$data['titles'] = Title::all();
-		$data['departments'] = Department::all();
-		$data['company'] = Company::find($id);
-		$data['company']->company_id = $data['company']->id;
-		return view('people/create', $data);	
-	}
-
-	public function store(CreatePersonRequest $request) {
-		$person = Person::create($request->all());
-		$company_person = new CompanyPerson;
-        $company_person->company_id = Input::get('company_id');
-        $company_person->person_id = $person->id;
-        $company_person->title_id = Input::get('title_id');
-        $company_person->department_id = Input::get('department_id');
-        $company_person->save();
-
-		if ($person->isE80())
-        	return redirect()->route('people.employees');
-        else 
-        	return redirect()->route('people.contacts');
-	}		
-
 	public function edit($id) {
 		$data['employee'] = Person::find($id);
-		$data['titles'] = Title::all();
-		$data['departments'] = Department::all();
 		return view('people/edit', $data);	
 	}
 
@@ -76,22 +38,23 @@ class PeopleController extends Controller {
 
 	public function destroy($id) {
 		
-		$company_main_contact = CompanyMainContact::where('main_contact_id','=',$id);
-		$company_account_manager = CompanyAccountManager::where('account_manager_id','=',$id);
-		$company_person = CompanyPerson::where('person_id','=',$id);
-		$person = Person::find($id);
+		echo 'people destroy method to be created';
+		// $company_main_contact = CompanyMainContact::where('main_contact_id','=',$id);
+		// $company_account_manager = CompanyAccountManager::where('account_manager_id','=',$id);
+		// $company_person = CompanyPerson::where('person_id','=',$id);
+		// $person = Person::find($id);
 
-		$isE80 = $person->isE80();
+		// $isE80 = $person->isE80();
 		
-		$company_main_contact->delete();
-		$company_account_manager->delete();
-		$company_person->delete();
-		$person->delete();
+		// $company_main_contact->delete();
+		// $company_account_manager->delete();
+		// $company_person->delete();
+		// $person->delete();
 
-		if ($isE80)
-			return redirect()->route('people.employees');
-		else
-			return redirect()->route('people.contacts');
+		// if ($isE80)
+		// 	return redirect()->route('companies.employees');
+		// else
+		// 	return redirect()->route('people.contacts');
 	}
 
 	public function ajaxEmployeesRequest($params = "") {
@@ -157,5 +120,25 @@ class PeopleController extends Controller {
 		$data['contacts'] = $contacts;
 
         return view('people/index/contacts',$data);
+	}
+
+	public function ajaxPeopleRequest() {
+
+		$query = Input::get('query');
+
+		$people = Person::select(DB::raw('CONCAT(COALESCE(first_name,"")," ",COALESCE(last_name,"")) as value'), 'people.id', 'people.first_name', 'people.last_name', 'companies.name as company_name')
+						->leftJoin('company_person','company_person.person_id','=','people.id')
+						->leftJoin('companies','companies.id','=','company_person.company_id')
+						->where('people.first_name','LIKE','%'.$query.'%')
+						->orWhere('people.last_name','LIKE','%'.$query.'%')
+						->get();
+
+		$result['query'] = "Unit";
+		$result['suggestions'] = $people;
+
+		$result = (object) $result;
+
+		return json_encode($result);
+
 	}
 }

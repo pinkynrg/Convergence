@@ -1,5 +1,5 @@
 <?php $menu_voices = ['<i class="fa fa-users"></i> Companies' => route('companies.index'),
-				'<i class="fa fa-suitcase"></i> Employees' => route('people.employees'),
+				'<i class="fa fa-suitcase"></i> Employees' => route('company_person.employees'),
 				'<i class="fa fa-gear"></i> Equipments' => route('equipments.index'),
 				'<i class="fa fa-ticket"></i> Tickets' => route('tickets.index'),
 				'<i class="fa fa-tasks"></i> Queues' => '#',

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePersonServiceTable extends Migration {
+class CreateServiceTechnicianTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreatePersonServiceTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('person_service',function(Blueprint $table) {
+		Schema::create('service_technician',function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('service_id')->unsigned()->nullable();
 			$table->integer('technician_id')->unsigned()->nullable();;
@@ -30,9 +30,9 @@ class CreatePersonServiceTable extends Migration {
 			$table->timestamps();
 		});
 
-		Schema::table('person_service',function(Blueprint $table) {
+		Schema::table('service_technician',function(Blueprint $table) {
 			$table->foreign('service_id')->references('id')->on('services');
-			$table->foreign('technician_id')->references('id')->on('people');
+			$table->foreign('technician_id')->references('id')->on('company_person');
 			$table->foreign('division_id')->references('id')->on('divisions');
 		});	
 	}
@@ -44,7 +44,7 @@ class CreatePersonServiceTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('person_service');
+		Schema::drop('service_technician');
 	}
 
 }

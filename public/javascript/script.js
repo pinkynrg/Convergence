@@ -179,7 +179,42 @@ $(document).ready(function() {
 			$target.find(".ajax_pagination[scrollup='true']").html($(data).find(".ajax_pagination[scrollup='true']").html());
 			$target.find(".ajax_pagination[scrollup='false']").html($(data).find(".ajax_pagination[scrollup='false']").html());
 		});
-
 	}
+
+	$(".cancel").click(function () {
+	    $("#person_fn, #person_ln").prop("readonly",false);
+	    $("#person_id").prop("disabled",true);
+	    $("#person_fn, #person_ln").val("");
+	    $(".cancel").css("display","none");
+	});
+
+	$("#person_fn, #person_ln").autocomplete({
+
+	    serviceUrl: "/ajax/people",
+
+	    onSelect: function (suggestion) {
+	    	$(".cancel").css("display","inline-block");
+	    	$("#person_id").prop("disabled",false);	    	
+	    	$("#person_id").val(suggestion.id);
+	    	$("#person_fn, #person_ln").prop("readonly",true);
+	    	$("#person_fn").val(suggestion.first_name);		    	
+	    	$("#person_ln").val(suggestion.last_name);		    	
+	    },
+	    formatResult: function (suggestion, currentValue) {
+
+	    	 var returned = suggestion.value
+	            .replace(/&/g, '&amp;')
+	            .replace(/</g, '&lt;')
+	            .replace(/>/g, '&gt;')
+	            .replace(/"/g, '&quot;');
+
+
+	        returned.replace(currentValue, '<strong>$1<\/strong>');
+
+	        returned += " @ "+suggestion.company_name;
+
+	        return returned;
+	    }
+	});
 
 });

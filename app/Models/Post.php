@@ -8,7 +8,7 @@ class Post extends Model {
 
 	public function author()
 	{
-		return $this->belongsTo('Convergence\Models\Person');
+		return $this->belongsTo('Convergence\Models\CompanyPerson');
 	}
 
 }

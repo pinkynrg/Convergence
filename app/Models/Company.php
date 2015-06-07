@@ -18,15 +18,15 @@ class Company extends Model {
 
 	public function main_contact() 
 	{	
-		return $this->belongsToMany('Convergence\Models\Person','company_main_contact','company_id','main_contact_id');
+		return $this->hasOne('Convergence\Models\CompanyMainContact');
 	}
 
 	public function contacts() {
-		return $this->belongsToMany('Convergence\Models\Person','company_person');
+		return $this->belongsToMany('Convergence\Models\CompanyPerson','company_person');
 	}
 
 	public function account_manager() {
-		return $this->belongsToMany('Convergence\Models\Person','company_account_manager','company_id','account_manager_id');
+		return $this->hasOne('Convergence\Models\CompanyAccountManager');
 	}
 
 }

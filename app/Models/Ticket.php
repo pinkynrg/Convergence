@@ -18,12 +18,12 @@ class Ticket extends Model {
 
 	public function assignee()
 	{
-		return $this->belongsTo('Convergence\Models\Person');		
+		return $this->belongsTo('Convergence\Models\CompanyPerson');		
 	}
 
 	public function creator()
 	{
-		return $this->belongsTo('Convergence\Models\Person');		
+		return $this->belongsTo('Convergence\Models\CompanyPerson');		
 	}
 
 	public function company()
@@ -38,7 +38,7 @@ class Ticket extends Model {
 
 	public function contact() 
 	{
-		return $this->belongsTo('Convergence\Models\Person');
+		return $this->belongsTo('Convergence\Models\CompanyPerson');
 	}
 
 	public function posts() 

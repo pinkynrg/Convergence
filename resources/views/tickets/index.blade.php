@@ -12,13 +12,13 @@
 
 		<select column="assignee_id" class="selectpicker multifilter"  multiple title="Filter Assignee" data-count-selected-text="Assignee Filter Active" data-selected-text-format="count>0">
 			@foreach ($employees as $employee)
-				<option value="{{ $employee->id }}"> {{ $employee->name() }} </option>
+				<option value="{{ $employee->id }}"> {{ $employee->person->name() }} </option>
 			@endforeach
 		</select>
 
 		<select column="creator_id" class="selectpicker multifilter"  multiple title="Filter Creators" data-count-selected-text="Creators Filter Active" data-selected-text-format="count>0">
 			@foreach ($employees as $employee)
-				<option value="{{ $employee->id }}"> {{ $employee->name() }} </option>
+				<option value="{{ $employee->id }}"> {{ $employee->person->name() }} </option>
 			@endforeach
 		</select>
 

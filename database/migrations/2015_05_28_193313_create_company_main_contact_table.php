@@ -23,7 +23,7 @@ class CreateCompanyMainContactTable extends Migration {
 
 		Schema::table('company_main_contact',function(Blueprint $table) {
 			$table->foreign('company_id')->references('id')->on('companies');
-			$table->foreign('main_contact_id')->references('id')->on('people');
+			$table->foreign('main_contact_id')->references('id')->on('company_person');
 		});
 	}
 

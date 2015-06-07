@@ -30,13 +30,13 @@ class CreateTicketsTable extends Migration {
 		});
 
 		Schema::table('tickets',function(Blueprint $table) {
-			$table->foreign('creator_id')->references('id')->on('people');
-			$table->foreign('assignee_id')->references('id')->on('people');
+			$table->foreign('creator_id')->references('id')->on('company_person');
+			$table->foreign('assignee_id')->references('id')->on('company_person');
 			$table->foreign('status_id')->references('id')->on('statuses');
 			$table->foreign('priority_id')->references('id')->on('priorities');
 			$table->foreign('division_id')->references('id')->on('divisions');
 			$table->foreign('company_id')->references('id')->on('companies');
-			$table->foreign('contact_id')->references('id')->on('people');
+			$table->foreign('contact_id')->references('id')->on('company_person');
 		});		}
 
 	/**

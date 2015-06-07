@@ -27,7 +27,7 @@
 		<th>Support Type</th>
 		<td>{{ $company->support_type }}</td>
 		<th>Account Manager</th>
-		<td> <a href="{{ route('people.show', $company->account_manager_id) }}"> {{ isset($company->account_manager[0]) ? $company->account_manager[0]->name() : '' }} </a> </td>
+		<td> @if (isset($company->account_manager->account_manager_id)) <a href="{{ route('people.show', $company->account_manager->company_person->person->id) }}"> {{ $company->account_manager->company_person->person->name()  }} @endif </a> </td>
 	</tr>
 	<tr>
 		<th>Connection Option</th>

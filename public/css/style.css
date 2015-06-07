@@ -7,6 +7,10 @@ body {
 	font-size: 12px;
 }
 
+.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+  width: 180px;
+}
+
 #logo img {
 	height: 100px;
   display:inline-block;
@@ -200,6 +204,17 @@ a:visited, a:link, a:active, a:visited {
 */	cursor: pointer;
 }
 
+.cancel {
+    z-index: 2;
+    width: 50px;
+    display: none;
+    position: absolute;
+    font-size: 20px;
+    line-height: 33px;
+    color: #FF5959;
+    cursor: pointer;
+}
+
 /* Submit Button Like Link */
 .nobutton {
 	background:none!important;
@@ -232,7 +247,8 @@ a:visited, a:link, a:active, a:visited {
 .no-content {
 	padding: 5px 20px;
 	background-color: #d9edf7;
-	font-size: 15;
+	font-size: 18px;
+  color: #999;
 }
 
 /* User form */

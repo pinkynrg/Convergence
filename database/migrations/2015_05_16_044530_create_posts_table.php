@@ -23,7 +23,7 @@ class CreatePostsTable extends Migration {
 
 		Schema::table('posts',function(Blueprint $table) {
 			$table->foreign('ticket_id')->references('id')->on('tickets');
-			$table->foreign('author_id')->references('id')->on('people');
+			$table->foreign('author_id')->references('id')->on('company_person');
 		});	
 	}
 

@@ -18,24 +18,27 @@
 			</tr>
 		</thead>
 		<tbody>
+			@if ($tickets->count())
+				@foreach ($tickets as $ticket) 	
 
-			@foreach ($tickets as $ticket) 	
+				<tr>
+					<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
+					<td> 
+						<a href="{{ route('tickets.show', $ticket->id) }}"> {{ $ticket->title }} </a> 
+						<div class="ticket_foot_details"> Reported by <a href="{{ route('people.show', $ticket->creator->person->id) }}"> {{ $ticket->creator->person->name() }} </a> on {{ date("m/d/Y",strtotime($ticket->created_at)) }} </div> 
+					</td>
+					<td> {{ $ticket->status->name }} </td>
+					<td class="hidden-xs"> {{ $ticket->priority->name }} </td>
+					<td class="hidden-xs"> <a href="{{ route('people.show', $ticket->assignee->person->id) }}"> {{ $ticket->assignee->person->name() }} </a> </td>
+					<td> <a href="{{ route('companies.show', $ticket->company->id) }}"> {{ $ticket->company->name }} </a> </td>
+					<td class="hidden-xs"> {{ $ticket->division->name }} </td>
+					<td class="hidden-xs"> {{ date("m/d/Y",strtotime($ticket->updated_at)) }} </td>
+				</tr>
 
-			<tr>
-				<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
-				<td> 
-					<a href="{{ route('tickets.show', $ticket->id) }}"> {{ $ticket->title }} </a> 
-					<div class="ticket_foot_details"> Reported by <a href="{{ route('people.show', $ticket->creator->id) }}"> {{ $ticket->creator->name() }} </a> on {{ date("m/d/Y",strtotime($ticket->created_at)) }} </div> 
-				</td>
-				<td> {{ $ticket->status->name }} </td>
-				<td class="hidden-xs"> {{ $ticket->priority->name }} </td>
-				<td class="hidden-xs"> <a href="{{ route('people.show', $ticket->assignee->id) }}"> {{ $ticket->assignee->name() }} </a> </td>
-				<td> <a href="{{ route('companies.show', $ticket->company->id) }}"> {{ $ticket->company->name }} </a> </td>
-				<td class="hidden-xs"> {{ $ticket->division->name }} </td>
-				<td class="hidden-xs"> {{ date("m/d/Y",strtotime($ticket->updated_at)) }} </td>
-			</tr>
-
-			@endforeach
+				@endforeach
+			@else 
+				<tr><td colspan="8">@include('includes.no-contents')</td></tr>
+			@endif
 
 		</tbody>
 	</table>

@@ -8,7 +8,8 @@
 		<thead>
 			<tr class="orderable">
 				<th column="name">Company</th>
-				<th column="people.cellphone">Main Contact</th>
+				<th column="people.last_name">Main Contact Name</th>
+				<th column="company_person.cellphone">Main Contact Phone</th>
 				<th column="country" class="hidden-xs hidden-sm">Country</th>
 				<th column="city" class="hidden-xs">City</th>
 				<th column="address" class="hidden-xs">Address</th>
@@ -16,19 +17,23 @@
 			</tr>
 		</thead>
 		<tbody>
+			
+			@if ($companies->count())
+				@foreach ($companies as $company) 	
+				<tr>
+					<td> <a href="{{route('companies.show', $company->id) }}"> {{  $company->name }} </a> </td>
+					<td> {{ isset($company->main_contact->main_contact_id) ? $company->main_contact->company_person->person->name() : '' }} </td>
+					<td> {!! isset($company->main_contact->main_contact_id) ? $company->main_contact->company_person->cellphone() : '' !!} </td>
+					<td class="hidden-xs hidden-sm"> {{ $company->country }} </td>
+					<td class="hidden-xs"> {{ $company->city }} </td>
+					<td class="hidden-xs"> {{ $company->address }} </td>
+					<td class="hidden-xs"> {{ $company->zip_code }} </td>
+				</tr>
 
-			@foreach ($companies as $company) 	
-
-			<tr>
-				<td> <a href="{{route('companies.show', $company->id) }}"> {{  $company->name }} </a> </td>
-				<td> {{ isset($company->main_contact[0]) ? $company->main_contact[0]->cellphone() : '' }} </td>
-				<td class="hidden-xs hidden-sm"> {{ $company->country }} </td>
-				<td class="hidden-xs"> {{ $company->city }} </td>
-				<td class="hidden-xs"> {{ $company->address }} </td>
-				<td class="hidden-xs"> {{ $company->zip_code }} </td>
-			</tr>
-
-			@endforeach
+				@endforeach
+			@else 
+				<tr><td colspan="7">@include('includes.no-contents')</td></tr>
+			@endif 
 
 		</tbody>
 	</table>

@@ -7,17 +7,11 @@ class Person extends Model {
 
 	protected $table = 'people';
 
-	protected $fillable = ['first_name', 'last_name', 'phone', 'extension', 'cellphone','email'];
+	protected $fillable = ['first_name', 'last_name'];
 	
-	public function phone() 
-	{
-		return preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "+1 ($1) $2-$3", $this->phone);
-	}
-
-	public function cellphone() 
-	{
-		return preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "+1 ($1) $2-$3", $this->cellphone);
-	}
+	public function company_person() {
+		return $this->hasMany('Convergence\Models\CompanyPerson');
+	} 
 
 	public function name() {
 		$this->first_name = $this->first_name ? $this->first_name : '[first name missing]';

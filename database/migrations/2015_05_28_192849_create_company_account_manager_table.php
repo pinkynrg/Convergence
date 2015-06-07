@@ -23,7 +23,7 @@ class CreateCompanyAccountManagerTable extends Migration {
 
 		Schema::table('company_account_manager',function(Blueprint $table) {
 			$table->foreign('company_id')->references('id')->on('companies');
-			$table->foreign('account_manager_id')->references('id')->on('people');
+			$table->foreign('account_manager_id')->references('id')->on('company_person');
 			
 		});
 	}

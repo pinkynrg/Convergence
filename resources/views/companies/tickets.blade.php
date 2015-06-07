@@ -17,8 +17,8 @@
 				<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
 				<td> {{ $ticket->title }} </td>
 				<td> {{ $ticket->status->name }} </td>
-				<td class="hidden-xs"> <a href="{{ route('people.show', $ticket->assignee->id) }}"> {{ $ticket->assignee->name() }} </a> </td>
-				<td class="hidden-xs"> <a href="{{ route('people.show', $ticket->creator->id) }}"> {{ $ticket->creator->name() }} </a> </td>
+				<td class="hidden-xs"> <a href="{{ route('people.show', $ticket->assignee->person->id) }}"> {{ $ticket->assignee->person->name() }} </a> </td>
+				<td class="hidden-xs"> <a href="{{ route('people.show', $ticket->creator->person->id) }}"> {{ $ticket->creator->person->name() }} </a> </td>
 
 			</tr>
 

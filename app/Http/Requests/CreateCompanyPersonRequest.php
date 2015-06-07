@@ -2,7 +2,7 @@
 
 use Convergence\Http\Requests\Request;
 
-class CreateCompanyRequest extends Request {
+class CreateCompanyPersonRequest extends Request {
 
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -22,14 +22,14 @@ class CreateCompanyRequest extends Request {
 	public function rules()
 	{
 		return [
-			'name' => 'required',
-            'city' => 'required|string',
-            'country' => 'required|string',
-            'address' => 'required',
-            'state' => 'required|string',
-            'zip_code' => 'required|numeric',
-            'group_email' => 'email',
-            'account_manager_id' => 'required'
+			'company_id' => 'required|numeric',
+			'person_id' => 'numeric',
+			'department_id' => 'required|numeric', 
+			'title_id' => 'required|numeric',
+			'phone' => 'numeric',
+			'cellphone' => 'numeric',
+			'extension' => 'numeric',
+			'email' => 'email'
 		];
 	}
 

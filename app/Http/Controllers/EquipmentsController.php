@@ -5,6 +5,7 @@ use Convergence\Models\Equipment;
 use Request;
 
 class EquipmentsController extends Controller {
+	
 	public function index() {
 		$data['equipments'] = Equipment::paginate(50);
 		return view('equipments/index',$data);

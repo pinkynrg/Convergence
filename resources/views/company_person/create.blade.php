@@ -1,19 +1,13 @@
 @extends('layouts.default')
 @section('content')
 
-	{!! Form::open(array('route' => 'companies.store', 'class' => "form-horizontal")) !!}
+	@include('includes.errors')
 
-		@include('includes.errors')
-
-		@include('companies.form')
-
-		<div class="nav_form navb">
-			<div class="title"> Contact Info </div>
-		</div>	
+	{!! Form::model($company, array('route' => 'company_person.store', 'class' => "form-horizontal")) !!}
 
 		@include('people.create')
 		@include('company_person.form')
-		
+
 		{!! Form::BSGroup() !!}
 
 			{!! Form::BSFiller() !!}

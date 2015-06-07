@@ -26,8 +26,8 @@ class CreateServicesTable extends Migration {
 
 		Schema::table('services',function(Blueprint $table) {
 			$table->foreign('company_id')->references('id')->on('companies');
-			$table->foreign('internal_contact_id')->references('id')->on('people');
-			$table->foreign('external_contact_id')->references('id')->on('people');
+			$table->foreign('internal_contact_id')->references('id')->on('company_person');
+			$table->foreign('external_contact_id')->references('id')->on('company_person');
 		});
 	}
 

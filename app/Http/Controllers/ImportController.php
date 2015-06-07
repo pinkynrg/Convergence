@@ -1,5 +1,9 @@
 <?php namespace Convergence\Http\Controllers;
 
+	ini_set('display_errors',1);
+	ini_set('display_startup_errors',1);
+	error_reporting(-1);
+
 	define("CONVERGENCE_HOST", "198.154.99.22:1088");
 	define("CONVERGENCE_DB", "Elettric80Inc");	
 	define("CONVERGENCE_USER", "saa");
@@ -10,6 +14,8 @@
 	define("LOCAL_USER", "root");
 	define("LOCAL_PASS", "dir2004caz");
 	define("CONSTANT_GAP_CONTACTS",500);
+
+	define("ELETTRIC80_COMPANY_ID",1);
 
 	class ImportController extends Controller {
 
@@ -69,10 +75,18 @@
 			return $id ? $id : null;
 		}
 
+		private function findCompanyPersonId($person_id) {
+			$query = "SELECT * FROM company_person WHERE person_id = $person_id";
+			$result = mysqli_query($this->conn, $query);
+			$record = mysqli_fetch_array($result);
+			return is_numeric($record['id']) ? $record['id'] : 'NULL';
+		}
+
 		private function trimAndNullIfEmpty($row) {
 			
 			foreach ($row as $key => $value) {
 				$row[$key] = trim($row[$key]);
+				$row[$key] = strtolower($row[$key]) == 'na' ? '' : $row[$key];
 				$row[$key] = strtolower($row[$key]) == 'n/a' ? '' : $row[$key];
 				$row[$key] = strtolower($row[$key]) == 'test' ? '' : $row[$key];
 				$row[$key] = strtolower($row[$key]) == 'void' ? '' : $row[$key];
@@ -100,7 +114,7 @@
 			if ($this->truncate($table)) {
 
 				$query = "INSERT INTO ".$table." (id, name, address, country, city, state, zip_code, airport, created_at,updated_at) 
-						VALUES ('1','Elettric80 - Chicago','8100 Monticello Ave','United States','Chicago','Illinois', '60076',NULL,'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+						VALUES ('".ELETTRIC80_COMPANY_ID."','Elettric80 - Chicago','8100 Monticello Ave','United States','Chicago','Illinois', '60076',NULL,'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 					
 					if (mysqli_query($this->conn, $query) === TRUE) {
 						$successes++;
@@ -148,17 +162,19 @@
 			if ($this->truncate($table)) {
 
 				foreach ($companies as $c) {
-					
+
 					$c = $this->trimAndNullIfEmpty($c);
 
 					$query_contact = mssql_query("SELECT id_Contact FROM Contact WHERE CAST(Contact.Name AS VARCHAR(50)) = ".$c['Contact']);
 					$result = mssql_fetch_array($query_contact, MSSQL_ASSOC);
 					$c['Main_Contact_Id'] = ($result['id_Contact'] == '' || $c['Contact'] == '') ? 'NULL' : $result['id_Contact'] + CONSTANT_GAP_CONTACTS;
+
+					$company_person_id = $this->findCompanyPersonId($c['Main_Contact_Id']);
 					
 					if ($c['Main_Contact_Id'] != 'NULL') {
 						$query = "INSERT INTO ".$table." (company_id, main_contact_id) 
-							VALUES (".$c['Id'].",".$c['Main_Contact_Id'].")";
-						
+							VALUES (".$c['Id'].",".$company_person_id.")";
+
 						if (mysqli_query($this->conn, $query) === TRUE) {
 							$successes++;
 						}
@@ -191,9 +207,11 @@
 				foreach ($companies as $c) {
 					
 					$c = $this->trimAndNullIfEmpty($c);
-					
+
+					$company_person_id = $this->findCompanyPersonId($c['Id_Employee_Account_Manager']);
+
 					$query = "INSERT INTO ".$table." (company_id, account_manager_id) 
-						VALUES (".$c['Id'].",".$c['Id_Employee_Account_Manager'].")";
+						VALUES (".$c['Id'].",".$company_person_id.")";
 					
 					if (mysqli_query($this->conn, $query) === TRUE) {
 						$successes++;
@@ -249,12 +267,12 @@
 
 				$e = $this->trimAndNullIfEmpty($e);
 
-				$query = "INSERT INTO ".$table." (id,first_name,last_name,phone,extension,cellphone,email,created_at,updated_at) 
-				VALUES (".$e['Id'].",".$e['First_Name'].",".$e['Last_Name'].",".$e['Phone'].",".$e['Extension'].",NULL,".$e['Email'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+				$query = "INSERT INTO ".$table." (id,first_name,last_name,created_at,updated_at) 
+				VALUES (".$e['Id'].",".$e['First_Name'].",".$e['Last_Name'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 
 				if (mysqli_query($this->conn,$query) === TRUE) {
-					$query = "INSERT INTO company_person (person_id, company_id, department_id, title_id) VALUES 
-					(".$e['Id'].",'1',".$e['Department'].",".$e['Title'].")";
+					$query = "INSERT INTO company_person (person_id, company_id, department_id, title_id,phone,extension,cellphone,email) VALUES 
+					(".$e['Id'].",'".ELETTRIC80_COMPANY_ID."',".$e['Department'].",".$e['Title'].",".$e['Phone'].",".$e['Extension'].",NULL,".$e['Email'].")";
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
@@ -323,13 +341,13 @@
 
 				$c = $this->trimAndNullIfEmpty($c);
 
-				$query = "INSERT INTO ".$table." (id,first_name,last_name,phone,extension,cellphone,email,created_at,updated_at) 
-						  VALUES (".$c['Id_Contact'].",".$c['Name'].",".$c['Last_Name'].",".$c['Phone'].",NULL,".$c['CellPhone'].",".$c['Email'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+				$query = "INSERT INTO ".$table." (id,first_name,last_name,created_at,updated_at) 
+						  VALUES (".$c['Id_Contact'].",".$c['Name'].",".$c['Last_Name'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 				
 				if (mysqli_query($this->conn,$query) === TRUE) {
 
-					$query = "INSERT INTO company_person (person_id, company_id, department_id, title_id) VALUES 
-					(".$c['Id_Contact'].",".$c['Id_Customer'].",NULL,NULL)";
+					$query = "INSERT INTO company_person (person_id,company_id,department_id,title_id,phone,extension,cellphone,email,created_at,updated_at) VALUES 
+					(".$c['Id_Contact'].",".$c['Id_Customer'].",NULL,NULL,".$c['Phone'].",NULL,".$c['CellPhone'].",".$c['Email'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
@@ -445,9 +463,14 @@
 
 					$t = $this->trimAndNullIfEmpty($t);
 
+					$creator_id = $this->findCompanyPersonId($t['Creator']);
+					$assignee_id = $this->findCompanyPersonId($t['Id_Assignee']);
+					$contact_id = $this->findCompanyPersonId($t['Contact_Id']);
+
 					$query = "INSERT INTO tickets (id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,created_at,updated_at) 
-					 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Creator'].",".$t['Id_Assignee'].",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$t['Contact_Id'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
+					 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Date_Creation'].",".$t['Date_Update'].")";
 					
+
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
 					}
@@ -662,8 +685,10 @@
 
 					$p = $this->trimAndNullIfEmpty($p);
 
+					$author_id = $this->findCompanyPersonId($p['Author']);
+
 					$query = "INSERT INTO posts (id,ticket_id,post,author_id,is_public,created_at,updated_at) 
-							  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Author'].",".$p['Post_Public'].",".$p['Creation_Date'].",'".date("Y-m-d H:i:s")."')";
+							  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",'".date("Y-m-d H:i:s")."')";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
@@ -701,8 +726,11 @@
 
 					$s = $this->trimAndNullIfEmpty($s);
 
+					$internal_contact_id = $this->findCompanyPersonId($s['assigment_contact']);
+					$external_contact_id = $this->findCompanyPersonId($s['Id_contact']);
+
 					$query = "INSERT INTO services (company_id,internal_contact_id,external_contact_id,job_number_internal,job_number_onsite,job_number_remote,hotel_id,created_at,updated_at) 
-							  VALUES (".$s['Id_company'].",".$s['assigment_contact'].",".$s['Id_contact'].",".$s['assigment_internal'].",".$s['assigment_onsite'].",".$s['remote_install_job_number'].",".$s['Id_hotel'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+							  VALUES (".$s['Id_company'].",".$internal_contact_id.",".$external_contact_id.",".$s['assigment_internal'].",".$s['assigment_onsite'].",".$s['remote_install_job_number'].",".$s['Id_hotel'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
@@ -790,6 +818,147 @@
 			}
 		}
 
+		public function fixCompanyPersonTable() {
+
+			$table = "fix_company_person";
+
+			$successes = $errors = $updated = $deleted = 0;
+
+			$query = "SELECT email
+							FROM company_person
+							WHERE email IS NOT NULL 
+							AND email != '' 
+							GROUP BY email
+							HAVING count(*) > 1";
+
+			$result = mysqli_query($this->conn,$query);
+			$emails = mysqli_fetch_all($result);
+
+			foreach ($emails as $email) {
+				
+				$query = "SELECT person_id FROM company_person WHERE email = '".$email[0]."'";
+
+				$result = mysqli_query($this->conn,$query);
+				$record = mysqli_fetch_array($result);
+				$person_id = $record[0];
+
+				$query = "SELECT * FROM company_person WHERE email = '".$email[0]."'";
+
+				$result = mysqli_query($this->conn,$query);
+				$fixes = mysqli_fetch_all($result);
+
+				foreach ($fixes as $fix) {
+					$query = "UPDATE company_person SET person_id = ".$person_id." WHERE id = '".$fix[0]."'";
+					if (mysqli_query($this->conn,$query) === TRUE) {
+						$updated++;
+						$successes++;
+					}
+					else {
+						$query = "DELETE FROM company_person WHERE id = '".$fix[0]."'";
+						if (mysqli_query($this->conn,$query) === TRUE) {
+							$deleted++;
+							$successes++;
+						}
+						else {
+							echo $query;
+							$errors++;
+						}
+					}
+				}
+			}
+
+			$this->logger($successes,$errors,$table);
+		}
+
+		public function deleteUnusedPeople() {
+
+			$table = "delete_unused_people";
+
+			$successes = $errors = 0;
+
+			$query = "SELECT p.id FROM people p
+					  LEFT JOIN company_person cp ON (p.id = cp.person_id)
+					  WHERE cp.id IS NULL";
+
+			$result = mysqli_query($this->conn,$query);
+			$ids = mysqli_fetch_all($result);
+
+			foreach ($ids as $id) {
+				$query = "DELETE FROM people WHERE people.id = '".$id[0]."'";
+				if (mysqli_query($this->conn,$query) === TRUE) {
+					$successes++;
+				}
+				else {
+					$errors++;
+				}
+			}
+
+			$this->logger($successes,$errors,$table);
+
+		}
+
+		public function deleteBadE80PersonCompany() {
+
+			$table = "delete_bad_e80";
+
+			$successes = $errors = 0;
+
+			$query = "SELECT person_id FROM company_person 
+						WHERE company_id = 1";
+
+			$result = mysqli_query($this->conn,$query);
+			$ids = mysqli_fetch_all($result);
+
+			foreach ($ids as $id) {
+
+				$query = "DELETE FROM company_person
+							WHERE person_id = ".$id[0]." AND company_id != 1";
+
+				if (mysqli_query($this->conn,$query) === TRUE) {
+					$successes++;
+				}
+				else {
+					$errors++;
+				}
+			}
+
+			$this->logger($successes,$errors,$table);
+
+		}
+
+		public function setBlankMainContact() {
+
+			$table = "set_black_main_contacts";
+
+			$successes = $errors = 0;
+
+			$query = "SELECT * FROM companies c
+						LEFT JOIN company_main_contact cmc ON (c.id = cmc.company_id)
+						WHERE cmc.company_id IS NULL";
+
+			$result = mysqli_query($this->conn,$query);
+			$ids = mysqli_fetch_all($result);
+
+			foreach ($ids as $id) {
+				$query = "INSERT INTO company_main_contact (company_id, main_contact_id)
+							SELECT cp.company_id, cp.id FROM company_person cp
+							WHERE cp.company_id = ".$id[0]." LIMIT 1";
+
+				$result = mysqli_query($this->conn,$query);
+
+				if (mysqli_query($this->conn,$query) === TRUE) {
+					$successes++;
+				}
+				else {
+					echo $query."<br>";
+					$errors++;
+				}
+			}
+
+			$this->logger($successes,$errors,$table);
+
+		}
+
 		public function __construct() {
 
 			if (!mssql_connect(CONVERGENCE_HOST,CONVERGENCE_USER,CONVERGENCE_PASS)) {
@@ -821,22 +990,25 @@
 				}
 			}
 			else {
-				$this->importDepartments();
-				$this->importDivisions();
-				$this->importEquipmentTypes();
-				$this->importPriorities();
-				$this->importStatus();
-				$this->importTitles();
-				$this->importCompanies();
-				$this->importEmployees();
-				$this->importContacts();
-				$this->importCompanyMainContacts();
-				$this->importCompanyAccountManagers();
-				$this->importEquipments();
-				$this->importTickets();
-				$this->importPosts();
-				$this->importServices();
-				$this->importUsers();
+				// $this->importDepartments();
+				// $this->importDivisions();
+				// $this->importEquipmentTypes();
+				// $this->importPriorities();
+				// $this->importStatus();
+				// $this->importTitles();
+				// $this->importCompanies();
+				// $this->importPeople();
+				// $this->fixCompanyPersonTable();
+				// $this->deleteBadE80PersonCompany();
+				$this->setBlankMainContact();
+				// $this->deleteUnusedPeople();
+				// $this->importCompanyMainContacts();
+				// $this->importCompanyAccountManagers();
+				// $this->importEquipments();
+				// $this->importTickets();
+				// $this->importPosts();
+				// $this->importServices();
+				// $this->importUsers();
 			}
 		}
 	}

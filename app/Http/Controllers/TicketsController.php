@@ -23,8 +23,8 @@ class TicketsController extends Controller {
 		$data['active_search'] = true;
 		$data['tickets'] = Ticket::orderBy('id','desc')->paginate(50);
 		$data['companies'] = Company::orderBy('name','asc')->get();
-		$employees = Person::select('people.*');
-		$employees->leftJoin('company_person','company_person.person_id','=','people.id');
+		$employees = CompanyPerson::select('company_person.*');
+		$employees->leftJoin('people','people.id','=','company_person.person_id');
 		$employees->where('company_person.company_id','=',1);
 		$employees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
 		$data['employees'] = $employees->get();
@@ -97,9 +97,10 @@ class TicketsController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		$ticket = Ticket::find($id);
-		$ticket->delete();
-		return redirect()->route('tickets.index');
+		echo 'ticket destroy method to be created'
+		// $ticket = Ticket::find($id);
+		// $ticket->delete();
+		// return redirect()->route('tickets.index');
 	}
 	
 	/**

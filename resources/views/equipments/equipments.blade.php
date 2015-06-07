@@ -18,19 +18,22 @@
 		</thead>
 		<tbody>
 
-			@foreach ($equipments as $equipment) 	
+			@if ($equipments->count())
+				@foreach ($equipments as $equipment) 	
 
-			<tr>
-				<td> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ '#'.$equipment->cc_number }} </a> </td>
-				<td class="hidden-xs"> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ $equipment->name }} </a> </td>
-				<td class="hidden-xs"> <a href="{{ route('companies.show', $equipment->company->id) }}"> {{ $equipment->company->company_name }} </a> </td>
-				<td class="hidden-xs"> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ $equipment->serial_number }} </a> </td>
-				<td class="hidden-xs"> {{ $equipment->equipment_type->name }} </td>
-				<td> {{ $equipment->notes }} </td>
-				<td class="hidden-xs"> {{ $equipment->warranty_expiration }} </td>
-			</tr>
-
-			@endforeach
+				<tr>
+					<td> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ '#'.$equipment->cc_number }} </a> </td>
+					<td class="hidden-xs"> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ $equipment->name }} </a> </td>
+					<td class="hidden-xs"> <a href="{{ route('companies.show', $equipment->company->id) }}"> {{ $equipment->company->company_name }} </a> </td>
+					<td class="hidden-xs"> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ $equipment->serial_number }} </a> </td>
+					<td class="hidden-xs"> {{ $equipment->equipment_type->name }} </td>
+					<td> {{ $equipment->notes }} </td>
+					<td class="hidden-xs"> {{ $equipment->warranty_expiration }} </td>
+				</tr>
+				@endforeach
+			@else 
+				<tr><td colspan="7">@include('includes.no-contents')</td></tr>
+			@endif 
 
 		</tbody>
 	</table>
