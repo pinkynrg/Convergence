@@ -9,6 +9,8 @@ use Convergence\Http\Requests\CreateCompanyPersonRequest;
 use Convergence\Http\Requests\UpdateCompanyPersonRequest;
 use Input;
 use Form;
+use DB;
+
 
 class CompanyPersonController extends Controller {
 
@@ -83,6 +85,91 @@ class CompanyPersonController extends Controller {
 	public function destroy($id) {
 		echo 'company person method to be implmented';
 		// return redirect()->route('company_person.show',$id);
+	}
+
+	public function ajaxEmployeesRequest($params = "") {
+
+        parse_str($params,$params);
+
+		$employees = CompanyPerson::select("company_person.*");
+		$employees->leftJoin('people','company_person.person_id','=','people.id');
+		$employees->leftJoin('titles','company_person.title_id','=','titles.id');
+		$employees->leftJoin('departments','company_person.department_id','=','departments.id');
+		
+		if (isset($params['search'])) {
+			$employees->where(function($query) use ($params) {
+	            $query->where('last_name','like','%'.$params['search'].'%');
+	            $query->orWhere('first_name','like','%'.$params['search'].'%');
+			});
+		}
+
+        $employees->where('company_person.company_id','=',1);
+
+        // apply ordering
+        if (isset($params['order'])) {
+    		$employees->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
+            $employees->orderBy($params['order']['column'],$params['order']['type']);
+        }
+
+		//paginate
+		$employees = $employees->paginate(50);
+
+		$data['employees'] = $employees;
+
+        return view('company_person/index/employees',$data);
+	}
+
+	public function ajaxContactsRequest($params = "") {
+
+        parse_str($params,$params);
+
+		$contacts = CompanyPerson::select("company_person.*");
+		$contacts->leftJoin('people','company_person.person_id','=','people.id');
+		$contacts->leftJoin('companies','company_person.title_id','=','companies.id');
+		$contacts->leftJoin('titles','company_person.title_id','=','titles.id');
+		$contacts->leftJoin('departments','company_person.department_id','=','departments.id');
+		
+		if (isset($params['search'])) {
+			$contacts->where(function($query) use ($params) {
+	            $query->where('last_name','like','%'.$params['search'].'%');
+	            $query->orWhere('first_name','like','%'.$params['search'].'%');
+			});
+		}
+
+        $contacts->where('company_person.company_id','!=',1);
+
+        // apply ordering
+        if (isset($params['order'])) {
+    		$contacts->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
+            $contacts->orderBy($params['order']['column'],$params['order']['type']);
+        }
+
+		//paginate
+		$contacts = $contacts->paginate(50);
+
+		$data['contacts'] = $contacts;
+
+        return view('company_person/index/contacts',$data);
+	}
+
+	public function ajaxPeopleRequest() {
+
+		$query = Input::get('query');
+
+		$people = Person::select(DB::raw('people.first_name as value'), 'people.id', 'people.first_name', 'people.last_name', 'companies.name as company_name')
+						->leftJoin('company_person','company_person.person_id','=','people.id')
+						->leftJoin('companies','companies.id','=','company_person.company_id')
+						->where('people.first_name','LIKE','%'.$query.'%')
+						->orWhere('people.last_name','LIKE','%'.$query.'%')
+						->get();
+
+		$result['query'] = "Unit";
+		$result['suggestions'] = $people;
+
+		$result = (object) $result;
+
+		return json_encode($result);
+
 	}
 
 }

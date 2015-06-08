@@ -8,11 +8,10 @@
 		<thead>
 			<tr class="orderable">
 				<th column="cc_number">CC</th>
-				<th column="name" class="hidden-xs">Name</th>
+				<th column="equipments.name" class="hidden-xs">Name</th>
 				<th column="companies.company_name" class="hidden-xs">Customer</th>
 				<th column="serial_number" class="hidden-xs">Serial Number</th>
 				<th column="equipment_types.name" class="hidden-xs">Equipment Type</th>
-				<th column="notes">Notes</th>
 				<th column="warranty_expiration" class="hidden-xs">Warranty Expiration</th>
 			</tr>
 		</thead>
@@ -24,10 +23,9 @@
 				<tr>
 					<td> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ '#'.$equipment->cc_number }} </a> </td>
 					<td class="hidden-xs"> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ $equipment->name }} </a> </td>
-					<td class="hidden-xs"> <a href="{{ route('companies.show', $equipment->company->id) }}"> {{ $equipment->company->company_name }} </a> </td>
+					<td class="hidden-xs"> <a href="{{ route('companies.show', $equipment->company->id) }}"> {{ $equipment->company->name }} </a> </td>
 					<td class="hidden-xs"> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ $equipment->serial_number }} </a> </td>
 					<td class="hidden-xs"> {{ $equipment->equipment_type->name }} </td>
-					<td> {{ $equipment->notes }} </td>
 					<td class="hidden-xs"> {{ $equipment->warranty_expiration }} </td>
 				</tr>
 				@endforeach

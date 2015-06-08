@@ -174,7 +174,6 @@ $(document).ready(function() {
 	function ajaxRequest(url,$target) {
 
 		$.get(url, function (data) {
-			console.log(url);
 			$target.find(".content table tbody").html($(data).find('tbody').html());
 			$target.find(".ajax_pagination[scrollup='true']").html($(data).find(".ajax_pagination[scrollup='true']").html());
 			$target.find(".ajax_pagination[scrollup='false']").html($(data).find(".ajax_pagination[scrollup='false']").html());
@@ -185,34 +184,29 @@ $(document).ready(function() {
 	    $("#person_fn, #person_ln").prop("readonly",false);
 	    $("#person_id").prop("disabled",true);
 	    $("#person_fn, #person_ln").val("");
-	    $(".cancel").css("display","none");
+	   	$(".input-group-addon").css("display","none");
+	    $("#input_group_fn, #input_group_ln").removeClass("input-group");
 	});
+
+	$("#person_fn").on("keydown", function () {
+		$(this).tooltip('destroy');
+	})
 
 	$("#person_fn, #person_ln").autocomplete({
 
 	    serviceUrl: "/ajax/people",
 
 	    onSelect: function (suggestion) {
-	    	$(".cancel").css("display","inline-block");
-	    	$("#person_id").prop("disabled",false);	    	
+	    	$("#person_id").prop("disabled",false);
+			$("#person_fn, #person_ln").prop("readonly",true);
 	    	$("#person_id").val(suggestion.id);
-	    	$("#person_fn, #person_ln").prop("readonly",true);
 	    	$("#person_fn").val(suggestion.first_name);		    	
-	    	$("#person_ln").val(suggestion.last_name);		    	
+	    	$("#person_ln").val(suggestion.last_name);
+	    	$(".input-group-addon").css("display","table-cell");
+	    	$("#input_group_fn, #input_group_ln").addClass("input-group");
 	    },
 	    formatResult: function (suggestion, currentValue) {
-
-	    	 var returned = suggestion.value
-	            .replace(/&/g, '&amp;')
-	            .replace(/</g, '&lt;')
-	            .replace(/>/g, '&gt;')
-	            .replace(/"/g, '&quot;');
-
-
-	        returned.replace(currentValue, '<strong>$1<\/strong>');
-
-	        returned += " @ "+suggestion.company_name;
-
+	    	 var returned = suggestion.last_name + " " + suggestion.first_name + " @ " + suggestion.company_name;
 	        return returned;
 	    }
 	});

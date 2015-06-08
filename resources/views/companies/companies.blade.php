@@ -10,7 +10,7 @@
 				<th column="name">Company</th>
 				<th column="people.last_name">Main Contact Name</th>
 				<th column="company_person.cellphone">Main Contact Phone</th>
-				<th column="country" class="hidden-xs hidden-sm">Country</th>
+				<th column="country" class="hidden-xs">Country</th>
 				<th column="city" class="hidden-xs">City</th>
 				<th column="address" class="hidden-xs">Address</th>
 				<th column="zip_code" class="hidden-xs">Zip Code</th>

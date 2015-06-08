@@ -46,9 +46,9 @@ Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'im
 	Route::get('ajax/companies/contacts/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxContactsRequest', 'as' => 'ajax.companies.contacts']);
 	Route::get('ajax/companies/tickets/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxTicketsRequest', 'as' => 'ajax.companies.tickets']);
 	Route::get('ajax/companies/equipments/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxEquipmentsRequest', 'as' => 'ajax.companies.equipments']);
-	Route::get('ajax/employees/{params?}', ['uses' => 'PeopleController@ajaxEmployeesRequest', 'as' => 'ajax.employees']);
-	Route::get('ajax/contacts/{params?}', ['uses' => 'PeopleController@ajaxContactsRequest', 'as' => 'ajax.contacts']);
-	Route::get('ajax/people', ['uses' => 'PeopleController@ajaxPeopleRequest', 'as' => 'ajax.people']);
+	Route::get('ajax/employees/{params?}', ['uses' => 'CompanyPersonController@ajaxEmployeesRequest', 'as' => 'ajax.employees']);
+	Route::get('ajax/contacts/{params?}', ['uses' => 'CompanyPersonController@ajaxContactsRequest', 'as' => 'ajax.contacts']);
+	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
 	Route::get('ajax/equipments/{params?}', ['uses' => 'EquipmentsController@ajaxEquipmentsRequest', 'as' => 'ajax.equipments']);
 
 // });

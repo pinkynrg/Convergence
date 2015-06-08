@@ -97,10 +97,7 @@ class TicketsController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		echo 'ticket destroy method to be created'
-		// $ticket = Ticket::find($id);
-		// $ticket->delete();
-		// return redirect()->route('tickets.index');
+		echo 'ticket destroy method to be created';
 	}
 	
 	/**

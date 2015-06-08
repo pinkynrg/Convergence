@@ -55,7 +55,7 @@
 		    </a>
 		  </div>
 		  <div class="media-body">
-		    <h4 class="media-heading"> <a href="{{ route('people.show', $post->author->id) }}"> {{ $post->author->person->name() }} </a> </h4>
+		    <h4 class="media-heading"> <a href="{{ route('people.show', $post->author->person->id) }}"> {{ $post->author->person->name() }} </a> </h4>
 		    <div> {{ date("d F Y",strtotime($post->created_at)) }} @ {{ date("g:ha",strtotime($post->created_at)) }} </div>
 		    <div class="post_content"> {{ $post->post }} </div>
 		  </div>

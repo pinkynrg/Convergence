@@ -8,7 +8,7 @@ body {
 }
 
 .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
-  width: 180px;
+  width: 155px;
 }
 
 #logo img {
@@ -72,6 +72,7 @@ body {
 }
 
 .wrapper {
+  min-width: 450px;
 	width: 95%;
 	padding: 10px;
 	/*overflow: hidden;*/
@@ -205,14 +206,8 @@ a:visited, a:link, a:active, a:visited {
 }
 
 .cancel {
-    z-index: 2;
-    width: 50px;
-    display: none;
-    position: absolute;
-    font-size: 20px;
-    line-height: 33px;
-    color: #FF5959;
     cursor: pointer;
+    background-color: #FFF;
 }
 
 /* Submit Button Like Link */
