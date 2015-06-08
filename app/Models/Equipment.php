@@ -10,8 +10,8 @@ class Equipment extends Model {
 		return $this->belongsTo('Convergence\Models\EquipmentType');
 	}
 
-	public function customer() {
-		return $this->belongsTo('Convergence\Models\Customer');
+	public function company() {
+		return $this->belongsTo('Convergence\Models\Company');
 	}
 
 }

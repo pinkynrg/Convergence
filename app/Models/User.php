@@ -31,11 +31,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
-	public function owner()
-	{
-		return $this->morphTo();
-	}
-
 	public function type() 
 	{
 		return class_basename($this->owner_type);

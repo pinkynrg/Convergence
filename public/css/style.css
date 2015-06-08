@@ -7,6 +7,10 @@ body {
 	font-size: 12px;
 }
 
+.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+  width: 155px;
+}
+
 #logo img {
 	height: 100px;
   display:inline-block;
@@ -68,6 +72,7 @@ body {
 }
 
 .wrapper {
+  min-width: 450px;
 	width: 95%;
 	padding: 10px;
 	/*overflow: hidden;*/
@@ -90,7 +95,7 @@ body {
 .navb {
 	height: 35px;
 	padding: 5px 5px 5px 10px;
-	margin-bottom: 0px;
+	margin-bottom: 10px;
 	background-color: #F7C879;
 	border: 1px solid #E2C391;
 }
@@ -125,8 +130,7 @@ body {
 }
 
 .ajax_pagination {
-  padding: 10px 0px;
-  height: 50px;
+  margin: 10px 0px;
 }
 
 #contacts.navb {
@@ -201,6 +205,11 @@ a:visited, a:link, a:active, a:visited {
 */	cursor: pointer;
 }
 
+.cancel {
+    cursor: pointer;
+    background-color: #FFF;
+}
+
 /* Submit Button Like Link */
 .nobutton {
 	background:none!important;
@@ -233,7 +242,8 @@ a:visited, a:link, a:active, a:visited {
 .no-content {
 	padding: 5px 20px;
 	background-color: #d9edf7;
-	font-size: 15;
+	font-size: 18px;
+  color: #999;
 }
 
 /* User form */

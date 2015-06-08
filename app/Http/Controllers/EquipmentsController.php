@@ -5,6 +5,7 @@ use Convergence\Models\Equipment;
 use Request;
 
 class EquipmentsController extends Controller {
+	
 	public function index() {
 		$data['equipments'] = Equipment::paginate(50);
 		return view('equipments/index',$data);
@@ -39,7 +40,7 @@ class EquipmentsController extends Controller {
         parse_str($params,$params);
 
 		$equipments = Equipment::select("equipments.*");
-		$equipments->leftJoin("customers","customers.id","=","equipments.customer_id");
+		$equipments->leftJoin("companies","companies.id","=","equipments.company_id");
 		$equipments->leftJoin("equipment_types","equipment_types.id","=","equipments.equipment_type_id");
 
 		// apply search

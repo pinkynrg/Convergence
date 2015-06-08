@@ -1,3 +1,3 @@
 <div class="no-content">
-	No content available
+	<i class="fa fa-info-circle"></i> No content available
 </div>

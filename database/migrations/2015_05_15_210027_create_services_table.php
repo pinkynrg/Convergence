@@ -14,20 +14,20 @@ class CreateServicesTable extends Migration {
 	{
 		Schema::create('services',function(Blueprint $table) {
 			$table->increments('id');
-			$table->integer('customer_id')->unsigned();
-			$table->integer('contact_id')->unsigned();
+			$table->integer('company_id')->unsigned();
+			$table->integer('internal_contact_id')->unsigned()->nullable();
+			$table->integer('external_contact_id')->unsigned()->nullable();
 			$table->string('job_number_internal')->nullable();
 			$table->string('job_number_onsite')->nullable();
 			$table->string('job_number_remote')->nullable();
-			$table->integer('employee_id')->unsigned();
 			$table->integer('hotel_id')->nullable();
 			$table->timestamps();
 		});
 
 		Schema::table('services',function(Blueprint $table) {
-			$table->foreign('customer_id')->references('id')->on('customers');
-			$table->foreign('contact_id')->references('id')->on('contacts');
-			$table->foreign('employee_id')->references('id')->on('employees');
+			$table->foreign('company_id')->references('id')->on('companies');
+			$table->foreign('internal_contact_id')->references('id')->on('company_person');
+			$table->foreign('external_contact_id')->references('id')->on('company_person');
 		});
 	}
 

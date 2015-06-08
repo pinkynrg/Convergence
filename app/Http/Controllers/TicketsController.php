@@ -1,8 +1,9 @@
 <?php namespace Convergence\Http\Controllers;
 
 use Convergence\Models\Ticket;
-use Convergence\Models\Customer;
-use Convergence\Models\Employee;
+use Convergence\Models\Company;
+use Convergence\Models\Person;
+use Convergence\Models\CompanyPerson;
 use Convergence\Models\Division;
 use Convergence\Models\Status;
 use Requests;
@@ -21,8 +22,12 @@ class TicketsController extends Controller {
 		$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
 		$data['active_search'] = true;
 		$data['tickets'] = Ticket::orderBy('id','desc')->paginate(50);
-		$data['customers'] = Customer::orderBy('company_name','asc')->get();
-		$data['employees'] = Employee::orderBy('last_name','asc')->orderBy('first_name','asc')->get();
+		$data['companies'] = Company::orderBy('name','asc')->get();
+		$employees = CompanyPerson::select('company_person.*');
+		$employees->leftJoin('people','people.id','=','company_person.person_id');
+		$employees->where('company_person.company_id','=',1);
+		$employees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
+		$data['employees'] = $employees->get();
 		$data['divisions'] = Division::orderBy('name','asc')->get();
 		$data['statuses'] = Status::orderBy('id','asc')->get();
 		return view('tickets/index',$data);
@@ -92,9 +97,7 @@ class TicketsController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		$ticket = Ticket::find($id);
-		$ticket->delete();
-		return redirect()->route('tickets.index');
+		echo 'ticket destroy method to be created';
 	}
 	
 	/**
@@ -107,11 +110,11 @@ class TicketsController extends Controller {
     	parse_str($params,$params);
 
     	$tickets = Ticket::select('tickets.*');
-    	$tickets->leftJoin('employees as creators','tickets.creator_id','=','creators.id');
-    	$tickets->leftJoin('employees as assignees','tickets.assignee_id','=','assignees.id');
+    	$tickets->leftJoin('people as creators','tickets.creator_id','=','creators.id');
+    	$tickets->leftJoin('people as assignees','tickets.assignee_id','=','assignees.id');
     	$tickets->leftJoin('statuses','tickets.status_id','=','statuses.id');
     	$tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
-    	$tickets->leftJoin('customers','tickets.customer_id','=','customers.id');
+    	$tickets->leftJoin('companies','tickets.company_id','=','companies.id');
     	$tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
 
     	// apply filters

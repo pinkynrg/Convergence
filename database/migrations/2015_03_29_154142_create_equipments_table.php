@@ -18,14 +18,15 @@ class CreateEquipmentsTable extends Migration {
 			$table->string('cc_number')->nullable();
 			$table->string('serial_number')->nullable();
 			$table->integer('equipment_type_id')->unsigned();
-			$table->integer('customer_id')->unsigned();
+			$table->integer('company_id')->unsigned();
 			$table->string('notes')->nullable();
 			$table->date('warranty_expiration')->nullable();
+			$table->timestamps();
 		});
 
 		Schema::table('equipments',function(Blueprint $table) {
 			$table->foreign('equipment_type_id')->references('id')->on('equipment_types');
-			$table->foreign('customer_id')->references('id')->on('customers');
+			$table->foreign('company_id')->references('id')->on('companies');
 		});	
 	}
 

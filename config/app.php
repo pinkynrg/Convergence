@@ -140,10 +140,7 @@ return [
 		 * Added Later by Francesco
 		*/
 
-		'Illuminate\Html\HtmlServiceProvider',
-		'Webpatser\Countries\CountriesServiceProvider',
 		'Convergence\Extensions\Html\HtmlServiceProvider',
-
 
 		/*
 		 * Application Service Providers...

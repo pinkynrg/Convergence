@@ -5,6 +5,7 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="/javascript/jquery.autocomplete.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script src="/javascript/bootstrap-select.js" type="text/javascript"></script>
 <script src="/javascript/script.js" type="text/javascript"></script>
@@ -16,6 +17,7 @@
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="/css/bootstrap-select.min.css">
 <link rel="stylesheet" type="text/css" href="/css/style.css">
+<link rel="stylesheet" type="text/css" href="/css/jquery.autocomplete.css">
 
 <link rel="shortcut icon" href="{{ asset('/images/favicon.ico') }}">
 
