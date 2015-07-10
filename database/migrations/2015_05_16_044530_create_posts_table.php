@@ -15,7 +15,7 @@ class CreatePostsTable extends Migration {
 		Schema::create('posts',function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('ticket_id')->unsigned();
-			$table->string('post');
+			$table->text('post');
 			$table->integer('author_id')->unsigned();
 			$table->string('is_public');
 			$table->timestamps();

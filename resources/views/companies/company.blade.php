@@ -18,20 +18,14 @@
 		<td>{{ $company->zip_code }}</td>
 	</tr>
 	<tr>
-		<th>Airport</th>
-		<td>{{ $company->airport }}</td>
-		<th>Plant Requirment</th>
-		<td>{{ $company->plant_requirment }}</td>
-	</tr>
-	<tr>
 		<th>Support Type</th>
-		<td>{{ $company->support_type }}</td>
+		<td>{{ isset($company->support_type_id) ? $company->support_type->name : '' }}</td>
 		<th>Account Manager</th>
 		<td> @if (isset($company->account_manager->account_manager_id)) <a href="{{ route('people.show', $company->account_manager->company_person->person->id) }}"> {{ $company->account_manager->company_person->person->name()  }} @endif </a> </td>
 	</tr>
 	<tr>
 		<th>Connection Option</th>
-		<td>{{ $company->connection_option }}</td>
+		<td> {!! isset($company->connection_type_id) ? "<b>" . $company->connection_type->name . "</b>: ". $company->connection_type->description : '' !!} </td>
 		<th>Group Email</th>
 		<td>{{ $company->group_email }}</td>
 	</tr>

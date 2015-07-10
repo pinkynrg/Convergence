@@ -48,7 +48,9 @@ Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'im
 	Route::get('ajax/companies/equipments/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxEquipmentsRequest', 'as' => 'ajax.companies.equipments']);
 	Route::get('ajax/employees/{params?}', ['uses' => 'CompanyPersonController@ajaxEmployeesRequest', 'as' => 'ajax.employees']);
 	Route::get('ajax/contacts/{params?}', ['uses' => 'CompanyPersonController@ajaxContactsRequest', 'as' => 'ajax.contacts']);
-	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
 	Route::get('ajax/equipments/{params?}', ['uses' => 'EquipmentsController@ajaxEquipmentsRequest', 'as' => 'ajax.equipments']);
-
+	Route::get('ajax/tags', ['uses' => 'TagsController@ajaxTagsRequest', 'as' => 'ajax.tags']);
+	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
+	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);
+	Route::get('ajax/tickets/equipments/{company_id}', ['uses' => 'TicketsController@ajaxEquipmentsRequest', 'as' => 'json.tickets.equipments']);
 // });

@@ -8,6 +8,9 @@ class EquipmentsController extends Controller {
 	
 	public function index() {
 		$data['equipments'] = Equipment::paginate(50);
+
+        $data['title'] = "Equipments";
+
 		return view('equipments/index',$data);
 	}
 

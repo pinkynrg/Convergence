@@ -2,28 +2,37 @@
 
 class FormBuilder extends \Illuminate\Html\FormBuilder
 {
-	public static function BSGroup() {
-		return "<div class='form-group'>";
+	public static function BSGroup($options = array()) {
+		$options['class'] = isset($options['bclass']) ? $options['bclass'] : "";
+		return "<div class='form-group ".$options['class']."'>";
 	}
 
 	public static function BSEndGroup() {
 		return "</div>";
 	}
 
-	public static function BSFiller() {
-		return "<div class='col-lg-2 col-sm-2'></div>";
+	public static function BSStatic($value, $options = array()) {
+		$bootstrap_class = 'form-control-static';
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
+		$static = "<div class='".$options['bclass']."'>";
+		$static .= "<p class='".$bootstrap_class."'>".$value."</p>";
+		$static .= "</div>";
+		return $static;
 	}
 
 	public function BSLabel($name, $value, $options = array()) {
-		$bootstrap_class = "col-lg-2 col-sm-2 control-label";
+		$bootstrap_class = "control-label";
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
+		$options['class'] = isset($options['bclass']) ? $options['bclass']." ".$options['class'] : $options['class'];
 		return $this->label($name, $value, $options);
 	}
 
 	public function BSText($name, $value = null, $options = array()) {
 		$bootstrap_class = "form-control";
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
-		$text = "<div class='col-lg-3 col-sm-4'>";
+		$text = "<div class='".$options['bclass']."'>";
 		$text .= $this->text($name, $value, $options);
 		$text .= "</div>";
 		return $text;
@@ -31,8 +40,9 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 	public function BSHidden($name, $value = null, $options = array()) {
 		$bootstrap_class = "form-control";
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "col-xs-12";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
-		$text = "<div class='col-lg-3 col-sm-4'>";
+		$text = "<div class='".$options['bclass']."'>";
 		$text .= $this->hidden($name, $value, $options);
 		$text .= "</div>";
 		return $text;
@@ -40,8 +50,9 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 	public function BSTextArea($name, $value = null, $options = array()) {
 		$bootstrap_class = "form-control";
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
-		$textarea = "<div class='col-lg-8 col-sm-10'>";
+		$textarea = "<div class='".$options['bclass']."'>";
 		$textarea .= $this->textarea($name, $value = null, $options);
 		$textarea .= "</div>";
 		return $textarea;
@@ -49,11 +60,12 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 	public function BSSelect($name, $list = array(), $selected = null, $options = array()) {
 		$bootstrap_class = "form-control";
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
 
 		if (isset($options['key']) && isset($options['value'])) {
 			$temp = $list;
-			$list = array();
+			$list = array('' => '-');
 			$key_path = explode('.',$options['key']);
 			$value_path = explode('.',$options['value']);
 			foreach ($temp as $elem) {
@@ -95,10 +107,11 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 				if (!is_null($key) && !is_null($value))
 					$list[$key] = $value;
+
 			}
 		}
 
-		$select = "<div class='col-lg-3 col-sm-4'>";
+		$select = "<div class='".$options['bclass']."'>";
 		$select .= $this->select($name, $list, $selected, $options);
 		$select .= "</div>";
 
@@ -107,8 +120,12 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 	public function BSSubmit($value = null, $options = array()) {
 		$bootstrap_class = "btn btn-default";
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "col-xs-12";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
-		return $this->submit($value, $options);
+		$submit = "<div class='".$options['bclass']."'>";
+		$submit .= $this->submit($value, $options);
+		$submit .= "</div>";
+		return $submit;
 	}
 
 	public function addItem($route, $label = null) {

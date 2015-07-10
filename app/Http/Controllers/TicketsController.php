@@ -1,12 +1,22 @@
 <?php namespace Convergence\Http\Controllers;
 
+
+use Convergence\Http\Requests\CreateTicketRequest;
+use Convergence\Http\Requests\UpdateTicketRequest;
 use Convergence\Models\Ticket;
+use Convergence\Models\TicketHistory;
 use Convergence\Models\Company;
 use Convergence\Models\Person;
 use Convergence\Models\CompanyPerson;
 use Convergence\Models\Division;
 use Convergence\Models\Status;
+use Convergence\Models\Equipment;
+use Convergence\Models\Priority;
+use Convergence\Models\JobType;
+use Convergence\Models\TagTicket;
+use Convergence\Models\Tag;
 use Requests;
+use Input;
 use Form;
 
 use Illuminate\Http\Request;
@@ -30,6 +40,9 @@ class TicketsController extends Controller {
 		$data['employees'] = $employees->get();
 		$data['divisions'] = Division::orderBy('name','asc')->get();
 		$data['statuses'] = Status::orderBy('id','asc')->get();
+
+        $data['title'] = "Tickets";
+
 		return view('tickets/index',$data);
 	}
 
@@ -39,7 +52,20 @@ class TicketsController extends Controller {
 	 * @return Response
 	 */
 	public function create() {
-		return view('tickets/create');;
+		$data['companies'] = Company::all();
+		$data['priorities'] = Priority::all();
+		$data['companies'] = Company::orderBy('name','asc')->get();
+		$assignees = CompanyPerson::select('company_person.*');
+		$assignees->leftJoin('people','people.id','=','company_person.person_id');
+		$assignees->where('company_person.company_id','=',1);
+		$assignees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
+		$data['assignees'] = $assignees->get();
+		$data['divisions'] = Division::all();
+		$data['job_types'] = JobType::all();
+
+        $data['title'] = "Create Ticket";
+
+		return view('tickets/create', $data);
 	}
 
 	/**
@@ -47,9 +73,32 @@ class TicketsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(CreateTicketRequest $request)
 	{
-		return "store method has to be created";
+        $ticket = Ticket::create($request->all());
+
+        if (Input::get('tagit')) {
+			
+			$tags = explode(",",Input::get('tagit'));
+			
+			foreach ($tags as $new_tag) {
+				
+				$tag = Tag::where('name','=',$new_tag)->first();
+				
+				if ( !isset($tag->id) ) {
+					$tag = new Tag;
+					$tag->name = $new_tag;
+					$tag->save();
+				}
+
+				$tag_ticket = new TagTicket;
+				$tag_ticket->ticket_id = $ticket->id;
+				$tag_ticket->tag_id = $tag->id;
+				$tag_ticket->save();
+			}
+		}
+
+        return redirect()->route('tickets.index');
 	}
 
 	/**
@@ -64,6 +113,20 @@ class TicketsController extends Controller {
 								 Form::deleteItem('tickets.destroy', $id, 'Delete this ticket')];
 								 
 		$data['ticket'] = Ticket::find($id);
+		$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
+
+		switch ($data['ticket']->status_id) {
+			case '1' : $data['status_class'] = 'ticket_status_new'; break;
+			case '2' : $data['status_class'] = 'ticket_status_new'; break;
+			case '3' : $data['status_class'] = 'ticket_status_on_hold'; break;
+			case '4' : $data['status_class'] = 'ticket_status_on_hold'; break;
+			case '5' : $data['status_class'] = 'ticket_status_on_hold'; break;
+			case '6' : $data['status_class'] = 'ticket_status_closed'; break;
+			case '7' : $data['status_class'] = 'ticket_status_closed'; break;
+		};
+
+        $data['title'] = "Ticket #".$id;
+
 		return view('tickets/show',$data);
 	}
 
@@ -75,7 +138,23 @@ class TicketsController extends Controller {
 	 */
 	public function edit($id)
 	{
-		return "edit method has to be created";
+		$data['ticket'] = Ticket::find($id);
+		$data['companies'] = Company::all();
+		$data['divisions'] = Division::all();
+		$data['job_types'] = JobType::all();
+		$data['contacts'] = CompanyPerson::where('company_id','=',$data['ticket']->company_id)->get();
+		$data['equipments'] = Equipment::where('company_id','=',$data['ticket']->company_id)->get();
+		$data['priorities'] = Priority::all();
+		$data['assignees'] = CompanyPerson::where("company_id","=","1")->get();
+		$data['tags'] = "";
+
+		foreach ($data['ticket']->tags as $tag) {
+			$data['tags'] .= $tag->name.",";
+		}
+
+        $data['title'] = "Edit Ticket #".$id;
+
+		return view('tickets/edit',$data);
 	}
 
 	/**
@@ -84,9 +163,35 @@ class TicketsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($id, UpdateTicketRequest $request)
 	{
-		return "update method has to be created";
+		$ticket = Ticket::find($id);
+        $ticket->update($request->all());
+
+        $old_tags = TagTicket::where('ticket_id','=',$id)->delete();
+
+		if (Input::get('tagit')) {
+
+			$tags = explode(",",Input::get('tagit'));
+
+			foreach ($tags as $new_tag) {
+				
+				$tag = Tag::where('name','=',$new_tag)->first();
+				
+				if ( !isset($tag->id) ) {
+					$tag = new Tag;
+					$tag->name = $new_tag;
+					$tag->save();
+				}
+
+				$tag_ticket = new TagTicket;
+				$tag_ticket->ticket_id = $id;
+				$tag_ticket->tag_id = $tag->id;
+				$tag_ticket->save();
+			}
+		}
+	
+        return redirect()->route('tickets.show',$id);
 	}
 
 	/**
@@ -149,5 +254,21 @@ class TicketsController extends Controller {
 	    $data['tickets'] = $tickets;
 
         return view('tickets/tickets',$data);
+    }
+
+    public function ajaxContactsRequest($id) {
+    	$contacts = CompanyPerson::select('company_person.*','people.*');
+    	$contacts->leftJoin('people','company_person.person_id','=','people.id');
+    	$contacts->where('company_id','=',$id);
+    	$contacts->orderByRaw("case when people.last_name is null then 1 else 0 end asc");
+    	$contacts = $contacts->orderBy('people.last_name','asc');
+    	$contacts = $contacts->get();
+    	return json_encode($contacts);
+    }
+
+    public function ajaxEquipmentsRequest($id) {
+    	$equipments = Equipment::select('equipments.*')->where('company_id','=',$id);
+    	$equipments = $equipments->get();
+    	return json_encode($equipments);
     }
 }

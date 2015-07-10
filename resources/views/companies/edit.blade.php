@@ -9,8 +9,7 @@
 
 		{!! Form::BSGroup() !!}
 
-			{!! Form::BSFiller() !!}
-			{!! Form::BSSubmit("Submit") !!}
+			{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
 
 		{!! Form::BSEndGroup() !!}
 

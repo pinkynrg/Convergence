@@ -21,6 +21,9 @@
 		<tr>
 			<th>Cell Phone</th> <td> {!! $company_person->cellphone() !!} </td>
 		</tr>
+		<tr>
+			<th>Email</th> <td> {!! $company_person->email !!} </td>
+		</tr>
 	</table>
 
 @endsection

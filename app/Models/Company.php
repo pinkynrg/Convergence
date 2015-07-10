@@ -6,7 +6,7 @@ class Company extends Model {
 
 	protected $table = 'companies';
 
-	protected $fillable = ['name', 'address', 'country', 'city', 'state', 'zip_code', 'group_email', 'airport', 'plant_requirment'];
+	protected $fillable = ['name', 'address', 'country', 'city', 'state', 'zip_code', 'group_email', 'support_type_id', 'connection_type_id'];
 
 	public function tickets() {
 		return $this->hasMany('Convergence\Models\Ticket');
@@ -27,6 +27,14 @@ class Company extends Model {
 
 	public function account_manager() {
 		return $this->hasOne('Convergence\Models\CompanyAccountManager');
+	}
+
+	public function connection_type() {
+		return $this->belongsTo('Convergence\Models\ConnectionType');
+	}
+
+	public function support_type() {
+		return $this->belongsTo('Convergence\Models\SupportType');
 	}
 
 }

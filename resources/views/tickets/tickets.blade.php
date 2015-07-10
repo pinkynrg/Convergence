@@ -10,7 +10,7 @@
 				<th column="tickets.id">Ticket</th>
 				<th column="tickets.title">Title</th>
 				<th column="statuses.name">Status</th>
-				<th column="priorities.name" class="hidden-xs">Priority</th>
+				<th column="priorities.id" class="hidden-xs">Priority</th>
 				<th column="assignees.last_name" class="hidden-xs">Asignee</th>
 				<th column="companies.company_name">Company</th>
 				<th column="divisions.name" class="hidden-xs">Division</th>

@@ -1,11 +1,20 @@
 body {
-	background-color: rgb(230, 243, 242);
-	background-image: url(/images/skulls_lightblue.png);
+	background-color: #ECFAFF;
+	/*background-image: url(/images/skulls_lightblue.png);*/
   /*background-image: url(/images/login_background.png); */
   /*background-size: 100% 100%;*/
   /*background-attachment: fixed;*/
 	font-size: 12px;
 }
+
+input, textarea, select, .bootstrap-tagsinput {
+  background-color: #F7F7F7 !important;
+}
+
+input[disabled], textarea[disabled], select[disabled] {
+  background-color: #DDD !important;
+}
+
 
 .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
   width: 155px;
@@ -39,7 +48,7 @@ body {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
-  background-color: #FAFAFA;
+  background-color: #FFF;
 }
 
 #login_img {
@@ -82,8 +91,34 @@ body {
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-	background-color: #FAFAFA;
+	background-color: #FFF;
   /*opacity : 0.97;*/
+}
+
+h2#title {
+  text-align: center;
+  font-size: 21px;
+}
+
+#ticket_title {
+  font-weight: bold;
+  font-size: 18px;  
+}
+
+#ticket_status {
+  float: right;
+}
+
+.ticket_status_new {
+  color: #23932D;
+}
+
+.ticket_status_on_hold {
+  color: #DB9047;
+}
+
+.ticket_status_closed {
+  color: #7C7C7C;
 }
 
 #footer {
@@ -186,6 +221,10 @@ thead {
 	margin-bottom: 0px;
 }
 
+.borderless td, .borderless th {
+    border: none !important;
+}
+
 .table-striped>tbody>tr:nth-of-type(odd) {
   background-color: #F0EFEF;
 }
@@ -194,7 +233,7 @@ thead {
   background-color: #F9F9F9;
 }
 
-tbody tr:hover {
+.table-hover tbody tr:hover {
   background-color: #d9edf7 !important;	
 }
 
@@ -257,27 +296,103 @@ a:visited, a:link, a:active, a:visited {
   font-size: 9px;
 }
 
-.ticket_post {
-  border-bottom: 1px solid #ddd;
+#ticket_container {
+  background: -webkit-linear-gradient(top, #FFF2AD , #FAE369); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #FFF2AD, #FAE369); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #FFF2AD, #FAE369); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #FFF2AD , #FAE369); /* Standard syntax */
+  border: 1px solid #FFDD94;
+  padding: 15px;
+  margin: 20px 0px;
+}
+
+#ticket_bottom {
+  padding: 10px;
+  background-color: #FFF9D7;
+  border: 1px solid #E0D286;
+}
+
+#ticket_bottom td, #ticket_bottom th {
+    padding: 2px !important;
 }
 
 #ticket_content {
-	padding: 30px 10px;
-	background-color: #FFFDD9;
-  border:1px solid #E8E49B;
-	margin: 20px 0px;
+  padding: 10px;
+}
+
+#tab_contents {
+  margin: 20px 0px;
+}
+
+#ticket_post {
+    font-size: 15px;
+    margin: 10px 0px;
+}
+
+.tags {
+  padding: 10px;
+  margin: 20px;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #ECF0FF;
+}
+
+.tag {
+  background-color: #B3C6FF;
+  padding: 3px 5px;
+  border: 1px solid #A1B3FD;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.post {
+  margin: 0px;
+  padding: 20px;
+  border-top: 1px solid #eee;
+}
+
+.post .thumbnail {
+  margin: 0px;
 }
 
 .post_content {
 	margin: 10px 0px;
 }
 
-#profile_picture_thumb {
-	width: 100px;
+.thumb-sm {
+  width: 80px;
+}
+
+.thumb-md {
+  width: 100px;
 }
 
 #company_form, #contact_form {
 	clear: both;
+}
+
+.pagination>li:first-child>a, .pagination>li:first-child>span {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.pagination>li:last-child>a, .pagination>li:last-child>span {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px; 
+}
+
+.pagination>li>a, .pagination>li>span, .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
+  margin: 0px 2px;
+  background-color: #F7F7F7;
+  color: #767676;
+}
+
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+  background-color: #72A4CF;
+  border: 1px solid #6393BD;
 }
 
 /* Navbar */

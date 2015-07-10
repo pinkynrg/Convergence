@@ -26,6 +26,7 @@ class CreateTicketsTable extends Migration {
 			$table->integer('equipment_id')->unsigned();
 			$table->integer('company_id')->unsigned();
 			$table->integer('contact_id')->unsigned()->nullable();		
+			$table->integer('job_type_id')->unsigned()->nullable();		
 			$table->timestamps();
 		});
 
@@ -37,6 +38,7 @@ class CreateTicketsTable extends Migration {
 			$table->foreign('division_id')->references('id')->on('divisions');
 			$table->foreign('company_id')->references('id')->on('companies');
 			$table->foreign('contact_id')->references('id')->on('company_person');
+			$table->foreign('job_type_id')->references('id')->on('job_types');
 		});		}
 
 	/**

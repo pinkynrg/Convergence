@@ -21,11 +21,17 @@ class PeopleController extends Controller {
 			Form::deleteItem('people.destroy', $id, 'Remove this person')
         ];
 		$data['person'] = Person::find($id);
+
+		$data['title'] = $data['person']->name() . " - Details";
+
 		return view('people/show', $data);
 	}
 
 	public function edit($id) {
-		$data['employee'] = Person::find($id);
+		$data['person'] = Person::find($id);
+
+		$data['title'] = $data['person']->name() . " - Edit";
+
 		return view('people/edit', $data);	
 	}
 

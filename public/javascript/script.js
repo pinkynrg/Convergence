@@ -2,33 +2,13 @@
 
 $(document).ready(function() {
 
+// tickets filters page ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//reset values of filters 
 	$('.selectpicker').selectpicker('deselectAll');
+
+	//reset values of search field
 	$("input[type='text'].search").val("");
-
-	//activate tooltips
-	$('[data-toggle="tooltip"]').tooltip();
-	
-	//for expandable divs
-	$('.expander').click(function() {
-		var minus_icon = "fa fa-minus-square-o fa-2";
-		var plus_icon = "fa fa-plus-square-o fa-2";
-		var to_expand = $(this).next('.to_expand'),
-			expander = $(this);
-		
-		if (to_expand.css('display') == 'none')
-			expander.html(expander.html().replace('<i class="'+plus_icon+'"></i>','<i class="'+minus_icon+'"></i>'));
-		else 
-			expander.html(expander.html().replace('<i class="'+minus_icon+'"></i>','<i class="'+plus_icon+'"></i>'))
-
-		to_expand.toggle(500);
-	});
-
-	//scrollup effect
-	function scrollUp(ms) {
-		$("html, body").animate({
-	        scrollTop: 0
-	    }, ms);
-	}
 
 	// trigger ajax request when searching
 	$("input[type='text'].search").on("keyup", function () {
@@ -65,6 +45,13 @@ $(document).ready(function() {
 			scrollUp(500);
 		}
 	});
+
+	//scrollup effect
+	function scrollUp(ms) {
+		$("html, body").animate({
+	        scrollTop: 0
+	    }, ms);
+	}
 
 	function resetFilter($this) {
 		var $target = $this.closest("div[ajax-route]");
@@ -180,6 +167,45 @@ $(document).ready(function() {
 		});
 	}
 
+// ticket page /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	$(".nav-tabs li").click(function(e) {
+		var target = $(this).find("a").attr("target");
+		console.log(target);
+		$(".nav-tabs li").removeClass("active");
+		$(this).addClass("active");
+		$("#tab_contents>div").css("display","none");
+		if ($("#"+target).length) {
+			$("#tab_contents #"+target).show(500);
+		}
+		return false;
+	})
+
+// company page /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//for expandable divs
+	$('.expander').click(function() {
+		var minus_icon = "fa fa-minus-square-o fa-2";
+		var plus_icon = "fa fa-plus-square-o fa-2";
+		var to_expand = $(this).next('.to_expand'),
+			expander = $(this);
+		
+		if (to_expand.css('display') == 'none')
+			expander.html(expander.html().replace('<i class="'+plus_icon+'"></i>','<i class="'+minus_icon+'"></i>'));
+		else 
+			expander.html(expander.html().replace('<i class="'+minus_icon+'"></i>','<i class="'+plus_icon+'"></i>'))
+
+		to_expand.toggle(500);
+	});
+
+// create contact ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// popover
+	$(function () {
+	  $('[data-toggle="popover"]').popover();
+	});
+
+	// removes link contact->person
 	$(".cancel").click(function () {
 	    $("#person_fn, #person_ln").prop("readonly",false);
 	    $("#person_id").prop("disabled",true);
@@ -188,11 +214,13 @@ $(document).ready(function() {
 	    $("#input_group_fn, #input_group_ln").removeClass("input-group");
 	});
 
+	// make popover disappear
 	$("#person_fn").on("keydown", function () {
-		$(this).tooltip('destroy');
-	})
+		$(this).popover('hide');
+	});
 
-	$("#person_fn, #person_ln").autocomplete({
+	// autocomplete for first and last name
+	$("#person_fn, #person_ln").devbridgeAutocomplete({
 
 	    serviceUrl: "/ajax/people",
 
@@ -211,4 +239,51 @@ $(document).ready(function() {
 	    }
 	});
 
+// create ticket page ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//ckeditor
+	if ($("textarea#post").length != 0) {
+		CKEDITOR.replace('post');
+	}
+
+	// feature to add tag ticket 
+	$('#tagit').tagsinput({
+		typeahead: {
+			displayText: function (item) {
+       			return item;
+      		},
+			source: function(query) {
+  				return $.getJSON('/ajax/tags?query='+query);
+  			}
+		}
+	});
+
+	// add bootstrap class to tag field in ticket form page
+	$(".bootstrap-tagsinput").addClass("col-xs-12");
+
+	// update fileds related to selection of company (like contacts, equipments, ...)
+	$(".ajax_trigger#company_id").on("change",function () {
+		var company_id = $(this).val();
+		
+		console.log(company_id);
+
+		$.get('/ajax/tickets/contacts/'+company_id, function (data) {
+			data = JSON.parse(data);
+			$('select#contact_id').html('');
+			$('select#contact_id').append('<option value="NULL">-</option>');
+			for (var i = 0; i<data.length; i++)
+				$('select#contact_id').append('<option value="'+data[i].id+'">'+data[i].last_name+' '+data[i].first_name+'</option>');
+		});
+
+		$.get('/ajax/tickets/equipments/'+company_id, function (data) {
+			data = JSON.parse(data);				
+			$('select#equipment_id').html('');
+			$('select#equipment_id').append('<option value="NULL">-</option>');
+			for (var i = 0; i<data.length; i++)
+				$('select#equipment_id').append('<option value="'+data[i].id+'">'+data[i].notes+'</option>');
+		});
+
+	});
+
 });
+

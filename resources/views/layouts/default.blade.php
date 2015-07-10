@@ -11,7 +11,13 @@
 	
 	@include('includes.menu')
 
+	<h2 id="title"> {!! isset($title) ? $title : "[missing page title]" !!} </h2> 
+
+	<hr>
+
 	@yield('content')
+
+	<hr>
 	
 </div>
 

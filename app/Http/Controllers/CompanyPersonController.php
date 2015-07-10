@@ -18,6 +18,9 @@ class CompanyPersonController extends Controller {
         $data['menu_actions'] = [Form::addItem(route('company_person.create',1), 'Add employee')];
 		$data['active_search'] = true;
 		$data['employees'] = CompanyPerson::where('company_id','=',1)->paginate(50);
+
+        $data['title'] = "Employees";
+
 		return view('company_person/index/employees',$data);
 	}
 
@@ -25,6 +28,9 @@ class CompanyPersonController extends Controller {
         $data['menu_actions'] = [Form::addItem(route('company_person.create',1), 'Add contact')];
 		$data['active_search'] = true;
 		$data['contacts'] = CompanyPerson::where('company_id','!=',1)->paginate(50);
+
+        $data['title'] = "Contacts";
+
 		return view('company_person/index/contacts',$data);
 	}
 
@@ -34,6 +40,9 @@ class CompanyPersonController extends Controller {
 			Form::deleteItem('company_person.destroy', $id, 'Remove this contact')
         ];
 		$data['company_person'] = CompanyPerson::find($id);
+
+        $data['title'] = $data['company_person']->person->name() . " @ " . $data['company_person']->company->name;
+
 		return view('company_person/show', $data);
 	}
 
@@ -42,6 +51,9 @@ class CompanyPersonController extends Controller {
 		$data['departments'] = Department::all();
 		$data['company'] = Company::find($id);
 		$data['company']->company_id = $data['company']->id;
+
+		$data['title'] = "Create Contact";
+
 		return view('company_person/create', $data);	
 	}
 
@@ -73,6 +85,9 @@ class CompanyPersonController extends Controller {
 		$data['titles'] = Title::all();
 		$data['departments'] = Department::all();		
 		$data['contact'] = CompanyPerson::find($id);
+
+		$data['title'] = "Edit Contact";
+
 		return view('company_person/edit', $data);	
 	}	
 
@@ -84,7 +99,6 @@ class CompanyPersonController extends Controller {
 
 	public function destroy($id) {
 		echo 'company person method to be implmented';
-		// return redirect()->route('company_person.show',$id);
 	}
 
 	public function ajaxEmployeesRequest($params = "") {
@@ -116,7 +130,7 @@ class CompanyPersonController extends Controller {
 
 		$data['employees'] = $employees;
 
-        return view('company_person/index/employees',$data);
+        return view('company_person/employees',$data);
 	}
 
 	public function ajaxContactsRequest($params = "") {
@@ -145,11 +159,9 @@ class CompanyPersonController extends Controller {
         }
 
 		//paginate
-		$contacts = $contacts->paginate(50);
+		$data['contacts'] = $contacts->paginate(50);
 
-		$data['contacts'] = $contacts;
-
-        return view('company_person/index/contacts',$data);
+        return view('company_person/contacts',$data);
 	}
 
 	public function ajaxPeopleRequest() {
@@ -171,7 +183,6 @@ class CompanyPersonController extends Controller {
 		return json_encode($result);
 
 	}
-
 }
 
 ?>

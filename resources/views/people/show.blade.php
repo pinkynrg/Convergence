@@ -5,13 +5,11 @@
 	<div class="media">
 		<div class="media-left media-middle">
 			<a href="#">
-				<img class="thumbnail" src="/images/avatar.png" alt="/images/avatar.png">
+				<img class="thumbnail thumb-md" src="{{ $person->image() }}" alt=" {{ $person->image() }} ">
 			</a>
 		</div>
 		
 		<div class="media-body">
-
-			<h3> {{ $person->name() }} </h3>
 
 			<table class="table table-striped table-condensed table-hover">
 				<thead>
@@ -22,6 +20,7 @@
 						<th>Department</th>
 						<th>Phone</th>
 						<th>Cell Phone</th>
+						<th>Email</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -35,6 +34,7 @@
 						<td> {{ isset($contact->department_id) ? $contact->department->name : '' }} </td>
 						<td> {!! $contact->phone() !!} </td>
 						<td> {!! $contact->cellphone() !!} </td>
+						<td> {!! $contact->email !!} </td>
 					</tr>
 
 					@endforeach

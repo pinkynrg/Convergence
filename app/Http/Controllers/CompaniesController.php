@@ -8,6 +8,7 @@ use Convergence\Models\Title;
 use Convergence\Models\Department;
 use Convergence\Models\Equipment;
 use Convergence\Models\Service;
+use Convergence\Models\SupportType;
 use Convergence\Models\CompanyPerson;
 use Convergence\Models\CompanyMainContact;
 use Convergence\Models\CompanyAccountManager;
@@ -21,9 +22,11 @@ class CompaniesController extends Controller {
 
 	public function index() {
         $data['companies'] = Company::paginate(50);
-		$data['title'] = "Convergence - Companies";
         $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
         $data['active_search'] = true;
+
+        $data['title'] = "Companies";
+
 		return view('companies/index', $data);
 	}
 
@@ -31,6 +34,10 @@ class CompaniesController extends Controller {
         $data['titles'] = Title::all();
         $data['departments'] = Department::all();
 		$data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
+        $data['support_types'] = SupportType::all();
+
+        $data['title'] = "Create Company";
+
 		return view('companies/create', $data);
 	}
 
@@ -70,6 +77,7 @@ class CompaniesController extends Controller {
 	}
 
 	public function show($id) {
+
         $data['menu_actions'] = [
             Form::deleteItem('companies.destroy', $id, 'Remove this company'),
             Form::editItem(route('companies.edit',$id), 'Edit this company'),
@@ -79,7 +87,9 @@ class CompaniesController extends Controller {
         $data['company']->contacts = CompanyPerson::where('company_person.company_id','=',$id)->paginate(10);
         $data['company']->tickets = Ticket::where('company_id','=',$id)->paginate(10);
         $data['company']->equipments = Equipment::where('company_id','=',$id)->paginate(10);
-        
+
+        $data['title'] = $data['company']->name;
+
         return view('companies/show',$data);
 	}
 
@@ -87,6 +97,10 @@ class CompaniesController extends Controller {
 		$data['company'] = Company::find($id);
         $data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
         $data['main_contacts'] = CompanyPerson::where('company_person.company_id','=',$id)->get();
+        $data['support_types'] = SupportType::all();
+
+        $data['title'] = "Edit " . $data['company']->name;
+
 		return view('companies/edit',$data);
 	}
 
@@ -123,19 +137,7 @@ class CompaniesController extends Controller {
 	}
 
 	public function destroy($id) {
-
         echo "company destroy method to be implement";
-        // Post::leftJoin('company_person','company_person.person_id','=','posts.author_id')->where('company_id','=',$id)->delete();
-        // Ticket::where('company_id','=',$id)->delete();
-        // Equipment::where('company_id','=',$id)->delete();
-        // Service::where('company_id','=',$id)->delete();
-        // add service techinician
-        // CompanyMainContact::where('company_id','=',$id)->delete();
-        // CompanyAccountManager::where('company_id','=',$id)->delete();
-        // CompanyPerson::where('company_id','=',$id)->delete();
-        // Person::leftJoin('company_person','company_person.person_id','=','people.id')->where('company_person.company_id','IS', DB::raw('null'))->delete();
-        // Company::find($id)->delete();
-		// return redirect()->route('companies.index');
 	}
 
     public function ajaxContactsRequest($company_id, $params = "") {
@@ -144,10 +146,10 @@ class CompaniesController extends Controller {
 
         $data['company'] = Company::find($company_id);
         
-        $contacts = CompanyPerson::select('company_person.*')
-                                 ->leftJoin('people','people.id','=','company_person.person_id')
-                                 ->leftJoin('company_main_contact', 'company_main_contact.main_contact_id','=','company_person.id')
-                                 ->where('company_person.company_id','=',$company_id);
+        $contacts = CompanyPerson::select('company_person.*');
+        $contacts->leftJoin('people','people.id','=','company_person.person_id');
+        $contacts->leftJoin('company_main_contact', 'company_main_contact.main_contact_id','=','company_person.id');
+        $contacts->where('company_person.company_id','=',$company_id);
 
         // apply ordering
         if (isset($params['order'])) {

@@ -3,17 +3,14 @@
 
 	@include('includes.errors')
 
-	{!! Form::open( array('route' => 'tickets.store', 'class' => 'form-horizontal' )) !!}
+	{!! Form::open( array('route' => 'tickets.store') ) !!}		
 
-		<div class="form">
-			{!! Form::BSGroup() !!}
+		@include('tickets.form')
 
-				{!! Form::BSLabel('title','Title') !!}
-				{!! Form::BSText('title', null) !!}			
-
-			{!! Form::BSEndGroup() !!}
+		<div class="row">
+			{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-12']) !!}
 		</div>
-
+		
 	{!! Form::close() !!}
 
 @endsection

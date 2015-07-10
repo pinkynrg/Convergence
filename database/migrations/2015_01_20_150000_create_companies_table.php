@@ -22,9 +22,15 @@ class CreateCompaniesTable extends Migration {
 			$table->string('state')->nullable();
 			$table->string('zip_code')->nullable();
 			$table->string('group_email')->nullable();
-			$table->string('airport')->nullable();
-			$table->string('plant_requirment')->nullable();
+			$table->integer('connection_type_id')->unsigned()->nullable();
+			$table->integer('support_type_id')->unsigned()->nullable();
 			$table->timestamps();
+		});
+
+
+		Schema::table('companies',function(Blueprint $table) {
+			$table->foreign('connection_type_id')->references('id')->on('connection_types');
+			$table->foreign('support_type_id')->references('id')->on('support_types');
 		});
 	}
 

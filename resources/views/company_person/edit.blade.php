@@ -6,8 +6,8 @@
 
 		{!! Form::BSGroup() !!}
 
-			{!! Form::BSLabel("name", "Person Name") !!}
-			{!! Form::BSText("name", $contact->person->name(), array('disabled', 'true')) !!}
+			{!! Form::BSLabel("name", "Person Name", ['bclass' => 'col-xs-2']) !!}
+			{!! Form::BSText("name", $contact->person->name(), ['bclass' => 'col-xs-3','disabled' => 'true']) !!}
 
 		{!! Form::BSEndGroup() !!}
 
@@ -15,8 +15,7 @@
 
 		{!! Form::BSGroup() !!}
 
-			{!! Form::BSFiller() !!}
-			{!! Form::BSSubmit("Submit") !!}
+			{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
 
 		{!! Form::BSEndGroup() !!}
 
