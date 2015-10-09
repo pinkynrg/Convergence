@@ -171,7 +171,6 @@ $(document).ready(function() {
 
 	$(".nav-tabs li").click(function(e) {
 		var target = $(this).find("a").attr("target");
-		console.log(target);
 		$(".nav-tabs li").removeClass("active");
 		$(this).addClass("active");
 		$("#tab_contents>div").css("display","none");

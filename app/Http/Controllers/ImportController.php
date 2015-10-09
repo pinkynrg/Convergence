@@ -239,6 +239,7 @@
 			if ($this->truncate($table) && $this->truncate('company_person')) {
 				$this->importEmployees();
 				$this->importContacts();
+				$this->setupActiveContact();
 			}
 		}
 
@@ -377,6 +378,21 @@
 
 			$this->logger($successes,$errors,$table);
 
+		}
+
+		private function setupActiveContact() {
+			$query = "SELECT u.id as user_id, cp.id as company_person_id FROM users u
+					INNER JOIN people p ON (u.person_id = p.id)
+					INNER JOIN company_person cp ON (p.id = cp.person_id)
+					GROUP BY u.id";
+
+			$result = mysqli_query($this->conn,$query);
+			while ($row = mysqli_fetch_array($result)) $users[] = $row;
+
+			foreach ($users as $u) {
+				$query = "UPDATE users SET active_contact_id = ".$u['company_person_id']." WHERE id  = ".$u['user_id'];
+				$result = mysqli_query($this->conn,$query);
+			}
 		}
 
 		private function importDepartments() {
@@ -1305,28 +1321,28 @@
 				}
 			}
 			else {
+				$this->importDepartments(); 				// 10/10
+				$this->importDivisions();					// 8/8
+				$this->importEquipmentTypes();				// 32/32
+				$this->importConnectionTypes();				// 2/2
+				$this->importSupportTypes();				// 7/7
+				$this->importJobTypes();					// 4/4
+				$this->importTags();
+				$this->importPriorities();					// 5/5
+				$this->importStatus();						// 7/7
+				$this->importTitles();						// 30/30
+				$this->importCompanies();					// 93/94 	ok 	delete customer with id = 208
+				$this->importPeople();						// 393/401 	ok
 				$this->updateImageDb();
-				// $this->importDepartments(); 				// 10/10
-				// $this->importDivisions();					// 8/8
-				// $this->importEquipmentTypes();				// 32/32
-				// $this->importConnectionTypes();				// 2/2
-				// $this->importSupportTypes();				// 7/7
-				// $this->importJobTypes();					// 4/4
-				// $this->importTags();
-				// $this->importTagTicket();
-				// $this->importPriorities();					// 5/5
-				// $this->importStatus();						// 7/7
-				// $this->importTitles();						// 30/30
-				// $this->importCompanies();					// 93/94 	ok 	delete customer with id = 208
-				// $this->importPeople();						// 393/401 	ok
 				// $this->fixCompanyPersonTable();				// 93/93
 				// $this->deleteBadE80PersonCompany();			// 111/111
 				// $this->deleteUnusedPeople();				// 52/52
 				// $this->importCompanyMainContacts();			// 15/18
-				// $this->setBlankMainContact();				// 25/79 ?
+				$this->setBlankMainContact();				// 25/79 ?
 				// $this->importCompanyAccountManagers();		// 73/76
-				// $this->importEquipments();					// 220/220
+				$this->importEquipments();					// 220/220
 				// $this->importTickets();						// 3034/3116
+				// $this->importTagTicket();
 				// $this->importPosts();						// 721 misses
 				// $this->importServices();
 				// $this->importUsers();

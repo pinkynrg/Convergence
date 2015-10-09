@@ -31,10 +31,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
-	public function type() 
+	public function owner()
 	{
-		return class_basename($this->owner_type);
-
+		return $this->belongsTo('Convergence\Models\Person','person_id');
 	}
 
 }

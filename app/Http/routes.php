@@ -17,7 +17,7 @@ Route::get('logout', array('uses' => 'LoginController@doLogout', 'as' => 'login.
 
 Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'importer.import']);
 
-// Route::group(array('middleware' => 'auth'), function() {
+Route::group(array('middleware' => 'auth'), function() {
 
 	Route::get('/', ['uses'=>'TicketsController@index', 'as'=>'root']);
 
@@ -39,6 +39,13 @@ Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'im
 	Route::match(['get','head'], 'contacts/{company_person_id}/edit', ['uses' => 'CompanyPersonController@edit', 'as' => 'company_person.edit']);
 	Route::match(['patch'], 'contacts/{company_person_id}', ['uses' => 'CompanyPersonController@update', 'as' => 'company_person.update']);
 	Route::match(['delete'], 'contacts/{company_person_id}', ['uses' => 'CompanyPersonController@destroy', 'as' => 'company_person.destroy']);
+	Route::match(['post'], 'post',['uses' => 'PostController@store', 'as' => 'post.store']);
+
+
+	// kcfinder routes
+	Route::match(['get'], 'kcfinder/browser',['uses' => 'KCFinderController@browse', 'as' => 'kcfinder.browse']);
+	Route::match(['get'], 'kcfinder/uploader',['uses' => 'KCFinderController@upload', 'as' => 'kcfinder.upload']);
+
 
 	// ajax routes
 	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);
@@ -53,4 +60,8 @@ Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'im
 	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
 	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);
 	Route::get('ajax/tickets/equipments/{company_id}', ['uses' => 'TicketsController@ajaxEquipmentsRequest', 'as' => 'json.tickets.equipments']);
-// });
+
+});
+
+
+

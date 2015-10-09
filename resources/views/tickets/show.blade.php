@@ -154,10 +154,21 @@
 		@endforeach
 	</div>
 
-		{!! Form::open(array('method' => 'POST') ) !!}
+		{!! Form::open(array('method' => 'POST', 'route' => 'post.store') ) !!}
+			
+			{!! Form::hidden("ticket_id", $ticket->id) !!}
+			{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
+			{!! Form::hidden("is_public", 1) !!}
+
 			{!! Form::BSGroup() !!}
 				{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
 			{!! Form::BSEndGroup() !!}
+
+			{!! Form::BSGroup() !!}
+				{!! Form::BSSubmit("Submit") !!}
+			{!! Form::BSEndGroup() !!}
+
 		{!! Form::close() !!}
 
 @endsection
+

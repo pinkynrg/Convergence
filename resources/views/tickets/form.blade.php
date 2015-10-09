@@ -4,7 +4,7 @@
 		@if (Route::currentRouteName() == "tickets.edit")
 			{!! Form::hidden("creator_id", null, array('id' => 'creator_id') ) !!}
 		@else
-			{!! Form::hidden("creator_id", 1082, array('id' => 'creator_id') ) !!}
+			{!! Form::hidden("creator_id", Auth::user()->active_contact_id, array('id' => 'creator_id') ) !!}
 		@endif
 
 		{!! Form::hidden("status_id", 1, array('id' => 'status_id') ) !!}

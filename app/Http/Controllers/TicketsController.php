@@ -257,7 +257,7 @@ class TicketsController extends Controller {
     }
 
     public function ajaxContactsRequest($id) {
-    	$contacts = CompanyPerson::select('company_person.*','people.*');
+    	$contacts = CompanyPerson::select('company_person.id','people.first_name','people.last_name');
     	$contacts->leftJoin('people','company_person.person_id','=','people.id');
     	$contacts->where('company_id','=',$id);
     	$contacts->orderByRaw("case when people.last_name is null then 1 else 0 end asc");

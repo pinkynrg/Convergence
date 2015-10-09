@@ -16,6 +16,7 @@ class CreateUsersTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('person_id');
+			$table->string('active_contact_id')->nullable();
 			$table->string('username')->unique();
 			$table->string('password', 60);
 			$table->rememberToken();
