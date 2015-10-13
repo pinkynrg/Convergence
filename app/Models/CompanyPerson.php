@@ -1,8 +1,11 @@
 <?php namespace Convergence\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class CompanyPerson extends Model {
+
+	use EntrustUserTrait;
 
 	protected $table = 'company_person';
 

@@ -239,7 +239,6 @@
 			if ($this->truncate($table) && $this->truncate('company_person')) {
 				$this->importEmployees();
 				$this->importContacts();
-				$this->setupActiveContact();
 			}
 		}
 
@@ -381,6 +380,9 @@
 		}
 
 		private function setupActiveContact() {
+			
+			$users = [];
+
 			$query = "SELECT u.id as user_id, cp.id as company_person_id FROM users u
 					INNER JOIN people p ON (u.person_id = p.id)
 					INNER JOIN company_person cp ON (p.id = cp.person_id)
@@ -616,7 +618,60 @@
 		}
 
 		private function importEquipments() {
+			$this->importEquipmentsFromConvergence();
+			$this->importEquipmentsFromSap();
+		}
 
+		private function importEquipmentsFromSap()
+		{
+			$query = "SELECT M.*, D.`company_id`
+					FROM asmacchina AS M
+					INNER JOIN
+						(SELECT company_id, cc_number, CONCAT('CC',LPAD(cc_number, 3, '0')) AS 'd1'
+						FROM equipments
+						WHERE cc_number != '' AND cc_number IS NOT NULL
+						AND cc_number REGEXP '^-?[0-9]+$'
+						GROUP BY cc_number) AS D ON D.d1 = M.`PROJECT_ID` COLLATE utf8_unicode_ci
+					ORDER BY cc_number DESC, `PROJECT_ID`";
+
+			$result = mysqli_query($this->conn,$query);
+
+			while ($temp = mysqli_fetch_object($result)) $equipments[] = $temp;
+
+			$counter = 0;
+
+			foreach ($equipments as $equipment) {
+
+				$query = "SELECT * FROM equipments 
+						  WHERE serial_number = '".$equipment->MATERIAL."' AND CONCAT('CC',LPAD(cc_number, 3, '0')) = '".$equipment->PROJECT_ID."' COLLATE utf8_unicode_ci LIMIT 1";
+
+				$result = mysqli_query($this->conn,$query);
+				$record = mysqli_fetch_assoc($result);
+
+				if (isset($record)) {
+
+					$query = "UPDATE equipments 
+								SET name = '".$equipment->DESCRIPTION."',
+								cc_number = '".$equipment->PROJECT_ID."',
+								serial_number = '".$equipment->MATERIAL."',
+								company_id = '".$equipment->company_id."',
+								notes = '".$equipment->DESCRIPTION."'
+								WHERE id = '".$record['id']."' LIMIT 1";
+
+					$result = mysqli_query($this->conn,$query);
+				}
+				else {
+
+					$query = "INSERT INTO equipments (name, cc_number, serial_number, company_id, notes, equipment_type_id) 
+				 			VALUES ('".$equipment->DESCRIPTION."','".$equipment->PROJECT_ID."','".$equipment->MATERIAL."','".$equipment->company_id."','".$equipment->DESCRIPTION."',30)";
+
+				 	$result = mysqli_query($this->conn,$query);
+				 }
+			}
+		}
+
+		private function importEquipmentsFromConvergence() 
+		{
 			$table = 'equipments';
 			$successes = $errors = 0;
 			
@@ -647,7 +702,6 @@
 				$this->logger($successes,$errors,$table);
 
 			}
-
 		}
 
 		private function importEquipmentTypes() {
@@ -1248,35 +1302,33 @@
 			}
 		}
 
-		// public function importPictures() {
-			// $query = "SELECT id, first_name, last_name FROM people WHERE image IS NULL OR image = ''";
-			// $result = mysqli_query($this->conn,$query);
-			// while ($row = mysqli_fetch_array($result)) $people[] = $row;
+		public function importPictures() {
+			$query = "SELECT id, first_name, last_name FROM people WHERE image IS NULL OR image = ''";
+			$result = mysqli_query($this->conn,$query);
+			while ($row = mysqli_fetch_array($result)) $people[] = $row;
 
-		// 	foreach ($people as $person) {
+			foreach ($people as $person) {
 
-		// 		$host = "http://srv-e80int2/_layouts/searchresults.aspx?k=".$person['first_name']."%20".$person['last_name']."&u=http%3A%2F%2Fsrv-e80int2%2FLists%2FAddress%20Book";
-		// 		$username = "meli.f";
-		// 		$password = "El0414Fm";
+				$host = "http://srv-e80int2/_layouts/searchresults.aspx?k=".$person['first_name']."%20".$person['last_name']."&u=http%3A%2F%2Fsrv-e80int2%2FLists%2FAddress%20Book";
+				$username = "meli.f";
+				$password = "El0414Fm";
 
-		// 		$process = curl_init($host);
-		// 		curl_setopt($process, CURLOPT_HTTPHEADER, array('Content-Type: application/xml','Content-Length: 55649'));
-		// 		curl_setopt($process, CURLOPT_HEADER, 1);
-		// 		curl_setopt($process, CURLOPT_USERPWD, $username . ":" . $password);
-		// 		curl_setopt($process, CURLOPT_TIMEOUT, 30);
-		// 		curl_setopt($process, CURLOPT_POST, 1);
-		// 		// curl_setopt($process, CURLOPT_POSTFIELDS, $payloadName);
-		// 		curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
-		// 		$return = curl_exec($process);
-		// 		curl_close($process);
-
-		// 		print_r($return);
-
-		// 		die();
-		// 	}
-		// }
+				$process = curl_init($host);
+				curl_setopt($process, CURLOPT_HTTPHEADER, array('Content-Type: application/xml','Content-Length: 55649'));
+				curl_setopt($process, CURLOPT_HEADER, 1);
+				curl_setopt($process, CURLOPT_USERPWD, $username . ":" . $password);
+				curl_setopt($process, CURLOPT_TIMEOUT, 30);
+				curl_setopt($process, CURLOPT_POST, 1);
+				curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
+				$return = curl_exec($process);
+				curl_close($process);
+			}
+		}
 
 		public function updateImageDb() {
+
+			$people = [];
+
 			$query = "SELECT id FROM people WHERE image IS NOT NULL AND image != ''";
 			$result = mysqli_query($this->conn,$query);
 			while ($row = mysqli_fetch_array($result)) $people[] = $row;
@@ -1334,18 +1386,24 @@
 				$this->importCompanies();					// 93/94 	ok 	delete customer with id = 208
 				$this->importPeople();						// 393/401 	ok
 				$this->updateImageDb();
-				// $this->fixCompanyPersonTable();				// 93/93
-				// $this->deleteBadE80PersonCompany();			// 111/111
-				// $this->deleteUnusedPeople();				// 52/52
-				// $this->importCompanyMainContacts();			// 15/18
+				$this->fixCompanyPersonTable();				// 93/93
+				$this->deleteBadE80PersonCompany();			// 111/111
+				$this->deleteUnusedPeople();				// 52/52
+				$this->importCompanyMainContacts();			// 15/18
 				$this->setBlankMainContact();				// 25/79 ?
-				// $this->importCompanyAccountManagers();		// 73/76
+				$this->importCompanyAccountManagers();		// 73/76
 				$this->importEquipments();					// 220/220
-				// $this->importTickets();						// 3034/3116
-				// $this->importTagTicket();
-				// $this->importPosts();						// 721 misses
-				// $this->importServices();
-				// $this->importUsers();
+				$this->importTickets();						// 3034/3116
+				$this->importTagTicket();
+				$this->importPosts();						// 721 misses
+				$this->importServices();
+				$this->importUsers();
+				$this->importTicketsHistory();
+				$this->setupActiveContact();
+				$this->importEquipmentsFromSap();
+				$this->importPictures();
+
+
 			}
 		}
 	}

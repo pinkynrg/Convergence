@@ -14,11 +14,7 @@
 		@include('people.create')
 		@include('company_person.form')
 		
-		{!! Form::BSGroup() !!}
-
-			{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
-
-		{!! Form::BSEndGroup() !!}
+		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
 
 	{!! Form::close() !!}
 

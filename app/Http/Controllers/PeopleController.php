@@ -5,6 +5,7 @@ use Convergence\Models\CompanyPerson;
 use Convergence\Models\CompanyMainContact;
 use Convergence\Models\CompanyAccountManager;
 use Convergence\Models\Person;
+use Convergence\Models\User;
 use Convergence\Models\Department;
 use Convergence\Models\Title;
 use Convergence\Http\Requests\CreatePersonRequest;
@@ -29,7 +30,6 @@ class PeopleController extends Controller {
 
 	public function edit($id) {
 		$data['person'] = Person::find($id);
-
 		$data['title'] = $data['person']->name() . " - Edit";
 
 		return view('people/edit', $data);	

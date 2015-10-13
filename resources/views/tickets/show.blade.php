@@ -130,12 +130,33 @@
 		</div>
 
 	</div>
+	
+	<h3 id="write_post"> Write a post </h3>
+
+	{!! Form::open(array('method' => 'POST', 'route' => 'post.store') ) !!}
+		
+		{!! Form::hidden("ticket_id", $ticket->id) !!}
+		{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
+		{!! Form::hidden("is_public", 1) !!}
+
+		{!! Form::BSGroup() !!}
+			{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
+		{!! Form::BSEndGroup() !!}
+
+		{!! Form::BSGroup() !!}
+			{!! Form::BSSubmit("Submit") !!}
+		{!! Form::BSEndGroup() !!}
+
+	{!! Form::close() !!}
 
 	<div class="navb">
 		<div class="title"><i class="fa fa-bars"></i> All Posts</div>
 	</div>
-	
+
 	<div id="posts_container">
+
+	@if (count($ticket->posts))
+
 		@foreach ($ticket->posts as $post) 
 
 			<div class="media post">
@@ -152,23 +173,15 @@
 			</div>
 
 		@endforeach
+
+	@else
+
+		@include('includes.no-contents')
+
+	@endif
+
 	</div>
 
-		{!! Form::open(array('method' => 'POST', 'route' => 'post.store') ) !!}
-			
-			{!! Form::hidden("ticket_id", $ticket->id) !!}
-			{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
-			{!! Form::hidden("is_public", 1) !!}
-
-			{!! Form::BSGroup() !!}
-				{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
-			{!! Form::BSEndGroup() !!}
-
-			{!! Form::BSGroup() !!}
-				{!! Form::BSSubmit("Submit") !!}
-			{!! Form::BSEndGroup() !!}
-
-		{!! Form::close() !!}
-
 @endsection
+
 

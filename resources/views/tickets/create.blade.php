@@ -7,9 +7,7 @@
 
 		@include('tickets.form')
 
-		<div class="row">
-			{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-12']) !!}
-		</div>
+		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-12']) !!}
 		
 	{!! Form::close() !!}
 

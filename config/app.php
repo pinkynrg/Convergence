@@ -150,6 +150,7 @@ return [
 		'Convergence\Providers\ConfigServiceProvider',
 		'Convergence\Providers\EventServiceProvider',
 		'Convergence\Providers\RouteServiceProvider',
+		'Zizaco\Entrust\EntrustServiceProvider',
 
 	],
 
@@ -205,7 +206,7 @@ return [
 
 		'Form'		=> 'Illuminate\Html\FormFacade', 
 		'HTML'		=> 'Illuminate\Html\HtmlFacade',
-		'Countries' => 'Webpatser\Countries\CountriesFacade'	
+		'Entrust' 	=> 'Zizaco\Entrust\EntrustFacade'
 	],
 
 ];

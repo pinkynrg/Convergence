@@ -10,14 +10,14 @@ use Convergence\Http\Requests\UpdateCompanyPersonRequest;
 use Input;
 use Form;
 use DB;
-
+use Auth;
 
 class CompanyPersonController extends Controller {
 
 	public function employees() {
         $data['menu_actions'] = [Form::addItem(route('company_person.create',1), 'Add employee')];
 		$data['active_search'] = true;
-		$data['employees'] = CompanyPerson::where('company_id','=',1)->paginate(50);
+		$data['employees'] = CompanyPerson::where('company_id','=',Auth::user()->active_contact()->company_id)->paginate(50);
 
         $data['title'] = "Employees";
 
@@ -31,7 +31,7 @@ class CompanyPersonController extends Controller {
 
         $data['title'] = "Contacts";
 
-		return view('company_person/index/contacts',$data);
+		return Auth::user()->active_contact()->can('see-all-tickets') ? view('company_person/index/contacts',$data) : 'access denied';
 	}
 
 	public function show($id) {

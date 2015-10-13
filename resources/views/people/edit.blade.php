@@ -14,9 +14,7 @@
 			{!! Form::BSText("last_name", null, ['bclass' => 'col-xs-3']) !!}
 		{!! Form::BSEndGroup() !!}
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSSubmit("Submit", ['bclass' => 'col-xs-offset-2']) !!}
-		{!! Form::BSEndGroup() !!}
+		{!! Form::BSSubmit("Submit", ['bclass' => 'col-xs-offset-2']) !!}
 
 	{!! Form::close() !!}
 

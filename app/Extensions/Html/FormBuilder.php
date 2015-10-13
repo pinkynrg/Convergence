@@ -120,11 +120,8 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 	public function BSSubmit($value = null, $options = array()) {
 		$bootstrap_class = "btn btn-default";
-		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "col-xs-12";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
-		$submit = "<div class='".$options['bclass']."'>";
-		$submit .= $this->submit($value, $options);
-		$submit .= "</div>";
+		$submit = $this->submit($value, $options);
 		return $submit;
 	}
 

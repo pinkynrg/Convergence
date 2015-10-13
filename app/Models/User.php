@@ -1,5 +1,6 @@
 <?php namespace Convergence\Models;
 
+use Convergence\Models\CompanyPerson;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -34,6 +35,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function owner()
 	{
 		return $this->belongsTo('Convergence\Models\Person','person_id');
+	}
+
+	public function active_contact()
+	{
+		return CompanyPerson::find($this->active_contact_id);
 	}
 
 }
