@@ -12,7 +12,9 @@
 <script type="text/javascript" src="/javascript/bootstrap3-typeahead.min.js"></script>
 <script type="text/javascript" src="/javascript/bootstrap-tagsinput.min.js"></script>
 <script src="/javascript/script.js" type="text/javascript"></script>
-
+<!-- <script src="/javascript/highcharts.js"></script> -->
+<script src="/javascript/highstocks.js"></script>
+<script src="/javascript/highcharts.3d.js"></script>
 <!-- Stylesheets -->
 <link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/font-awesome.min.css">

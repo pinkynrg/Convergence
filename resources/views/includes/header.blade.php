@@ -5,13 +5,15 @@
 	</div>
 
 	@if (Auth::check())
-	       <div id="login_panel">
-	               <div id="loginfo">
-	                       <div> {{ 'Hello '.Auth::user()->owner->name() }} </div>
-	                       <div> <a href="/logout"> Logout </a> </div>
-	               </div>
-	               <img src="/images/login.png">
-	       </div>
+		<div id="login_panel">
+			<div id="loginfo">
+				<div> {{ 'Hello '.Auth::user()->owner->name() }} </div>
+				<div> <a href="/logout"> Logout </a> </div>
+			</div>
+			<div id="login_panel_thumb">				
+				<img src="{!! Auth::user()->owner->image() !!}">
+			</div>
+		</div>
 	@endif
-	
+
 </div>

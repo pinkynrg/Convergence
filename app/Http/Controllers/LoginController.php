@@ -16,7 +16,13 @@ class LoginController extends Controller {
 
 	public function showLogin()
 	{
-	    return view('login/login');
+		if (Auth::check()) {
+			return redirect()->route('root');
+		}
+		else {
+			$data['title'] = 'login';
+	    	return view('login/login',$data);
+		}
 	}
 
 	public function doLogin(LoginRequest $request)
@@ -26,7 +32,7 @@ class LoginController extends Controller {
 		$password = Input::get('password');
 
 		if (Auth::attempt(array('username' => $username, 'password' => $password), true)) {
-			return redirect()->route('tickets.index');
+			return redirect()->route('root');
 		}
 
 		else {
@@ -42,7 +48,8 @@ class LoginController extends Controller {
 
 	public function doLogout() {
 		Auth::logout();
-		return view('login.login');
+		$data['title'] = 'login';
+		return view('login.login',$data);
 	}
 }
 

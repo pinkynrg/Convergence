@@ -39,7 +39,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function active_contact()
 	{
-		return CompanyPerson::find($this->active_contact_id);
+		return $this->belongsTo('Convergence\Models\CompanyPerson','active_contact_id');
 	}
 
 }

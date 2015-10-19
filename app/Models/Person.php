@@ -13,6 +13,10 @@ class Person extends Model {
 		return $this->hasMany('Convergence\Models\CompanyPerson');
 	} 
 
+	public function user() {
+		return $this->hasOne('Convergence\Models\User');
+	}
+
 	public function name() {
 		$this->first_name = $this->first_name ? $this->first_name : '[first name missing]';
 		$this->last_name = $this->last_name ? $this->last_name : '[last name missing]';

@@ -57,11 +57,19 @@ input[disabled], textarea[disabled], select[disabled] {
   margin: 0px auto 30px auto;
 }
 
-#login_panel img {
+#login_panel_thumb {
   height: 80px;
+  width: 80px;
   border-radius: 50%;
   float:left;
   margin-left: 10px;
+  overflow: hidden;
+}
+
+#login_panel_thumb img {
+  text-align: center;
+  vertical-align: center;
+  width: inherit;
 }
 
 #login_panel #loginfo {
@@ -83,7 +91,7 @@ input[disabled], textarea[disabled], select[disabled] {
 .wrapper {
   min-width: 450px;
 	width: 95%;
-	padding: 10px;
+	padding-top: 15px;
 	/*overflow: hidden;*/
 	moz-box-shadow: 0 1px 5px rgba(0,0,0,.6);
   -webkit-box-shadow: 0 1px 5px rgba(0,0,0,.6);
@@ -516,4 +524,32 @@ a:visited, a:link, a:active, a:visited {
     .collapsing {
         overflow: hidden!important;
     }
+}
+
+/*dashboard*/
+
+#dashboard_container {
+  margin: 0px 10px;
+}
+
+#user_tickets_table, #user_tickets_involvement_table {
+  margin-top: 35px;
+}
+
+#user_tickets_chart, #user_tickets_involvement {
+  height: 300px;
+}
+
+#dashboard_thumb img {
+  width: 100%;
+}
+
+#dashboard_contact_details {
+  font-size: 15px;
+}
+
+#dashboard_contact_info {
+  padding: 20px 10px;
+  background-color: #DDECFF;
+  border: 1px solid #B3CFF3;
 }

@@ -19,7 +19,7 @@ Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'im
 
 Route::group(array('middleware' => 'auth'), function() {
 
-	Route::get('/', ['uses'=>'TicketsController@index', 'as'=>'root']);
+	Route::get('/', ['uses'=>'DashboardController@dashboardLoggedContact', 'as'=>'root']);
 
 	Route::resource('companies','CompaniesController');
 	Route::resource('tickets','TicketsController');
@@ -46,6 +46,10 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::match(['get'], 'kcfinder/browser',['uses' => 'KCFinderController@browse', 'as' => 'kcfinder.browse']);
 	Route::match(['get'], 'kcfinder/uploader',['uses' => 'KCFinderController@upload', 'as' => 'kcfinder.upload']);
 
+	//charts
+	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);
+	Route::match(['get'], 'dashboard/{contact_id}', ['uses' => 'DashboardController@dashboardContact', 'as' => 'dashboard.show']);
+	Route::match(['get'], 'statistics', ['uses' => 'StatisticsController@index', 'as' => 'statistics.index']);
 
 	// ajax routes
 	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);

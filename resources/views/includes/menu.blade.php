@@ -1,9 +1,16 @@
-<?php $menu_voices = ['<i class="fa fa-users"></i> Companies' => route('companies.index'),
+<?php 
+
+$menu_voices = [
+				'<i class="fa fa-dashboard"></i> Dashboard' => route('dashboard.logged'),
+				'<i class="fa fa-users"></i> Companies' => route('companies.index'),
 				'<i class="fa fa-suitcase"></i> Employees' => route('company_person.employees'),
 				'<i class="fa fa-gear"></i> Equipments' => route('equipments.index'),
 				'<i class="fa fa-ticket"></i> Tickets' => route('tickets.index'),
-				'<i class="fa fa-tasks"></i> Queues' => '#',
-				'<i class="fa fa fa-line-chart"></i> Statistics' => '#'];?>
+				// '<i class="fa fa-tasks"></i> Queues' => '#',
+				'<i class="fa fa fa-line-chart"></i> Statistics' => route('statistics.index')
+];
+
+?>
 
 <nav class="navbar navbar-default">
 
