@@ -3,12 +3,12 @@
 @section('content')
 
 	<div class="row">
-		<div class="col-xs-6">
+		<div class="col-xs-5">
 			<div id="tickets_status_chart"> <!-- here goes the chart --> </div>
 		</div>
-		<div class="col-xs-6">
+		<div class="col-xs-7">
 			
-			<table class="table table-hover table-striped table-condensed" id="tickets_table">
+			<table class="table table-hover table-striped table-condensed" id="tickets_status_table">
 				<thead>
 					<tr>
 						<th>Ticket Status</th>
@@ -32,12 +32,12 @@
 	<hr>
 
 	<div class="row">
-		<div class="col-xs-6">
+		<div class="col-xs-5">
 			<div id="tickets_division_chart"> <!-- here goes the chart --> </div>
 		</div>
-		<div class="col-xs-6">
+		<div class="col-xs-7">
 			
-			<table class="table table-hover table-striped table-condensed" id="tickets_table">
+			<table class="table table-hover table-striped table-condensed" id="tickets_division_table">
 				<thead>
 					<tr>
 						<th>Ticket Division</th>

@@ -17,7 +17,7 @@ class CompanyPersonController extends Controller {
 	public function employees() {
         $data['menu_actions'] = [Form::addItem(route('company_person.create',1), 'Add employee')];
 		$data['active_search'] = true;
-		$data['employees'] = CompanyPerson::where('company_id','=',Auth::user()->active_contact()->company_id)->paginate(50);
+		$data['employees'] = CompanyPerson::where('company_id','=',Auth::user()->active_contact->company_id)->paginate(50);
 
         $data['title'] = "Employees";
 
@@ -31,7 +31,7 @@ class CompanyPersonController extends Controller {
 
         $data['title'] = "Contacts";
 
-		return Auth::user()->active_contact()->can('see-all-tickets') ? view('company_person/index/contacts',$data) : 'access denied';
+		return view('company_person/index/contacts',$data);
 	}
 
 	public function show($id) {

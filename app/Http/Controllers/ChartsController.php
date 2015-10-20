@@ -15,7 +15,7 @@ class ChartsController extends Controller {
 			$record = new \stdClass(); 
 			$record->name = $ticket_status->name;
 			$record->number = DB::table('tickets')->where('assignee_id',$contact_id)->where('status_id',$ticket_status->id)->count();			
-			$record->percentage = round($record->number*100/$total,2);
+			$record->percentage = $total ? round($record->number*100/$total,2) : 0;
 			$data[] = $record;
 		}
 

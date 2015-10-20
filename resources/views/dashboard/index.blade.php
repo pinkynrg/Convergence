@@ -9,10 +9,10 @@
 						<img src="{{ $contact->person->image() }}">
 					</div>
 					<div id="dashboard_contact_details">
-						<div> <b>Name:</b> {{ $contact->person->name() }} </div>
-						<div> <b>Username:</b> {{ $contact->person->user->username }} </div>
-						<div> <b>Department: </b> {{ $contact->department->name }} </div>
-						<div> <b>Title:</b> {{ $contact->title->name }}</div>
+						<div> <b>Name: </b> {{ $contact->person->name() }} </div>
+						<div> <b>Username: </b> {{ $contact->person->user->username }} </div>
+						<div> <b>Department: </b> {{ isset($contact->department_id) ? $contact->department->name : '' }} </div>
+						<div> <b>Title: </b> {{ isset($contact->title_id) ? $contact->title->name : '' }}</div>
 					</div>
 				</div>
 			</div>
@@ -48,7 +48,7 @@
 
 				<div class="row">
 					<div class="col-xs-7">
-						<div class="" id="user_tickets_involvement"> <!-- here goes the chart --> </div>
+						<div class="" id="user_tickets_involvement_chart"> <!-- here goes the chart --> </div>
 					</div>
 					<div class="col-xs-5">
 						<table class="table table-hover table-striped table-condensed" id="user_tickets_involvement_table">
@@ -76,7 +76,7 @@
 
 	<script type="text/javascript">
 		$('#user_tickets_chart').highcharts({!! $user_tickets_status !!});
-		$('#user_tickets_involvement').highcharts({!! $user_tickets_involvement !!});
+		$('#user_tickets_involvement_chart').highcharts({!! $user_tickets_involvement !!});
 	</script>
 
 @endsection

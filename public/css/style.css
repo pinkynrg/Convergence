@@ -532,11 +532,11 @@ a:visited, a:link, a:active, a:visited {
   margin: 0px 10px;
 }
 
-#user_tickets_table, #user_tickets_involvement_table {
+#user_tickets_table, #user_tickets_involvement_table, #tickets_status_table, #tickets_division_table {
   margin-top: 35px;
 }
 
-#user_tickets_chart, #user_tickets_involvement {
+#user_tickets_chart, #user_tickets_involvement_chart, #tickets_status_chart, #tickets_division_chart {
   height: 300px;
 }
 
