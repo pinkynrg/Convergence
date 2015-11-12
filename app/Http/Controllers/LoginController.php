@@ -5,6 +5,7 @@ use Input;
 use Auth;
 use Hash;
 use Convergence\Models\User;
+use Convergence\Models\CompanyPerson;
 
 class LoginController extends Controller {
 
@@ -32,6 +33,14 @@ class LoginController extends Controller {
 		$password = Input::get('password');
 
 		if (Auth::attempt(array('username' => $username, 'password' => $password), true)) {
+			
+			if (is_null(Auth::user()->active_contact_id)) {
+				$user = User::find(Auth::user()->id);
+				$contact = CompanyPerson::where('person_id',Auth::user()->person_id)->first();
+				$user->active_contact_id = $contact->id;
+				$user->save();
+			}
+
 			return redirect()->route('root');
 		}
 
@@ -39,10 +48,12 @@ class LoginController extends Controller {
 			
 			$user = User::where('username','=',$username)->where('password','=',md5($password))->first();
 
-			if (!is_null($user))
+			if (!is_null($user)) {
 				return $this->MD5ToHASHLaravelConversion($request, $user,$password);
-			else
+			}
+			else {
 				return redirect()->route('login.index')->withErrors(array('The username or the password are incorrect'));
+			}
 		}
 	}
 
