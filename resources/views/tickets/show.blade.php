@@ -133,7 +133,7 @@
 	
 	<h3 id="write_post"> Write a post </h3>
 
-	{!! Form::open(array('method' => 'POST', 'route' => 'post.store') ) !!}
+	{!! Form::open(array('method' => 'POST', 'route' => 'posts.store') ) !!}
 		
 		{!! Form::hidden("ticket_id", $ticket->id) !!}
 		{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
