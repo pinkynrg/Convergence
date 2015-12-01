@@ -1,5 +1,6 @@
 <?php namespace Convergence\Models;
 
+use DB;
 use Convergence\Models\CompanyPerson;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -40,6 +41,33 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function active_contact()
 	{
 		return $this->belongsTo('Convergence\Models\CompanyPerson','active_contact_id');
+	}
+
+	public function can($action)
+	{
+		$result = DB::table('users')
+		->join('company_person','users.active_contact_id','=','company_person.id')
+		->join('groups','groups.id','=','company_person.group_id')
+		->join('group_role','group_role.group_id','=','groups.id')
+		->join('roles','roles.id','=','group_role.role_id')
+		->join('permission_role','permission_role.role_id','=','roles.id')
+		->join('permissions','permissions.id','=','permission_role.permission_id')
+		->where('permissions.name','=',$action)
+		->where('company_person.id','=',$this->active_contact_id)
+		->count();
+
+		return $result ? true : false;
+	}
+
+	public function inGroup($group)
+	{
+		$result = DB::table('users')
+		->join('company_person','users.active_contact_id','=','company_person.id')
+		->join('groups','groups.id','=','company_person.group_id')
+		->where('groups.name','=',$group)
+		->count();
+
+		return $result ? true : false;
 	}
 
 }

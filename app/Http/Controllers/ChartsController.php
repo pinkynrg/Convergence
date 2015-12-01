@@ -7,7 +7,7 @@ use DB;
 class ChartsController extends Controller {
 
 	public static function userTicketsStatusData($contact_id) {
-		
+		$data = array();
 		$ticket_statuses = DB::table('statuses')->get();
 		$total = DB::table('tickets')->where('assignee_id',$contact_id)->count();
 
@@ -48,6 +48,7 @@ class ChartsController extends Controller {
 
 	public static function userTicketsInvolvementData($contact_id) {
 		
+		$data = array();
 		$ticket_involvements = ['Assigned','Issued','Commented','Unread'];
 
 		foreach ($ticket_involvements as $key => $value) {
@@ -95,6 +96,7 @@ class ChartsController extends Controller {
 
 	public static function ticketsStatusData() {
 		
+		$data = array();
 		$ticket_statuses = DB::table('statuses')->get();
 		$total = DB::table('tickets')->count();
 
@@ -102,7 +104,7 @@ class ChartsController extends Controller {
 			$record = new \stdClass(); 
 			$record->name = $ticket_status->name;
 			$record->number = DB::table('tickets')->where('status_id',$ticket_status->id)->count();			
-			$record->percentage = round($record->number*100/$total,2);
+			$record->percentage = $total ? round($record->number*100/$total,2) : 0;
 			$data[] = $record;
 		}
 
@@ -135,6 +137,7 @@ class ChartsController extends Controller {
 
 	public static function ticketsDivisionData() {
 		
+		$data = array();
 		$ticket_divisions = DB::table('divisions')->get();
 		$ticket_statuses = DB::table('statuses')->get();
 
@@ -144,14 +147,14 @@ class ChartsController extends Controller {
 			$record = new \stdClass(); 
 			$record->name = $ticket_division->name;
 			$record->number = DB::table('tickets')->where('division_id',$ticket_division->id)->count();			
-			$record->percentage = round($record->number*100/$total,2);
+			$record->percentage = $total ? round($record->number*100/$total,2) : 0;
 			$record->details = array();
 			
 			foreach ($ticket_statuses as $ticket_status) {
 				$detail = new \stdClass();
 				$detail->name = $ticket_status->name;
 				$detail->number = DB::table('tickets')->where('division_id',$ticket_division->id)->where('status_id',$ticket_status->id)->count();
-				$detail->percentage = round($detail->number*100/$record->number,2);
+				$detail->percentage = $total ? round($detail->number*100/$record->number,2) : 0;
 				$record->details[] = $detail;
 			}
 

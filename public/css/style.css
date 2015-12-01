@@ -15,7 +15,6 @@ input[disabled], textarea[disabled], select[disabled] {
   background-color: #DDD !important;
 }
 
-
 .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
   width: 155px;
 }
@@ -91,8 +90,8 @@ input[disabled], textarea[disabled], select[disabled] {
 .wrapper {
   min-width: 450px;
 	width: 95%;
-	padding-top: 15px;
-	/*overflow: hidden;*/
+  /* bad for 3d table matrix */
+	padding-top: 15px;                                 
 	moz-box-shadow: 0 1px 5px rgba(0,0,0,.6);
   -webkit-box-shadow: 0 1px 5px rgba(0,0,0,.6);
   box-shadow: 0 1px 5px rgba(0,0,0,.6);
@@ -100,7 +99,6 @@ input[disabled], textarea[disabled], select[disabled] {
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	background-color: #FFF;
-  /*opacity : 0.97;*/
 }
 
 h2#title {
@@ -552,4 +550,50 @@ a:visited, a:link, a:active, a:visited {
   padding: 20px 10px;
   background-color: #DDECFF;
   border: 1px solid #B3CFF3;
+}
+.extra {
+  overflow-x: auto;
+}
+
+/*rotated table headers*/
+.table-header-rotated {
+  border-collapse: collapse;
+}
+.csstransforms .table-header-rotated td {
+  width: 30px;
+}
+.no-csstransforms .table-header-rotated th {
+  padding: 5px 10px;
+}
+.table-header-rotated td {
+  text-align: center;
+  padding: 10px 5px!important;
+  border: 1px solid #ccc;
+}
+.csstransforms .table-header-rotated th.rotate {
+  height: 140px;
+  white-space: nowrap;
+}
+.csstransforms .table-header-rotated th.rotate > div {
+  -webkit-transform: translate(22px, 51px) rotate(-45deg);
+  -ms-transform: translate(22px, 51px) rotate(-45deg);
+  transform: translate(22px, 51px) rotate(-45deg);
+  width: 30px;
+}
+.csstransforms td {
+    width: 50px;
+}
+.csstransforms .table-header-rotated th.rotate > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
+}
+.table-header-rotated th.row-header {
+  padding: 0 10px;
+  border-bottom: 1px solid #ccc!important;
+  font-weight: bold!important;
+  background-color: #FFF;
+}
+
+.csstransforms thead tr {
+  background-color: #FFF;
 }

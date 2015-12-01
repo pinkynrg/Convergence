@@ -276,8 +276,8 @@
 				VALUES (".$e['Id'].",".$e['First_Name'].",".$e['Last_Name'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 
 				if (mysqli_query($this->conn,$query) === TRUE) {
-					$query = "INSERT INTO company_person (person_id, company_id, department_id, title_id,phone,extension,cellphone,email) VALUES 
-					(".$e['Id'].",'".ELETTRIC80_COMPANY_ID."',".$e['Department'].",".$e['Title'].",".$e['Phone'].",".$e['Extension'].",NULL,".$e['Email'].")";
+					$query = "INSERT INTO company_person (person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id) VALUES 
+					(".$e['Id'].",'".ELETTRIC80_COMPANY_ID."',".$e['Department'].",".$e['Title'].",".$e['Phone'].",".$e['Extension'].",NULL,".$e['Email'].",'1')";
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
@@ -351,8 +351,8 @@
 				
 				if (mysqli_query($this->conn,$query) === TRUE) {
 
-					$query = "INSERT INTO company_person (person_id,company_id,department_id,title_id,phone,extension,cellphone,email,created_at,updated_at) VALUES 
-					(".$c['Id_Contact'].",".$c['Id_Customer'].",NULL,NULL,".$c['Phone'].",NULL,".$c['CellPhone'].",".$c['Email'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+					$query = "INSERT INTO company_person (person_id,company_id,department_id,title_id,phone,extension,cellphone,email,group_type_id, created_at,updated_at) VALUES 
+					(".$c['Id_Contact'].",".$c['Id_Customer'].",NULL,NULL,".$c['Phone'].",NULL,".$c['CellPhone'].",".$c['Email'].",'2','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
@@ -619,7 +619,7 @@
 
 		private function importEquipments() {
 			$this->importEquipmentsFromConvergence();
-			$this->importEquipmentsFromSap();
+			// $this->importEquipmentsFromSap();
 		}
 
 		private function importEquipmentsFromSap()
@@ -864,7 +864,7 @@
 
 				foreach ($users as $u) {
 
-					$u['Id_Contact'] = $u['Id_Contact'] == '' ? '' : $s['Id_contact'] + CONSTANT_GAP_CONTACTS;
+					$u['Id_Contact'] = $u['Id_Contact'] == '' ? '' : $u['Id_Contact'] + CONSTANT_GAP_CONTACTS;
 
 					$u = $this->trimAndNullIfEmpty($u);
 
@@ -1303,6 +1303,8 @@
 		}
 
 		public function importPictures() {
+
+			$people = array();
 			$query = "SELECT id, first_name, last_name FROM people WHERE image IS NULL OR image = ''";
 			$result = mysqli_query($this->conn,$query);
 			while ($row = mysqli_fetch_array($result)) $people[] = $row;
@@ -1329,15 +1331,39 @@
 
 			$people = [];
 
-			$query = "SELECT id FROM people WHERE image IS NOT NULL AND image != ''";
+			$query = "SELECT id FROM people";
 			$result = mysqli_query($this->conn,$query);
 			while ($row = mysqli_fetch_array($result)) $people[] = $row;
 
 			foreach ($people as $person) {
-				if (!file_exists("images/profile_pictures/".$person['id'].".gif")) {
-					$query = "UPDATE people SET image = NULL WHERE id = '".$person['id']."'";
+				if (file_exists("images/profile_pictures/".$person['id'].".gif")) {
+					$query = "UPDATE people SET image = '".$person['id'].".gif' WHERE id = '".$person['id']."'";
 					$result = mysqli_query($this->conn,$query);
-					echo $person['id'].' dont exists';
+					echo $person['id'].'.gif set as an image for person id = '.$person['id'].'<br>';
+				}
+			}
+		}
+
+		public function setActiveContacts() {
+
+			$people = [];
+
+			$query = "SELECT id FROM users";
+			$result = mysqli_query($this->conn,$query);
+			while ($row = mysqli_fetch_array($result)) $users[] = $row;
+
+			foreach ($users as $user) {
+				$query = "SELECT cp.id
+						  FROM users u 
+						  INNER JOIN people p ON p.id = u.person_id 
+						  INNER JOIN company_person cp ON cp.person_id = p.id
+						  WHERE u.id = ".$user['id']." LIMIT 1";
+				$result = mysqli_query($this->conn,$query);
+				$company_person = mysqli_fetch_array($result);
+				if ($company_person) {
+					$query = "UPDATE users SET active_contact_id = ".$company_person['id']." WHERE id = '".$user['id']."'";
+					$result = mysqli_query($this->conn,$query);
+					echo ''.$company_person['id'].' set as a company_person_id for user id = '.$user['id'].'<br>';
 				}
 			}
 		}
@@ -1385,7 +1411,6 @@
 				$this->importTitles();						// 30/30
 				$this->importCompanies();					// 93/94 	ok 	delete customer with id = 208
 				$this->importPeople();						// 393/401 	ok
-				$this->updateImageDb();
 				$this->fixCompanyPersonTable();				// 93/93
 				$this->deleteBadE80PersonCompany();			// 111/111
 				$this->deleteUnusedPeople();				// 52/52
@@ -1400,10 +1425,10 @@
 				$this->importUsers();
 				$this->importTicketsHistory();
 				$this->setupActiveContact();
-				$this->importEquipmentsFromSap();
-				$this->importPictures();
-
-
+				// $this->importEquipmentsFromSap();
+				// $this->importPictures();
+				// $this->updateImageDb();
+				// $this->setActiveContacts();
 			}
 		}
 	}

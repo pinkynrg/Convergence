@@ -24,6 +24,9 @@
 		<tr>
 			<th>Email</th> <td> {!! $company_person->email !!} </td>
 		</tr>
+		<tr>
+			<th>Slack Token</th> <td> {!! $company_person->slack_token !!} </td>
+		</tr>
 	</table>
 
 @endsection
