@@ -17,13 +17,70 @@ Route::get('logout', array('uses' => 'LoginController@doLogout', 'as' => 'login.
 
 Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'importer.import']);
 
+Route::get('test_roles', function () {
+	return view('test/roles');
+});
+
 Route::group(array('middleware' => 'auth'), function() {
 
 	Route::get('/', ['uses'=>'DashboardController@dashboardLoggedContact', 'as'=>'root']);
 
-	Route::resource('companies','CompaniesController');
-	Route::resource('tickets','TicketsController');
-	Route::resource('equipments','EquipmentsController');
+	// group_types routes 
+	Route::get('group_types',['uses' => 'GroupTypesController@index', 'as' => 'group_types.index']);
+	Route::get('group_types/create',['uses' => 'GroupTypesController@create', 'as' => 'group_types.create']);
+	Route::get('group_types/{id}',['uses' => 'GroupTypesController@show', 'as' => 'group_types.show']);
+	Route::post('group_types', ['uses' => 'GroupTypesController@store', 'as' => 'group_types.store']);
+	Route::delete('group_types/{id}', ['uses' => 'GroupTypesController@destroy', 'as' => 'group_types.destroy']);
+	Route::patch('group_types/{id}', ['uses' => 'GroupTypesController@update', 'as' => 'group_types.update']);	
+	Route::get('group_types/{id}/edit', ['uses' => 'GroupTypesController@edit', 'as' => 'group_types.edit']);
+
+	// groups routes 
+	Route::get('groups',['uses' => 'GroupsController@index', 'as' => 'groups.index']);
+	Route::get('groups/create',['uses' => 'GroupsController@create', 'as' => 'groups.create']);
+	Route::get('groups/{id}',['uses' => 'GroupsController@show', 'as' => 'groups.show']);
+	Route::post('groups', ['uses' => 'GroupsController@store', 'as' => 'groups.store']);
+	Route::delete('groups/{id}', ['uses' => 'GroupsController@destroy', 'as' => 'groups.destroy']);
+	Route::patch('groups/{id}', ['uses' => 'GroupsController@update', 'as' => 'groups.update']);	
+	Route::get('groups/{id}/edit', ['uses' => 'GroupsController@edit', 'as' => 'groups.edit']);
+	Route::get('groups_roles', ['uses' => 'GroupsController@groups_roles', 'as' => 'groups.groups_roles']);
+
+	// roles routes 
+	Route::get('roles',['uses' => 'RolesController@index', 'as' => 'roles.index']);
+	Route::get('roles/create',['uses' => 'RolesController@create', 'as' => 'roles.create']);
+	Route::get('roles/{id}',['uses' => 'RolesController@show', 'as' => 'roles.show']);
+	Route::post('roles', ['uses' => 'RolesController@store', 'as' => 'roles.store']);
+	Route::delete('roles/{id}', ['uses' => 'RolesController@destroy', 'as' => 'roles.destroy']);
+	Route::patch('roles/{id}', ['uses' => 'RolesController@update', 'as' => 'roles.update']);	
+	Route::get('roles/{id}/edit', ['uses' => 'RolesController@edit', 'as' => 'roles.edit']);
+	Route::get('roles_permissions', ['uses' => 'RolesController@roles_permissions', 'as' => 'roles.roles_permissions']);
+
+	// companies routes 
+	Route::get('companies',['uses' => 'CompaniesController@index', 'as' => 'companies.index']);
+	Route::get('companies/create',['uses' => 'CompaniesController@create', 'as' => 'companies.create']);
+	Route::get('companies/{id}',['uses' => 'CompaniesController@show', 'as' => 'companies.show']);
+	Route::post('companies', ['uses' => 'CompaniesController@store', 'as' => 'companies.store']);
+	Route::delete('companies/{id}', ['uses' => 'CompaniesController@destroy', 'as' => 'companies.destroy']);
+	Route::patch('companies/{id}', ['uses' => 'CompaniesController@update', 'as' => 'companies.update']);	
+	Route::get('companies/{id}/edit', ['uses' => 'CompaniesController@edit', 'as' => 'companies.edit']);
+
+	// tickets routes 
+	Route::get('tickets',['uses' => 'TicketsController@index', 'as' => 'tickets.index']);
+	Route::get('tickets/create',['uses' => 'TicketsController@create', 'as' => 'tickets.create']);
+	Route::get('tickets/{id}',['uses' => 'TicketsController@show', 'as' => 'tickets.show']);
+	Route::post('tickets', ['uses' => 'TicketsController@store', 'as' => 'tickets.store']);
+	Route::delete('tickets/{id}', ['uses' => 'TicketsController@destroy', 'as' => 'tickets.destroy']);
+	Route::patch('tickets/{id}', ['uses' => 'TicketsController@update', 'as' => 'tickets.update']);	
+	Route::get('tickets/{id}/edit', ['uses' => 'TicketsController@edit', 'as' => 'tickets.edit']);
+	Route::post('posts',['uses' => 'PostsController@store', 'as' => 'posts.store']);
+
+	// equipments routes 
+	Route::get('equipments',['uses' => 'EquipmentsController@index', 'as' => 'equipments.index']);
+	Route::get('equipments/create',['uses' => 'EquipmentsController@create', 'as' => 'equipments.create']);
+	Route::get('equipments/{id}',['uses' => 'EquipmentsController@show', 'as' => 'equipments.show']);
+	Route::post('equipments', ['uses' => 'EquipmentsController@store', 'as' => 'equipments.store']);
+	Route::delete('equipments/{id}', ['uses' => 'EquipmentsController@destroy', 'as' => 'equipments.destroy']);
+	Route::patch('equipments/{id}', ['uses' => 'EquipmentsController@update', 'as' => 'equipments.update']);	
+	Route::get('equipments/{id}/edit', ['uses' => 'EquipmentsController@edit', 'as' => 'equipments.edit']);
 
 	// people routes
 	Route::match(['get','head'], 'people/{person_id}',['uses' => 'PeopleController@show', 'as' => 'people.show']);
@@ -39,12 +96,6 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::match(['get','head'], 'contacts/{company_person_id}/edit', ['uses' => 'CompanyPersonController@edit', 'as' => 'company_person.edit']);
 	Route::match(['patch'], 'contacts/{company_person_id}', ['uses' => 'CompanyPersonController@update', 'as' => 'company_person.update']);
 	Route::match(['delete'], 'contacts/{company_person_id}', ['uses' => 'CompanyPersonController@destroy', 'as' => 'company_person.destroy']);
-	Route::match(['post'], 'post',['uses' => 'PostController@store', 'as' => 'post.store']);
-
-
-	// kcfinder routes
-	Route::match(['get'], 'kcfinder/browser',['uses' => 'KCFinderController@browse', 'as' => 'kcfinder.browse']);
-	Route::match(['get'], 'kcfinder/uploader',['uses' => 'KCFinderController@upload', 'as' => 'kcfinder.upload']);
 
 	//charts
 	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);

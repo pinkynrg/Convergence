@@ -2,12 +2,14 @@
 
 use Convergence\Http\Requests\CreatePostRequest;
 use Convergence\Models\Post;
+use Convergence\Http\Controllers\SlackController;
 
-class PostController extends Controller {
+class PostsController extends Controller {
 
 	public function store(CreatePostRequest $request) 
 	{
-		Post::create($request->all());
+		$post = Post::create($request->all());
+		SlackController::sendPost($post);
         return redirect()->route('tickets.show', $request->input('ticket_id'));
 	}
 }

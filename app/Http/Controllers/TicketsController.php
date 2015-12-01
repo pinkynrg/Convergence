@@ -1,6 +1,6 @@
 <?php namespace Convergence\Http\Controllers;
 
-
+use Convergence\Http\Controllers\SlackController;
 use Convergence\Http\Requests\CreateTicketRequest;
 use Convergence\Http\Requests\UpdateTicketRequest;
 use Convergence\Models\Ticket;
@@ -97,6 +97,8 @@ class TicketsController extends Controller {
 				$tag_ticket->save();
 			}
 		}
+
+		SlackController::sendTicket($ticket);
 
         return redirect()->route('tickets.index');
 	}
