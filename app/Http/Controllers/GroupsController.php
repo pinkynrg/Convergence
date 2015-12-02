@@ -1,10 +1,10 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Http\Requests\CreateGroupRequest;
-use Convergence\Http\Requests\UpdateGroupRequest;
-use Convergence\Models\GroupType;
-use Convergence\Models\Group;
-use Convergence\Models\Role;
+use App\Http\Requests\CreateGroupRequest;
+use App\Http\Requests\UpdateGroupRequest;
+use App\Models\GroupType;
+use App\Models\Group;
+use App\Models\Role;
 use Form;
 
 

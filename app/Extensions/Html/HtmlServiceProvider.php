@@ -1,6 +1,6 @@
 <?php
 
-namespace Convergence\Extensions\Html;
+namespace App\Extensions\Html;
 
 class HtmlServiceProvider extends \Illuminate\Html\HtmlServiceProvider
 {

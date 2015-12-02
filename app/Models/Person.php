@@ -1,7 +1,7 @@
-<?php namespace Convergence\Models;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Convergence\Models\CompanyPerson;
+use App\Models\CompanyPerson;
 
 class Person extends Model {
 
@@ -10,11 +10,11 @@ class Person extends Model {
 	protected $fillable = ['first_name', 'last_name'];
 	
 	public function company_person() {
-		return $this->hasMany('Convergence\Models\CompanyPerson');
+		return $this->hasMany('App\Models\CompanyPerson');
 	} 
 
 	public function user() {
-		return $this->hasOne('Convergence\Models\User');
+		return $this->hasOne('App\Models\User');
 	}
 
 	public function name() {

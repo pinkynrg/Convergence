@@ -1,6 +1,6 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Models\Tag;
+use App\Models\Tag;
 use Request;
 use Input;
 

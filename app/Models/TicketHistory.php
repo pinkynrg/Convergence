@@ -1,4 +1,4 @@
-<?php namespace Convergence\Models;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,62 +10,62 @@ class TicketHistory extends Model {
 
 	public function ticket()
 	{
-		return $this->belongsTo('Convergence\Models\Ticket');
+		return $this->belongsTo('App\Models\Ticket');
 	}
 
 	public function status()
 	{
-		return $this->belongsTo('Convergence\Models\Status');
+		return $this->belongsTo('App\Models\Status');
 	}
 
 	public function priority()
 	{
-		return $this->belongsTo('Convergence\Models\Priority');		
+		return $this->belongsTo('App\Models\Priority');		
 	}
 
 	public function job_type()
 	{
-		return $this->belongsTo('Convergence\Models\JobType');		
+		return $this->belongsTo('App\Models\JobType');		
 	}
 
 	public function assignee()
 	{
-		return $this->belongsTo('Convergence\Models\CompanyPerson');		
+		return $this->belongsTo('App\Models\CompanyPerson');		
 	}
 
 	public function changer()
 	{
-		return $this->belongsTo('Convergence\Models\CompanyPerson');		
+		return $this->belongsTo('App\Models\CompanyPerson');		
 	}
 
 	public function creator()
 	{
-		return $this->belongsTo('Convergence\Models\CompanyPerson');		
+		return $this->belongsTo('App\Models\CompanyPerson');		
 	}
 
 	public function company()
 	{
-		return $this->belongsTo('Convergence\Models\Company');		
+		return $this->belongsTo('App\Models\Company');		
 	}
 
 	public function division()
 	{
-		return $this->belongsTo('Convergence\Models\Division');
+		return $this->belongsTo('App\Models\Division');
 	}
 
 	public function contact() 
 	{
-		return $this->belongsTo('Convergence\Models\CompanyPerson');
+		return $this->belongsTo('App\Models\CompanyPerson');
 	}
 
 	public function posts() 
 	{
-		return $this->hasMany('Convergence\Models\Post');
+		return $this->hasMany('App\Models\Post');
 	}
 
 	public function tags() 
 	{
-		return $this->belongsToMany('Convergence\Models\Tag');
+		return $this->belongsToMany('App\Models\Tag');
 	}
 
 }

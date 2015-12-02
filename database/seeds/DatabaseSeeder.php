@@ -2,14 +2,14 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use Convergence\Models\User;
-use Convergence\Models\Company;
-use Convergence\Models\Person;
-use Convergence\Models\CompanyPerson;
-use Convergence\Models\Role;
-use Convergence\Models\Permission;
-use Convergence\Models\Group;
-use Convergence\Models\GroupType;
+use App\Models\User;
+use App\Models\Company;
+use App\Models\Person;
+use App\Models\CompanyPerson;
+use App\Models\Role;
+use App\Models\Permission;
+use App\Models\Group;
+use App\Models\GroupType;
 
 class DatabaseSeeder extends Seeder {
 

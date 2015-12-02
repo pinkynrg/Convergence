@@ -1,6 +1,6 @@
 <?php 
 
-use Convergence\Models\User;
+use App\Models\User;
 
 echo 'test roles<br><hr>';
 

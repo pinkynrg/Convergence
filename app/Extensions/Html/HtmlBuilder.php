@@ -1,4 +1,4 @@
-<?php namespace Convergence\Extensions\Html;
+<?php namespace App\Extensions\Html;
 
 class HtmlBuilder extends \Illuminate\Html\HtmlBuilder
 {

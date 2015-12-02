@@ -1,11 +1,11 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Http\Requests\LoginRequest;
+use App\Http\Requests\LoginRequest;
 use Input;
 use Auth;
 use Hash;
-use Convergence\Models\User;
-use Convergence\Models\CompanyPerson;
+use App\Models\User;
+use App\Models\CompanyPerson;
 
 class LoginController extends Controller {
 

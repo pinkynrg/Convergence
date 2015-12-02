@@ -28,7 +28,7 @@ return [
 	|
 	*/
 
-	'model' => 'Convergence\Models\User',
+	'model' => 'App\Models\User',
 
 	/*
 	|--------------------------------------------------------------------------

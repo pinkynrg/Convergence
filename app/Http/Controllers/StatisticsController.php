@@ -1,6 +1,6 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Http\Controllers\ChartsController;
+use App\Http\Controllers\ChartsController;
 use DB;
 
 class StatisticsController extends Controller {

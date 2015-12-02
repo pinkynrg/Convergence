@@ -135,22 +135,22 @@ return [
 		'Illuminate\Translation\TranslationServiceProvider',
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
+		'Illuminate\Broadcasting\BroadcastServiceProvider',
 
 		/*
 		 * Added Later by Francesco
 		*/
 
-		'Convergence\Extensions\Html\HtmlServiceProvider',
+		'App\Extensions\Html\HtmlServiceProvider',
 
 		/*
 		 * Application Service Providers...
 		 */
-		'Convergence\Providers\AppServiceProvider',
-		'Convergence\Providers\BusServiceProvider',
-		'Convergence\Providers\ConfigServiceProvider',
-		'Convergence\Providers\EventServiceProvider',
-		'Convergence\Providers\RouteServiceProvider',
-		'Zizaco\Entrust\EntrustServiceProvider',
+		'App\Providers\AppServiceProvider',
+		'App\Providers\BusServiceProvider',
+		'App\Providers\ConfigServiceProvider',
+		'App\Providers\EventServiceProvider',
+		'App\Providers\RouteServiceProvider',
 
 	],
 

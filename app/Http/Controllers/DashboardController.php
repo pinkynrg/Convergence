@@ -1,7 +1,7 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Http\Controllers\ChartsController;
-use Convergence\Models\CompanyPerson;
+use App\Http\Controllers\ChartsController;
+use App\Models\CompanyPerson;
 use Auth;
 
 class DashboardController extends Controller {

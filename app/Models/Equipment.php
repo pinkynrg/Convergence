@@ -1,4 +1,4 @@
-<?php namespace Convergence\Models;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -7,11 +7,11 @@ class Equipment extends Model {
 	protected $table = 'equipments';
 
 	public function equipment_type() {
-		return $this->belongsTo('Convergence\Models\EquipmentType');
+		return $this->belongsTo('App\Models\EquipmentType');
 	}
 
 	public function company() {
-		return $this->belongsTo('Convergence\Models\Company');
+		return $this->belongsTo('App\Models\Company');
 	}
 
 }

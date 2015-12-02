@@ -1,8 +1,8 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Http\Requests\CreateGroupTypeRequest;
-use Convergence\Http\Requests\UpdateGroupTypeRequest;
-use Convergence\Models\GroupType;
+use App\Http\Requests\CreateGroupTypeRequest;
+use App\Http\Requests\UpdateGroupTypeRequest;
+use App\Models\GroupType;
 use Form;
 
 

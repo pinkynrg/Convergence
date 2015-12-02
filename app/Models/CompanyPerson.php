@@ -1,30 +1,27 @@
-<?php namespace Convergence\Models;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class CompanyPerson extends Model {
-
-	use EntrustUserTrait;
 
 	protected $table = 'company_person';
 
 	protected $fillable = ['company_id', 'person_id', 'title_id', 'department_id', 'phone', 'extension', 'cellphone','email'];
 
 	public function company() {
-		return $this->belongsTo('Convergence\Models\Company');
+		return $this->belongsTo('App\Models\Company');
 	}
 
 	public function person() {
-		return $this->belongsTo('Convergence\Models\Person');
+		return $this->belongsTo('App\Models\Person');
 	}
 
 	public function department() {
-		return $this->belongsTo('Convergence\Models\Department');
+		return $this->belongsTo('App\Models\Department');
 	}
 
 	public function title() {
-		return $this->belongsTo('Convergence\Models\Title');
+		return $this->belongsTo('App\Models\Title');
 	}
 
 	public function phone() 

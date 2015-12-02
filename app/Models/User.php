@@ -1,7 +1,7 @@
-<?php namespace Convergence\Models;
+<?php namespace App\Models;
 
 use DB;
-use Convergence\Models\CompanyPerson;
+use App\Models\CompanyPerson;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -35,12 +35,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function owner()
 	{
-		return $this->belongsTo('Convergence\Models\Person','person_id');
+		return $this->belongsTo('App\Models\Person','person_id');
 	}
 
 	public function active_contact()
 	{
-		return $this->belongsTo('Convergence\Models\CompanyPerson','active_contact_id');
+		return $this->belongsTo('App\Models\CompanyPerson','active_contact_id');
 	}
 
 	public function can($action)

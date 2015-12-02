@@ -1,6 +1,6 @@
-<?php namespace Convergence\Http\Requests;
+<?php namespace App\Http\Requests;
 
-use Convergence\Http\Requests\Request;
+use App\Http\Requests\Request;
 
 class CreateRoleRequest extends Request {
 

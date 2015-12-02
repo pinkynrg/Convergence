@@ -1,4 +1,4 @@
-<?php namespace Convergence\Models;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,11 +9,11 @@ class Role extends Model
 
 	public function groups()
 	{
-		return $this->belongsToMany('Convergence\Models\Group');
+		return $this->belongsToMany('App\Models\Group');
 	}
 
 	public function permissions()
 	{
-		return $this->belongsToMany('Convergence\Models\Permission');
+		return $this->belongsToMany('App\Models\Permission');
 	}
 }

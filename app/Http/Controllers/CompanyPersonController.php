@@ -1,12 +1,12 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Models\Person;
-use Convergence\Models\CompanyPerson;
-use Convergence\Models\Department;
-use Convergence\Models\Title;
-use Convergence\Models\Company;
-use Convergence\Http\Requests\CreateCompanyPersonRequest;
-use Convergence\Http\Requests\UpdateCompanyPersonRequest;
+use App\Models\Person;
+use App\Models\CompanyPerson;
+use App\Models\Department;
+use App\Models\Title;
+use App\Models\Company;
+use App\Http\Requests\CreateCompanyPersonRequest;
+use App\Http\Requests\UpdateCompanyPersonRequest;
 use Input;
 use Form;
 use DB;

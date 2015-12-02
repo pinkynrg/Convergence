@@ -1,8 +1,8 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Http\Requests\CreatePostRequest;
-use Convergence\Models\Post;
-use Convergence\Http\Controllers\SlackController;
+use App\Http\Requests\CreatePostRequest;
+use App\Models\Post;
+use App\Http\Controllers\SlackController;
 
 class PostsController extends Controller {
 

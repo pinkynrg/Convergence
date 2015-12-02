@@ -1,7 +1,7 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
 
-use Convergence\Models\Equipment;
+use App\Models\Equipment;
 use Request;
 
 class EquipmentsController extends Controller {

@@ -1,9 +1,9 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use Convergence\Http\Requests\CreateRoleRequest;
-use Convergence\Http\Requests\UpdateRoleRequest;
-use Convergence\Models\Role;
-use Convergence\Models\Permission;
+use App\Http\Requests\CreateRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
+use App\Models\Role;
+use App\Models\Permission;
 use Form;
 
 class RolesController extends Controller {

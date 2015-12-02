@@ -1,4 +1,4 @@
-<?php namespace Convergence\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
 use Request;
 use Route;

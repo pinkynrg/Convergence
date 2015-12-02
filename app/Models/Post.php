@@ -1,4 +1,4 @@
-<?php namespace Convergence\Models;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,12 +9,12 @@ class Post extends Model {
 	protected $fillable = ['ticket_id','post','author_id','is_public'];
 
 	public function ticket() {
-		return $this->belongsTo('Convergence\Models\Ticket');		
+		return $this->belongsTo('App\Models\Ticket');		
 	}
 
 	public function author()
 	{
-		return $this->belongsTo('Convergence\Models\CompanyPerson');
+		return $this->belongsTo('App\Models\CompanyPerson');
 	}
 
 }

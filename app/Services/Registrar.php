@@ -1,6 +1,6 @@
-<?php namespace Convergence\Services;
+<?php namespace App\Services;
 
-use Convergence\User;
+use App\User;
 use Validator;
 use Illuminate\Contracts\Auth\Registrar as RegistrarContract;
 
