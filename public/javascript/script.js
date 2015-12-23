@@ -284,5 +284,18 @@ $(document).ready(function() {
 
 	});
 
+// show role page //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	var role_update_permissions = $('.role_update_permissions').bootstrapDualListbox({
+		'infoText':""
+	});
+
+	var group_update_roles = $('.group_update_roles').bootstrapDualListbox({
+		'infoText':""
+	});
+
+
+
 });
 

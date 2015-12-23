@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/javascript/bootstrap3-typeahead.min.js"></script>
 <script type="text/javascript" src="/javascript/bootstrap-tagsinput.min.js"></script>
 <script src="/javascript/script.js" type="text/javascript"></script>
+<script src="/javascript/jquery.bootstrap-duallistbox.js" type="text/javascript"></script>
 <!-- <script src="/javascript/highcharts.js"></script> -->
 <script src="/javascript/highstocks.js"></script>
 <script src="/javascript/highcharts.3d.js"></script>
@@ -24,7 +25,9 @@
 <link rel="stylesheet" type="text/css" href="/css/jquery.autocomplete.css">
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="/css/bootstrap-tagsinput.css">
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-duallistbox.css">
 <link rel="stylesheet" type="text/css" href="/css/style.css">
+
 
 <link rel="shortcut icon" href="{{ asset('/images/favicon.ico') }}">
 

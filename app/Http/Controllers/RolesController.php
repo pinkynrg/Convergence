@@ -2,9 +2,11 @@
 
 use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Requests\UpdateRolePermissionsRequest;
 use App\Models\Role;
 use App\Models\Permission;
 use Form;
+use DB;
 
 class RolesController extends Controller {
 
@@ -17,7 +19,32 @@ class RolesController extends Controller {
 
 	public function show($id) {
 		$data['role'] = Role::find($id);
-		$data['title'] = "Role ".$data['role']->display_name;
+		$data['title'] = "Role \"".$data['role']->display_name."\"";
+		
+		$permissions = Permission::get();
+    	
+    	$permissions_in_role = Permission::whereHas('roles', function($q) use ($id) {
+    		$q->where('id', $id);
+		})->get();
+
+    	$counter = 0;
+
+		foreach ($permissions as $permission) {
+
+			$is_in_role = false;
+			
+			foreach($permissions_in_role as $permission_in_role) {
+				if ($permission->id == $permission_in_role->id) {
+					$is_in_role = true;
+				}
+			}
+
+			$data['permissions'][$counter] = $permission;
+			$data['permissions'][$counter]['is_in_role'] = $is_in_role;
+
+			$counter++;
+		}
+
 		$data['menu_actions'] = [Form::editItem(route('roles.edit',$id), 'Edit this role')];
 		return view('roles/show',$data);
 	}
@@ -44,11 +71,10 @@ class RolesController extends Controller {
         return redirect()->route('roles.index');
 	}
 
-	public function roles_permissions() {
-		$data['title'] = "Associate Permissions to Roles";
-		$data['roles'] = Role::orderBy('display_name')->get();
-		$data['permissions'] = Permission::orderBy('display_name')->paginate(50);
-		return view('roles/roles_permissions',$data);
+	public function updateRolePermissions($id, UpdateRolePermissionsRequest $request) {
+		DB::table('permission_role')->where('role_id', $id)->delete();
+		Role::find($id)->permissions()->attach($request['permissions']);
+        return redirect()->route('roles.show',$id);
 	}
 }
 

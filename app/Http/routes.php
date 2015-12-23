@@ -42,7 +42,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('groups/{id}', ['uses' => 'GroupsController@destroy', 'as' => 'groups.destroy']);
 	Route::patch('groups/{id}', ['uses' => 'GroupsController@update', 'as' => 'groups.update']);	
 	Route::get('groups/{id}/edit', ['uses' => 'GroupsController@edit', 'as' => 'groups.edit']);
-	Route::get('groups_roles', ['uses' => 'GroupsController@groups_roles', 'as' => 'groups.groups_roles']);
+	Route::post('groups/{id}/roles', ['uses' => 'GroupsController@updateGroupRoles', 'as' => 'groups.update_roles']);
 
 	// roles routes 
 	Route::get('roles',['uses' => 'RolesController@index', 'as' => 'roles.index']);
@@ -52,7 +52,16 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('roles/{id}', ['uses' => 'RolesController@destroy', 'as' => 'roles.destroy']);
 	Route::patch('roles/{id}', ['uses' => 'RolesController@update', 'as' => 'roles.update']);	
 	Route::get('roles/{id}/edit', ['uses' => 'RolesController@edit', 'as' => 'roles.edit']);
-	Route::get('roles_permissions', ['uses' => 'RolesController@roles_permissions', 'as' => 'roles.roles_permissions']);
+	Route::post('roles/{id}/permissions', ['uses' => 'RolesController@updateRolePermissions', 'as' => 'roles.update_permissions']);
+
+	// permissions routes 
+	Route::get('permissions',['uses' => 'PermissionsController@index', 'as' => 'permissions.index']);
+	Route::get('permissions/create',['uses' => 'PermissionsController@create', 'as' => 'permissions.create']);
+	Route::get('permissions/{id}',['uses' => 'PermissionsController@show', 'as' => 'permissions.show']);
+	Route::post('permissions', ['uses' => 'PermissionsController@store', 'as' => 'permissions.store']);
+	Route::delete('permissions/{id}', ['uses' => 'PermissionsController@destroy', 'as' => 'permissions.destroy']);
+	Route::patch('permissions/{id}', ['uses' => 'PermissionsController@update', 'as' => 'permissions.update']);	
+	Route::get('permissions/{id}/edit', ['uses' => 'PermissionsController@edit', 'as' => 'permissions.edit']);
 
 	// companies routes 
 	Route::get('companies',['uses' => 'CompaniesController@index', 'as' => 'companies.index']);
