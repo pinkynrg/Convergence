@@ -6,7 +6,7 @@ class CompanyPerson extends Model {
 
 	protected $table = 'company_person';
 
-	protected $fillable = ['company_id', 'person_id', 'title_id', 'department_id', 'phone', 'extension', 'cellphone','email'];
+	protected $fillable = ['company_id', 'person_id', 'title_id', 'department_id', 'phone', 'extension', 'cellphone','email','group_id'];
 
 	public function company() {
 		return $this->belongsTo('App\Models\Company');
@@ -47,6 +47,10 @@ class CompanyPerson extends Model {
 	public function email() {
 		$email = isset($this->email) ? "<a href='mailto:".$this->email."'>".$this->email."</a>" : "";
 		return $email;
+	}
+
+	public function group() {
+		return $this->belongsTo('App\Models\Group');
 	}
 
 

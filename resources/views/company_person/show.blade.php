@@ -27,6 +27,9 @@
 		<tr>
 			<th>Slack Token</th> <td> {!! $company_person->slack_token !!} </td>
 		</tr>
+		<tr>
+			<th>Permission Group</th> <td> {!! $company_person->group->display_name !!} </td>
+		</tr>
 	</table>
 
 @endsection

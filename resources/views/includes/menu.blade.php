@@ -1,13 +1,24 @@
 <?php 
 
-$menu_voices = [
-				'<i class="fa fa-dashboard"></i> Dashboard' => route('dashboard.logged'),
-				'<i class="fa fa-users"></i> Companies' => route('companies.index'),
-				'<i class="fa fa-suitcase"></i> Employees' => route('company_person.employees'),
-				'<i class="fa fa-gear"></i> Equipments' => route('equipments.index'),
-				'<i class="fa fa-ticket"></i> Tickets' => route('tickets.index'),
-				// '<i class="fa fa-tasks"></i> Queues' => '#',
-				'<i class="fa fa fa-line-chart"></i> Statistics' => route('statistics.index')
+$menu_voices = ['<i class="fa fa-ticket"></i> Tickets' => route('tickets.index'),
+				'<i class="fa fa-cog"></i> Manage' => array
+				(
+					'<i class="fa fa-users"></i> Companies' => route('companies.index'),
+					'<i class="fa fa-users"></i> Customer Contacts' => route('company_person.contacts'),
+					'<i class="fa fa-suitcase"></i> Employees' => route('company_person.employees'),
+					'<i class="fa fa-gear"></i> Equipments' => route('equipments.index')
+				),
+				'<i class="fa fa-lock"></i> Access' => array
+				(
+					'Permissions' => route('permissions.index'),
+					'Roles' => route('roles.index'),
+					'Groups' => route('groups.index')
+				),
+				'<i class="fa fa-info"></i> Info' => array 
+				(
+					'<i class="fa fa-dashboard"></i> Dashboard' => route('dashboard.logged'),
+					'<i class="fa fa fa-line-chart"></i> Statistics' => route('statistics.index')
+				)
 ];
 
 ?>
@@ -34,15 +45,34 @@ $menu_voices = [
 
 				@if (isset($menu_voices))
 					
-					@foreach ($menu_voices as $label => $link)
+					@foreach ($menu_voices as $label => $content)
 
-					@if (Request::url() === $link)
-						<li class="active">
-							<a href="{{ $link }}"> {!! $label !!} <span class="sr-only">(current)</span> </a>
-						</li> 	
-					@else 
-						<li><a href="{{ $link }}"> {!! $label !!} <span class="sr-only">(current)</span> </a></li>
-					@endif
+						@if (is_array($content)) 
+
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {!! $label !!} <span class="caret"></span></a>
+          						<ul class="dropdown-menu">
+
+          							@foreach ($content as $label => $link)
+
+										<li><a href="{{ $link }}"> {!! $label !!} </a></li>
+
+          							@endforeach
+
+            					</ul>
+							</li>
+
+						@else
+							
+							@if (Request::url() === $content)
+								<li class="active">
+									<a href="{{ $content }}"> {!! $label !!} <span class="sr-only">(current)</span> </a>
+								</li> 	
+							@else 
+								<li><a href="{{ $content }}"> {!! $label !!} <span class="sr-only">(current)</span> </a></li>
+							@endif
+
+						@endif
 
 					@endforeach
 

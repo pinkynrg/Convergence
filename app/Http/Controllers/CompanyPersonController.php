@@ -4,6 +4,7 @@ use App\Models\Person;
 use App\Models\CompanyPerson;
 use App\Models\Department;
 use App\Models\Title;
+use App\Models\Group;
 use App\Models\Company;
 use App\Http\Requests\CreateCompanyPersonRequest;
 use App\Http\Requests\UpdateCompanyPersonRequest;
@@ -82,9 +83,11 @@ class CompanyPersonController extends Controller {
 	}	
 
 	public function edit($id) {
+		$company_person = CompanyPerson::find($id);
 		$data['titles'] = Title::all();
 		$data['departments'] = Department::all();		
 		$data['contact'] = CompanyPerson::find($id);
+		$data['groups'] = Group::where('group_type_id','=',$company_person->group_type_id)->get();
 
 		$data['title'] = "Edit Contact";
 

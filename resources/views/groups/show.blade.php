@@ -2,6 +2,8 @@
 
 @section('content')
 
+	<h3 class="subtitle"> Group Details </h2>
+
 	<table class="table table-striped table-hover">
 		<tr>
 			<th> Group Type </th> <td> {{ $group->group_type->display_name }} </td>

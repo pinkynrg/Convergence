@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class CreateRoleRequest extends Request {
 
@@ -11,7 +12,7 @@ class CreateRoleRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('create-role');
 	}
 
 	/**

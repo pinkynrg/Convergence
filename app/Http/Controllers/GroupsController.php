@@ -20,7 +20,7 @@ class GroupsController extends Controller {
 
 	public function show($id) {
 		$data['group'] = Group::find($id);
-		$data['title'] = "Group ".$data['group']->display_name;
+		$data['title'] = "Group \"".$data['group']->display_name."\"";
 
 		$roles = Role::get();
     	

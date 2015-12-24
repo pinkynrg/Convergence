@@ -29,7 +29,8 @@ class UpdateCompanyPersonRequest extends Request {
 			'phone' => 'numeric',
 			'cellphone' => 'numeric',
 			'extension' => 'numeric',
-			'email' => 'email'
+			'email' => 'email',
+			'group_id' => 'numeric'
 		];
 	}
 
