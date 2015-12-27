@@ -35,7 +35,7 @@ $menu_voices = ['<i class="fa fa-ticket"></i> Tickets' => route('tickets.index')
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<span class="navbar-brand"> <b>ConVergence</b> </span> 
+			<span class="navbar-brand"> <a href="/"><b>ConVergence</b></a> </span> 
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->

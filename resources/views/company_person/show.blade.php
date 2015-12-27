@@ -28,7 +28,10 @@
 			<th>Slack Token</th> <td> {!! $company_person->slack_token !!} </td>
 		</tr>
 		<tr>
-			<th>Permission Group</th> <td> {!! $company_person->group->display_name !!} </td>
+			<th>Permission Group</th> <td> {!! isset($company_person->group_type_id) ? $company_person->group_type->display_name : '' !!} </td>
+		</tr>
+		<tr>
+			<th>Permission Group</th> <td> {!! isset($company_person->group_id) ? $company_person->group->display_name : '' !!} </td>
 		</tr>
 	</table>
 

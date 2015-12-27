@@ -102,6 +102,32 @@
 			return $row;
 		}
 
+		private function importGroupTypes() {
+
+			$table = "group_types";
+			$successes = $errors = 0;
+
+			if ($this->truncate($table)) {
+
+				$queries = ["INSERT INTO group_types (id, name, display_name, description, created_at, updated_at) VALUES (1,'employee','Employee','E80 Employee','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+							"INSERT INTO group_types (id, name, display_name, description, created_at, updated_at) VALUES (2,'customer','Customer','E80 Customer','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"];
+				
+				foreach ($queries as $query) {
+					if (mysqli_query($this->conn, $query) === TRUE) {
+						$successes++;
+					}
+					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
+						$errors++;
+					}
+				}
+			
+				$this->logger($successes,$errors,$table);
+
+			}
+		}
+
 		private function importCompanies() {
 
 			$table = 'companies';
@@ -379,24 +405,6 @@
 
 		}
 
-		private function setupActiveContact() {
-			
-			$users = [];
-
-			$query = "SELECT u.id as user_id, cp.id as company_person_id FROM users u
-					INNER JOIN people p ON (u.person_id = p.id)
-					INNER JOIN company_person cp ON (p.id = cp.person_id)
-					GROUP BY u.id";
-
-			$result = mysqli_query($this->conn,$query);
-			while ($row = mysqli_fetch_array($result)) $users[] = $row;
-
-			foreach ($users as $u) {
-				$query = "UPDATE users SET active_contact_id = ".$u['company_person_id']." WHERE id  = ".$u['user_id'];
-				$result = mysqli_query($this->conn,$query);
-			}
-		}
-
 		private function importDepartments() {
 
 			$table = 'departments';
@@ -469,7 +477,7 @@
 
 			$table = 'tickets';
 
-			$query = mssql_query("SELECT * FROM [dbo].[Tickets] WHERE Priority != ''");
+			$query = mssql_query("SELECT * FROM [dbo].[Tickets] WHERE Priority != '' AND Id = 4042");
 			$successes = $errors = 0;
 
 			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $tickets[] = $row;
@@ -1399,36 +1407,37 @@
 				}
 			}
 			else {
-				$this->importDepartments(); 				// 10/10
-				$this->importDivisions();					// 8/8
-				$this->importEquipmentTypes();				// 32/32
-				$this->importConnectionTypes();				// 2/2
-				$this->importSupportTypes();				// 7/7
-				$this->importJobTypes();					// 4/4
-				$this->importTags();
-				$this->importPriorities();					// 5/5
-				$this->importStatus();						// 7/7
-				$this->importTitles();						// 30/30
-				$this->importCompanies();					// 93/94 	ok 	delete customer with id = 208
-				$this->importPeople();						// 393/401 	ok
-				$this->fixCompanyPersonTable();				// 93/93
-				$this->deleteBadE80PersonCompany();			// 111/111
-				$this->deleteUnusedPeople();				// 52/52
-				$this->importCompanyMainContacts();			// 15/18
-				$this->setBlankMainContact();				// 25/79 ?
-				$this->importCompanyAccountManagers();		// 73/76
-				$this->importEquipments();					// 220/220
-				$this->importTickets();						// 3034/3116
-				$this->importTagTicket();
-				$this->importPosts();						// 721 misses
-				$this->importServices();
-				$this->importUsers();
-				$this->importTicketsHistory();
-				$this->setupActiveContact();
-				// $this->importEquipmentsFromSap();
-				// $this->importPictures();
-				// $this->updateImageDb();
+				// $this->importGroupTypes();					// 2/2
+				// $this->importDepartments(); 					// 10/10
+				// $this->importDivisions();					// 8/8
+				// $this->importEquipmentTypes();				// 32/32
+				// $this->importConnectionTypes();				// 2/2
+				// $this->importSupportTypes();					// 7/7
+				// $this->importJobTypes();						// 4/4
+				// $this->importTags();							// 111/149 		ok 	all other are duplicates
+				// $this->importPriorities();					// 5/5
+				// $this->importStatus();						// 7/7
+				// $this->importTitles();						// 30/30
+				// $this->importCompanies();					// 93/94 		ok 	delete customer with id = 208
+				// $this->importPeople();						// 393/401 		ok
+				// $this->fixCompanyPersonTable();				// 93/93
+				// $this->deleteBadE80PersonCompany();			// 111/111
+				// $this->deleteUnusedPeople();					// 52/52
+				// $this->importCompanyMainContacts();			// 15/18
+				// $this->setBlankMainContact();				// 25/79 		?
+				// $this->importCompanyAccountManagers();		// 73/76
+				// $this->importEquipments();					// 220/220
+				// $this->importTagTicket();
+				// $this->importServices();
+				// $this->importUsers();
 				// $this->setActiveContacts();
+				
+				// $this->importTickets();						// 3034/3116
+				// $this->importPosts();						// 721 misses
+				// $this->importTicketsHistory();
+				$this->updateImageDb();
+				// $this->importPictures();
+
 			}
 		}
 	}

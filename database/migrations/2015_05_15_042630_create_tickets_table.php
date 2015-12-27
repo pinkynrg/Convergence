@@ -39,7 +39,8 @@ class CreateTicketsTable extends Migration {
 			$table->foreign('company_id')->references('id')->on('companies');
 			$table->foreign('contact_id')->references('id')->on('company_person');
 			$table->foreign('job_type_id')->references('id')->on('job_types');
-		});		}
+			});		
+		}
 
 	/**
 	 * Reverse the migrations.

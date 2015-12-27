@@ -53,5 +53,9 @@ class CompanyPerson extends Model {
 		return $this->belongsTo('App\Models\Group');
 	}
 
+	public function group_type() {
+		return $this->belongsTo('App\Models\GroupType');
+	}
+
 
 }

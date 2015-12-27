@@ -38,6 +38,10 @@ class CreateCompanyPersonTable extends Migration {
 			$table->foreign('group_id')->references('id')->on('groups');
 			$table->unique( array('person_id','company_id') );
 		});
+
+		Schema::table('users',function(Blueprint $table) {
+			$table->foreign('active_contact_id')->references('id')->on('company_person');
+		});
 	}
 
 	/**

@@ -23,7 +23,7 @@ Route::get('test_roles', function () {
 
 Route::group(array('middleware' => 'auth'), function() {
 
-	Route::get('/', ['uses'=>'DashboardController@dashboardLoggedContact', 'as'=>'root']);
+	Route::get('/', ['uses' => 'TicketsController@index', 'as' => 'root']);
 
 	// group_types routes 
 	Route::get('group_types',['uses' => 'GroupTypesController@index', 'as' => 'group_types.index']);
