@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class CreatePostRequest extends Request {
 
@@ -11,8 +12,14 @@ class CreatePostRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('create-post');
 	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('tickets.show',Request::get("ticket_id"))->withErrors(['You are not authorized to create a new post']);
+	}
+
 
 	/**
 	 * Get the validation rules that apply to the request.

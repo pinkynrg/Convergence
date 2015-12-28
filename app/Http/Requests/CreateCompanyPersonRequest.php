@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class CreateCompanyPersonRequest extends Request {
 
@@ -11,7 +12,13 @@ class CreateCompanyPersonRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		$authorize = Request::get('company_id') == 1 ? Auth::user()->can('create-employee') : Auth::user()->can('create-contact');
+		return $authorize;
+	}
+
+	public function forbiddenResponse()
+	{
+		return Request::get('company_id') == 1 ? redirect()->route('company_person.employees')->withErrors(['You are not authorized to create a new employee']) : redirect()->route('companies.show',Request::get('company_id'))->withErrors(['You are not authorized to create a new company contact']);
 	}
 
 	/**
@@ -22,6 +29,9 @@ class CreateCompanyPersonRequest extends Request {
 	public function rules()
 	{
 		return [
+			'person_fn' => 'required',
+			'person_ln' => 'required',
+			'group_type_id' => 'required|numeric',
 			'company_id' => 'required|numeric',
 			'person_id' => 'numeric',
 			'department_id' => 'required|numeric', 

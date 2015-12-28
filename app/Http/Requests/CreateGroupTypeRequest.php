@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class CreateGroupTypeRequest extends Request {
 
@@ -11,7 +12,13 @@ class CreateGroupTypeRequest extends Request {
 	 */
 	public function authorize()
 	{
+		// return Auth::user()->can('create-group-type');
 		return true;
+	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('group_types.index')->withErrors(['You are not authorized to create a new group type']);
 	}
 
 	/**

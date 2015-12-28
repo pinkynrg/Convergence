@@ -424,7 +424,8 @@ a:visited, a:link, a:active, a:visited {
   background: linear-gradient(to bottom, #FCC970 , #DBB168); /* Standard syntax */
   font-size: 13px;
 }
-.navbar-default .navbar-brand {
+.navbar-default .navbar-brand a {
+  text-decoration: none;
   color: #333333;
 }
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {

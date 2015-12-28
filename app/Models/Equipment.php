@@ -6,6 +6,8 @@ class Equipment extends Model {
 
 	protected $table = 'equipments';
 
+	protected $fillable = ['name','cc_number','serial_number','equipment_type_id','company_id','notes','warranty_expiration'];
+
 	public function equipment_type() {
 		return $this->belongsTo('App\Models\EquipmentType');
 	}

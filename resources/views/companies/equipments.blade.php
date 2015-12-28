@@ -20,7 +20,7 @@
 				<td> {{ $equipment->equipment_type->name }} </td>
 				<td> {{ $equipment->serial_number }} </td>
 				<td class="hidden-xs"> {{ $equipment->notes }} </td>
-				<td class="hidden-xs"> {{ $equipment->warranty_expiration }} </td>
+				<td class="hidden-xs"> {{ date("m/d/Y",strtotime($equipment->warranty_expiration)) }} </td>
 			</tr>
 
 		@endforeach

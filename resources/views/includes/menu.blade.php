@@ -12,7 +12,8 @@ $menu_voices = ['<i class="fa fa-ticket"></i> Tickets' => route('tickets.index')
 				(
 					'Permissions' => route('permissions.index'),
 					'Roles' => route('roles.index'),
-					'Groups' => route('groups.index')
+					'Groups' => route('groups.index'),
+					'Group Types' => route('group_types.index')
 				),
 				'<i class="fa fa-info"></i> Info' => array 
 				(

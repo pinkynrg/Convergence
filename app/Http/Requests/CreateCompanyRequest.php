@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class CreateCompanyRequest extends Request {
 
@@ -11,7 +12,12 @@ class CreateCompanyRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('create-company');
+	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('companies.index')->withErrors(['You are not authorized to create a new company']);
 	}
 
 	/**

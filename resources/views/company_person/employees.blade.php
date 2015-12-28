@@ -1,5 +1,7 @@
 <div class="content">
 
+	@include('includes.errors')
+
 	<div class="ajax_pagination" scrollup="false">
 		{!! $employees->render() !!}
 	</div>

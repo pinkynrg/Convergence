@@ -1,6 +1,7 @@
 @extends('layouts.default')
 @section('content')
 
+	@include('includes.errors')
 
 	<div id="ticket_container">
 

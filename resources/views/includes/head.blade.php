@@ -16,6 +16,8 @@
 <!-- <script src="/javascript/highcharts.js"></script> -->
 <script src="/javascript/highstocks.js"></script>
 <script src="/javascript/highcharts.3d.js"></script>
+<script type="text/javascript" src="/javascript/bootstrap-datepicker.js"></script>
+
 <!-- Stylesheets -->
 <link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/font-awesome.min.css">
@@ -26,6 +28,7 @@
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="/css/bootstrap-tagsinput.css">
 <link rel="stylesheet" type="text/css" href="/css/bootstrap-duallistbox.css">
+<link rel="stylesheet" type="text/css" href="/css/datepicker.css">
 <link rel="stylesheet" type="text/css" href="/css/style.css">
 
 

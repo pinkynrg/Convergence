@@ -16,7 +16,7 @@
 		@foreach ($contacts as $contact)
 
 			<tr>
-				<td> <a href="{{ route('people.show', $contact->person->id) }}"> {{ $contact->person->name() }} </a> </td>
+				<td> <a href="{{ route('company_person.show', $contact->id) }}"> {{ $contact->person->name() }} </a> </td>
 				<td> {{ isset($contact->department_id) ? $contact->department->name : '' }} </td>
 				<td class="hidden-xs"> {{ isset($contact->title_id) ? $contact->title->name : '' }} </td>
 				<td class="hidden-xs"> {!! $contact->phone() !!} </td>

@@ -26,7 +26,7 @@
 					<td class="hidden-xs"> <a href="{{ route('companies.show', $equipment->company->id) }}"> {{ $equipment->company->name }} </a> </td>
 					<td class="hidden-xs"> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ $equipment->serial_number }} </a> </td>
 					<td class="hidden-xs"> {{ $equipment->equipment_type->name }} </td>
-					<td class="hidden-xs"> {{ $equipment->warranty_expiration }} </td>
+					<td class="hidden-xs"> {{ date("m/d/Y",strtotime($equipment->warranty_expiration)) }} </td>
 				</tr>
 				@endforeach
 			@else 

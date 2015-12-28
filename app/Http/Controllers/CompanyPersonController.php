@@ -5,6 +5,7 @@ use App\Models\CompanyPerson;
 use App\Models\Department;
 use App\Models\Title;
 use App\Models\Group;
+use App\Models\GroupType;
 use App\Models\Company;
 use App\Http\Requests\CreateCompanyPersonRequest;
 use App\Http\Requests\UpdateCompanyPersonRequest;
@@ -52,13 +53,14 @@ class CompanyPersonController extends Controller {
 		$data['departments'] = Department::all();
 		$data['company'] = Company::find($id);
 		$data['company']->company_id = $data['company']->id;
+		$data['group_types'] = GroupType::all();
 
 		$data['title'] = "Create Contact";
 
 		return view('company_person/create', $data);	
 	}
 
-	public function store() {
+	public function store(CreateCompanyPersonRequest $request) {
 		
 		if (!Input::get('person_id')) {
 			$person = new Person;
@@ -75,6 +77,7 @@ class CompanyPersonController extends Controller {
         $contact->phone = Input::get('phone');
         $contact->extension = Input::get('extension');
         $contact->cellphone = Input::get('cellphone');
+        $contact->group_type_id = Input::get('group_type_id');
         $contact->email = Input::get('email');
         $contact->save();
 

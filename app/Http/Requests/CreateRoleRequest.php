@@ -12,7 +12,13 @@ class CreateRoleRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return Auth::user()->can('create-role');
+		// return Auth::user()->can('create-role');
+		return true;
+	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('roles.index')->withErrors(['You are not authorized to create a new role']);
 	}
 
 	/**
@@ -25,7 +31,7 @@ class CreateRoleRequest extends Request {
 		return [
 			'name' => 'required',
 			'display_name' => 'required',
-			'description' => 'required',
+			'description' => 'required'
 		];
 	}
 

@@ -84,7 +84,7 @@ Route::group(array('middleware' => 'auth'), function() {
 
 	// equipments routes 
 	Route::get('equipments',['uses' => 'EquipmentsController@index', 'as' => 'equipments.index']);
-	Route::get('equipments/create',['uses' => 'EquipmentsController@create', 'as' => 'equipments.create']);
+	Route::get('equipments/create/{company_id}',['uses' => 'EquipmentsController@create', 'as' => 'equipments.create']);
 	Route::get('equipments/{id}',['uses' => 'EquipmentsController@show', 'as' => 'equipments.show']);
 	Route::post('equipments', ['uses' => 'EquipmentsController@store', 'as' => 'equipments.store']);
 	Route::delete('equipments/{id}', ['uses' => 'EquipmentsController@destroy', 'as' => 'equipments.destroy']);
