@@ -8,22 +8,27 @@ use App\Http\Requests\UpdateEquipmentRequest;
 use Carbon\Carbon;
 use Request;
 use Form; 
+use Auth;
 
 class EquipmentsController extends Controller {
 	
 	public function index() {
-		$data['equipments'] = Equipment::paginate(50);
-
-        $data['title'] = "Equipments";
-
-		return view('equipments/index',$data);
+		if (Auth::user()->can('read-all-equipment')) {
+			$data['equipments'] = Equipment::paginate(50);
+        	$data['title'] = "Equipments";
+			return view('equipments/index',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to equipment index page']);		
 	}
 
 	public function show($id) {
-		$data['menu_actions'] = [Form::editItem(route('equipments.edit', $id),"Edit this equipment")];
-		$data['equipment'] = Equipment::find($id);
-		$data['title'] = $data['equipment']->company->name." - Equipment ".$data['equipment']->name;
-		return view('equipments/show',$data);
+		if (Auth::user()->can('read-equipment')) {
+			$data['menu_actions'] = [Form::editItem(route('equipments.edit', $id),"Edit this equipment")];
+			$data['equipment'] = Equipment::find($id);
+			$data['title'] = $data['equipment']->company->name." - Equipment ".$data['equipment']->name;
+			return view('equipments/show',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to equipment show page']);
 	}
 
 	public function create($id) {
@@ -35,14 +40,18 @@ class EquipmentsController extends Controller {
 	}
 
 	public function store(CreateEquipmentRequest $request) {
-		$ticket = Equipment::create($request->all());
-		return redirect()->route('companies.show',$request->get('company_id'));
+		$equipment = Equipment::create($request->all());
+        $equipment->warranty_expiration = Carbon::createFromFormat('m/d/Y', $request->get('warranty_expiration'));
+        $equipment->save();
+		return redirect()->route('companies.show',$request->get('company_id'))->with('successes',['equipment created successfully']);
 	}
 
 	public function edit($id) {
 		$data['equipment'] = Equipment::find($id);
 		$data['title'] = $data['equipment']->company->name." - Equipment ".$data['equipment']->name;
         $data['equipment_types'] = EquipmentType::all();
+        $data['company'] = Company::find($data['equipment']->company_id);
+		$data['company']->company_id = $data['company']->id;
 		return view('equipments/edit',$data);
 	}
 
@@ -51,7 +60,7 @@ class EquipmentsController extends Controller {
         $equipment->update($request->all());
         $equipment->warranty_expiration = Carbon::createFromFormat('m/d/Y', $request->get('warranty_expiration'));
         $equipment->save();
-        return redirect()->route('companies.show',$equipment->company_id);
+        return redirect()->route('companies.show',$equipment->company_id)->with('successes',['equipment updated successfully']);
 	}
 
 	public function destroy() {

@@ -15,6 +15,8 @@
 
 	<hr>
 
+	@include('includes.errors')
+
 	@yield('content')
 
 	<hr>

@@ -1,8 +1,6 @@
 @extends('layouts.default')
 
 @section('content')
-
-	@include('includes.errors')
 	
 	<div class="hidden-xs hidden-sm filters">
 		

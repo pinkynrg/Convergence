@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class UpdateCompanyPersonRequest extends Request {
 
@@ -11,8 +12,15 @@ class UpdateCompanyPersonRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		$authorize = Request::get('company_id') == 1 ? Auth::user()->can('update-employee') : Auth::user()->can('update-contact');
+		return $authorize;
 	}
+
+	public function forbiddenResponse()
+	{
+		return Request::get('company_id') == 1 ? redirect()->route('company_person.show',$this->route('id'))->withErrors(['You are not authorized to update employees']) : redirect()->route('company_person.show',$this->route('id'))->withErrors(['You are not authorized to update contacts']);
+	}
+
 
 	/**
 	 * Get the validation rules that apply to the request.

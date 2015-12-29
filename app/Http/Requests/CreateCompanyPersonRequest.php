@@ -31,15 +31,15 @@ class CreateCompanyPersonRequest extends Request {
 		return [
 			'person_fn' => 'required',
 			'person_ln' => 'required',
-			'group_type_id' => 'required|numeric',
-			'company_id' => 'required|numeric',
-			'person_id' => 'numeric',
+			'phone' => 'numeric',
+			'extension' => 'numeric',
+			'cellphone' => 'numeric',
+			'email' => 'email',
 			'department_id' => 'required|numeric', 
 			'title_id' => 'required|numeric',
-			'phone' => 'numeric',
-			'cellphone' => 'numeric',
-			'extension' => 'numeric',
-			'email' => 'email'
+			'group_type_id' => 'required|numeric',
+			'company_id' => 'required|numeric',
+			'person_id' => 'numeric'
 		];
 	}
 

@@ -3,23 +3,30 @@
 use App\Http\Requests\CreateGroupTypeRequest;
 use App\Http\Requests\UpdateGroupTypeRequest;
 use App\Models\GroupType;
+use Auth;
 use Form;
 
 
 class GroupTypesController extends Controller {
 
 	public function index() {
-		$data['title'] = "Group Types";
-		$data['group_types'] = GroupType::paginate(50);
-		$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type')];
-		return view('group_types/index',$data);
+		if (Auth::user()->can('read-all-group')) {
+			$data['title'] = "Group Types";
+			$data['group_types'] = GroupType::paginate(50);
+			$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type')];
+			return view('group_types/index',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to group types index page']);
 	}
 
 	public function show($id) {
-		$data['group_type'] = GroupType::find($id);
-		$data['title'] = "Group Type ".$data['group_type']->display_name;
-		$data['menu_actions'] = [Form::editItem(route('group_types.edit',$id), 'Edit this group type')];
-		return view('group_types/show',$data);
+		if (Auth::user()->can('read-all-group')) {
+			$data['group_type'] = GroupType::find($id);
+			$data['title'] = "Group Type ".$data['group_type']->display_name;
+			$data['menu_actions'] = [Form::editItem(route('group_types.edit',$id), 'Edit this group type')];
+			return view('group_types/show',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to group types show page']);
 	}
 
 	public function edit($id) {
@@ -31,7 +38,7 @@ class GroupTypesController extends Controller {
 	public function update($id, UpdateGroupTypeRequest $request) {
 		$groupType = GroupType::find($id);
         $groupType->update($request->all());
-        return redirect()->route('group_types.show',$id);
+        return redirect()->route('group_types.show',$id)->with('successes',['Group Type updated successfully']);;
 	}
 
 	public function create() {
@@ -41,7 +48,7 @@ class GroupTypesController extends Controller {
 
 	public function store(CreateGroupTypeRequest $request) {
         $groupType = GroupType::create($request->all());
-        return redirect()->route('group_types.index');
+        return redirect()->route('group_types.index')->with('successes',['Group Type created successfully']);;
 	}
 }
 

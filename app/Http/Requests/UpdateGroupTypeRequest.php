@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class UpdateGroupTypeRequest extends Request {
 
@@ -11,7 +12,12 @@ class UpdateGroupTypeRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('update-group-type');
+	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('group_types.show',$this->route('id'))->withErrors(['You are not authorized to update group types']);
 	}
 
 	/**
@@ -22,7 +28,7 @@ class UpdateGroupTypeRequest extends Request {
 	public function rules()
 	{
 		return [
-			'name' => 'required',
+			'name' => 'required|unique:group_types,name,'.$this->route('id'),
 			'display_name' => 'required',
 			'description' => 'required'
 		];

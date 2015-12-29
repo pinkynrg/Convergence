@@ -17,35 +17,40 @@ use Auth;
 class CompanyPersonController extends Controller {
 
 	public function employees() {
-        $data['menu_actions'] = [Form::addItem(route('company_person.create',1), 'Add employee')];
-		$data['active_search'] = true;
-		$data['employees'] = CompanyPerson::where('company_id','=',Auth::user()->active_contact->company_id)->paginate(50);
-
-        $data['title'] = "Employees";
-
-		return view('company_person/index/employees',$data);
+		if (Auth::user()->can('read-all-employee')) {
+	        $data['menu_actions'] = [Form::addItem(route('company_person.create',1), 'Add employee')];
+			$data['active_search'] = true;
+			$data['employees'] = CompanyPerson::where('company_id','=',Auth::user()->active_contact->company_id)->paginate(50);
+	        $data['title'] = "Employees";
+			return view('company_person/index/employees',$data);
+		}
+        else return redirect()->back()->withErrors(['Access denied to employees index page']);		
 	}
 
 	public function contacts() {
-        $data['menu_actions'] = [Form::addItem(route('company_person.create',1), 'Add contact')];
-		$data['active_search'] = true;
-		$data['contacts'] = CompanyPerson::where('company_id','!=',1)->paginate(50);
-
-        $data['title'] = "Contacts";
-
-		return view('company_person/index/contacts',$data);
+		if (Auth::user()->can('read-all-employee')) {
+			$data['active_search'] = true;
+			$data['contacts'] = CompanyPerson::where('company_id','!=',1)->paginate(50);
+        	$data['title'] = "Contacts";
+			return view('company_person/index/contacts',$data);
+        }
+        else return redirect()->back()->withErrors(['Access denied to contacts index page']);		
 	}
 
 	public function show($id) {
-        $data['menu_actions'] = [
-        	Form::editItem(route('company_person.edit',$id), 'Edit this contact'),
-			Form::deleteItem('company_person.destroy', $id, 'Remove this contact')
-        ];
-		$data['company_person'] = CompanyPerson::find($id);
+		if ((CompanyPerson::find($id)->company_id == 1 && Auth::user()->can('read-employee')) || (CompanyPerson::find($id)->company_id != 1 && Auth::user()->can('read-contact'))) {
+			$data['menu_actions'] = [
+	        	Form::editItem(route('company_person.edit',$id), 'Edit this contact'),
+				Form::deleteItem('company_person.destroy', $id, 'Remove this contact')
+	        ];
+			$data['company_person'] = CompanyPerson::find($id);
 
-        $data['title'] = $data['company_person']->person->name() . " @ " . $data['company_person']->company->name;
+	        $data['title'] = $data['company_person']->person->name() . " @ " . $data['company_person']->company->name;
 
-		return view('company_person/show', $data);
+			return view('company_person/show', $data);
+		}
+		else return CompanyPerson::find($id)->company_id == 1 ? redirect()->back()->withErrors(['Access denied to employees show page']) : redirect()->back()->withErrors(['Access denied to company contacts show page']);
+
 	}
 
 	public function create($id) {
@@ -81,7 +86,10 @@ class CompanyPersonController extends Controller {
         $contact->email = Input::get('email');
         $contact->save();
 
-		return redirect()->route('companies.show',Input::get('company_id'));
+        $message = Input::get('company_id') == 1 ? 'Employee created successfully' : 'Company Contact created successfully';
+        $route = Input::get('company_id') == 1 ? 'company_person.employees' : 'companies.show';
+
+		return redirect()->route($route,Input::get('company_id'))->with('successes',[$message]);
 
 	}	
 

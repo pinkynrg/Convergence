@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class UpdateRoleRequest extends Request {
 
@@ -11,7 +12,12 @@ class UpdateRoleRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('update-role');
+	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('roles.show',$this->route('id'))->withErrors(['You are not authorized to update roles']);
 	}
 
 	/**
@@ -22,9 +28,9 @@ class UpdateRoleRequest extends Request {
 	public function rules()
 	{
 		return [
-			'name' => 'required',
+			'name' => 'required|unique:roles,name,'.$this->route('id'),
 			'display_name' => 'required',
-			'description' => 'required',
+			'description' => 'required'
 		];
 	}
 

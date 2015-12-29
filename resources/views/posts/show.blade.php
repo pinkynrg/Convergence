@@ -2,6 +2,6 @@
 
 @section('content')
 
-	@include('groups.groups', array("groups" => $groups))
+	{!! $post->post !!}
 
 @endsection

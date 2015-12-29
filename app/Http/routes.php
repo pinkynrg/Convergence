@@ -80,7 +80,12 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('tickets/{id}', ['uses' => 'TicketsController@destroy', 'as' => 'tickets.destroy']);
 	Route::patch('tickets/{id}', ['uses' => 'TicketsController@update', 'as' => 'tickets.update']);	
 	Route::get('tickets/{id}/edit', ['uses' => 'TicketsController@edit', 'as' => 'tickets.edit']);
+	
+	// posts routes
 	Route::post('posts',['uses' => 'PostsController@store', 'as' => 'posts.store']);
+	Route::get('posts/{id}',['uses' => 'PostsController@show', 'as' => 'posts.show']);
+	Route::patch('posts/{id}',['uses' => 'PostsController@update', 'as' => 'posts.update']);
+	Route::get('posts/{id}/edit', ['uses' => 'PostsController@edit', 'as' => 'posts.edit']);
 
 	// equipments routes 
 	Route::get('equipments',['uses' => 'EquipmentsController@index', 'as' => 'equipments.index']);
@@ -92,10 +97,10 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('equipments/{id}/edit', ['uses' => 'EquipmentsController@edit', 'as' => 'equipments.edit']);
 
 	// people routes
-	Route::match(['get','head'], 'people/{person_id}',['uses' => 'PeopleController@show', 'as' => 'people.show']);
-	Route::match(['get','head'], 'people/{person_id}/edit', ['uses' => 'PeopleController@edit', 'as' => 'people.edit']);
-	Route::match(['patch'], 'people/{person_id}', ['uses' => 'PeopleController@update', 'as' => 'people.update']);
-	Route::match(['delete'], 'people/{person_id}', ['uses' => 'PeopleController@destroy', 'as' => 'people.destroy']);
+	Route::get('people/{id}',['uses' => 'PeopleController@show', 'as' => 'people.show']);
+	Route::delete('people/{id}', ['uses' => 'PeopleController@destroy', 'as' => 'people.destroy']);
+	Route::patch('people/{id}', ['uses' => 'PeopleController@update', 'as' => 'people.update']);
+	Route::get('people/{id}/edit', ['uses' => 'PeopleController@edit', 'as' => 'people.edit']);
 
 	Route::match(['get','head'], 'employees',['uses' => 'CompanyPersonController@employees', 'as' => 'company_person.employees']);
 	Route::match(['get','head'], 'contacts',['uses' => 'CompanyPersonController@contacts', 'as' => 'company_person.contacts']);

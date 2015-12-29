@@ -15,9 +15,11 @@ use App\Models\Priority;
 use App\Models\JobType;
 use App\Models\TagTicket;
 use App\Models\Tag;
+use Html2Text\Html2Text;
 use Requests;
 use Input;
 use Form;
+use Auth;
 
 use Illuminate\Http\Request;
 
@@ -29,21 +31,24 @@ class TicketsController extends Controller {
 	 * @return Response
 	 */
 	public function index() {
-		$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
-		$data['active_search'] = true;
-		$data['tickets'] = Ticket::orderBy('id','desc')->paginate(50);
-		$data['companies'] = Company::orderBy('name','asc')->get();
-		$employees = CompanyPerson::select('company_person.*');
-		$employees->leftJoin('people','people.id','=','company_person.person_id');
-		$employees->where('company_person.company_id','=',1);
-		$employees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
-		$data['employees'] = $employees->get();
-		$data['divisions'] = Division::orderBy('name','asc')->get();
-		$data['statuses'] = Status::orderBy('id','asc')->get();
+		// if (Auth::user()->can('read-all-ticket')) {
+			$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
+			$data['active_search'] = true;
+			$data['tickets'] = Ticket::orderBy('id','desc')->paginate(50);
+			$data['companies'] = Company::orderBy('name','asc')->get();
+			$employees = CompanyPerson::select('company_person.*');
+			$employees->leftJoin('people','people.id','=','company_person.person_id');
+			$employees->where('company_person.company_id','=',1);
+			$employees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
+			$data['employees'] = $employees->get();
+			$data['divisions'] = Division::orderBy('name','asc')->get();
+			$data['statuses'] = Status::orderBy('id','asc')->get();
 
-        $data['title'] = "Tickets";
+	        $data['title'] = "Tickets";
 
-		return view('tickets/index',$data);
+			return view('tickets/index',$data);
+		// }
+		// else return redirect()->back()->withErrors(['Access denied to tickets index page']);
 	}
 
 	/**
@@ -75,7 +80,21 @@ class TicketsController extends Controller {
 	 */
 	public function store(CreateTicketRequest $request)
 	{
-        $ticket = Ticket::create($request->all());
+		$ticket = new Ticket();
+
+		$ticket->title = $request->get('title');
+		$ticket->post = $request->get('post');
+		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
+		$ticket->creator_id = $request->get('creator_id');
+		$ticket->assignee_id = $request->get('assignee_id');
+		$ticket->status_id = $request->get('status_id');
+		$ticket->priority_id = $request->get('priority_id');
+		$ticket->division_id = $request->get('division_id');
+		$ticket->equipment_id = $request->get('equipment_id');
+		$ticket->company_id = $request->get('company_id');
+		$ticket->contact_id = $request->get('contact_id');
+		$ticket->job_type_id = $request->get('job_type_id');
+		$ticket->save();
 
         if (Input::get('tagit')) {
 			
@@ -100,7 +119,7 @@ class TicketsController extends Controller {
 
 		SlackController::sendTicket($ticket);
 
-        return redirect()->route('tickets.index');
+        return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
 	}
 
 	/**
@@ -111,25 +130,29 @@ class TicketsController extends Controller {
 	 */
 	public function show($id)
 	{
-		$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit this ticket"),
-								 Form::deleteItem('tickets.destroy', $id, 'Delete this ticket')];
-								 
-		$data['ticket'] = Ticket::find($id);
-		$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
+		if (Auth::user()->can('read-ticket')) {
+		
+			$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit this ticket"),
+									 Form::deleteItem('tickets.destroy', $id, 'Delete this ticket')];
+									 
+			$data['ticket'] = Ticket::find($id);
+			$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 
-		switch ($data['ticket']->status_id) {
-			case '1' : $data['status_class'] = 'ticket_status_new'; break;
-			case '2' : $data['status_class'] = 'ticket_status_new'; break;
-			case '3' : $data['status_class'] = 'ticket_status_on_hold'; break;
-			case '4' : $data['status_class'] = 'ticket_status_on_hold'; break;
-			case '5' : $data['status_class'] = 'ticket_status_on_hold'; break;
-			case '6' : $data['status_class'] = 'ticket_status_closed'; break;
-			case '7' : $data['status_class'] = 'ticket_status_closed'; break;
-		};
+			switch ($data['ticket']->status_id) {
+				case '1' : $data['status_class'] = 'ticket_status_new'; break;
+				case '2' : $data['status_class'] = 'ticket_status_new'; break;
+				case '3' : $data['status_class'] = 'ticket_status_on_hold'; break;
+				case '4' : $data['status_class'] = 'ticket_status_on_hold'; break;
+				case '5' : $data['status_class'] = 'ticket_status_on_hold'; break;
+				case '6' : $data['status_class'] = 'ticket_status_closed'; break;
+				case '7' : $data['status_class'] = 'ticket_status_closed'; break;
+			};
 
-        $data['title'] = "Ticket #".$id;
+	        $data['title'] = "Ticket #".$id;
 
-		return view('tickets/show',$data);
+			return view('tickets/show',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to tickets show page']);	
 	}
 
 	/**
@@ -168,7 +191,20 @@ class TicketsController extends Controller {
 	public function update($id, UpdateTicketRequest $request)
 	{
 		$ticket = Ticket::find($id);
-        $ticket->update($request->all());
+
+		$ticket->title = $request->get('title');
+		$ticket->post = $request->get('post');
+		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
+		$ticket->creator_id = $request->get('creator_id');
+		$ticket->assignee_id = $request->get('assignee_id');
+		$ticket->status_id = $request->get('status_id');
+		$ticket->priority_id = $request->get('priority_id');
+		$ticket->division_id = $request->get('division_id');
+		$ticket->equipment_id = $request->get('equipment_id');
+		$ticket->contact_id = $request->get('contact_id');
+		$ticket->job_type_id = $request->get('job_type_id');
+
+		$ticket->save();
 
         $old_tags = TagTicket::where('ticket_id','=',$id)->delete();
 
@@ -193,7 +229,7 @@ class TicketsController extends Controller {
 			}
 		}
 	
-        return redirect()->route('tickets.show',$id);
+        return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
 	}
 
 	/**

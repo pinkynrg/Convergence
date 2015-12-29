@@ -13,9 +13,9 @@
 
 			<img id="login_img" src="/images/login.png">
 
-			@include('includes.errors')
-
 			{!! Form::open(array('method' => 'POST', 'route' => array('login.login'))) !!}
+
+				@include('includes.errors')
 			
 				<div class="form-group">
 					<input class="form-control" name="username" type="text" id="username" placeholder="username">

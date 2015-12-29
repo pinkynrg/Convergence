@@ -12,8 +12,7 @@ class CreateGroupRequest extends Request {
 	 */
 	public function authorize()
 	{
-		// return Auth::user()->can('create-group');
-		return true;
+		return Auth::user()->can('create-group');
 	}
 
 	public function forbiddenResponse()
@@ -29,7 +28,7 @@ class CreateGroupRequest extends Request {
 	public function rules()
 	{
 		return [
-			'name' => 'required',
+			'name' => 'required|unique:groups',
 			'display_name' => 'required',
 			'description' => 'required',
 			'group_type_id' => 'required'

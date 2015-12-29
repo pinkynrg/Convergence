@@ -1,8 +1,6 @@
 @extends('layouts.default')
 @section('content')
 
-	@include('includes.errors')
-
 	{!! Form::model($company, array('route' => 'company_person.store', 'class' => "form-horizontal")) !!}
 
 		@include('people.create')
@@ -14,7 +12,6 @@
 			{!! Form::BSSelect("group_type_id", $group_types, null, array('bclass' => 'col-xs-3', "key" => "id", "value" => "display_name")) !!}
 
 		{!! Form::BSEndGroup() !!}
-
 
 		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
 

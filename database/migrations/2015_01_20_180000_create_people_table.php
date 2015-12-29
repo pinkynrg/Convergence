@@ -20,10 +20,6 @@ class CreatePeopleTable extends Migration {
 			$table->string('image')->nullable();
 			$table->timestamps();
 		});
-
-		Schema::table('users',function(Blueprint $table) {
-			$table->foreign('person_id')->references('id')->on('people');
-		});
 	}
 
 	/**

@@ -1,8 +1,6 @@
 @extends('layouts.default')
 @section('content')
 
-	@include('includes.errors')
-
 	{!! Form::open(array('route' => 'group_types.store', 'class' => "form-horizontal")) !!}
 
 		@include('group_types.form')

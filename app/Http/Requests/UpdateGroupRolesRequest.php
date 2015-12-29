@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class UpdateGroupRolesRequest extends Request {
 
@@ -11,7 +12,12 @@ class UpdateGroupRolesRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('update-group-roles');
+	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('groups.show',$this->route('id'))->withErrors(['You are not authorized to update group roles']);
 	}
 
 	/**

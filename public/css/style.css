@@ -307,6 +307,10 @@ a:visited, a:link, a:active, a:visited {
 	margin: 0px 0px 20px 0px;	
 }
 
+.close {
+  font-size: 16px;
+}
+
 /* Ticket page */
 
 .ticket_foot_details {
@@ -344,6 +348,20 @@ a:visited, a:link, a:active, a:visited {
 #ticket_post {
     font-size: 15px;
     margin: 10px 0px;
+}
+
+.post_edit {
+  float: right;
+  font-size: 18px;
+}
+
+.post_edit a {
+  color: #DDD !important;
+  text-decoration: none;
+}
+
+.post_edit a:hover {
+  color: #000 !important;
 }
 
 .tags {

@@ -4,21 +4,28 @@ use App\Http\Requests\CreatePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
 use App\Models\Permission;
 use Form;
+use Auth;
 
 class PermissionsController extends Controller {
 
 	public function index() {
-		$data['title'] = "Roles";
-		$data['permissions'] = Permission::paginate(50);
-		$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission')];
-		return view('permissions/index',$data);
+		if (Auth::user()->can('read-all-permission')) {
+			$data['title'] = "Roles";
+			$data['permissions'] = Permission::paginate(50);
+			$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission')];
+			return view('permissions/index',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to permissions index page']);
 	}
 
 	public function show($id) {
-		$data['permission'] = Permission::find($id);
-		$data['title'] = "Permission ".$data['permission']->display_name;
-		$data['menu_actions'] = [Form::editItem(route('permissions.edit',$id), 'Edit this permission')];
-		return view('permissions/show',$data);
+		if (Auth::user()->can('read-permission')) {
+			$data['permission'] = Permission::find($id);
+			$data['title'] = "Permission ".$data['permission']->display_name;
+			$data['menu_actions'] = [Form::editItem(route('permissions.edit',$id), 'Edit this permission')];
+			return view('permissions/show',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to permissions show page']);
 	}
 
 	public function edit($id) {
@@ -30,7 +37,7 @@ class PermissionsController extends Controller {
 	public function update($id, UpdatePermissionRequest $request) {
 		$permission = Permission::find($id);
         $permission->update($request->all());
-        return redirect()->route('permissions.show',$id);
+        return redirect()->route('permissions.show',$id)->with('successes',['Permission updated successfully']);;
 	}
 
 	public function create() {
@@ -40,7 +47,7 @@ class PermissionsController extends Controller {
 
 	public function store(CreatePermissionRequest $request) {
         $groupType = Permission::create($request->all());
-        return redirect()->route('permissions.index');
+        return redirect()->route('permissions.index')->with('successes',['Permission created successfully']);;
 	}
 }
 

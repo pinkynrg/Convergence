@@ -1,7 +1,6 @@
 @extends('layouts.default')
 @section('content')
 
-	@include('includes.errors')
 	{!! Form::model($contact, array('method' => 'PATCH', 'route' => array('company_person.update',$contact->id), 'class' => "form-horizontal")) !!}
 
 		<h3 class="subtitle"> Contact Details </h2>

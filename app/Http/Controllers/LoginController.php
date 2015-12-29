@@ -41,7 +41,7 @@ class LoginController extends Controller {
 				$user->save();
 			}
 
-			return redirect()->route('root');
+			return redirect()->route('root')->with('successes',['Accessed successfully']);
 		}
 
 		else {
@@ -52,7 +52,7 @@ class LoginController extends Controller {
 				return $this->MD5ToHASHLaravelConversion($request, $user,$password);
 			}
 			else {
-				return redirect()->route('login.index')->withErrors(array('The username or the password are incorrect'));
+				return redirect()->route('login.index')->withErrors(['The username or the password are incorrect']);
 			}
 		}
 	}

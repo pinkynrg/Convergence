@@ -12,8 +12,7 @@ class CreateRoleRequest extends Request {
 	 */
 	public function authorize()
 	{
-		// return Auth::user()->can('create-role');
-		return true;
+		return Auth::user()->can('create-role');
 	}
 
 	public function forbiddenResponse()
@@ -29,7 +28,7 @@ class CreateRoleRequest extends Request {
 	public function rules()
 	{
 		return [
-			'name' => 'required',
+			'name' => 'required|unique:roles',
 			'display_name' => 'required',
 			'description' => 'required'
 		];

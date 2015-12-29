@@ -1,8 +1,9 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
-class CreatePersonRequest extends Request {
+class UpdatePostRequest extends Request {
 
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -11,8 +12,14 @@ class CreatePersonRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('update-post');
 	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('posts.show',$this->route("id"))->withErrors(['You are not authorized to update posts']);
+	}
+
 
 	/**
 	 * Get the validation rules that apply to the request.
@@ -22,8 +29,7 @@ class CreatePersonRequest extends Request {
 	public function rules()
 	{
 		return [
-			'first_name' => 'required|string',
-			'last_name' => 'required|string',  
+			'post' => 'required|string'
 		];
 	}
 

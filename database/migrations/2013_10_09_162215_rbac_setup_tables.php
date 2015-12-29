@@ -53,12 +53,13 @@ class RbacSetupTables extends Migration {
         Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('group_type_id')->unsigned();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
-             $table->foreign('group_type_id')->references('id')->on('group_types')
-                ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('group_type_id')->references('id')->on('group_types')->onUpdate('cascade')->onDelete('cascade');
+            $table->unique(['group_type_id','name']);
+
         });
 
         // Create table for associating permissions to roles (Many-to-Many)

@@ -1,5 +1,7 @@
 {!! Form::BSGroup() !!}
 
+	{!! Form::hidden("company_id", null, ['bclass' => 'col-xs-3']) !!}
+
 	{!! Form::BSLabel("phone", "Phone", ['bclass' => 'col-xs-2']) !!}
 	{!! Form::BSText("phone", null, ['bclass' => 'col-xs-3']) !!}
 

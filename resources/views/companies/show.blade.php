@@ -1,7 +1,5 @@
 @extends('layouts.default')
 @section('content')
-
-	@include('includes.errors')
 	
 	<div>
 		

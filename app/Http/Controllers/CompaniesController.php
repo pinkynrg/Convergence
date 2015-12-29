@@ -8,6 +8,7 @@ use App\Models\Title;
 use App\Models\Department;
 use App\Models\Equipment;
 use App\Models\Service;
+use App\Models\GroupType;
 use App\Models\SupportType;
 use App\Models\CompanyPerson;
 use App\Models\CompanyMainContact;
@@ -16,18 +17,20 @@ use App\Http\Requests\CreateCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use Input;
 use Form;
+use Auth;
 use DB;
 
 class CompaniesController extends Controller {
 
 	public function index() {
-        $data['companies'] = Company::paginate(50);
-        $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
-        $data['active_search'] = true;
-
-        $data['title'] = "Companies";
-
-		return view('companies/index', $data);
+        if (Auth::user()->can('read-all-company')) {
+            $data['companies'] = Company::paginate(50);
+            $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
+            $data['active_search'] = true;
+            $data['title'] = "Companies";
+    		return view('companies/index', $data);
+        }
+        else return redirect()->back()->withErrors(['Access denied to companies index page']);      
 	}
 
 	public function create() {
@@ -35,6 +38,7 @@ class CompaniesController extends Controller {
         $data['departments'] = Department::all();
 		$data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
         $data['support_types'] = SupportType::all();
+        $data['group_types'] = GroupType::all();
 
         $data['title'] = "Create Company";
 
@@ -61,6 +65,7 @@ class CompaniesController extends Controller {
         $contact->extension = Input::get('extension');
         $contact->cellphone = Input::get('cellphone');
         $contact->email = Input::get('email');
+        $contact->group_type_id = Input::get('group_type_id');
         $contact->save();
 
         $company_main_contact = new CompanyMainContact;
@@ -73,26 +78,26 @@ class CompaniesController extends Controller {
         $company_account_manager->account_manager_id = Input::get('account_manager_id');
         $company_account_manager->save();
 
-        return redirect()->route('companies.index');
+        return redirect()->route('companies.index')->with('successes',['company created successfully']);
 	}
 
 	public function show($id) {
+        if (Auth::user()->can('read-company')) {
+            $data['menu_actions'] = [
+                Form::deleteItem('companies.destroy', $id, 'Remove this company'),
+                Form::editItem(route('companies.edit',$id), 'Edit this company'),
+                Form::addItem(route('company_person.create',$id), 'Add Contact to this company'),
+                Form::addItem(route('equipments.create',$id),'Add new Equipment to this company')
+            ];
 
-        $data['menu_actions'] = [
-            Form::deleteItem('companies.destroy', $id, 'Remove this company'),
-            Form::editItem(route('companies.edit',$id), 'Edit this company'),
-            Form::addItem(route('company_person.create',$id), 'Add Contact to this company'),
-            Form::addItem(route('equipments.create',$id),'Add new Equipment to this company')
-        ];
-
-        $data['company'] = Company::find($id);
-        $data['company']->contacts = CompanyPerson::where('company_person.company_id','=',$id)->paginate(10);
-        $data['company']->tickets = Ticket::where('company_id','=',$id)->paginate(10);
-        $data['company']->equipments = Equipment::where('company_id','=',$id)->paginate(10);
-
-        $data['title'] = $data['company']->name;
-
-        return view('companies/show',$data);
+            $data['company'] = Company::find($id);
+            $data['company']->contacts = CompanyPerson::where('company_person.company_id','=',$id)->paginate(10);
+            $data['company']->tickets = Ticket::where('company_id','=',$id)->paginate(10);
+            $data['company']->equipments = Equipment::where('company_id','=',$id)->paginate(10);
+            $data['title'] = $data['company']->name;
+            return view('companies/show',$data);
+        }
+        else return redirect()->back()->withErrors(['Access denied to companies show page']);      
 	}
 
 	public function edit($id) {
@@ -135,7 +140,7 @@ class CompaniesController extends Controller {
             $main_contact->save();        
         }
 
-        return redirect()->route('companies.show',$id);
+        return redirect()->route('companies.show',$id)->with('successes',['company updated successfully']);
 	}
 
 	public function destroy($id) {

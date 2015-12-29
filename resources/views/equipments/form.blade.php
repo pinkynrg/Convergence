@@ -1,4 +1,6 @@
 {!! Form::BSGroup() !!}
+	
+	{!! Form::hidden("company_id", $company->id, array("id" => "company_id")) !!}
 
 	{!! Form::BSLabel("name", "Name", ['bclass' => 'col-xs-2']) !!}
 	{!! Form::BSText("name", null, ['bclass' => 'col-xs-3']) !!}
@@ -24,6 +26,6 @@
 	{!! Form::BSText("notes", null, ['bclass' => 'col-xs-3']) !!}
 
 	{!! Form::BSLabel("warranty_expiration", "Warranty Expiration", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSText('warranty_expiration',null,['class' => 'datepicker', 'data-provider' => 'datepicker', 'bclass' => 'col-xs-3']); !!}
+	{!! Form::BSText('warranty_expiration', isset($equipment) && $equipment->warranty_expiration ? date("m/d/Y",strtotime($equipment->warranty_expiration)) : '',['class' => 'datepicker', 'data-provider' => 'datepicker', 'bclass' => 'col-xs-3']); !!}
 
 {!! Form::BSEndGroup() !!}

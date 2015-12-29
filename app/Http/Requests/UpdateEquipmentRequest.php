@@ -12,13 +12,12 @@ class UpdateEquipmentRequest extends Request {
 	 */
 	public function authorize()
 	{
-		// return Auth::user()->can('create-equipment');
-		return true;
+		return Auth::user()->can('update-equipment');
 	}
 
 	public function forbiddenResponse()
 	{
-		return redirect()->route('companies.show',Request::get('company_id'))->withErrors(['You are not authorized to update equipments']);
+		return redirect()->route('equipments.show',$this->get('id'))->withErrors(['You are not authorized to update equipments']);
 	}
 
 	/**

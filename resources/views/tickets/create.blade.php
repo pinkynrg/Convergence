@@ -1,8 +1,6 @@
 @extends('layouts.default')
 @section('content')
 
-	@include('includes.errors')
-
 	{!! Form::open( array('route' => 'tickets.store') ) !!}		
 
 		@include('tickets.form')

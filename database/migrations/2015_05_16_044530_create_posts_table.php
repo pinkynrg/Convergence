@@ -16,6 +16,7 @@ class CreatePostsTable extends Migration {
 			$table->increments('id');
 			$table->integer('ticket_id')->unsigned();
 			$table->text('post');
+			$table->text('post_plain_text');
 			$table->integer('author_id')->unsigned();
 			$table->string('is_public');
 			$table->timestamps();

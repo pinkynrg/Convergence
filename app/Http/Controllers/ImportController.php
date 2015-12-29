@@ -102,32 +102,6 @@
 			return $row;
 		}
 
-		private function importGroupTypes() {
-
-			$table = "group_types";
-			$successes = $errors = 0;
-
-			if ($this->truncate($table)) {
-
-				$queries = ["INSERT INTO group_types (id, name, display_name, description, created_at, updated_at) VALUES (1,'employee','Employee','E80 Employee','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-							"INSERT INTO group_types (id, name, display_name, description, created_at, updated_at) VALUES (2,'customer','Customer','E80 Customer','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"];
-				
-				foreach ($queries as $query) {
-					if (mysqli_query($this->conn, $query) === TRUE) {
-						$successes++;
-					}
-					else {
-						echo $query."<br>";
-						echo("Error description: " . mysqli_error($this->conn))."<br>";
-						$errors++;
-					}
-				}
-			
-				$this->logger($successes,$errors,$table);
-
-			}
-		}
-
 		private function importCompanies() {
 
 			$table = 'companies';
@@ -549,9 +523,7 @@
 				}
 
 				$this->logger($successes,$errors,$table);
-
 			}
-
 		}
 
 		private function importPriorities() {
@@ -1376,6 +1348,279 @@
 			}
 		}
 
+		public function importPermissions() {
+
+			$table = "permissions";
+			$successes = $errors = 0;
+
+			if ($this->truncate($table)) {
+
+				$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person'];
+				$actions = ['create','read','read-all','update','delete'];
+
+				$counter = 1;
+
+				foreach ($targets as $target) {
+					foreach ($actions as $action) {
+						$query = "INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES ($counter,'$action-$target','".ucfirst(str_replace('-',' ',$action))." ".str_replace('-',' ',$target)."','Permission to ".str_replace('-',' ',$action)." ".str_replace('-',' ',$target)."','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+						if (mysqli_query($this->conn, $query) === TRUE) {
+							$successes++;
+						}
+						else {
+							echo $query."<br>";
+							echo("Error description: " . mysqli_error($this->conn))."<br>";
+							$errors++;
+						}
+						$counter++;
+					}
+				}
+			
+				$this->logger($successes,$errors,$table);
+			}
+		}
+
+		public function importRoles() {
+
+			$table = "roles";
+			$successes = $errors = 0;
+
+			if ($this->truncate($table)) {
+
+				$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person'];
+				$actions = ['viewer','manager'];
+
+				$counter = 1;
+
+				foreach ($targets as $target) {
+					foreach ($actions as $action) {
+						$query = "INSERT INTO roles (id, name, display_name, description, created_at, updated_at) VALUES ($counter,'$target-$action','".ucfirst(str_replace('-',' ',$target))." $action','".ucfirst(str_replace('-',' ',$target))." $action role','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+						if (mysqli_query($this->conn, $query) === TRUE) {
+							$successes++;
+						}
+						else {
+							echo $query."<br>";
+							echo("Error description: " . mysqli_error($this->conn))."<br>";
+							$errors++;
+						}
+						$counter++;
+					}
+				}
+			
+				$this->logger($successes,$errors,$table);
+			}
+		}
+
+		public function importPermissionRole() {
+			
+			$table = "permission_role";
+			$successes = $errors = 0;
+
+			$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person'];
+			$role_types = ['viewer','manager'];
+
+			if ($this->truncate($table)) {
+
+				foreach ($targets as $target) {
+					foreach ($role_types as $role_type) {
+						$query = "SELECT * FROM roles WHERE name = '$target-$role_type' LIMIT 1";
+
+						$result = mysqli_query($this->conn, $query);
+						$role = mysqli_fetch_array($result);
+						
+						if ($role) {
+							if ($role_type == 'viewer') {
+								$query = "SELECT * FROM permissions WHERE `name` LIKE '%$target' AND (`name` LIKE '%read%' OR `name` LIKE '%read-all%')";
+							}
+							elseif ($role_type == 'manager') {
+								$query = "SELECT * FROM permissions WHERE `name` LIKE '%$target'";
+							}
+							
+							$result = mysqli_query($this->conn, $query);
+							$permissions = mysqli_fetch_all($result,MYSQLI_BOTH);
+
+							foreach ($permissions as $permission) {
+								$query = "INSERT INTO permission_role (permission_id, role_id) VALUES (".$permission['id'].",".$role['id'].")";
+
+								if (mysqli_query($this->conn, $query) === TRUE) {
+									$successes++;
+								}
+								else {
+									echo $query."<br>";
+									echo("Error description: " . mysqli_error($this->conn))."<br>";
+									$errors++;
+								}
+							}
+						}
+					}
+				}
+
+				$this->logger($successes,$errors,$table);
+			}
+		}
+
+		private function importGroupTypes() {
+
+			$table = "group_types";
+			$successes = $errors = 0;
+
+			if ($this->truncate($table)) {
+
+				$queries = ["INSERT INTO group_types (id, name, display_name, description, created_at, updated_at) VALUES (1,'employee','Employee','E80 Employee','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+							"INSERT INTO group_types (id, name, display_name, description, created_at, updated_at) VALUES (2,'customer','Customer','E80 Customer','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"];
+				
+				foreach ($queries as $query) {
+					if (mysqli_query($this->conn, $query) === TRUE) {
+						$successes++;
+					}
+					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
+						$errors++;
+					}
+				}
+			
+				$this->logger($successes,$errors,$table);
+
+			}
+		}
+
+		public function importGroups() {
+
+			$table = "groups";
+			$successes = $errors = 0;
+
+			if ($this->truncate($table)) {
+
+				$queries = ["INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (1,1,'convergence-adminstrator','Convergence Administrator', 'The Administrator of Convergence')",
+							"INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (2,1,'help-desk-user','Help Desk User', 'The Basic Help Desk User')"];
+	
+				foreach ($queries as $query) {							
+				
+					if (mysqli_query($this->conn, $query) === TRUE) {
+						$successes++;
+					}
+					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
+						$errors++;
+					}
+				}
+
+				$this->logger($successes,$errors,$table);
+			}
+		}
+
+		public function importExtraPermissions() {
+
+			$table = "permissions";
+			$successes = $errors = 0;
+
+			$queries = [
+				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (100,'update-role-permissions','Update role permissions','Permission to update role permissions','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (101,'update-group-roles','Update group roles','Permission to update group roles','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"
+			];
+
+			foreach ($queries as $query) {							
+				
+				if (mysqli_query($this->conn, $query) === TRUE) {
+					$successes++;
+				}
+				else {
+					echo $query."<br>";
+					echo("Error description: " . mysqli_error($this->conn))."<br>";
+					$errors++;
+				}
+			}
+
+			$this->logger($successes,$errors,$table);
+		}
+
+		public function importExtraRolePermissions() {
+
+			$table = "permission_role";
+			$successes = $errors = 0;
+
+			$queries = [
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (100,4)",
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (101,6)"
+			];
+
+			foreach ($queries as $query) {							
+				
+				if (mysqli_query($this->conn, $query) === TRUE) {
+					$successes++;
+				}
+				else {
+					echo $query."<br>";
+					echo("Error description: " . mysqli_error($this->conn))."<br>";
+					$errors++;
+				}
+			}
+
+			$this->logger($successes,$errors,$table);
+
+		}
+
+		public function setPermissionGroups() {
+			$table = "company_person";
+			$successes = $errors = 0;
+
+			$query = "UPDATE company_person SET group_id = 1 WHERE email = 'meli.f@elettric80.it'";
+
+			if (mysqli_query($this->conn, $query) === TRUE) {
+				$successes++;
+			}
+			else {
+				echo $query."<br>";
+				echo("Error description: " . mysqli_error($this->conn))."<br>";
+				$errors++;
+			}
+
+			$this->logger($successes,$errors,$table);
+		}
+
+		public function importGroupRole() {
+			$table = "group_role";
+			$successes = $errors = 0;
+
+			$group_roles = [
+				1 => array(2,4,6,8,10,12,14,16,18,20,22),
+				2 => array(10,11,12,13,16,18,20)
+			];
+
+			if ($this->truncate($table)) {
+				foreach ($group_roles as $group_id => $roles) {
+					
+					if ($roles == "*") {
+						$query = "SELECT * FROM roles";
+					}
+					else {
+						$role_ids = implode(",",$roles);
+						$query = "SELECT * FROM roles WHERE id IN ($role_ids)";
+					}
+					
+					$result = mysqli_query($this->conn, $query);
+					$roles = mysqli_fetch_all($result,MYSQLI_BOTH);
+
+					foreach ($roles as $role) {
+						$query = "INSERT INTO group_role (role_id, group_id) VALUES (".$role['id'].",".$group_id.")";
+
+						if (mysqli_query($this->conn, $query) === TRUE) {
+							$successes++;
+						}
+						else {
+							echo $query."<br>";
+							echo("Error description: " . mysqli_error($this->conn))."<br>";
+							$errors++;
+						}
+					}
+				}
+
+				$this->logger($successes,$errors,$table);
+			}
+		}
+
+
 		public function __construct() {
 
 			if (!mssql_connect(CONVERGENCE_HOST,CONVERGENCE_USER,CONVERGENCE_PASS)) {
@@ -1407,30 +1652,38 @@
 				}
 			}
 			else {
-				// $this->importGroupTypes();					// 2/2
+				// $this->importPermissions();						// 50/50
+				// $this->importRoles();							// 20/20
+				// $this->importPermissionRole();					// 84/84
+				// $this->importGroupTypes();						// 2/2
+				// $this->importGroups();							// 1/1
+				// $this->importGroupRole(); 						// 20/20
+				// $this->importExtraPermissions();				// 2/2
+				// $this->importExtraRolePermissions();			// 2/2
 				// $this->importDepartments(); 					// 10/10
-				// $this->importDivisions();					// 8/8
-				// $this->importEquipmentTypes();				// 32/32
-				// $this->importConnectionTypes();				// 2/2
+				// $this->importDivisions();						// 8/8
+				// $this->importEquipmentTypes();					// 32/32
+				// $this->importConnectionTypes();					// 2/2
 				// $this->importSupportTypes();					// 7/7
 				// $this->importJobTypes();						// 4/4
 				// $this->importTags();							// 111/149 		ok 	all other are duplicates
-				// $this->importPriorities();					// 5/5
-				// $this->importStatus();						// 7/7
-				// $this->importTitles();						// 30/30
-				// $this->importCompanies();					// 93/94 		ok 	delete customer with id = 208
-				// $this->importPeople();						// 393/401 		ok
-				// $this->fixCompanyPersonTable();				// 93/93
-				// $this->deleteBadE80PersonCompany();			// 111/111
+				// $this->importPriorities();						// 5/5
+				// $this->importStatus();							// 7/7
+				// $this->importTitles();							// 30/30
+				// $this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
+				// $this->importPeople();							// 393/401 		ok
+				// $this->fixCompanyPersonTable();					// 93/93
+				// $this->deleteBadE80PersonCompany();				// 111/111
 				// $this->deleteUnusedPeople();					// 52/52
-				// $this->importCompanyMainContacts();			// 15/18
-				// $this->setBlankMainContact();				// 25/79 		?
-				// $this->importCompanyAccountManagers();		// 73/76
-				// $this->importEquipments();					// 220/220
+				// $this->importCompanyMainContacts();				// 15/18
+				// $this->setBlankMainContact();					// 25/79 		?
+				// $this->importCompanyAccountManagers();			// 73/76
+				// $this->importEquipments();						// 220/220
 				// $this->importTagTicket();
 				// $this->importServices();
 				// $this->importUsers();
 				// $this->setActiveContacts();
+				// $this->setPermissionGroups();					// 1/1
 				
 				// $this->importTickets();						// 3034/3116
 				// $this->importPosts();						// 721 misses

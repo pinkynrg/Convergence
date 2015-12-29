@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class UpdatePermissionRequest extends Request {
 
@@ -11,7 +12,12 @@ class UpdatePermissionRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('update-permission');
+	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('permissions.show',$this->route('id'))->withErrors(['You are not authorized to update permissions']);
 	}
 
 	/**
@@ -22,9 +28,9 @@ class UpdatePermissionRequest extends Request {
 	public function rules()
 	{
 		return [
-			'name' => 'required',
+			'name' => "required|unique:permissions,name,".$this->route('id'),
 			'display_name' => 'required',
-			'description' => 'required',
+			'description' => 'required'
 		];
 	}
 

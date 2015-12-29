@@ -28,13 +28,15 @@ class CreateCompanyRequest extends Request {
 	public function rules()
 	{
 		return [
-			'name' => 'required',
-            'city' => 'required|string',
+			'name' => 'required|unique:companies',
             'country' => 'required|string',
-            'address' => 'required',
             'state' => 'required|string',
+            'city' => 'required|string',
+            'address' => 'required',
             'zip_code' => 'required|numeric',
             'group_email' => 'email',
+            'account_manager_id' => 'required',
+            'support_type_id' => 'required',
             'account_manager_id' => 'required'
 		];
 	}

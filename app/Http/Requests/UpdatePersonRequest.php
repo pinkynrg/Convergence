@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use Auth;
 
 class UpdatePersonRequest extends Request {
 
@@ -11,8 +12,14 @@ class UpdatePersonRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return true;
+		return Auth::user()->can('update-person');
 	}
+
+	public function forbiddenResponse()
+	{
+		return redirect()->route('people.show',$this->route('id'))->withErrors(['You are not authorized to update people']);
+	}
+
 
 	/**
 	 * Get the validation rules that apply to the request.
