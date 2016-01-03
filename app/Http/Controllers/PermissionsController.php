@@ -10,7 +10,7 @@ class PermissionsController extends Controller {
 
 	public function index() {
 		if (Auth::user()->can('read-all-permission')) {
-			$data['title'] = "Roles";
+			$data['title'] = "Permissions";
 			$data['permissions'] = Permission::paginate(50);
 			$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission')];
 			return view('permissions/index',$data);
@@ -21,7 +21,7 @@ class PermissionsController extends Controller {
 	public function show($id) {
 		if (Auth::user()->can('read-permission')) {
 			$data['permission'] = Permission::find($id);
-			$data['title'] = "Permission ".$data['permission']->display_name;
+			$data['title'] = "Permission \"".$data['permission']->display_name."\"";
 			$data['menu_actions'] = [Form::editItem(route('permissions.edit',$id), 'Edit this permission')];
 			return view('permissions/show',$data);
 		}
@@ -30,7 +30,7 @@ class PermissionsController extends Controller {
 
 	public function edit($id) {
 		$data['permission'] = Permission::find($id);
-		$data['title'] = "Update Permission ".$data['permission']->display_name;
+		$data['title'] = "Update Permission \"".$data['permission']->display_name."\"";
 		return view('permissions/edit',$data);
 	}
 

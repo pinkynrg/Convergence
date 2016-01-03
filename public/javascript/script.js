@@ -154,6 +154,8 @@ $(document).ready(function() {
 		if ( params['page'] != 1 ) {
 			url = url + "?page=" + params['page'];
 		}
+
+		console.log(url);
 		
 		return url;
 	}

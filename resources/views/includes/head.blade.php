@@ -32,6 +32,6 @@
 <link rel="stylesheet" type="text/css" href="/css/style.css">
 
 
-<link rel="shortcut icon" href="{{ asset('/images/favicon.ico') }}">
+<link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">
 
 <title>{{ isset($title) ? "Convergence - ".$title : "[missing page title]" }}</title>

@@ -1,26 +1,71 @@
 <?php 
 
-$menu_voices = ['<i class="fa fa-ticket"></i> Tickets' => route('tickets.index'),
-				'<i class="fa fa-cog"></i> Manage' => array
-				(
-					'<i class="fa fa-users"></i> Companies' => route('companies.index'),
-					'<i class="fa fa-users"></i> Customer Contacts' => route('company_person.contacts'),
-					'<i class="fa fa-suitcase"></i> Employees' => route('company_person.employees'),
-					'<i class="fa fa-gear"></i> Equipments' => route('equipments.index')
-				),
-				'<i class="fa fa-lock"></i> Access' => array
-				(
-					'Permissions' => route('permissions.index'),
-					'Roles' => route('roles.index'),
-					'Groups' => route('groups.index'),
-					'Group Types' => route('group_types.index')
-				),
-				'<i class="fa fa-info"></i> Info' => array 
-				(
-					'<i class="fa fa-dashboard"></i> Dashboard' => route('dashboard.logged'),
-					'<i class="fa fa fa-line-chart"></i> Statistics' => route('statistics.index')
-				)
-];
+class Menu {
+
+	private $menu;
+
+	static function items($items) {
+		foreach ($items as $item) {
+			$menu[] = self::add($item);
+		}
+		return $menu;
+	}
+
+	static function add($item) {
+		$object = new \StdClass();
+		$object->label = isset($item['label']) ? $item['label'] : 'label-missing';
+		$object->icon = isset($item['icon']) ? "<i class='fa ".$item['icon']."'></i>" : "<i class='fa fa-question-circle'></i>";
+		
+		if ($item['type'] == 'item') {
+			
+			if (isset($item['show'])) {
+				$object->show = $item['show'];
+			}
+			else {
+				$object->show = true;
+				$object->label .= ' [permission not defined]';
+			}
+
+			if (isset($item['link'])) {
+				$object->link = $item['link'];
+			}
+			else {
+				$object->label .= ' [link not defined]';
+			}
+		}
+
+		elseif ($item['type'] == 'group') {
+			$show = false;
+			foreach ($item['menu'] as $elem) {
+				if (!isset($elem['show']) || $elem['show'] == true) $show = true;
+			}
+			$object->show = $show;
+			$object->menu = self::items($item['menu']);
+		}
+		
+		return $object;
+	}
+}
+
+$main = Menu::items([
+	['type'=>'item','label'=>'Tickets','icon'=>'fa-ticket','link'=>route('tickets.index'),'show'=>Auth::user()->can('read-all-ticket')],
+	['type'=>'group','label'=>'Manage','icon'=>'fa-cog','menu'=>[
+		['type'=>'item','label'=>'Companies','icon'=>'fa-building','link'=>route('companies.index'),'show'=>Auth::user()->can('read-all-company')],
+		['type'=>'item','label'=>'Customer Contacts','icon'=>'fa-book','link'=>route('company_person.contacts'),'show'=>Auth::user()->can('read-all-contact')],
+		['type'=>'item','label'=>'Employees','icon'=>'fa-users','link'=>route('company_person.employees'),'show'=>Auth::user()->can('read-all-employee')],
+		['type'=>'item','label'=>'Equipments','icon'=>'fa-wrench','link'=>route('equipments.index'),'show'=>Auth::user()->can('read-all-equipment')]
+	]],
+	['type'=>'group','label'=>'Access','icon'=>'fa-cog','menu'=>[
+		['type'=>'item','label'=>'Permissions','icon'=>'fa fa-unlock','link'=>route('permissions.index'),'show'=>Auth::user()->can('read-all-permission')],
+		['type'=>'item','label'=>'Roles','icon'=>'fa-male','link'=>route('roles.index'),'show'=>Auth::user()->can('read-all-role')],
+		['type'=>'item','label'=>'Groups','icon'=>'fa-users','link'=>route('groups.index'),'show'=>Auth::user()->can('read-all-group')],
+		['type'=>'item','label'=>'Groups Types','icon'=>'fa-bars','link'=>route('group_types.index'),'show'=>Auth::user()->can('read-all-group-type')]
+	]],
+	['type'=>'group','label'=>'Info','icon'=>'fa-cog','menu'=>[	
+		['type'=>'item','label'=>'Dashboard','icon'=>'fa-dashboard','link'=>route('dashboard.logged')],
+		['type'=>'item','label'=>'Statistics','icon'=>'fa-line-chart','link'=>route('statistics.index')]
+	]]
+]);
 
 ?>
 
@@ -44,33 +89,45 @@ $menu_voices = ['<i class="fa fa-ticket"></i> Tickets' => route('tickets.index')
 
 			<ul class="nav navbar-nav">
 
-				@if (isset($menu_voices))
+				@if (isset($main))
 					
-					@foreach ($menu_voices as $label => $content)
+					@foreach ($main as $elem)
 
-						@if (is_array($content)) 
+						@if (isset($elem->menu)) 
 
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {!! $label !!} <span class="caret"></span></a>
-          						<ul class="dropdown-menu">
+							@if ($elem->show)
 
-          							@foreach ($content as $label => $link)
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {!! $elem->icon !!} {!! $elem->label !!} <span class="caret"></span></a>
+	          						<ul class="dropdown-menu">
 
-										<li><a href="{{ $link }}"> {!! $label !!} </a></li>
+	          							@foreach ($elem->menu as $subelem)
 
-          							@endforeach
+	          								@if ($subelem->show)
 
-            					</ul>
-							</li>
+												<li><a href="{{ $subelem->link }}"> {!! $subelem->icon !!} {!! $subelem->label !!} </a></li>
+
+											@endif
+
+	          							@endforeach
+
+	            					</ul>
+								</li>
+
+							@endif
 
 						@else
-							
-							@if (Request::url() === $content)
-								<li class="active">
-									<a href="{{ $content }}"> {!! $label !!} <span class="sr-only">(current)</span> </a>
-								</li> 	
-							@else 
-								<li><a href="{{ $content }}"> {!! $label !!} <span class="sr-only">(current)</span> </a></li>
+
+							@if ($elem->show)
+
+								@if (Request::url() === $elem->link)
+									<li class="active">
+										<a href="{{ $elem->link }}"> {!! $elem->icon !!} {!! $elem->label !!} <span class="sr-only">(current)</span> </a>
+									</li> 	
+								@else 
+									<li><a href="{{ $elem->link }}"> {!! $elem->icon !!} {!! $elem->label !!} <span class="sr-only">(current)</span> </a></li>
+								@endif
+
 							@endif
 
 						@endif

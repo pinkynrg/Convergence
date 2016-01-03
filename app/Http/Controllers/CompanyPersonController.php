@@ -28,10 +28,10 @@ class CompanyPersonController extends Controller {
 	}
 
 	public function contacts() {
-		if (Auth::user()->can('read-all-employee')) {
+		if (Auth::user()->can('read-all-contact')) {
 			$data['active_search'] = true;
 			$data['contacts'] = CompanyPerson::where('company_id','!=',1)->paginate(50);
-        	$data['title'] = "Contacts";
+        	$data['title'] = "Customer Contacts";
 			return view('company_person/index/contacts',$data);
         }
         else return redirect()->back()->withErrors(['Access denied to contacts index page']);		
@@ -108,7 +108,10 @@ class CompanyPersonController extends Controller {
 	public function update($id, UpdateCompanyPersonRequest $request) {
 		$contact = CompanyPerson::find($id);
 		$contact->update($request->all());
-		return redirect()->route('company_person.show',$id);
+
+ 		$message = $contact->company_id == 1 ? 'Employee updated successfully' : 'Company Contact updated successfully';
+
+		return redirect()->route('company_person.show',$id)->with('successes',[$message]);
 	}
 
 	public function destroy($id) {

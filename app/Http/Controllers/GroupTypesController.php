@@ -10,7 +10,7 @@ use Form;
 class GroupTypesController extends Controller {
 
 	public function index() {
-		if (Auth::user()->can('read-all-group')) {
+		if (Auth::user()->can('read-all-group-type')) {
 			$data['title'] = "Group Types";
 			$data['group_types'] = GroupType::paginate(50);
 			$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type')];
@@ -20,9 +20,9 @@ class GroupTypesController extends Controller {
 	}
 
 	public function show($id) {
-		if (Auth::user()->can('read-all-group')) {
+		if (Auth::user()->can('read-all-group-type')) {
 			$data['group_type'] = GroupType::find($id);
-			$data['title'] = "Group Type ".$data['group_type']->display_name;
+			$data['title'] = "Group Type \"".$data['group_type']->display_name."\"";
 			$data['menu_actions'] = [Form::editItem(route('group_types.edit',$id), 'Edit this group type')];
 			return view('group_types/show',$data);
 		}
@@ -31,7 +31,7 @@ class GroupTypesController extends Controller {
 
 	public function edit($id) {
 		$data['group_type'] = GroupType::find($id);
-		$data['title'] = "Update Group Type ".$data['group_type']->display_name;
+		$data['title'] = "Update Group Type \"".$data['group_type']->display_name."\"";
 		return view('group_types/edit',$data);
 	}
 

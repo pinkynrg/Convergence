@@ -16,4 +16,8 @@ class Equipment extends Model {
 		return $this->belongsTo('App\Models\Company');
 	}
 
+	public function cc() {
+		return 'CC'.$this->cc_number;
+	}
+
 }

@@ -59,7 +59,7 @@ class RolesController extends Controller {
 
 	public function edit($id) {
 		$data['role'] = Role::find($id);
-		$data['title'] = "Update Role ".$data['role']->display_name;
+		$data['title'] = "Update Role \"".$data['role']->display_name."\"";
 		return view('roles/edit',$data);
 	}
 

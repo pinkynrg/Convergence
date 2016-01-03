@@ -242,7 +242,7 @@ class TicketsController extends Controller {
 	{
 		echo 'ticket destroy method to be created';
 	}
-	
+
 	/**
 	 * Return list of tickets for an ajax request
 	 *

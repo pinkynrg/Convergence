@@ -60,7 +60,7 @@ class GroupsController extends Controller {
 	public function edit($id) {
 		$data['group'] = Group::find($id);
 		$data['group_types'] = GroupType::all();
-		$data['title'] = "Update Group ".$data['group']->display_name;
+		$data['title'] = "Update Group \"".$data['group']->display_name."\"";
 		return view('groups/edit',$data);
 	}
 

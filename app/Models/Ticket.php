@@ -48,6 +48,11 @@ class Ticket extends Model {
 		return $this->belongsTo('App\Models\CompanyPerson');
 	}
 
+	public function equipment() 
+	{
+		return $this->belongsTo('App\Models\Equipment');
+	}
+
 	public function posts() 
 	{
 		return $this->hasMany('App\Models\Post');

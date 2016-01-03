@@ -1,7 +1,7 @@
 body {
 	background-color: #ECFAFF;
-	/*background-image: url(/images/skulls_lightblue.png);*/
-  /*background-image: url(/images/login_background.png); */
+	background-image: url(/images/style/skulls_lightblue.png);
+  /*background-image: url(/images/style/login_background.png); */
   /*background-size: 100% 100%;*/
   /*background-attachment: fixed;*/
 	font-size: 12px;
@@ -13,6 +13,11 @@ input, textarea, select, .bootstrap-tagsinput {
 
 input[disabled], textarea[disabled], select[disabled] {
   background-color: #DDD !important;
+}
+
+.fa {
+  display: inline-block;
+  min-width: 15px;
 }
 
 .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
@@ -246,6 +251,14 @@ thead {
   background-color: #F0EFEF;
 }
 
+.table-striped-warm>tbody>tr:nth-of-type(even) {
+  background-color: #F9F9F9;
+}
+
+.table-striped-warm>tbody>tr:nth-of-type(odd) {
+  background-color: #F3F3F3;
+}
+
 .table-striped>tbody>tr:nth-of-type(even) {
   background-color: #F9F9F9;
 }
@@ -318,17 +331,17 @@ a:visited, a:link, a:active, a:visited {
 }
 
 #ticket_container {
-  background: -webkit-linear-gradient(top, #FFF2AD , #FAE369); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(bottom, #FFF2AD, #FAE369); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(bottom, #FFF2AD, #FAE369); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(to bottom, #FFF2AD , #FAE369); /* Standard syntax */
+  background: -webkit-linear-gradient(top, #FFFCE9 , #FAE369); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom, #FFFCE9, #FAE369); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom, #FFFCE9, #FAE369); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom, #FFFCE9 , #FAE369); /* Standard syntax */
   border: 1px solid #FFDD94;
   padding: 15px;
   margin: 20px 0px;
 }
 
 #ticket_bottom {
-  padding: 10px;
+  padding: 5px;
   background-color: #FFF9D7;
   border: 1px solid #E0D286;
 }
@@ -381,6 +394,16 @@ a:visited, a:link, a:active, a:visited {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
+}
+
+ h3#write_post {
+  display: inline-block;
+}
+
+.is_public {
+  float: right;
+  display: inline-block;
+  font-size: 13px;
 }
 
 .post {
@@ -488,6 +511,7 @@ a:visited, a:link, a:active, a:visited {
 }
 .navbar-nav>li>.dropdown-menu {
   background-color: #FFF5D7;
+  font-size:11px !important;
 }
 
 .dropdown-menu>li>a:hover {

@@ -18,7 +18,7 @@ class PostsController extends Controller {
 		$post->post = $request->get('post');
 		$post->post_plain_text = Html2Text::convert($request->get('post'));
 		$post->author_id = $request->get('author_id');
-		$post->is_public = $request->get('is_public');
+		$post->is_public = $request->get('is_public') == "true" ? 1 : 0;
 
 		$post->save();
 

@@ -451,7 +451,7 @@
 
 			$table = 'tickets';
 
-			$query = mssql_query("SELECT * FROM [dbo].[Tickets] WHERE Priority != '' AND Id = 4042");
+			$query = mssql_query("SELECT * FROM [dbo].[Tickets] WHERE Priority != ''");
 			$successes = $errors = 0;
 
 			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $tickets[] = $row;
@@ -1652,43 +1652,43 @@
 				}
 			}
 			else {
-				// $this->importPermissions();						// 50/50
-				// $this->importRoles();							// 20/20
-				// $this->importPermissionRole();					// 84/84
-				// $this->importGroupTypes();						// 2/2
-				// $this->importGroups();							// 1/1
-				// $this->importGroupRole(); 						// 20/20
-				// $this->importExtraPermissions();				// 2/2
-				// $this->importExtraRolePermissions();			// 2/2
-				// $this->importDepartments(); 					// 10/10
-				// $this->importDivisions();						// 8/8
-				// $this->importEquipmentTypes();					// 32/32
-				// $this->importConnectionTypes();					// 2/2
-				// $this->importSupportTypes();					// 7/7
-				// $this->importJobTypes();						// 4/4
-				// $this->importTags();							// 111/149 		ok 	all other are duplicates
-				// $this->importPriorities();						// 5/5
-				// $this->importStatus();							// 7/7
-				// $this->importTitles();							// 30/30
-				// $this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
-				// $this->importPeople();							// 393/401 		ok
-				// $this->fixCompanyPersonTable();					// 93/93
-				// $this->deleteBadE80PersonCompany();				// 111/111
-				// $this->deleteUnusedPeople();					// 52/52
-				// $this->importCompanyMainContacts();				// 15/18
-				// $this->setBlankMainContact();					// 25/79 		?
-				// $this->importCompanyAccountManagers();			// 73/76
-				// $this->importEquipments();						// 220/220
-				// $this->importTagTicket();
-				// $this->importServices();
-				// $this->importUsers();
-				// $this->setActiveContacts();
-				// $this->setPermissionGroups();					// 1/1
-				
-				// $this->importTickets();						// 3034/3116
-				// $this->importPosts();						// 721 misses
-				// $this->importTicketsHistory();
+				$this->importPermissions();						// 50/50
+				$this->importRoles();							// 20/20
+				$this->importPermissionRole();					// 84/84
+				$this->importGroupTypes();						// 2/2
+				$this->importGroups();							// 1/1
+				$this->importGroupRole(); 						// 20/20
+				$this->importExtraPermissions();				// 2/2
+				$this->importExtraRolePermissions();			// 2/2
+				$this->importDepartments(); 					// 10/10
+				$this->importDivisions();						// 8/8
+				$this->importEquipmentTypes();					// 32/32
+				$this->importConnectionTypes();					// 2/2
+				$this->importSupportTypes();					// 7/7
+				$this->importJobTypes();						// 4/4
+				$this->importTags();							// 111/149 		ok 	all other are duplicates
+				$this->importPriorities();						// 5/5
+				$this->importStatus();							// 7/7
+				$this->importTitles();							// 30/30
+				$this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
+				$this->importPeople();							// 393/401 		ok
+				$this->fixCompanyPersonTable();					// 93/93
+				$this->deleteBadE80PersonCompany();				// 111/111
+				$this->deleteUnusedPeople();					// 52/52
+				$this->importCompanyMainContacts();				// 15/18
+				$this->setBlankMainContact();					// 25/79 		?
+				$this->importCompanyAccountManagers();			// 73/76
+				$this->importEquipments();						// 220/220
+				$this->importTagTicket();
+				$this->importServices();
+				$this->importUsers();
+				$this->setActiveContacts();
+				$this->setPermissionGroups();					// 1/1
 				$this->updateImageDb();
+				
+				$this->importTickets();						// 3034/3116
+				$this->importPosts();						// 721 misses
+				$this->importTicketsHistory();
 				// $this->importPictures();
 
 			}
