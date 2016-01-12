@@ -1,7 +1,7 @@
 <div id="header">
 
 	<div id="logo">
-		<a href="{{ route('root') }}"><img src="/images/logo-elettric80.png"></a>
+		<a href="{{ route('root') }}"><img src="/images/style/logo-elettric80.png"></a>
 	</div>
 
 	@if (Auth::check())

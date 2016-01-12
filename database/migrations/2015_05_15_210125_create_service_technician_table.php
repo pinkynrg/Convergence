@@ -15,9 +15,9 @@ class CreateServiceTechnicianTable extends Migration {
 		Schema::create('service_technician',function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('service_id')->unsigned()->nullable();
-			$table->integer('technician_id')->unsigned()->nullable();;
+			$table->integer('technician_id')->unsigned()->nullable();
 			$table->integer('division_id')->unsigned()->nullable();;
-			$table->integer('work_description');
+			$table->text('work_description');
 			$table->datetime('internal_start')->nullable();
 			$table->datetime('internal_end')->nullable();
 			$table->integer('internal_estimated_hours')->nullable();

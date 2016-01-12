@@ -19,6 +19,8 @@
 
 	define("ELETTRIC80_COMPANY_ID",1);
 
+	define("GOOGLE_API_KEY","AIzaSyDrtPZysOJe6_m4wkJ7x384CnTqJ-7ROY4");
+
 	class ImportController extends Controller {
 
 		private function logger($success, $errors, $label) {
@@ -802,8 +804,8 @@
 					$internal_contact_id = $this->findCompanyPersonId($s['assigment_contact']);
 					$external_contact_id = $this->findCompanyPersonId($s['Id_contact']);
 
-					$query = "INSERT INTO services (company_id,internal_contact_id,external_contact_id,job_number_internal,job_number_onsite,job_number_remote,hotel_id,created_at,updated_at) 
-							  VALUES (".$s['Id_company'].",".$internal_contact_id.",".$external_contact_id.",".$s['assigment_internal'].",".$s['assigment_onsite'].",".$s['remote_install_job_number'].",".$s['Id_hotel'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+					$query = "INSERT INTO services (id, company_id,internal_contact_id,external_contact_id,job_number_internal,job_number_onsite,job_number_remote,created_at,updated_at) 
+							  VALUES (".$s['Id'].",".$s['Id_company'].",".$internal_contact_id.",".$external_contact_id.",".$s['assigment_internal'].",".$s['assigment_onsite'].",".$s['remote_install_job_number'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 					
 					if (mysqli_query($this->conn,$query) === TRUE) {
 						$successes++;
@@ -1355,7 +1357,7 @@
 
 			if ($this->truncate($table)) {
 
-				$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person'];
+				$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person','service'];
 				$actions = ['create','read','read-all','update','delete'];
 
 				$counter = 1;
@@ -1386,7 +1388,7 @@
 
 			if ($this->truncate($table)) {
 
-				$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person'];
+				$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person','service'];
 				$actions = ['viewer','manager'];
 
 				$counter = 1;
@@ -1415,7 +1417,7 @@
 			$table = "permission_role";
 			$successes = $errors = 0;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person'];
+			$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person','service'];
 			$role_types = ['viewer','manager'];
 
 			if ($this->truncate($table)) {
@@ -1584,7 +1586,7 @@
 			$successes = $errors = 0;
 
 			$group_roles = [
-				1 => array(2,4,6,8,10,12,14,16,18,20,22),
+				1 => array(2,4,6,8,10,12,14,16,18,20,22,24),
 				2 => array(10,11,12,13,16,18,20)
 			];
 
@@ -1620,6 +1622,75 @@
 			}
 		}
 
+		public function importHotelsFromGoogleMaps() {
+
+
+			$query = "SELECT * FROM companies WHERE address IS NOT NULL";
+					
+			$result = mysqli_query($this->conn, $query);
+			$companies = mysqli_fetch_all($result,MYSQLI_BOTH);
+
+			foreach ($companies as $company) {
+
+				$address = $company['address']." ".$company['city']." ".$company['zip_code']." ".$company['state']." ".$company['country'];
+
+				$address = str_replace(" ", "%20", $address);
+				$address = str_replace("'", "%27", $address);
+				$details_url = "https://maps.googleapis.com/maps/api/geocode/json?key=".GOOGLE_API_KEY."&address=".$address;
+
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, $details_url);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				$geoloc = json_decode(curl_exec($ch), true);
+
+				if (count($geoloc['results']) == 1) {
+
+					$lat = $geoloc['results'][0]['geometry']['location']['lat'];
+					$lng = $geoloc['results'][0]['geometry']['location']['lng'];
+
+					$details_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=".GOOGLE_API_KEY."&location=".$lat.",".$lng."&radius=10000&types=lodging";
+
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $details_url);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					$response = json_decode(curl_exec($ch), true);
+
+					foreach ($response['results'] as $element) {
+
+						$dest_lat = $element['geometry']['location']['lat'];
+						$dest_lng = $element['geometry']['location']['lng'];
+
+						$matrix_url = "https://maps.googleapis.com/maps/api/distancematrix/json?key=".GOOGLE_API_KEY."&origins=".$lat.",".$lng."&destinations=".$dest_lat.",".$dest_lng."&mode=walking";
+
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, $matrix_url);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+						$response = json_decode(curl_exec($ch), true);
+
+						$matrix['distance'] = $response['rows'][0]['elements'][0]['distance']['value'];
+						$matrix['walking_time'] = $response['rows'][0]['elements'][0]['duration']['value'];
+
+						$matrix_url = "https://maps.googleapis.com/maps/api/distancematrix/json?key=".GOOGLE_API_KEY."&origins=".$lat.",".$lng."&destinations=".$dest_lat.",".$dest_lng."&mode=driving";
+
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, $matrix_url);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+						$response = json_decode(curl_exec($ch), true);
+
+						$matrix['driving_time'] = $response['rows'][0]['elements'][0]['duration']['value'];
+
+						$element['rating'] = isset($element['rating']) ? $element['rating'] : 'NULL';
+
+						$query = "INSERT INTO hotels (name,address,company_id,rating,walking_time,driving_time,distance) VALUES (\"".str_replace('"',"'",$element['name'])."\",\"".str_replace('"',"'",$element['vicinity'])."\",".$company['id'].",".$element['rating'].",".$matrix['walking_time'].",".$matrix['driving_time'].",".$matrix['distance'].")";
+
+						if (mysqli_query($this->conn, $query) !== TRUE) {
+							echo $query."<br>";
+							echo("Error description: " . mysqli_error($this->conn))."<br>";
+						}
+					}
+				}
+			}
+		}
 
 		public function __construct() {
 
@@ -1652,6 +1723,9 @@
 				}
 			}
 			else {
+
+				// $this->importHotelsFromGoogleMaps();
+
 				$this->importPermissions();						// 50/50
 				$this->importRoles();							// 20/20
 				$this->importPermissionRole();					// 84/84
@@ -1660,35 +1734,35 @@
 				$this->importGroupRole(); 						// 20/20
 				$this->importExtraPermissions();				// 2/2
 				$this->importExtraRolePermissions();			// 2/2
-				$this->importDepartments(); 					// 10/10
-				$this->importDivisions();						// 8/8
-				$this->importEquipmentTypes();					// 32/32
-				$this->importConnectionTypes();					// 2/2
-				$this->importSupportTypes();					// 7/7
-				$this->importJobTypes();						// 4/4
-				$this->importTags();							// 111/149 		ok 	all other are duplicates
-				$this->importPriorities();						// 5/5
-				$this->importStatus();							// 7/7
-				$this->importTitles();							// 30/30
-				$this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
-				$this->importPeople();							// 393/401 		ok
-				$this->fixCompanyPersonTable();					// 93/93
-				$this->deleteBadE80PersonCompany();				// 111/111
-				$this->deleteUnusedPeople();					// 52/52
-				$this->importCompanyMainContacts();				// 15/18
-				$this->setBlankMainContact();					// 25/79 		?
-				$this->importCompanyAccountManagers();			// 73/76
-				$this->importEquipments();						// 220/220
-				$this->importTagTicket();
+				// $this->importDepartments(); 					// 10/10
+				// $this->importDivisions();						// 8/8
+				// $this->importEquipmentTypes();					// 32/32
+				// $this->importConnectionTypes();					// 2/2
+				// $this->importSupportTypes();					// 7/7
+				// $this->importJobTypes();						// 4/4
+				// $this->importTags();							// 111/149 		ok 	all other are duplicates
+				// $this->importPriorities();						// 5/5
+				// $this->importStatus();							// 7/7
+				// $this->importTitles();							// 30/30
+				// $this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
+				// $this->importPeople();							// 393/401 		ok
+				// $this->fixCompanyPersonTable();					// 93/93
+				// $this->deleteBadE80PersonCompany();				// 111/111
+				// $this->deleteUnusedPeople();					// 52/52
+				// $this->importCompanyMainContacts();				// 15/18
+				// $this->setBlankMainContact();					// 25/79 		?
+				// $this->importCompanyAccountManagers();			// 73/76
+				// $this->importEquipments();						// 220/220
+				// $this->importTagTicket();
 				$this->importServices();
-				$this->importUsers();
-				$this->setActiveContacts();
-				$this->setPermissionGroups();					// 1/1
-				$this->updateImageDb();
+				// $this->importUsers();
+				// $this->setActiveContacts();
+				// $this->setPermissionGroups();					// 1/1
+				// $this->updateImageDb();
 				
-				$this->importTickets();						// 3034/3116
-				$this->importPosts();						// 721 misses
-				$this->importTicketsHistory();
+				// $this->importTickets();						// 3034/3116
+				// $this->importPosts();						// 721 misses
+				// $this->importTicketsHistory();
 				// $this->importPictures();
 
 			}

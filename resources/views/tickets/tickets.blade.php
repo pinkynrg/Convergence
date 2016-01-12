@@ -7,7 +7,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="tickets.id">Ticket</th>
+				<th column="tickets.id" type="desc">Ticket</th>
 				<th column="tickets.title">Title</th>
 				<th column="statuses.name">Status</th>
 				<th column="priorities.id" class="hidden-xs">Priority</th>

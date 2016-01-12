@@ -52,18 +52,33 @@
 		</div>
 	</div>
 	
-	<div id="hotels" class="navb expander"> 
-		<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Hotels </div>
+	<div ajax-route="{{ route('ajax.companies.hotels',$company->id) }}">
+		<div id="hotels" class="navb expander"> 
+			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Hotels </div>
+		</div>
+		<div class="to_expand">
+			
+			@if ($company->hotels->count())
+				@include('companies.hotels', array('hotels' => $company->hotels))
+			@else
+				@include('includes.no-contents')
+			@endif
+
+		</div>
 	</div>
-	<div class="to_expand">
-		@include('includes.no-contents')
-	</div>
+	
 
 	<div id="services" class="navb expander"> 
 		<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Services </div>
 	</div>
 	<div class="to_expand">
-		@include('includes.no-contents')
+		
+		@if ($company->services->count())
+			@include('companies.services', array('services' => $company->services))
+		@else
+			@include('includes.no-contents')
+		@endif
+
 	</div>
 
 @endsection

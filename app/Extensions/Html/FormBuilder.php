@@ -38,6 +38,19 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		return $text;
 	}
 
+	public function BSDatePicker($name, $value = null, $options = array()) {
+		$bootstrap_class = "form-control";
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
+		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
+		$text = "<div class='".$options['bclass']."'>";
+		$text .= "<div class='input-group'>";
+		$text .= $this->text($name, $value, $options);
+		$text .= "<span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+		$text .= "</div>";
+		$text .= "</div>";
+		return $text;
+	}
+
 	public function BSHidden($name, $value = null, $options = array()) {
 		$bootstrap_class = "form-control";
 		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "col-xs-12";
@@ -123,6 +136,13 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
 		$submit = $this->submit($value, $options);
 		return $submit;
+	}
+
+	public function BSButton($value = null, $options = array()) {
+		$bootstrap_class = "btn btn-default";
+		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
+		$button = $this->button($value, $options);
+		return $button;
 	}
 
 	public function addItem($route, $label = null) {

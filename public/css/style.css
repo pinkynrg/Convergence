@@ -15,9 +15,48 @@ input[disabled], textarea[disabled], select[disabled] {
   background-color: #DDD !important;
 }
 
+.nav-tabs>li>a.info {
+    background-color: #A6CEDA;
+    border-color: #B2C1C5;
+    color: #735A5A;
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin: 4px 0px 0px 5px;
+}
+
+.nav-tabs>li>a.danger {
+    background-color: #FDBDBB;
+    border-color: #EAB4B2;
+    color: #543F3F;
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin: 4px 0px 0px 5px;
+}
+
+.nav-tabs>li>a.info:hover {
+    background-color: #5bc0de;
+    border-color: #46b8da;
+    color: #FFF;
+}
+
+.nav-tabs>li>a.danger:hover {
+    background-color: #d9534f;
+    border-color: #d43f3a;
+    color: #FFF;
+}
+
 .fa {
   display: inline-block;
   min-width: 15px;
+}
+
+.btn {
+  display: block;
+  margin-bottom: 10px;
+}
+
+#add_technician, #remove_technician {
+  display: inline-block;
 }
 
 .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
@@ -110,16 +149,6 @@ input[disabled], textarea[disabled], select[disabled] {
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	background-color: #FFF;
-}
-
-h2.title {
-  /*text-align: center;*/
-  font-size: 21px;
-}
-
-h3.subtitle {
-  /*text-align: center;*/
-  font-size: 18px;
 }
 
 #ticket_title {
@@ -251,16 +280,16 @@ thead {
   background-color: #F0EFEF;
 }
 
+.table-striped>tbody>tr:nth-of-type(even) {
+  background-color: #F9F9F9;
+}
+
 .table-striped-warm>tbody>tr:nth-of-type(even) {
   background-color: #F9F9F9;
 }
 
 .table-striped-warm>tbody>tr:nth-of-type(odd) {
   background-color: #F3F3F3;
-}
-
-.table-striped>tbody>tr:nth-of-type(even) {
-  background-color: #F9F9F9;
 }
 
 .table-hover tbody tr:hover {
@@ -514,6 +543,10 @@ a:visited, a:link, a:active, a:visited {
   font-size:11px !important;
 }
 
+.dropdown-menu>li>a {
+  padding: 5px 20px;
+}
+
 .dropdown-menu>li>a:hover {
   background-color: #FFEAAC;
 }
@@ -601,6 +634,6 @@ a:visited, a:link, a:active, a:visited {
   background-color: #FFF;
 }
 
-.role_update_permissions, .group_update_roles {
-  margin: 0px 0px 20px 0px;
+.datepicker {
+  margin-top: 0px;
 }

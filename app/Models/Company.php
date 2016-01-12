@@ -16,6 +16,14 @@ class Company extends Model {
 		return $this->hasMany('App\Models\Equipment');
 	}
 
+	public function hotels() {
+		return $this->hasMany('App\Models\Hotel');		
+	}
+
+	public function services() {
+		return $this->hasMany('App\Models\Service');		
+	}
+
 	public function main_contact() 
 	{	
 		return $this->hasOne('App\Models\CompanyMainContact');

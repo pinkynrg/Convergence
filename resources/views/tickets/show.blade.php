@@ -82,13 +82,13 @@
 	@endif
 
 	<ul class="nav nav-tabs">
-	  <li class="active"><a target="ticket_history" href="#"><i class="fa fa-history"></i> Ticket History</a></li>
-	  <li><a target="time_history" href="#"><i class="fa fa-clock-o"></i> Time History</a></li>
-	  <li><a target="linked_tickets" href="#"><i class="fa fa-link"></i> Linked Tickets</a></li>
+	  <li class="nav active"><a target="ticket_history" href="#ticket_history" data-toggle="tab"><i class="fa fa-history"></i> Ticket History</a></li>
+	  <li class="nav"><a target="time_history" href="#time_history" data-toggle="tab"><i class="fa fa-clock-o"></i> Time History</a></li>
+	  <li class="nav"><a target="linked_tickets" href="#linked_tickets" data-toggle="tab"><i class="fa fa-link"></i> Linked Tickets</a></li>
 	</ul>
 
-	<div id="tab_contents">
-		<div id="ticket_history">
+	<div class="tab-content">
+		<div class="tab-pane fade in active" id="ticket_history">
 
 			@if (count($ticket->history))
 			
@@ -127,11 +127,11 @@
 
 		</div>
 
-		<div id="time_history" style="display:none">
+		<div class="tab-pane fade" id="time_history">
 			time history
 		</div>
 
-		<div id="linked_tickets" style="display:none">
+		<div class="tab-pane fade" id="linked_tickets">
 			linked tickets
 		</div>
 

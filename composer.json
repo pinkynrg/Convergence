@@ -9,7 +9,14 @@
 		"illuminate/html": "5.*",
 		"laravelcollective/html": "~5.0",
 		"ghunti/highcharts-php": "~3.0",
-		"soundasleep/html2text": "~0.2"
+		"soundasleep/html2text": "~0.2",
+		"knplabs/knp-snappy": "^0.4.3",
+		"h4cc/wkhtmltopdf-i386": "0.12.x",
+		"h4cc/wkhtmltoimage-i386": "0.12.x",
+		"barryvdh/laravel-snappy": "0.2.x",
+		"h4cc/wkhtmltopdf-amd64": "0.12.x",
+		"h4cc/wkhtmltoimage-amd64": "0.12.x"
+
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

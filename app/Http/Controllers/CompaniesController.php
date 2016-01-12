@@ -13,6 +13,7 @@ use App\Models\SupportType;
 use App\Models\CompanyPerson;
 use App\Models\CompanyMainContact;
 use App\Models\CompanyAccountManager;
+use App\Models\Hotel;
 use App\Http\Requests\CreateCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use Input;
@@ -83,18 +84,24 @@ class CompaniesController extends Controller {
 
 	public function show($id) {
         if (Auth::user()->can('read-company')) {
+            
             $data['menu_actions'] = [
                 Form::deleteItem('companies.destroy', $id, 'Remove this company'),
                 Form::editItem(route('companies.edit',$id), 'Edit this company'),
                 Form::addItem(route('company_person.create',$id), 'Add Contact to this company'),
-                Form::addItem(route('equipments.create',$id),'Add new Equipment to this company')
+                Form::addItem(route('equipments.create',$id),'Add new Equipment to this company'),
+                Form::addItem(route('services.create',$id),'Add new Service Request to this company')
             ];
 
             $data['company'] = Company::find($id);
             $data['company']->contacts = CompanyPerson::where('company_person.company_id','=',$id)->paginate(10);
             $data['company']->tickets = Ticket::where('company_id','=',$id)->paginate(10);
             $data['company']->equipments = Equipment::where('company_id','=',$id)->paginate(10);
+            $data['company']->hotels = Hotel::where('company_id','=',$id)->paginate(10);
+            $data['company']->services = Service::where('company_id','=',$id)->paginate(10);
+
             $data['title'] = $data['company']->name;
+            
             return view('companies/show',$data);
         }
         else return redirect()->back()->withErrors(['Access denied to companies show page']);      
@@ -243,5 +250,25 @@ class CompaniesController extends Controller {
         $data['equipments'] = $equipments;
 
         return view('companies/equipments',$data);
+    }
+
+    public function ajaxHotelsRequest($company_id, $params = "")
+    {
+        parse_str($params,$params);
+
+        $hotels = Hotel::select("hotels.*")->where("company_id",$company_id);
+
+        // apply ordering
+        if (isset($params['order'])) {
+            $hotels->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
+            $hotels->orderBy($params['order']['column'],$params['order']['type']);
+        }
+
+        // paginate
+        $hotels = $hotels->paginate(10);
+
+        $data['hotels'] = $hotels;
+
+        return view('companies/hotels',$data);
     }
 }

@@ -142,7 +142,8 @@ return [
 		*/
 
 		'App\Extensions\Html\HtmlServiceProvider',
-
+		'Barryvdh\Snappy\ServiceProvider',
+		
 		/*
 		 * Application Service Providers...
 		 */

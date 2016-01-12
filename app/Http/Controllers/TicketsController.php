@@ -253,8 +253,10 @@ class TicketsController extends Controller {
     	parse_str($params,$params);
 
     	$tickets = Ticket::select('tickets.*');
-    	$tickets->leftJoin('people as creators','tickets.creator_id','=','creators.id');
-    	$tickets->leftJoin('people as assignees','tickets.assignee_id','=','assignees.id');
+    	$tickets->leftJoin('company_person as creator_contacts','tickets.creator_id','=','creator_contacts.id');
+    	$tickets->leftJoin('company_person as assignee_contacts','tickets.assignee_id','=','assignee_contacts.id');
+    	$tickets->leftJoin('people as assignees','assignee_contacts.person_id','=','assignees.id');
+    	$tickets->leftJoin('people as creators','creator_contacts.person_id','=','creators.id');
     	$tickets->leftJoin('statuses','tickets.status_id','=','statuses.id');
     	$tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
     	$tickets->leftJoin('companies','tickets.company_id','=','companies.id');

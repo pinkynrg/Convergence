@@ -168,20 +168,7 @@ $(document).ready(function() {
 			$target.find(".ajax_pagination[scrollup='false']").html($(data).find(".ajax_pagination[scrollup='false']").html());
 		});
 	}
-
-// ticket page /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	$(".nav-tabs li").click(function(e) {
-		var target = $(this).find("a").attr("target");
-		$(".nav-tabs li").removeClass("active");
-		$(this).addClass("active");
-		$("#tab_contents>div").css("display","none");
-		if ($("#"+target).length) {
-			$("#tab_contents #"+target).show(500);
-		}
-		return false;
-	})
-
+	
 // company page /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//for expandable divs
@@ -266,8 +253,6 @@ $(document).ready(function() {
 	$(".ajax_trigger#company_id").on("change",function () {
 		var company_id = $(this).val();
 		
-		console.log(company_id);
-
 		$.get('/ajax/tickets/contacts/'+company_id, function (data) {
 			data = JSON.parse(data);
 			$('select#contact_id').html('');
@@ -299,7 +284,80 @@ $(document).ready(function() {
 
 // create equipment page ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	$('#warranty_expiration').datepicker();
+	$('.datepicker').datepicker({
+		autoclose: true
+	});
 
+// service request create page /////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function updateInternal() {
+		$("#has_internal").val() == 0 ? $("#job_number_internal, label[for='job_number_internal']").prop('disabled', true) : $("#job_number_internal, label[for='job_number_internal']").prop('disabled', false);
+	}
+
+	function updateRemote() {
+		$("#has_remote").val() == 0 ? $("#job_number_remote, label[for='job_number_remote']").prop('disabled', true) : $("#job_number_remote, label[for='job_number_remote']").prop('disabled', false);
+	}
+
+	function updateOnsite() {
+		$("#has_onsite").val() == 0 ? $("#job_number_onsite, label[for='job_number_onsite']").prop('disabled', true) : $("#job_number_onsite, label[for='job_number_onsite']").prop('disabled', false);
+	}
+
+	function updateTechInternal(that) {
+		var index = that.id.substring(that.id.length-2,that.id.length-1);
+		that.value == 0 ? $(".tech_internal_group\\["+index+"\\]").prop('disabled', true) : $(".tech_internal_group\\["+index+"\\]").prop('disabled', false);
+	}
+
+	function updateTechRemote(that) {
+		var index = that.id.substring(that.id.length-2,that.id.length-1);
+		that.value == 0 ? $(".tech_remote_group\\["+index+"\\]").prop('disabled', true) : $(".tech_remote_group\\["+index+"\\]").prop('disabled', false);
+	}
+
+	function updateTechOnsite(that) {
+		var index = that.id.substring(that.id.length-2,that.id.length-1);		
+		that.value == 0 ? $(".tech_onsite_group\\["+index+"\\]").prop('disabled', true) : $(".tech_onsite_group\\["+index+"\\]").prop('disabled', false);
+	}
+
+	(function () {
+
+		updateInternal();
+		updateRemote();
+		updateOnsite();
+
+		$("[id^=tech_has_internal]").each(function () {
+			updateTechInternal(this);
+		});
+
+		$("[id^=tech_has_remote]").each(function () {
+			updateTechRemote(this);
+		});
+
+		$("[id^=tech_has_onsite]").each(function () {
+			updateTechOnsite(this);
+		});
+
+	})();
+
+	$("#has_internal").on('change', function () {
+		updateInternal();
+	});
+	
+	$("#has_remote").on('change', function () {
+		updateRemote();
+	});
+
+	$("#has_onsite").on('change', function () {
+		updateOnsite();
+	});
+
+	$("[id^=tech_has_internal]").on('change', function () {
+		updateTechInternal(this);
+	});
+
+	$("[id^=tech_has_remote]").on('change', function () {
+		updateTechRemote(this);
+	});
+
+	$("[id^=tech_has_onsite]").on('change', function () {
+		updateTechOnsite(this);
+	});
 });
-

@@ -85,11 +85,7 @@ return [
 	|
 	*/
 
-	'custom' => [
-		'attribute-name' => [
-			'rule-name' => 'custom-message',
-		],
-	],
+	"after_equal" => "The :attribute must be a date after or equal to :value.",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -102,6 +98,120 @@ return [
 	|
 	*/
 
-	'attributes' => [],
+	'attributes' => [
+		'external_contact_id' => 'Contact',
+		'internal_contact_id' => 'Internal Contact',
+		'job_number_internal' => 'Internal Job #',
+		'has_internal' => 'Has Internal Job #',
+		'job_number_onsite' => 'Onsite Job #',
+		'has_onsite' => 'Has Onsite Job #',
+		'job_number_remote' => 'Remote Job #',
+		'has_remote' => 'Has Remote Job #',
+		'technician_id' => [
+			0 => 'Name (technician #1)',
+			1 => 'Name (technician #2)',
+			2 => 'Name (technician #3)',
+			3 => 'Name (technician #4)',
+			4 => 'Name (technician #5)',
+		],
+		'division_id' => [
+			0 => 'Division (technician #1)',
+			1 => 'Division (technician #2)',
+			2 => 'Division (technician #3)',
+			3 => 'Division (technician #4)',
+			4 => 'Division (technician #5)',
+		],
+		'work_description' => [
+			0 => 'Work Description (technician #1)',
+			1 => 'Work Description (technician #2)',
+			2 => 'Work Description (technician #3)',
+			3 => 'Work Description (technician #4)',
+			4 => 'Work Description (technician #5)',
+		],
+		'tech_has_internal' => [
+			0 => 'Has Internal Job',
+			1 => 'Has Internal Job',
+			2 => 'Has Internal Job',
+			3 => 'Has Internal Job',
+			4 => 'Has Internal Job',
+		],
+		'tech_internal_hours' => [
+			0 => 'Internal Development Hours (technician #1)',
+			1 => 'Internal Development Hours (technician #2)',
+			2 => 'Internal Development Hours (technician #3)',
+			3 => 'Internal Development Hours (technician #4)',
+			4 => 'Internal Development Hours (technician #5)',
+		],
+		'tech_internal_start' => [
+			0 => 'Internal Development Start Date (technician #1)',
+			1 => 'Internal Development Start Date (technician #2)',
+			2 => 'Internal Development Start Date (technician #3)',
+			3 => 'Internal Development Start Date (technician #4)',
+			4 => 'Internal Development Start Date (technician #5)',
+		],
+		'tech_internal_end' => [
+			0 => 'Internal Development End Date (technician #1)',
+			1 => 'Internal Development End Date (technician #2)',
+			2 => 'Internal Development End Date (technician #3)',
+			3 => 'Internal Development End Date (technician #4)',
+			4 => 'Internal Development End Date (technician #5)',
+		],
+		'tech_has_remote' => [
+			0 => 'Has Remote Job',
+			1 => 'Has Remote Job',
+			2 => 'Has Remote Job',
+			3 => 'Has Remote Job',
+			4 => 'Has Remote Job',
+		],
+		'tech_remote_hours' => [
+			0 => 'Remote Development Hours (technician #1)',
+			1 => 'Remote Development Hours (technician #2)',
+			2 => 'Remote Development Hours (technician #3)',
+			3 => 'Remote Development Hours (technician #4)',
+			4 => 'Remote Development Hours (technician #5)',
+		],
+		'tech_remote_start' => [
+			0 => 'Remote Development Start Date (technician #1)',
+			1 => 'Remote Development Start Date (technician #2)',
+			2 => 'Remote Development Start Date (technician #3)',
+			3 => 'Remote Development Start Date (technician #4)',
+			4 => 'Remote Development Start Date (technician #5)',
+		],
+		'tech_remote_end' => [
+			0 => 'Remote Development End Date (technician #1)',
+			1 => 'Remote Development End Date (technician #2)',
+			2 => 'Remote Development End Date (technician #3)',
+			3 => 'Remote Development End Date (technician #4)',
+			4 => 'Remote Development End Date (technician #5)',
+		],
+		'tech_has_onsite' => [
+			0 => 'Has Onsite Job',
+			1 => 'Has Onsite Job',
+			2 => 'Has Onsite Job',
+			3 => 'Has Onsite Job',
+			4 => 'Has Onsite Job',
+		],
+		'tech_onsite_hours' => [
+			0 => 'Onsite Development Hours (technician #1)',
+			1 => 'Onsite Development Hours (technician #2)',
+			2 => 'Onsite Development Hours (technician #3)',
+			3 => 'Onsite Development Hours (technician #4)',
+			4 => 'Onsite Development Hours (technician #5)',
+		],
+		'tech_onsite_start' => [
+			0 => 'Onsite Development Start Date (technician #1)',
+			1 => 'Onsite Development Start Date (technician #2)',
+			2 => 'Onsite Development Start Date (technician #3)',
+			3 => 'Onsite Development Start Date (technician #4)',
+			4 => 'Onsite Development Start Date (technician #5)',
+		],
+		'tech_onsite_end' => [
+			0 => 'Onsite Development End Date (technician #1)',
+			1 => 'Onsite Development End Date (technician #2)',
+			2 => 'Onsite Development End Date (technician #3)',
+			3 => 'Onsite Development End Date (technician #4)',
+			4 => 'Onsite Development End Date (technician #5)',
+		],
+	],
 
 ];
