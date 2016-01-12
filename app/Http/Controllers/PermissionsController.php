@@ -49,6 +49,30 @@ class PermissionsController extends Controller {
         $groupType = Permission::create($request->all());
         return redirect()->route('permissions.index')->with('successes',['Permission created successfully']);;
 	}
+
+	public function ajaxPermissionsRequest($params = "") {
+		
+        parse_str($params,$params);
+
+		$permissions = Permission::select("permissions.*");
+
+		// apply search
+        if (isset($params['search'])) {
+            $permissions->where('name','like','%'.$params['search'].'%');
+        }
+
+        // apply ordering
+        if (isset($params['order'])) {
+    		$permissions->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
+            $permissions->orderBy($params['order']['column'],$params['order']['type']);
+        }
+
+		$permissions = $permissions->paginate(50);
+
+		$data['permissions'] = $permissions;
+
+        return view('permissions/permissions',$data);
+	}
 }
 
 ?>

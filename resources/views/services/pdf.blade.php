@@ -4,6 +4,7 @@
 	* { font-size: 11px; }
 	.borderless td, .borderless th { border: none!important; }
 	.wrapper { width: 800px; padding: 10px; }
+	h4 { color: #59649E; }
 </style>
 
 <div class="wrapper">
@@ -36,16 +37,16 @@
 
 			<table class="table borderless table-condensed">
 				<tr>
-					<th>Name:</th><td> {{ $service->internal_contact->person->name() }} </td>
+					<th>Name:</th><td> {{ isset($service->internal_contact_id) ? $service->internal_contact->person->name() : '-' }} </td>
 				</tr>
 				<tr>
-					<th>Cellphone:</th><td> {!! $service->internal_contact->cellphone() !!} </td>
+					<th>Cellphone:</th><td> {!! isset($service->internal_contact->cellphone) ? $service->internal_contact->cellphone() : '-' !!} </td>
 				</tr>
 				<tr>
-					<th>Phone:</th><td> {!! $service->internal_contact->phone() !!} </td>
+					<th>Phone:</th><td> {!! isset($service->internal_contact->phone) ? $service->internal_contact->phone() : '-' !!} </td>
 				</tr>
 				<tr>
-					<th>E-mail:</th><td> {!! $service->internal_contact->email() !!} </td>
+					<th>E-mail:</th><td> {!! isset($service->internal_contact->email) ? $service->internal_contact->email() : '-' !!} </td>
 				</tr>
 			</table>
 		</div>
@@ -81,22 +82,22 @@
 			<h4> Customer Contact </h4>
 			<table class="table borderless table-condensed">
 				<tr>
-					<th>Name:</th><td> {{ $service->external_contact->person->name() }} </td>
+					<th>Name:</th><td> {{ isset($service->external_contact_id) ? $service->external_contact->person->name() : '-' }} </td>
 				</tr>
 				<tr>
-					<th>Title:</th><td> {!! $service->external_contact->title->name !!} </td>
+					<th>Title:</th><td> {!! (isset($service->external_contact_id) && isset($service->external_contact->title_id)) ? $service->external_contact->title->name : '-' !!} </td>
 				</tr>
 				<tr>
-					<th>Department:</th><td> {!! $service->external_contact->department->name !!} </td>
+					<th>Department:</th><td> {!! (isset($service->external_contact_id) && isset($service->external_contact->department_id)) ? $service->external_contact->department->name : '-' !!} </td>
 				</tr>
 				<tr>
-					<th>Cell:</th><td> {!! $service->external_contact->cellphone() !!} </td>
+					<th>Cell:</th><td> {!! isset($service->external_contact_id) ? $service->external_contact->cellphone() : '-' !!} </td>
 				</tr>
 				<tr>
-					<th>Phone:</th><td> {!! $service->external_contact->phone() !!} </td>
+					<th>Phone:</th><td> {!! isset($service->external_contact_id) ? $service->external_contact->phone() : '-' !!} </td>
 				</tr>
 				<tr>
-					<th>E-mail:</th><td> {!! $service->external_contact->email !!} </td>
+					<th>E-mail:</th><td> {!! isset($service->external_contact_id) ? $service->external_contact->email : '-' !!} </td>
 				</tr>
 			</table>
 		</div>
@@ -127,19 +128,19 @@
 
 			<table class="table borderless table-condensed">
 				<tr>
-					<th>Internal Job Estimation:</th><td> {{ $service_technician->internal_estimated_hours.' hours' }} </td>
-					<th>Internal Job Start:</th><td> {{ $service_technician->internal_start }} </td>
-					<th>Internal Job End:</th><td> {{ $service_technician->internal_end }} </td>
+					<th>Internal Job Estimation:</th><td> {{ isset($service_technician->internal_estimated_hours) ? $service_technician->internal_estimated_hours.' hours' : '-' }} </td>
+					<th>Internal Job Start:</th><td> {{ isset($service_technician->internal_start) ? date("m/d/Y",strtotime($service_technician->internal_start)) : '-' }} </td>
+					<th>Internal Job End:</th><td> {{ isset($service_technician->internal_end) ? date("m/d/Y",strtotime($service_technician->internal_end)) : '-' }} </td>
 				</tr>
 				<tr>
-					<th>Remote Job Estimation:</th><td> {{ $service_technician->remote_estimated_hours.' hours' }} </td>
-					<th>Remote Job Start:</th><td> {{ $service_technician->remote_start }} </td>
-					<th>Remote Job End:</th><td> {{ $service_technician->remote_end }} </td>
+					<th>Remote Job Estimation:</th><td> {{ isset($service_technician->remote_estimated_hours) ? $service_technician->remote_estimated_hours.' hours' : '-' }} </td>
+					<th>Remote Job Start:</th><td> {{ isset($service_technician->remote_start) ? date("m/d/Y",strtotime($service_technician->remote_start)) : '-' }} </td>
+					<th>Remote Job End:</th><td> {{ isset($service_technician->remote_end) ? date("m/d/Y",strtotime($service_technician->remote_end)) : '-' }} </td>
 				</tr>
 				<tr>
-					<th>Onsite Job Estimation:</th><td> {{ $service_technician->onsite_estimated_hours.' hours' }} </td>
-					<th>Onsite Job Start:</th><td> {{ $service_technician->onsite_start }} </td>
-					<th>Onsite Job End:</th><td> {{ $service_technician->onsite_end }} </td>
+					<th>Onsite Job Estimation:</th><td> {{ isset($service_technician->onsite_estimated_hours) ? $service_technician->onsite_estimated_hours.' hours' : '-' }} </td>
+					<th>Onsite Job Start:</th><td> {{ isset($service_technician->onsite_start) ? date("m/d/Y",strtotime($service_technician->onsite_start)) : '-' }} </td>
+					<th>Onsite Job End:</th><td> {{ isset($service_technician->onsite_end) ? date("m/d/Y",strtotime($service_technician->onsite_end)) : '-' }} </td>
 				</tr>
 			</table>
 
@@ -158,16 +159,16 @@
 			
 			<table class="table borderless table-condensed">
 				<tr>
-					<th>Name:</th> <td> {{ $service->hotel->name }} </td>
+					<th>Name:</th> <td> {{ isset($service->hotel_id) ? $service->hotel->name : '-' }} </td>
 				</tr>
 				<tr>
-					<th>Address:</th> <td> {{ $service->hotel->address }} </td>
+					<th>Address:</th> <td> {{ isset($service->hotel_id) ? $service->hotel->address : '-' }} </td>
 				</tr>
 				<tr>
-					<th>Rating:</th> <td> {{ $service->hotel->rating() }} </td>
+					<th>Rating:</th> <td> {{ isset($service->hotel_id) ? $service->hotel->rating() : '-' }} </td>
 				</tr>
 				<tr>
-					<th>Driving Distance:</th> <td> {{ $service->hotel->driving_time() }} </td>
+					<th>Driving Distance:</th> <td> {{ isset($service->hotel_id) ? $service->hotel->driving_time() : '-' }} </td>
 				</tr>	
 			</table>
 

@@ -4,10 +4,10 @@
 
 	<table class="table table-striped table-condensed table-hover">
 		<tr>
-			<th> Name </th> <td> {{ $company_person->person->name() }} </td>
+			<th> Name </th> <td> <a href="{{ route('people.show', $company_person->person->id) }}"> {{ $company_person->person->name() }} </a> </td>
 		</tr>
 		<tr>
-			<th> Company </th> <td> {{ $company_person->company->name }} </td>
+			<th> Company </th> <td>  <a href="{{ route('companies.show', $company_person->company->id) }}"> {{ $company_person->company->name }} </a> </td>
 		</tr>
 		<tr>
 			<th>Title</th> <td> {{ isset($company_person->title_id) ? $company_person->title->name : '' }} </td>

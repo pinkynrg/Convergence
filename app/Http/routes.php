@@ -23,7 +23,9 @@ Route::get('test_roles', function () {
 
 Route::group(array('middleware' => 'auth'), function() {
 
-	Route::get('/', ['uses' => 'TicketsController@index', 'as' => 'root']);
+	Route::get('/', ['as' => 'root', function () {
+		return redirect()->route('tickets.index');
+	}]);
 
 	// group_types routes 
 	Route::get('group_types',['uses' => 'GroupTypesController@index', 'as' => 'group_types.index']);
@@ -138,6 +140,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('ajax/contacts/{params?}', ['uses' => 'CompanyPersonController@ajaxContactsRequest', 'as' => 'ajax.contacts']);
 	Route::get('ajax/equipments/{params?}', ['uses' => 'EquipmentsController@ajaxEquipmentsRequest', 'as' => 'ajax.equipments']);
 	Route::get('ajax/services/{params?}', ['uses' => 'ServicesController@ajaxServicesRequest', 'as' => 'ajax.services']);
+	Route::get('ajax/permissions/{params?}', ['uses' => 'PermissionsController@ajaxPermissionsRequest', 'as' => 'ajax.permissions']);
 	Route::get('ajax/tags', ['uses' => 'TagsController@ajaxTagsRequest', 'as' => 'ajax.tags']);
 	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
 	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);

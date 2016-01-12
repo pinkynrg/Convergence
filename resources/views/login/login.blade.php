@@ -11,7 +11,7 @@
 		
 		<div id="form_wrapper">
 
-			<img id="login_img" src="/images/login.png">
+			<img id="login_img" src="/images/style/login.png">
 
 			{!! Form::open(array('method' => 'POST', 'route' => array('login.login'))) !!}
 

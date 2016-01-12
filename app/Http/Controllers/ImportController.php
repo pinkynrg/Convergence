@@ -1,5 +1,7 @@
 <?php namespace App\Http\Controllers;
 
+	use Carbon\Carbon;
+
 	ini_set('display_errors',1);
 	ini_set('display_startup_errors',1);
 	ini_set('memory_limit', '5G');
@@ -98,6 +100,11 @@
 				$row[$key] = strtolower($row[$key]) == 'tba' ? '' : $row[$key];
 				$row[$key] = strtolower($row[$key]) == 'tbd' ? '' : $row[$key];
 				$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
+				$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
+				$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
+
+				// write rules above
+
 				$row[$key] = strtolower($row[$key]) == '' ? 'NULL' : "\"".$row[$key]."\"";
 			}
 
@@ -666,6 +673,8 @@
 
 				foreach ($equipments as $e) {
 
+					$e['WarrantyExpiration'] = date('Y-m-d',strtotime($e['WarrantyExpiration']));
+					
 					$e = $this->trimAndNullIfEmpty($e);
 
 					$query = "INSERT INTO equipments (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id) 
@@ -823,6 +832,45 @@
 			}
 		}
 
+		private function importServiceTechnicians() {
+
+			$table = "service_technician";
+			$successes = $errors = 0;
+
+			$query = mssql_query('SELECT * FROM [saa].[Service_Request_Technicians] WHERE Id_service_request IN (SELECT DISTINCT Id FROM [saa].[Service_Request])');
+
+			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $service_technicians[] = $row;
+
+			mssql_free_result($query);
+
+			if ($this->truncate($table)) {
+
+				foreach ($service_technicians as $s) {
+
+					$s['work_description'] = str_replace("\"","'",$s['work_description']);
+					$total_days = strtotime($s['onsite_completion']) - strtotime($s['onsite_start']);
+					$s['hours_estimated_onsite'] = strpos(strtolower($s['hours_estimated_onsite']), "day") === false ? $s['hours_estimated_onsite'] : str_replace("/Day","",$s['hours_estimated_onsite']) * $total_days;
+
+
+					$s = $this->trimAndNullIfEmpty($s);
+
+					$query = 	"INSERT INTO service_technician (service_id, technician_id, division_id, work_description, internal_start, internal_end, internal_estimated_hours, onsite_start, onsite_end, onsite_estimated_hours, remote_start, remote_end, remote_estimated_hours, created_at, updated_at)
+								VALUES (".$s['Id_service_request'].",".$s['Id_employee'].",".$s['Id_service_role'].",".$s['work_description'].",".$s['internal_start'].",".$s['internal_completion'].",".$s['hours_estimated_internal'].",".$s['onsite_start'].",".$s['onsite_completion'].",".$s['hours_estimated_onsite'].",NULL,NULL,NULL,'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+
+					if (mysqli_query($this->conn,$query) === TRUE) {
+						$successes++;
+					}
+					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
+						$errors++;
+					}
+				}
+
+				$this->logger($successes,$errors,$table);
+
+			}
+		}
 
 		private function importUsers() {
 
@@ -1694,7 +1742,8 @@
 
 		public function __construct() {
 
-			if (!mssql_connect(CONVERGENCE_HOST,CONVERGENCE_USER,CONVERGENCE_PASS)) {
+			if (!@mssql_connect(CONVERGENCE_HOST,CONVERGENCE_USER,CONVERGENCE_PASS)) {
+				ob_flush();
 				die("error connecting to ".CONVERGENCE_HOST);
 			}
 
@@ -1726,14 +1775,14 @@
 
 				// $this->importHotelsFromGoogleMaps();
 
-				$this->importPermissions();						// 50/50
-				$this->importRoles();							// 20/20
-				$this->importPermissionRole();					// 84/84
-				$this->importGroupTypes();						// 2/2
-				$this->importGroups();							// 1/1
-				$this->importGroupRole(); 						// 20/20
-				$this->importExtraPermissions();				// 2/2
-				$this->importExtraRolePermissions();			// 2/2
+				// $this->importPermissions();						// 50/50
+				// $this->importRoles();							// 20/20
+				// $this->importPermissionRole();					// 84/84
+				// $this->importGroupTypes();						// 2/2
+				// $this->importGroups();							// 1/1
+				// $this->importGroupRole(); 						// 20/20
+				// $this->importExtraPermissions();				// 2/2
+				// $this->importExtraRolePermissions();			// 2/2
 				// $this->importDepartments(); 					// 10/10
 				// $this->importDivisions();						// 8/8
 				// $this->importEquipmentTypes();					// 32/32
@@ -1752,9 +1801,10 @@
 				// $this->importCompanyMainContacts();				// 15/18
 				// $this->setBlankMainContact();					// 25/79 		?
 				// $this->importCompanyAccountManagers();			// 73/76
-				// $this->importEquipments();						// 220/220
+				$this->importEquipments();						// 220/220
 				// $this->importTagTicket();
-				$this->importServices();
+				// $this->importServices();
+				// $this->importServiceTechnicians();
 				// $this->importUsers();
 				// $this->setActiveContacts();
 				// $this->setPermissionGroups();					// 1/1

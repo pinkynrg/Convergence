@@ -22,7 +22,7 @@
 			<th> Notes </th> <td> {{ $equipment->notes }} </td>
 		</tr>
 		<tr>
-			<th> Warranty Expiration </th> <td> {{ date("m/d/Y",strtotime($equipment->warranty_expiration)) }} </td>
+			<th> Warranty Expiration </th> <td> {{ isset($equipment->warranty_expiration) ? date("m/d/Y",strtotime($equipment->warranty_expiration)) : '-' }} </td>
 		</tr>
 	</table>
 
