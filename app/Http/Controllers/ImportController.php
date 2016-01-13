@@ -1716,25 +1716,31 @@
 						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 						$response = json_decode(curl_exec($ch), true);
 
-						$matrix['distance'] = $response['rows'][0]['elements'][0]['distance']['value'];
-						$matrix['walking_time'] = $response['rows'][0]['elements'][0]['duration']['value'];
+						if (count($response['rows']) > 0) {
 
-						$matrix_url = "https://maps.googleapis.com/maps/api/distancematrix/json?key=".GOOGLE_API_KEY."&origins=".$lat.",".$lng."&destinations=".$dest_lat.",".$dest_lng."&mode=driving";
+							$matrix['distance'] = $response['rows'][0]['elements'][0]['distance']['value'];
+							$matrix['walking_time'] = $response['rows'][0]['elements'][0]['duration']['value'];
 
-						$ch = curl_init();
-						curl_setopt($ch, CURLOPT_URL, $matrix_url);
-						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-						$response = json_decode(curl_exec($ch), true);
+							$matrix_url = "https://maps.googleapis.com/maps/api/distancematrix/json?key=".GOOGLE_API_KEY."&origins=".$lat.",".$lng."&destinations=".$dest_lat.",".$dest_lng."&mode=driving";
 
-						$matrix['driving_time'] = $response['rows'][0]['elements'][0]['duration']['value'];
+							$ch = curl_init();
+							curl_setopt($ch, CURLOPT_URL, $matrix_url);
+							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+							$response = json_decode(curl_exec($ch), true);
 
-						$element['rating'] = isset($element['rating']) ? $element['rating'] : 'NULL';
+							if (count($response['rows']) > 0) {
 
-						$query = "INSERT INTO hotels (name,address,company_id,rating,walking_time,driving_time,distance) VALUES (\"".str_replace('"',"'",$element['name'])."\",\"".str_replace('"',"'",$element['vicinity'])."\",".$company['id'].",".$element['rating'].",".$matrix['walking_time'].",".$matrix['driving_time'].",".$matrix['distance'].")";
+								$matrix['driving_time'] = $response['rows'][0]['elements'][0]['duration']['value'];
 
-						if (mysqli_query($this->conn, $query) !== TRUE) {
-							echo $query."<br>";
-							echo("Error description: " . mysqli_error($this->conn))."<br>";
+								$element['rating'] = isset($element['rating']) ? $element['rating'] : 'NULL';
+
+								$query = "INSERT INTO hotels (name,address,company_id,rating,walking_time,driving_time,distance) VALUES (\"".str_replace('"',"'",$element['name'])."\",\"".str_replace('"',"'",$element['vicinity'])."\",".$company['id'].",".$element['rating'].",".$matrix['walking_time'].",".$matrix['driving_time'].",".$matrix['distance'].")";
+
+								if (mysqli_query($this->conn, $query) !== TRUE) {
+									echo $query."<br>";
+									echo("Error description: " . mysqli_error($this->conn))."<br>";
+								}
+							}
 						}
 					}
 				}
@@ -1811,7 +1817,7 @@
 				$this->importTickets();							// 3034/3116
 				$this->importPosts();							// 721 misses
 				$this->importTicketsHistory();
-				// $this->importPictures();
+				$this->importPictures();
 
 			}
 		}
