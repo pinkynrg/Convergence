@@ -5,7 +5,7 @@
 	ini_set('display_errors',1);
 	ini_set('display_startup_errors',1);
 	ini_set('memory_limit', '5G');
-	ini_set('max_execution_time', 3000);	
+	ini_set('max_execution_time', 3000);
 	error_reporting(-1);
 
 	define("CONVERGENCE_HOST", "198.154.99.22:1088");
@@ -33,6 +33,7 @@
 
 		private function truncate($table) {
 
+			flush(); // flush the output
 			$result = false;
 
 			$query1 = "SET foreign_key_checks = 0";
@@ -1743,7 +1744,6 @@
 		public function __construct() {
 
 			if (!@mssql_connect(CONVERGENCE_HOST,CONVERGENCE_USER,CONVERGENCE_PASS)) {
-				ob_flush();
 				die("error connecting to ".CONVERGENCE_HOST);
 			}
 
@@ -1773,7 +1773,7 @@
 			}
 			else {
 
-				$this->importHotelsFromGoogleMaps();
+				$this->importHotelsFromGoogleMaps(); 			
 				$this->importPermissions();						// 50/50
 				$this->importRoles();							// 20/20
 				$this->importPermissionRole();					// 84/84
