@@ -8,10 +8,11 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 	config.filebrowserBrowseUrl = '/ckfinder/ckfinder.html?type=Images';
-	// config.filebrowserImageBrowseUrl = '/kcfinder/browser/?opener=ckeditor&type=images';
-	// config.filebrowserFlashBrowseUrl = '/kcfinder/browser/?opener=ckeditor&type=flash';
 	config.filebrowserUploadUrl = '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images';
-	// config.filebrowserImageUploadUrl = '/kcfinder/uploader/?opener=ckeditor&type=images';
-	// config.filebrowserFlashUploadUrl = '/kcfinder/uploader/?opener=ckeditor&type=flash';
 	config.extraPlugins = 'codesnippet';
+	config.toolbar_Basic =
+		[
+    		[ 'Bold', 'Italic', 'Underline', 'SpellChecker', 'Image', 'CodeSnippet' ]
+		];
+	config.toolbar = 'Basic';
 };
