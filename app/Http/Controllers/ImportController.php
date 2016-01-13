@@ -483,8 +483,8 @@
 					$assignee_id = $this->findCompanyPersonId($t['Id_Assignee']);
 					$contact_id = $this->findCompanyPersonId($t['Contact_Id']);
 
-					$query = "INSERT INTO tickets (id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
-					 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
+					$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
+					 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",\"\",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
 					
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
@@ -769,8 +769,8 @@
 					if (!isset($author_id)) 
 						$author_id = $this->findCompanyPersonId($p['Author']);
 
-					$query = "INSERT INTO posts (id,ticket_id,post,author_id,is_public,created_at,updated_at) 
-							  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",'".date("Y-m-d H:i:s")."')";
+					$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,is_public,created_at,updated_at) 
+							  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",\"\",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",'".date("Y-m-d H:i:s")."')";
 					
 
 					if (mysqli_query($this->conn,$query) === TRUE) {
@@ -1315,8 +1315,8 @@
 
 						$t = $this->trimAndNullIfEmpty($t);
 
-						$query = "INSERT INTO tickets_history (ticket_id,changer_id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
-						 		  VALUES (".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
+						$query = "INSERT INTO tickets_history (ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
+						 		  VALUES (".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",\"\",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
 						 		  
 						if (mysqli_query($this->conn,$query) === TRUE) {
 							$successes++;
@@ -1807,6 +1807,9 @@
 				$this->setBlankMainContact();					// 25/79 		?
 				$this->importCompanyAccountManagers();			// 73/76
 				$this->importEquipments();						// 220/220
+				$this->importTickets();							// 3034/3116
+				$this->importPosts();							// 721 misses
+				$this->importTicketsHistory();
 				$this->importTagTicket();
 				$this->importServices();
 				$this->importServiceTechnicians();
@@ -1814,10 +1817,7 @@
 				$this->setActiveContacts();
 				$this->setPermissionGroups();					// 1/1
 				$this->updateImageDb();
-				$this->importTickets();							// 3034/3116
-				$this->importPosts();							// 721 misses
-				$this->importTicketsHistory();
-				$this->importPictures();
+				// $this->importPictures();
 
 			}
 		}
