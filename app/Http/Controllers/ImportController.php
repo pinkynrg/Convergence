@@ -792,6 +792,9 @@
 
 		private function importServices() {
 
+			$query = mssql_query(	'DELETE FROM [Elettric80Inc].[saa].[Service_Request] WHERE Id NOT IN 
+									(SELECT DISTINCT Id_service_request FROM [Elettric80Inc].[saa].[Service_Request_Technicians])');
+
 			$table = 'services';
 			$successes = $errors = 0;
 
