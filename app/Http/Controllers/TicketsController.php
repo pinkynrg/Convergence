@@ -21,6 +21,7 @@ use Requests;
 use Input;
 use Form;
 use Auth;
+use DB;
 
 use Illuminate\Http\Request;
 
@@ -270,6 +271,10 @@ class TicketsController extends Controller {
     	$tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
     	$tickets->leftJoin('companies','tickets.company_id','=','companies.id');
     	$tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
+    	// $tickets->leftJoin(DB::raw('(select * from posts where posts.ticket_id = tickets.id order by id desc limit 0,1)'),function ($join) {
+    	// 	$join->on('tickets.id','=','posts.ticket_id');
+    	// });
+
 
     	// apply filters
     	if (isset($params['filters'])) {
