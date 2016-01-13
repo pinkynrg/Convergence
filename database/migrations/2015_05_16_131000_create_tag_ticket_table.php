@@ -17,7 +17,8 @@ class CreateTagTicketTable extends Migration {
 			$table->increments('id');
 			$table->integer('ticket_id')->unsigned();
 			$table->integer('tag_id')->unsigned();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('tag_ticket',function(Blueprint $table) {

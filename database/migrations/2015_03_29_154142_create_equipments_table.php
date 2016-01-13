@@ -21,7 +21,8 @@ class CreateEquipmentsTable extends Migration {
 			$table->integer('company_id')->unsigned();
 			$table->string('notes')->nullable();
 			$table->date('warranty_expiration')->nullable();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('equipments',function(Blueprint $table) {

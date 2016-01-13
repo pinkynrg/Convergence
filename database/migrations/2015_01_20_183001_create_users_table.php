@@ -20,7 +20,8 @@ class CreateUsersTable extends Migration {
 			$table->string('username')->unique();
 			$table->string('password', 60);
 			$table->rememberToken();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('users',function(Blueprint $table) {

@@ -21,7 +21,8 @@ class CreateServicesTable extends Migration {
 			$table->string('job_number_onsite')->nullable();
 			$table->string('job_number_remote')->nullable();
 			$table->integer('hotel_id')->nullable();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('services',function(Blueprint $table) {

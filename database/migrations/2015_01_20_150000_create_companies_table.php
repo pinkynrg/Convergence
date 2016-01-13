@@ -24,7 +24,8 @@ class CreateCompaniesTable extends Migration {
 			$table->string('group_email')->nullable();
 			$table->integer('connection_type_id')->unsigned()->nullable();
 			$table->integer('support_type_id')->unsigned()->nullable();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 

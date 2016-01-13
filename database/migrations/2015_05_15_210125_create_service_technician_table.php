@@ -27,7 +27,8 @@ class CreateServiceTechnicianTable extends Migration {
 			$table->datetime('remote_start')->nullable();
 			$table->datetime('remote_end')->nullable();
 			$table->integer('remote_estimated_hours')->nullable();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('service_technician',function(Blueprint $table) {

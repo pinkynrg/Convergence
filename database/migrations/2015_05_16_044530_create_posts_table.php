@@ -19,7 +19,8 @@ class CreatePostsTable extends Migration {
 			$table->text('post_plain_text');
 			$table->integer('author_id')->unsigned();
 			$table->string('is_public');
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('posts',function(Blueprint $table) {

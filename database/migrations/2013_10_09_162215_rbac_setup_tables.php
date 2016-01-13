@@ -17,7 +17,8 @@ class RbacSetupTables extends Migration {
             $table->string('name')->unique();
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
 
         // Create table for storing permissions
@@ -26,7 +27,8 @@ class RbacSetupTables extends Migration {
             $table->string('name')->unique();
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
 
         // Create table for associating permissions to roles (Many-to-Many)
@@ -46,7 +48,8 @@ class RbacSetupTables extends Migration {
             $table->string('name')->unique();
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
 
        // Create table for storing groups
@@ -56,7 +59,8 @@ class RbacSetupTables extends Migration {
             $table->string('name');
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign('group_type_id')->references('id')->on('group_types')->onUpdate('cascade')->onDelete('cascade');
             $table->unique(['group_type_id','name']);
 

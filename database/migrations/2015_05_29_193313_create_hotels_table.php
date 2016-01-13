@@ -21,7 +21,8 @@ class CreateHotelsTable extends Migration {
 			$table->float('walking_time')->nullable();
 			$table->float('driving_time')->nullable();
 			$table->integer('company_id')->unsigned();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('hotels',function(Blueprint $table) {

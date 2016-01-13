@@ -30,7 +30,8 @@ class CreateTicketsHistoryTable extends Migration {
 			$table->integer('company_id')->unsigned();
 			$table->integer('contact_id')->unsigned()->nullable();		
 			$table->integer('job_type_id')->unsigned()->nullable();		
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('tickets_history',function(Blueprint $table) {

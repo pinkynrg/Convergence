@@ -17,7 +17,8 @@ class CreateCompanyMainContactTable extends Migration {
 			$table->increments('id');
 			$table->integer('company_id')->unsigned()->unique();
 			$table->integer('main_contact_id')->unsigned();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 

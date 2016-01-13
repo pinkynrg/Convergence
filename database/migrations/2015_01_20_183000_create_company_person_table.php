@@ -26,7 +26,8 @@ class CreateCompanyPersonTable extends Migration {
 			$table->string('cellphone')->nullable();
 			$table->string('email')->nullable();
 			$table->string('slack_token')->nullable();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('company_person',function(Blueprint $table) {
