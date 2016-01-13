@@ -15,6 +15,7 @@ use App\Models\Priority;
 use App\Models\JobType;
 use App\Models\TagTicket;
 use App\Models\Tag;
+use App\Models\Post;
 use Html2Text\Html2Text;
 use Requests;
 use Input;
@@ -35,6 +36,14 @@ class TicketsController extends Controller {
 			$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
 			$data['active_search'] = true;
 			$data['tickets'] = Ticket::orderBy('id','desc')->paginate(50);
+			// find last updated date and contact info
+			foreach ($data['tickets'] as $ticket) {
+				$last_post = Post::select('posts.*')->where('ticket_id',$ticket->id)->orderBy('updated_at','desc')->first();
+				$which = count($last_post) ? $last_post->updated_at > $ticket->updated_at ? 'post' : 'ticket' : 'ticket';
+				$ticket['last_operation_date'] = $which == 'post' ? $last_post->updated_at : $ticket->updated_at;
+				$company_person_id = $which == 'post' ? $last_post->author_id : $ticket->creator_id;
+				$ticket['last_operation_company_person'] = CompanyPerson::find($company_person_id);
+			}
 			$data['companies'] = Company::orderBy('name','asc')->get();
 			$employees = CompanyPerson::select('company_person.*');
 			$employees->leftJoin('people','people.id','=','company_person.person_id');
@@ -292,6 +301,14 @@ class TicketsController extends Controller {
    		$tickets = $tickets->paginate(50);
 
 	    $data['tickets'] = $tickets;
+
+	    foreach ($data['tickets'] as $ticket) {
+			$last_post = Post::select('posts.*')->where('ticket_id',$ticket->id)->orderBy('updated_at','desc')->first();
+			$which = count($last_post) ? $last_post->updated_at > $ticket->updated_at ? 'post' : 'ticket' : 'ticket';
+			$ticket['last_operation_date'] = $which == 'post' ? $last_post->updated_at : $ticket->updated_at;
+			$company_person_id = $which == 'post' ? $last_post->author_id : $ticket->creator_id;
+			$ticket['last_operation_company_person'] = CompanyPerson::find($company_person_id);
+		}
 
         return view('tickets/tickets',$data);
     }

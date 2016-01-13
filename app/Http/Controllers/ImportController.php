@@ -770,7 +770,7 @@
 						$author_id = $this->findCompanyPersonId($p['Author']);
 
 					$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,is_public,created_at,updated_at) 
-							  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",\"\",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",'".date("Y-m-d H:i:s")."')";
+							  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",\"\",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",".$p['Creation_Date'].")";
 					
 
 					if (mysqli_query($this->conn,$query) === TRUE) {

@@ -32,7 +32,10 @@
 					<td class="hidden-xs"> <a href="{{ route('people.show', $ticket->assignee->person->id) }}"> {{ $ticket->assignee->person->name() }} </a> </td>
 					<td> <a href="{{ route('companies.show', $ticket->company->id) }}"> {{ $ticket->company->name }} </a> </td>
 					<td class="hidden-xs"> {{ $ticket->division->name }} </td>
-					<td class="hidden-xs"> {{ date("m/d/Y",strtotime($ticket->updated_at)) }} </td>
+					<td class="hidden-xs"> 
+						{{ date("m/d/Y",strtotime($ticket->last_operation_date)) }}
+						<div class="ticket_foot_details"> by <a href="{{ route('people.show', $ticket->last_operation_company_person->person->id) }}"> {{ $ticket->last_operation_company_person->person->name() }} </a> </div>
+					</td>
 				</tr>
 
 				@endforeach
