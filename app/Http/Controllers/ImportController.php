@@ -851,7 +851,7 @@
 					$s['work_description'] = str_replace("\"","'",$s['work_description']);
 					$total_days = strtotime($s['onsite_completion']) - strtotime($s['onsite_start']);
 					$s['hours_estimated_onsite'] = strpos(strtolower($s['hours_estimated_onsite']), "day") === false ? $s['hours_estimated_onsite'] : str_replace("/Day","",$s['hours_estimated_onsite']) * $total_days;
-
+					$s['Id_employee'] = $this->findCompanyPersonId($s['Id_employee']);
 
 					$s = $this->trimAndNullIfEmpty($s);
 
