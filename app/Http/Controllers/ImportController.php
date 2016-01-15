@@ -532,6 +532,22 @@
 					}
 				}
 
+				// import new statuses
+
+				$query = "INSERT INTO statuses (id,name) 
+						  VALUES (8,'Requesting')";
+					
+				if (mysqli_query($this->conn,$query) === TRUE) {
+					$successes++;
+				}
+
+				$query = "INSERT INTO statuses (id,name) 
+						  VALUES (9,'Draft')";
+					
+				if (mysqli_query($this->conn,$query) === TRUE) {
+					$successes++;
+				}
+
 				$this->logger($successes,$errors,$table);
 			}
 		}
@@ -1674,6 +1690,53 @@
 			}
 		}
 
+		public function importMedia() {
+			
+			$table = "Documents";
+			$successes = $errors = 0;
+
+			$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author
+									FROM $table d
+									INNER JOIN Posts p ON p.Id = d.Second_Id
+									WHERE path IS NOT NULL 
+									AND path != '' 
+									AND Second_Id IS NOT NULL 
+									AND Type = 'post'
+									ORDER BY Id DESC");
+
+			while ($row = mssql_fetch_assoc($query)) $result[] = $row;
+
+			foreach ($result as $m) {
+				$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.$m['Path'];
+				if (@file_get_contents($url)) {
+					
+					// insert record in the db8
+					$img = 'media/posts/'.$m['Path'];
+					$uploader_id = $this->findCompanyPersonId($m['Author']);
+					$query = "INSERT INTO media (file_path,file_name,resource_type,resource_id,uploader_id) VALUES ('".$img."','".$m['Path']."','Post','".$m['Second_Id']."','".$uploader_id."')";
+					
+					if (mysqli_query($this->conn, $query) === TRUE) {
+						if ($query) {
+							// insert image on file system
+							if (file_put_contents($img, file_get_contents($url))) {
+								$successes++;
+							}
+							else {
+								$errors++;
+							}
+						}
+					}
+					else {
+						echo $query."<br>";
+						echo("Error description: " . mysqli_error($this->conn))."<br>";
+						$errors++;
+					}
+				}
+			}
+
+			$this->logger($successes,$errors,$table);
+		}
+
 		public function importHotelsFromGoogleMaps() {
 
 
@@ -1750,6 +1813,60 @@
 			}
 		}
 
+		public function importDummies() {
+
+			$table = "dummies";
+			$successes = $errors = 0;
+			
+			$queries = [
+				"SET SESSION sql_mode='NO_AUTO_VALUE_ON_ZERO'",
+
+				"DELETE FROM job_types WHERE id = 0",
+				"DELETE FROM priorities WHERE id = 0",
+				"DELETE FROM statuses WHERE id = 0",
+				"DELETE FROM equipments WHERE id = 0",
+				"DELETE FROM company_person WHERE id = 0",
+				"DELETE FROM group_types WHERE id = 0",
+				"DELETE FROM titles WHERE id = 0",
+				"DELETE FROM departments WHERE id = 0",
+				"DELETE FROM companies WHERE id = 0",
+				"DELETE FROM equipment_types WHERE id = 0",
+				"DELETE FROM divisions WHERE id = 0",
+				"DELETE FROM support_types WHERE id = 0",
+				"DELETE FROM connection_types WHERE id = 0",
+				"DELETE FROM people WHERE id = 0",
+
+				"INSERT INTO people (id,first_name,last_name) VALUES ('0','[undefined]','[undefined]')",
+				"INSERT INTO connection_types (id,name,description) VALUES (0,'[undefined]','[undefined]')",
+				"INSERT INTO support_types (id,name) VALUES (0,'[undefined]')",
+				"INSERT INTO divisions (id,name) VALUES (0,'[undefined]')",
+				"INSERT INTO equipment_types (id,name) VALUES (0,'[undefined]')",
+				"INSERT INTO companies (id, name, address, country, city, state, zip_code, connection_type_id, support_type_id) VALUES (0,'[undefined]','[undefined]','[undefined]','[undefined]','[undefined]','[undefined]',0,0)",
+				"INSERT INTO departments (id,name) VALUES (0,'[undefined]')",
+				"INSERT INTO titles (id,name) VALUES (0,'[undefined]')",
+				"INSERT INTO group_types (id, name, display_name, description) VALUES (0,'[undefined]','[undefined]','[undefined]')",
+				"INSERT INTO company_person (id, person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id) VALUES (0,0,0,0,0,'[undefined]','[undefined]','[undefined]',0,'[undefined]')",
+				"INSERT INTO equipments (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id) VALUES (0,'[undefined]','[undefined]','[undefined]',0,'[undefined]','[undefined]',0)",
+				"INSERT INTO statuses (id,name) VALUES (0,'[undefined]')",
+				"INSERT INTO priorities (id,name) VALUES (0,'[undefined]')",
+				"INSERT INTO job_types (id,name) VALUES (0,'[undefined]')"
+			];
+			
+			foreach ($queries as $query) {							
+				
+				if (mysqli_query($this->conn, $query) === TRUE) {
+					$successes++;
+				}
+				else {
+					echo $query."<br>";
+					echo("Error description: " . mysqli_error($this->conn))."<br>";
+					$errors++;
+				}
+			}
+
+			$this->logger($successes,$errors,$table);	
+		}
+
 		public function __construct() {
 
 			if (!@mssql_connect(CONVERGENCE_HOST,CONVERGENCE_USER,CONVERGENCE_PASS)) {
@@ -1782,7 +1899,6 @@
 			}
 			else {
 
-				$this->importHotelsFromGoogleMaps(); 			
 				$this->importPermissions();						// 50/50
 				$this->importRoles();							// 20/20
 				$this->importPermissionRole();					// 84/84
@@ -1820,6 +1936,10 @@
 				$this->setActiveContacts();
 				$this->setPermissionGroups();					// 1/1
 				$this->updateImageDb();
+				$this->importHotelsFromGoogleMaps(); 			
+				$this->importDummies();
+				
+				// $this->importMedia();
 				// $this->importPictures();
 
 			}
