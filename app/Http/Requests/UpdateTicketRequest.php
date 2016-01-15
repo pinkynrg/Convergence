@@ -28,9 +28,9 @@ class UpdateTicketRequest extends Request {
 	public function rules()
 	{
 		return [
-			'creator_id' => 'required|integer',  
 			'status_id' => 'required|integer',  
-			'contact_id' => 'integer',  
+			'company_id' => 'required|integer',
+			'contact_id' => 'integer',
 			'equipment_id' => 'integer',  
 			'assignee_id' => 'required|integer',  
 			'title' => 'required|string',

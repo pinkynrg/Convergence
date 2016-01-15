@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class GroupType extends Model {
+class GroupType extends CustomModel {
 
 	protected $table = 'group_types';
 	protected $fillable = ['name','display_name','description'];

@@ -114,7 +114,7 @@ return [
 			3 => 'Name (technician #4)',
 			4 => 'Name (technician #5)',
 		],
-		'division_id' => [
+		'tech_division_id' => [
 			0 => 'Division (technician #1)',
 			1 => 'Division (technician #2)',
 			2 => 'Division (technician #3)',

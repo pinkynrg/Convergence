@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Division extends Model {
+class Division extends CustomModel {
 
 	protected $table = 'divisions';
 

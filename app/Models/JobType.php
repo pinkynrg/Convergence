@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class JobType extends Model {
+class JobType extends CustomModel {
 
 	protected $table = 'job_types';
 

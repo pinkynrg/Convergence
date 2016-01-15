@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Permission extends Model
+class Permission extends CustomModel
 {
 	protected $fillable = ['name','display_name','description'];
 

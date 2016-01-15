@@ -83,6 +83,8 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::patch('tickets/{id}', ['uses' => 'TicketsController@update', 'as' => 'tickets.update']);	
 	Route::get('tickets/{id}/edit', ['uses' => 'TicketsController@edit', 'as' => 'tickets.edit']);
 	
+	Route::post('media', ['uses' => 'MediaController@upload', 'as' => 'media.upload']);
+	
 	// posts routes
 	Route::post('posts',['uses' => 'PostsController@store', 'as' => 'posts.store']);
 	Route::get('posts/{id}',['uses' => 'PostsController@show', 'as' => 'posts.show']);

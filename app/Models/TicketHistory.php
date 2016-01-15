@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class TicketHistory extends Model {
+class TicketHistory extends CustomModel {
 
 	protected $table = 'tickets_history';
 

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class CompanyMainContact extends Model {
+class CompanyMainContact extends CustomModel {
 
 	protected $table = 'company_main_contact';
 

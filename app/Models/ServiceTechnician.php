@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceTechnician extends Model {
+class ServiceTechnician extends CustomModel {
 
 	protected $table = 'service_technician';
 

@@ -7,8 +7,8 @@
 	{!! Form::BSLabel("technician_id[".$tech_num."]", "Technician Name", ['bclass' => 'col-xs-2']) !!}
 	{!! Form::BSSelect("technician_id[".$tech_num."]", $technicians, null, ['key' => 'id', 'value' => 'person.name', 'bclass' => 'col-xs-3']) !!}
 
-	{!! Form::BSLabel("division_id[".$tech_num."]", "Division", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSSelect("division_id[".$tech_num."]", $divisions, null, ['key' => 'id', 'value' => 'name', 'bclass' => 'col-xs-3']) !!}
+	{!! Form::BSLabel("tech_division_id[".$tech_num."]", "Division", ['bclass' => 'col-xs-2']) !!}
+	{!! Form::BSSelect("tech_division_id[".$tech_num."]", $divisions, null, ['key' => 'id', 'value' => 'name', 'bclass' => 'col-xs-3']) !!}
 
 {!! Form::BSEndGroup() !!}
 

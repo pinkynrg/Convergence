@@ -246,29 +246,147 @@ $(document).ready(function() {
 		}
 	});
 
+	// save dummy ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	var path = window.location.pathname;
+	var regex = /\/tickets\/([\d]*)\/edit/g;
+	var res = regex.exec(path);
+
+	if (path == '/tickets/create') {
+		console.log('enter in create draft mode');
+		activateDraftMode();
+	}
+	else if (res && res[1]) {
+		console.log('enter in edit draft mode');
+		$.get('/tickets/'+res[1], function (data) {
+			var status_id = data.status_id;
+			if (status_id == 9) {
+				activateDraftMode();
+			}
+		});
+	}
+
+	function activateDraftMode() {
+		setInterval(function(){ 
+			
+			var dummy_id = 0;
+
+			var data = {
+				'company_id' 		: $("select#company_id").val() ? $("select#company_id").val() : dummy_id,
+				'contact_id' 		: $("input#contact_id").val() ? $("input#contact_id").val() : dummy_id,
+				'equipment_id' 		: $("input#equipment_id").val() ? $("input#equipment_id").val() : dummy_id,
+				'title' 			: $("input#title").val() ? $("input#title").val() : '[undefined]',
+				'assignee_id' 		: $("select#assignee_id").val() ? $("select#assignee_id").val() : dummy_id,
+				'post' 				: CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '[undefined]',
+				'tagit' 			: $("input#tagit").val() ? $("input#tagit").val() : '',
+				'division_id' 		: $("select#division_id").val() ? $("select#division_id").val() : dummy_id,
+				'additional_emails' : $("input#additional_emails").val() ? $("input#additional_emails").val() : '[undefined]',
+				'job_type_id' 		: $("select#job_type_id").val() ? $("select#job_type_id").val() : dummy_id,
+				'priority_id' 		: $("select#priority_id").val() ? $("select#priority_id").val() : dummy_id,
+				'status_id' 		: 9,
+			}
+
+			$.ajax({
+				'headers': { "X-CSRF-Token": $('[name=_token').val() },
+				'type': 'POST',
+				'url': '/tickets',
+				'data' : data,
+				'success' : function (data) {
+					console.log(data);
+				}
+			});
+
+		}, 1000);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	Dropzone.autoDiscover = false;
+
+	$("#dZUpload").dropzone({
+		url: "/media/",
+		headers: {
+        	"X-CSRF-Token": $('[name=_token').val()
+    	},
+    	sending: function(file, xhr, formData) {
+    		formData.append("X-CSRF-Token", $('[name=_token').val());
+    		formData.append("resource_type", $("#dZUpload").attr('type'));
+    		formData.append("uplaoder_id", $("#dZUpload").attr('type'));
+		},
+		// addRemoveLinks: true
+		// ,
+		success: function (file, response) {
+			file.previewElement.classList.add("dz-success");
+			console.log(response);
+		}
+		// ,
+		// error: function (file, response) {
+		// 	file.previewElement.classList.add("dz-error");
+		// }
+	});
+
 	// add bootstrap class to tag field in ticket form page
 	$(".bootstrap-tagsinput").addClass("col-xs-12");
 
-	// update fileds related to selection of company (like contacts, equipments, ...)
-	$(".ajax_trigger#company_id").on("change",function () {
-		var company_id = $(this).val();
-		
+	function updateContacts(company_id, callback) {
 		$.get('/ajax/tickets/contacts/'+company_id, function (data) {
 			data = JSON.parse(data);
-			$('select#contact_id').html('');
-			$('select#contact_id').append('<option value="NULL">-</option>');
+			$('select#fake_contact_id').html('');
+			$('select#fake_contact_id').append('<option value="NULL">-</option>');
 			for (var i = 0; i<data.length; i++)
-				$('select#contact_id').append('<option value="'+data[i].id+'">'+data[i].last_name+' '+data[i].first_name+'</option>');
+				$('select#fake_contact_id').append('<option value="'+data[i].id+'">'+data[i].last_name+' '+data[i].first_name+'</option>');
+			if (typeof callback === 'function') callback();
 		});
+	} 
 
+	function updateEquipments(company_id, callback) {
 		$.get('/ajax/tickets/equipments/'+company_id, function (data) {
 			data = JSON.parse(data);				
-			$('select#equipment_id').html('');
-			$('select#equipment_id').append('<option value="NULL">-</option>');
+			$('select#fake_equipment_id').html('');
+			$('select#fake_equipment_id').append('<option value="NULL">-</option>');
 			for (var i = 0; i<data.length; i++)
-				$('select#equipment_id').append('<option value="'+data[i].id+'">'+data[i].notes+'</option>');
+				$('select#fake_equipment_id').append('<option value="'+data[i].id+'">'+data[i].notes+'</option>');
+			if (typeof callback === 'function') callback();
 		});
+	}
 
+	function fillSelectFields(callback) {
+
+		var company_id = $(".ajax_trigger#company_id").val();
+
+		if (company_id != '') {
+			updateContacts(company_id, function () {
+				updateEquipments(company_id, function () {
+					setSelected();
+				});
+			});			
+		}
+	};
+
+	function setSelected() {
+		var fake_equipment = $("#equipment_id").val() == 0 || $("#equipment_id").val() == '' ? "NULL" : $("#equipment_id").val();
+		var fake_contact = $("#contact_id").val() == 0 || $("#contact_id").val() == '' ? "NULL" : $("#contact_id").val();
+		$("#fake_equipment_id").val(fake_equipment);
+		$("#fake_contact_id").val(fake_contact);
+	};
+
+	fillSelectFields();
+
+	$("#fake_equipment_id").on("change",function () {
+		var equipment_id = $(this).val() == "NULL" ? "" : $(this).val();
+		$("#equipment_id").val(equipment_id);
+	});
+
+	$("#fake_contact_id").on("change",function () {
+		var contact_id = $(this).val() == "NULL" ? "" : $(this).val();
+		$("#contact_id").val(contact_id);
+	});
+
+	// update fileds related to selection of company (like contacts, equipments, ...)
+	$(".ajax_trigger#company_id").on("change",function () {
+		$("#equipment_id").val("");
+		$("#contact_id").val("");
+		fillSelectFields();
 	});
 
 // show role page //////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,7 @@ class CreateServiceRequest extends Request {
 
 		for ($i = 0; $i < Request::get('technician_number'); $i++) {
 			$rules['technician_id.'.$i] = 'required';
-			$rules['division_id.'.$i] = 'required';
+			$rules['tech_division_id.'.$i] = 'required';
 			$rules['work_description.'.$i] = 'required';
 			
 			$rules['tech_internal_hours.'.$i] = 'required_if:tech_has_internal.'.$i.',1|numeric|min:1';

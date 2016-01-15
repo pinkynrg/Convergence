@@ -11,20 +11,13 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('company_id','Company') !!}
-			@if (Route::currentRouteName() == "tickets.edit")
-				{!! Form::BSSelect("company_id", $companies, null, ['key' => 'id', 'value' => 'name', 'disabled']) !!}
-			@else
-				{!! Form::BSSelect("company_id", $companies, null, ['key' => 'id', 'value' => 'name', 'class' => 'ajax_trigger']) !!}
-			@endif
+			{!! Form::BSSelect("company_id", $companies, null, ['key' => 'id', 'value' => 'name', 'class' => 'ajax_trigger']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('equipment_id','Equipment') !!}
-			@if (Route::currentRouteName() == "tickets.edit")
-				{!! Form::BSSelect("equipment_id", $equipments, null, ['key' => 'id', 'value' => 'name']) !!}
-			@else 
-				{!! Form::BSSelect("equipment_id", array(), null, ['key' => 'id', 'value' => 'name']) !!}
-			@endif
+			{!! Form::BSHidden('equipment_id',null,['id' => 'equipment_id']) !!}
+			{!! Form::BSSelect("fake_equipment_id", array(), null, ['key' => 'id', 'value' => 'name', 'id' => 'fake_equipment_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
 	</div>
@@ -32,11 +25,8 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('contact_id','Company Contact') !!}
-			@if (Route::currentRouteName() == "tickets.edit")
-				{!! Form::BSSelect("contact_id", $contacts, null, ['key' => 'id', 'value' => 'person.name']) !!}
-			@else
-				{!! Form::BSSelect("contact_id", array(), null, ['key' => 'id', 'value' => 'person.name']) !!}
-			@endif
+			{!! Form::BSHidden('contact_id',null,['id' => 'contact_id']) !!}
+			{!! Form::BSSelect("fake_contact_id", array(), null, ['key' => 'id', 'value' => 'person.name', 'id' => 'fake_contact_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
@@ -51,13 +41,19 @@
 	<div class="col-xs-12">
 
 		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('equipment_id','Ticket Title') !!}
+			{!! Form::BSLabel('title','Ticket Title') !!}
 			{!! Form::BSText('title',null) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
 		{!! Form::BSEndGroup() !!}
+
+	<!-- 	<div id="dZUpload" class="dropzone" type="ticket">
+      		<div class="dz-message needsclick">
+    			Drop files here or click to upload.<br>
+  			</div>
+		</div> -->
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('tagit','Tag it!') !!}
