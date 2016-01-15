@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Status extends Model {
+class Status extends CustomModel {
 
 	protected $table = 'statuses';
 

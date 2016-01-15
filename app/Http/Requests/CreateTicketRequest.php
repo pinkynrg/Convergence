@@ -28,7 +28,6 @@ class CreateTicketRequest extends Request {
 	public function rules()
 	{
 		return [
-			'creator_id' => 'required|integer',  
 			'status_id' => 'required|integer',  
 			'company_id' => 'required|integer',  
 			'contact_id' => 'integer',  

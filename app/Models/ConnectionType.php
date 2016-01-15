@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class ConnectionType extends Model {
+class ConnectionType extends CustomModel {
 
 	protected $table = 'connection_types';
 

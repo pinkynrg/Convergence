@@ -62,7 +62,7 @@ class ServicesController extends Controller {
             $service_technician = new ServiceTechnician();
             $service_technician->service_id = $service->id;
             $service_technician->technician_id = $request->get('technician_id')[$i];
-            $service_technician->division_id = $request->get('division_id')[$i];
+            $service_technician->division_id = $request->get('tech_division_id')[$i];
             $service_technician->work_description = $request->get('work_description')[$i];
             $service_technician->internal_start = isset($request->get('tech_internal_start')[$i]) ? Carbon::createFromFormat('m/d/Y', $request->get('tech_internal_start')[$i]) : null;
             $service_technician->internal_end = isset($request->get('tech_internal_end')[$i]) ? Carbon::createFromFormat('m/d/Y', $request->get('tech_internal_end')[$i]) : null;

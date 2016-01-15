@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Priority extends Model {
+class Priority extends CustomModel {
 
 	protected $table = 'priorities';
 

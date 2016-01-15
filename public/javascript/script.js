@@ -372,7 +372,7 @@ var timer;
 			});			
 		}
 	};
-
+	
 	function setSelected() {
 		var fake_equipment = $("#equipment_id").val() == 0 || $("#equipment_id").val() == '' ? "NULL" : $("#equipment_id").val();
 		var fake_contact = $("#contact_id").val() == 0 || $("#contact_id").val() == '' ? "NULL" : $("#contact_id").val();

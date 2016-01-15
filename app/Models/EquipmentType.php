@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class EquipmentType extends Model {
+class EquipmentType extends CustomModel {
 
 	protected $table = 'equipment_types';
 
