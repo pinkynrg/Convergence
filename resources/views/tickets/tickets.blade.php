@@ -12,7 +12,7 @@
 				<th column="statuses.name">Status</th>
 				<th column="priorities.id" class="hidden-xs">Priority</th>
 				<th column="assignees.last_name" class="hidden-xs">Asignee</th>
-				<th column="companies.company_name">Company</th>
+				<th column="companies.name">Company</th>
 				<th column="divisions.name" class="hidden-xs">Division</th>
 				<th column="tickets.updated_at" class="hidden-xs">Updated</th>
 			</tr>
