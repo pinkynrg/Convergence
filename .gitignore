@@ -1,5 +1,6 @@
 /vendor
 /node_modules
+/public/media
 .env
 .DS_Store
 composer.phar

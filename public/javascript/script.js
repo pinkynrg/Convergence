@@ -2,6 +2,8 @@
 
 $(document).ready(function() {
 
+var timer;
+
 // tickets filters page ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//reset values of filters 
@@ -60,10 +62,18 @@ $(document).ready(function() {
 	}
 
 	function ajaxUpdate($target) {
-		var params = getParams($target);
-		var url = $target.attr("ajax-route");
-		url = getUrl(url,params);
-		ajaxRequest(url,$target);
+		
+		if (timer) {
+			clearTimeout(timer);
+			timer = null;
+		}
+		
+		timer = setTimeout(function () {
+			var params = getParams($target);
+			var url = $target.attr("ajax-route");
+			url = getUrl(url,params);
+			ajaxRequest(url,$target);
+		}, 500);
 	}
 
 	function toggleOrder($elem) {
@@ -362,7 +372,7 @@ $(document).ready(function() {
 			});			
 		}
 	};
-
+	
 	function setSelected() {
 		var fake_equipment = $("#equipment_id").val() == 0 || $("#equipment_id").val() == '' ? "NULL" : $("#equipment_id").val();
 		var fake_contact = $("#contact_id").val() == 0 || $("#contact_id").val() == '' ? "NULL" : $("#contact_id").val();
