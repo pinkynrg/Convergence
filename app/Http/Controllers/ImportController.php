@@ -1890,6 +1890,7 @@
 				$this->setPermissionGroups();					// 1/1
 				$this->updateImageDb();
 				$this->importHotelsFromGoogleMaps(); 			
+				$this->importDummies();
 
 				// $this->importPictures();
 

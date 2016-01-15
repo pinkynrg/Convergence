@@ -36,7 +36,7 @@ class TicketsController extends Controller {
 		// if (Auth::user()->can('read-all-ticket')) {
 			$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
 			$data['active_search'] = true;
-			$data['tickets'] = Ticket::orderBy('id','desc')->paginate(50);
+			$data['tickets'] = Ticket::where('status_id','!=',9)->orderBy('id','desc')->paginate(50);
 			// find last updated date and contact info
 			foreach ($data['tickets'] as $ticket) {
 				$last_post = Post::select('posts.*')->where('ticket_id',$ticket->id)->orderBy('updated_at','desc')->first();

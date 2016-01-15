@@ -16,9 +16,9 @@ class CreateTicketsTable extends Migration {
 		Schema::create('tickets', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('title')->nullable(); // nullable for dummy tickets
-			$table->text('post')->nullable(); // nullable for dummy tickets
-			$table->text('post_plain_text')->nullable(); // nullable for dummy tickets
+			$table->string('title');
+			$table->text('post');
+			$table->text('post_plain_text');
 			$table->integer('creator_id')->unsigned();
 			$table->integer('assignee_id')->unsigned();
 			$table->integer('status_id')->unsigned();
