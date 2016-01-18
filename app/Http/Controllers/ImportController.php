@@ -1699,7 +1699,7 @@
 			$table = "attachments";
 			$successes = $errors = 0;
 
-			$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
+			$query = mssql_query(	"SELECT TOP(100) d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
 									FROM Documents d
 									INNER JOIN Posts p ON p.Id = d.Second_Id
 									LEFT JOIN (
@@ -1732,7 +1732,7 @@
 
 					if (mysqli_query($this->conn, $query) === TRUE) {
 						// insert image on file system
-						if (file_put_contents($file_path.DIRECTORY_SEPARATOR.$file_name, $content)) {
+						if (file_put_contents(base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$file_path.DIRECTORY_SEPARATOR.$file_name, $content)) {
 							$successes++;
 						}
 						else {
@@ -1850,7 +1850,7 @@
 						$source = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".pdf[0]";
 					} 
 					elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
-						$command = "sudo ffmpeg -i ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
+						$command = "sudo ".env('FFMPEG')." -i ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
 						exec($command);
 						$source = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
 					} 
@@ -1860,7 +1860,7 @@
 					}
 
 					$destination = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."thumbnails".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
-					$command2 = "sudo convert -resize '384x384' $source $destination";
+					$command2 = "sudo ".env('CONVERT')." -resize '384x384' $source $destination";
 					
 					$result = exec($command2);
 
@@ -1974,46 +1974,45 @@
 			}
 			else {
 
-				// $this->importPermissions();						// 50/50
-				// $this->importRoles();							// 20/20
-				// $this->importPermissionRole();					// 84/84
-				// $this->importGroupTypes();						// 2/2
-				// $this->importGroups();							// 1/1
-				// $this->importGroupRole(); 						// 20/20
-				// $this->importExtraPermissions();				// 2/2
-				// $this->importExtraRolePermissions();			// 2/2
-				// $this->importDepartments(); 					// 10/10
-				// $this->importDivisions();						// 8/8
-				// $this->importEquipmentTypes();					// 32/32
-				// $this->importConnectionTypes();					// 2/2
-				// $this->importSupportTypes();					// 7/7
-				// $this->importJobTypes();						// 4/4
-				// $this->importTags();							// 111/149 		ok 	all other are duplicates
-				// $this->importPriorities();						// 5/5
-				// $this->importStatus();							// 7/7
-				// $this->importTitles();							// 30/30
-				// $this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
-				// $this->importPeople();							// 393/401 		ok
-				// $this->fixCompanyPersonTable();					// 93/93
-				// $this->deleteBadE80PersonCompany();				// 111/111
-				// $this->deleteUnusedPeople();					// 52/52
-				// $this->importCompanyMainContacts();				// 15/18
-				// $this->setBlankMainContact();					// 25/79 		?
-				// $this->importCompanyAccountManagers();			// 73/76
-				// $this->importEquipments();						// 220/220
-				// $this->importTickets();							// 3034/3116
-				// $this->importPosts();							// 721 misses
-				// $this->importTicketsHistory();
-				// $this->importTagTicket();
-				// $this->importServices();
-				// $this->importServiceTechnicians();
-				// $this->importUsers();
-				// $this->setActiveContacts();
-				// $this->setPermissionGroups();					// 1/1
-				// $this->updateImageDb();
-				// $this->importHotelsFromGoogleMaps(); 			
-				// $this->importDummies();
-				
+				$this->importPermissions();						// 50/50
+				$this->importRoles();							// 20/20
+				$this->importPermissionRole();					// 84/84
+				$this->importGroupTypes();						// 2/2
+				$this->importGroups();							// 1/1
+				$this->importGroupRole(); 						// 20/20
+				$this->importExtraPermissions();				// 2/2
+				$this->importExtraRolePermissions();			// 2/2
+				$this->importDepartments(); 					// 10/10
+				$this->importDivisions();						// 8/8
+				$this->importEquipmentTypes();					// 32/32
+				$this->importConnectionTypes();					// 2/2
+				$this->importSupportTypes();					// 7/7
+				$this->importJobTypes();						// 4/4
+				$this->importTags();							// 111/149 		ok 	all other are duplicates
+				$this->importPriorities();						// 5/5
+				$this->importStatus();							// 7/7
+				$this->importTitles();							// 30/30
+				$this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
+				$this->importPeople();							// 393/401 		ok
+				$this->fixCompanyPersonTable();					// 93/93
+				$this->deleteBadE80PersonCompany();				// 111/111
+				$this->deleteUnusedPeople();					// 52/52
+				$this->importCompanyMainContacts();				// 15/18
+				$this->setBlankMainContact();					// 25/79 		?
+				$this->importCompanyAccountManagers();			// 73/76
+				$this->importEquipments();						// 220/220
+				$this->importTickets();							// 3034/3116
+				$this->importPosts();							// 721 misses
+				$this->importTicketsHistory();
+				$this->importTagTicket();
+				$this->importServices();
+				$this->importServiceTechnicians();
+				$this->importUsers();
+				$this->setActiveContacts();
+				$this->setPermissionGroups();					// 1/1
+				$this->updateImageDb();
+				$this->importHotelsFromGoogleMaps(); 			
+				$this->importDummies();
 				$this->importAttachments();
 				$this->importThumbnails();
 				// $this->importPictures();

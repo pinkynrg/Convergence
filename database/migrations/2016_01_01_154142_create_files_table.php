@@ -21,8 +21,10 @@ class CreateFilesTable extends Migration {
 			$table->text('file_extension');
 			$table->text('resource_type');
 			$table->integer('resource_id')->unsigned()->nullable();
-			$table->integer('uploader_id')->unsigned;
+			$table->integer('uploader_id')->unsigned();
 			$table->integer('thumbnail_id')->unsigned()->nullable();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 
 		Schema::table('files',function(Blueprint $table) {
