@@ -474,9 +474,10 @@
 
 					$t['Contact_Id'] = $this->findMatchingContactId($t);
 					$t['Contact_Id'] = trim($t['Contact_Id']) == '' ? '' : trim($t['Contact_Id']) + CONSTANT_GAP_CONTACTS;
-					$t['Ticket_Title'] = addSlashes(str_replace('&#65533;','',strip_tags($t['Ticket_Title'])));
-					$t['Ticket_Post'] = addSlashes(str_replace('&#65533;','',strip_tags($t['Ticket_Post'])));
-
+					$t['Ticket_Title'] = trim(addSlashes(str_replace('&#65533;','',strip_tags($t['Ticket_Title']))));
+					$t['Ticket_Post'] = trim(addSlashes(str_replace('&#65533;','',strip_tags($t['Ticket_Post']))));
+					$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post'];
+					
 					$t = $this->trimAndNullIfEmpty($t);
 
 					$creator_id = $this->findCompanyPersonId($t['Creator']);
@@ -1699,7 +1700,7 @@
 			$table = "attachments";
 			$successes = $errors = 0;
 
-			$query = mssql_query(	"SELECT TOP(100) d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
+			$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
 									FROM Documents d
 									INNER JOIN Posts p ON p.Id = d.Second_Id
 									LEFT JOIN (
