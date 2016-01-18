@@ -1,3 +1,5 @@
+<meta name="viewport" content="width=350, initial-scale=1">
+
 <!-- Scripts -->
 <script src="/javascript/jquery-1.11.2.min.js"></script>
 <script src="/javascript/jquery-migrate-1.2.1.min.js"></script>

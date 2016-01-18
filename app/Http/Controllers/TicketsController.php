@@ -318,6 +318,8 @@ class TicketsController extends Controller {
     	// apply search
     	if (isset($params['search'])) {
     		$tickets->where('title','like','%'.$params['search'].'%');
+    		$tickets->orWhere('tickets.id','=',$params['search']);
+
     	}
 
     	// apply ordering

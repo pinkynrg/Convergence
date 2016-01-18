@@ -17,4 +17,8 @@ class Post extends CustomModel {
 		return $this->belongsTo('App\Models\CompanyPerson');
 	}
 
+	public function attachments() {
+		return $this->morphMany('App\Models\File','resource');
+	}
+
 }

@@ -117,19 +117,23 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::patch('people/{id}', ['uses' => 'PeopleController@update', 'as' => 'people.update']);
 	Route::get('people/{id}/edit', ['uses' => 'PeopleController@edit', 'as' => 'people.edit']);
 
-	Route::match(['get','head'], 'employees',['uses' => 'CompanyPersonController@employees', 'as' => 'company_person.employees']);
-	Route::match(['get','head'], 'contacts',['uses' => 'CompanyPersonController@contacts', 'as' => 'company_person.contacts']);
-	Route::match(['get','head'], 'contacts/create/{company_id}', ['uses' => 'CompanyPersonController@create', 'as' => 'company_person.create']);
-	Route::match(['post'], 'people', ['uses' => 'CompanyPersonController@store', 'as' => 'company_person.store']);
-	Route::match(['get','head'], 'contacts/{company_person_id}',['uses' => 'CompanyPersonController@show', 'as' => 'company_person.show']);
-	Route::match(['get','head'], 'contacts/{company_person_id}/edit', ['uses' => 'CompanyPersonController@edit', 'as' => 'company_person.edit']);
-	Route::match(['patch'], 'contacts/{company_person_id}', ['uses' => 'CompanyPersonController@update', 'as' => 'company_person.update']);
-	Route::match(['delete'], 'contacts/{company_person_id}', ['uses' => 'CompanyPersonController@destroy', 'as' => 'company_person.destroy']);
+	// company_person
+	Route::get('employees',['uses' => 'CompanyPersonController@employees', 'as' => 'company_person.employees']);
+	Route::get('contacts',['uses' => 'CompanyPersonController@contacts', 'as' => 'company_person.contacts']);
+	Route::get('contacts/create/{company_id}', ['uses' => 'CompanyPersonController@create', 'as' => 'company_person.create']);
+	Route::post('people', ['uses' => 'CompanyPersonController@store', 'as' => 'company_person.store']);
+	Route::get('contacts/{company_person_id}',['uses' => 'CompanyPersonController@show', 'as' => 'company_person.show']);
+	Route::get('contacts/{company_person_id}/edit', ['uses' => 'CompanyPersonController@edit', 'as' => 'company_person.edit']);
+	Route::patch('contacts/{company_person_id}', ['uses' => 'CompanyPersonController@update', 'as' => 'company_person.update']);
+	Route::delete('contacts/{company_person_id}', ['uses' => 'CompanyPersonController@destroy', 'as' => 'company_person.destroy']);
 
 	//charts
 	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);
 	Route::match(['get'], 'dashboard/{contact_id}', ['uses' => 'DashboardController@dashboardContact', 'as' => 'dashboard.show']);
 	Route::match(['get'], 'statistics', ['uses' => 'StatisticsController@index', 'as' => 'statistics.index']);
+
+	//attachments
+	Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'attachments.show']);
 
 	// ajax routes
 	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);

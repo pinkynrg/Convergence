@@ -1,6 +1,8 @@
 /vendor
 /node_modules
-/public/media
+/public/attachments
+/public/thumbnails
+/public/tmp
 .env
 .DS_Store
 composer.phar

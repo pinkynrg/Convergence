@@ -186,13 +186,13 @@
 					<div class="post_media">
 						<div class="row">
 
-							@for ($i=0; $i<12; $i++)
+							@foreach ($post->attachments as $attachment)
 								<div class="col-lg-1 col-xs-2">
-									<a href="#" class="thumbnail">
-										<img src="https://www.andersonseedandgarden.com/content/img/interface/thumbnail_document.jpg" alt="...">
+									<a href="{{ $attachment->path() }}" class="thumbnail">
+										<img src="{{ $attachment->thumbnail() }}" alt="...">
 									</a>
 								</div>
-							@endfor
+							@endforeach
 
 						</div>
 					</div>

@@ -753,7 +753,10 @@
 			$table = 'posts';
 			$successes = $errors = 0;
 
-			$query = mssql_query('SELECT * FROM [dbo].[Posts]');
+			$query = mssql_query(	"SELECT p.*, d.Counter FROM Posts p
+									LEFT JOIN (SELECT Second_Id, count(*) Counter FROM Documents WHERE Type = 'post' GROUP BY Second_Id) d ON d.Second_Id = p.Id 
+									WHERE (p.Post IS NOT NULL AND p.Post NOT LIKE '')
+									OR d.Counter > 0");
 
 			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $posts[] = $row;
 
@@ -765,8 +768,7 @@
 
 					$p['Creation_Date'] = $p['Date_Creation']." ".$p['Time'];
 					$p['Creation_Date'] = str_replace(".0000000","", $p['Creation_Date']);
-					// echo $p['Creation_Date']."<br>";
-					$p['Post'] = addSlashes(str_replace('&#65533;','',strip_tags($p['Post'])));
+					$p['Post'] = trim(addSlashes(str_replace('&#65533;','',strip_tags($p['Post']))));
 					$p['Post_Public'] = $p['Post_Public'] == '' ? '0' : '1';
 
 					if ($p['Id_Customer_User'] != '') {
@@ -781,6 +783,8 @@
 					}
 
 					$p = $this->trimAndNullIfEmpty($p);
+
+					$p['Post'] = $p['Post'] == 'NULL' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post'];
 
 					if (!isset($author_id)) 
 						$author_id = $this->findCompanyPersonId($p['Author']);
@@ -1690,16 +1694,21 @@
 			}
 		}
 
-		public function importMedia() {
+		public function importAttachments() {
 			
-			$table = "Documents";
+			$table = "attachments";
 			$successes = $errors = 0;
 
-			$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author
-									FROM $table d
+			$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
+									FROM Documents d
 									INNER JOIN Posts p ON p.Id = d.Second_Id
-									WHERE path IS NOT NULL 
-									AND path != '' 
+									LEFT JOIN (
+										SELECT Path, Count(*) as counter
+										FROM Documents
+										GROUP BY Path
+									) as c ON c.Path = d.Path 
+									WHERE c.path IS NOT NULL 
+									AND c.path != '' 
 									AND Second_Id IS NOT NULL 
 									AND Type = 'post'
 									ORDER BY Id DESC");
@@ -1708,22 +1717,26 @@
 
 			foreach ($result as $m) {
 				$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.$m['Path'];
-				if (@file_get_contents($url)) {
-					
+				$content = @file_get_contents($url);
+
+				if ($content) {
 					// insert record in the db8
-					$img = 'media/posts/'.$m['Path'];
+					$m['Date_Creation'] = $m['Date_Creation']." ".$m['Time'];
+					$m['Date_Creation'] = str_replace(".0000000","", $m['Date_Creation']);
 					$uploader_id = $this->findCompanyPersonId($m['Author']);
-					$query = "INSERT INTO media (file_path,file_name,resource_type,resource_id,uploader_id) VALUES ('".$img."','".$m['Path']."','Post','".$m['Second_Id']."','".$uploader_id."')";
-					
+					$file_path = 'attachments';
+					$temp = explode(".",$m['Path']);
+					$extension = $temp[count($temp)-1];
+					$file_name = 'POST#'.$m['Second_Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
+					$query = "INSERT INTO files (id,name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$m['Id']."','".$m['Path']."','".$file_path."','".$file_name."','".$extension."','App\\\Models\\\Post','".$m['Second_Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$m['Date_Creation']."')";
+
 					if (mysqli_query($this->conn, $query) === TRUE) {
-						if ($query) {
-							// insert image on file system
-							if (file_put_contents($img, file_get_contents($url))) {
-								$successes++;
-							}
-							else {
-								$errors++;
-							}
+						// insert image on file system
+						if (file_put_contents($file_path.DIRECTORY_SEPARATOR.$file_name, $content)) {
+							$successes++;
+						}
+						else {
+							$errors++;
 						}
 					}
 					else {
@@ -1813,6 +1826,68 @@
 			}
 		}
 
+		public function importThumbnails() {
+
+			$table = "thumbnails";
+			$successes = $errors = 0;
+
+			$query = "SELECT * FROM files WHERE thumbnail_id IS NULL";
+			$result = mysqli_query($this->conn, $query);
+			$images = mysqli_fetch_all($result,MYSQLI_BOTH);
+
+			foreach ($images as $image) {
+
+				$path_info = pathinfo($image['file_name']);
+
+				if (!in_array($path_info['extension'],['zip','7z','rar','pam','tgz','bz2','iso','ace'])) 
+				{
+					$path = $image['file_path'].DIRECTORY_SEPARATOR.$image['file_name'];
+				
+					if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
+					{
+						$command = "sudo ".env('LIBREOFFICE')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$path;
+						exec($command);
+						$source = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".pdf[0]";
+					} 
+					elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
+						$command = "sudo ffmpeg -i ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
+						exec($command);
+						$source = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
+					} 
+					else {
+						$image['file_name'] .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
+						$source = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$image['file_path'].DIRECTORY_SEPARATOR.$image['file_name'];						
+					}
+
+					$destination = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."thumbnails".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
+					$command2 = "sudo convert -resize '384x384' $source $destination";
+					
+					$result = exec($command2);
+
+					if (file_exists($destination)) {
+						$query = "INSERT INTO files (name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$path_info['filename'].".png','thumbnails','".$path_info['filename'].".png','png','Thumbnail',NULL,'".$image['uploader_id']."',NULL,'".$image['created_at']."','".$image['created_at']."')";
+						$result1 = mysqli_query($this->conn, $query);
+						$id = mysqli_insert_id($this->conn);
+						$query = "UPDATE files SET thumbnail_id = ".$id." WHERE id = ".$image['id'];
+						$result2 = mysqli_query($this->conn, $query);
+						if ($result1 === TRUE && $result2 === TRUE) {
+							$successes++;
+						}
+						else {
+							$errors++;
+						}
+					}
+					else {
+						echo $command."<br>";
+						echo $command2."<br>";
+						$errors++;
+					}
+				}
+			}
+
+			$this->logger($successes,$errors,$table);
+		}
+
 		public function importDummies() {
 
 			$table = "dummies";
@@ -1899,47 +1974,48 @@
 			}
 			else {
 
-				$this->importPermissions();						// 50/50
-				$this->importRoles();							// 20/20
-				$this->importPermissionRole();					// 84/84
-				$this->importGroupTypes();						// 2/2
-				$this->importGroups();							// 1/1
-				$this->importGroupRole(); 						// 20/20
-				$this->importExtraPermissions();				// 2/2
-				$this->importExtraRolePermissions();			// 2/2
-				$this->importDepartments(); 					// 10/10
-				$this->importDivisions();						// 8/8
-				$this->importEquipmentTypes();					// 32/32
-				$this->importConnectionTypes();					// 2/2
-				$this->importSupportTypes();					// 7/7
-				$this->importJobTypes();						// 4/4
-				$this->importTags();							// 111/149 		ok 	all other are duplicates
-				$this->importPriorities();						// 5/5
-				$this->importStatus();							// 7/7
-				$this->importTitles();							// 30/30
-				$this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
-				$this->importPeople();							// 393/401 		ok
-				$this->fixCompanyPersonTable();					// 93/93
-				$this->deleteBadE80PersonCompany();				// 111/111
-				$this->deleteUnusedPeople();					// 52/52
-				$this->importCompanyMainContacts();				// 15/18
-				$this->setBlankMainContact();					// 25/79 		?
-				$this->importCompanyAccountManagers();			// 73/76
-				$this->importEquipments();						// 220/220
-				$this->importTickets();							// 3034/3116
-				$this->importPosts();							// 721 misses
-				$this->importTicketsHistory();
-				$this->importTagTicket();
-				$this->importServices();
-				$this->importServiceTechnicians();
-				$this->importUsers();
-				$this->setActiveContacts();
-				$this->setPermissionGroups();					// 1/1
-				$this->updateImageDb();
-				$this->importHotelsFromGoogleMaps(); 			
-				$this->importDummies();
+				// $this->importPermissions();						// 50/50
+				// $this->importRoles();							// 20/20
+				// $this->importPermissionRole();					// 84/84
+				// $this->importGroupTypes();						// 2/2
+				// $this->importGroups();							// 1/1
+				// $this->importGroupRole(); 						// 20/20
+				// $this->importExtraPermissions();				// 2/2
+				// $this->importExtraRolePermissions();			// 2/2
+				// $this->importDepartments(); 					// 10/10
+				// $this->importDivisions();						// 8/8
+				// $this->importEquipmentTypes();					// 32/32
+				// $this->importConnectionTypes();					// 2/2
+				// $this->importSupportTypes();					// 7/7
+				// $this->importJobTypes();						// 4/4
+				// $this->importTags();							// 111/149 		ok 	all other are duplicates
+				// $this->importPriorities();						// 5/5
+				// $this->importStatus();							// 7/7
+				// $this->importTitles();							// 30/30
+				// $this->importCompanies();						// 93/94 		ok 	delete customer with id = 208
+				// $this->importPeople();							// 393/401 		ok
+				// $this->fixCompanyPersonTable();					// 93/93
+				// $this->deleteBadE80PersonCompany();				// 111/111
+				// $this->deleteUnusedPeople();					// 52/52
+				// $this->importCompanyMainContacts();				// 15/18
+				// $this->setBlankMainContact();					// 25/79 		?
+				// $this->importCompanyAccountManagers();			// 73/76
+				// $this->importEquipments();						// 220/220
+				// $this->importTickets();							// 3034/3116
+				// $this->importPosts();							// 721 misses
+				// $this->importTicketsHistory();
+				// $this->importTagTicket();
+				// $this->importServices();
+				// $this->importServiceTechnicians();
+				// $this->importUsers();
+				// $this->setActiveContacts();
+				// $this->setPermissionGroups();					// 1/1
+				// $this->updateImageDb();
+				// $this->importHotelsFromGoogleMaps(); 			
+				// $this->importDummies();
 				
-				// $this->importMedia();
+				$this->importAttachments();
+				$this->importThumbnails();
 				// $this->importPictures();
 
 			}
