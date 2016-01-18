@@ -1845,12 +1845,12 @@
 				
 					if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
 					{
-						$command = "sudo ".env('LIBREOFFICE')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$path;
+						$command = "sudo ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$path;
 						exec($command);
 						$source = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".pdf[0]";
 					} 
 					elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
-						$command = "sudo ".env('FFMPEG')." -i ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
+						$command = "sudo ".env('FFMPEG','ffmpeg')." -i ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
 						exec($command);
 						$source = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
 					} 
@@ -1860,7 +1860,7 @@
 					}
 
 					$destination = base_path().DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."thumbnails".DIRECTORY_SEPARATOR.$path_info['filename'].".png";
-					$command2 = "sudo ".env('CONVERT')." -resize '384x384' $source $destination";
+					$command2 = "sudo ".env('CONVERT','convert')." -resize '384x384' $source $destination";
 					
 					$result = exec($command2);
 
