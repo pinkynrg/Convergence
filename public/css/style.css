@@ -70,6 +70,8 @@ input[disabled], textarea[disabled], select[disabled] {
 }
 
 #header {
+  max-width: 1500px;
+  margin: auto;
 	height: 120px;
 	padding: 10px 35px;
 }
@@ -138,7 +140,7 @@ input[disabled], textarea[disabled], select[disabled] {
 }
 
 .wrapper {
-  /*min-width: 450px;*/
+  max-width: 1500px;
 	width: 95%;
   /* bad for 3d table matrix */
 	padding-top: 15px;                                 
