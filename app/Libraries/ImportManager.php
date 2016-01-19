@@ -2047,7 +2047,7 @@ class Attachments extends BaseClass {
 
 	public function importSelf() {
 
-		$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
+		$query = mssql_query(	"SELECT TOP(100) d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
 								FROM Documents d
 								INNER JOIN Posts p ON p.Id = d.Second_Id
 								LEFT JOIN (
@@ -2149,7 +2149,6 @@ class Thumbnails extends BaseClass {
 				if (file_exists($destination)) {
 
 					$query = "INSERT INTO files (name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$path_info['filename'].".png','thumbnails','".$path_info['filename'].".png','png','Thumbnail',NULL,'".$image['uploader_id']."',NULL,'".$image['created_at']."','".$image['created_at']."')";
-					$result1 = mysqli_query($this->manager->conn, $query);
 
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
 						$id = mysqli_insert_id($this->manager->conn);
