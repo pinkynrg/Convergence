@@ -26,14 +26,4 @@ class File extends CustomModel {
 		$temp = explode(".",$this->file_name);
 		return $temp[count($temp)-1];
 	}
-
-	public function thumb() {
-		switch ($this->extension()) {
-			case 'pdf':
-			case 'png':
-			case 'jpg':
-			case 'gif': return $this->path();
-		}
-	}
-
 }

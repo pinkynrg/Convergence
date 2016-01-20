@@ -82,9 +82,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('tickets/{id}', ['uses' => 'TicketsController@destroy', 'as' => 'tickets.destroy']);
 	Route::patch('tickets/{id}', ['uses' => 'TicketsController@update', 'as' => 'tickets.update']);	
 	Route::get('tickets/{id}/edit', ['uses' => 'TicketsController@edit', 'as' => 'tickets.edit']);
-	
-	Route::post('media', ['uses' => 'MediaController@upload', 'as' => 'media.upload']);
-	
+		
 	// posts routes
 	Route::post('posts',['uses' => 'PostsController@store', 'as' => 'posts.store']);
 	Route::get('posts/{id}',['uses' => 'PostsController@show', 'as' => 'posts.show']);
@@ -133,7 +131,8 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::match(['get'], 'statistics', ['uses' => 'StatisticsController@index', 'as' => 'statistics.index']);
 
 	//attachments
-	Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'attachments.show']);
+	Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'files.show']);
+	Route::post('files', ['uses' => 'FilesController@upload', 'as' => 'files.upload']);
 
 	// ajax routes
 	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);
