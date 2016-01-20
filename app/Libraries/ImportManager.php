@@ -2071,6 +2071,7 @@ class Attachments extends BaseClass {
 					$deleted_fs++;
 				} else {
 					$this->errors++;
+					logMessage("DEBUG: Unable to delete ".$file_path);
 				}
 			}
 			else $delete_db_record = true;
@@ -2090,7 +2091,7 @@ class Attachments extends BaseClass {
 			}
 		}
 
-		$query = mssql_query(	"SELECT TOP(100) d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
+		$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
 								FROM Documents d
 								INNER JOIN Posts p ON p.Id = d.Second_Id
 								LEFT JOIN (
