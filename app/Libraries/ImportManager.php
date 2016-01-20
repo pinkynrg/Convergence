@@ -1989,7 +1989,10 @@ class Dummies extends BaseClass {
 	public function importSelf() {
 
 		$queries = [
+
 			"SET SESSION sql_mode='NO_AUTO_VALUE_ON_ZERO'",
+
+			"SET foreign_key_checks = 0",
 
 			"DELETE FROM job_types WHERE id = 0",
 			"DELETE FROM priorities WHERE id = 0",
@@ -2005,6 +2008,8 @@ class Dummies extends BaseClass {
 			"DELETE FROM support_types WHERE id = 0",
 			"DELETE FROM connection_types WHERE id = 0",
 			"DELETE FROM people WHERE id = 0",
+
+			"SET foreign_key_checks = 1",
 
 			"INSERT INTO people (id,first_name,last_name) VALUES ('0','[undefined]','[undefined]')",
 			"INSERT INTO connection_types (id,name,description) VALUES (0,'[undefined]','[undefined]')",
