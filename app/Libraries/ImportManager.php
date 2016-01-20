@@ -2055,7 +2055,7 @@ class Attachments extends BaseClass {
 		$deleted_db = $deleted_fs = $added_db = $added_fs = 0;
 
 		// remove records on db and file on filesystem
-		$query = "SELECT * FROM files WHERE resource_type LIKE '%Attachment%'";
+		$query = "SELECT * FROM files WHERE resource_type LIKE '%Post%'";
 		$result = mysqli_query($this->manager->conn, $query);
 		$records = mysqli_fetch_all($result,MYSQL_ASSOC);
 
@@ -2071,7 +2071,9 @@ class Attachments extends BaseClass {
 					$deleted_fs++;
 				} else {
 					$this->errors++;
-					logMessage("DEBUG: Unable to delete ".$file_path);
+					if ($this->debug) {
+						logMessage("DEBUG: Unable to delete ".$file_path);
+					}
 				}
 			}
 			else $delete_db_record = true;
