@@ -2119,7 +2119,7 @@ class Attachments extends BaseClass {
 
 			if ($post[0] > 0) {
 
-				$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.rawurldecode($m['Path']);
+				$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.rawurlencode($m['Path']);
 				$content = @file_get_contents($url);
 
 				if ($content) {
