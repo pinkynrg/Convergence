@@ -1002,7 +1002,7 @@ class People extends BaseClass {
 				}
 			}
 
-			$query = mssql_query('SELECT * FROM [dbo].[Contact]');
+			$query = mssql_query('SELECT * FROM Contact');
 
 			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $contacts[] = $row;
 
@@ -1132,7 +1132,7 @@ class CompanyPerson extends BaseClass {
 				}
 			}
 
-			$query = mssql_query('SELECT * FROM [dbo].[Contact]');
+			$query = mssql_query('SELECT * FROM Contact');
 
 			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $contacts[] = $row;
 
@@ -2047,6 +2047,44 @@ class Attachments extends BaseClass {
 
 	public function importSelf() {
 
+		$deleted_db = $deleted_fs = $added_db = $added_fs = 0;
+
+		// remove records on db and file on filesystem
+		$query = "SELECT * FROM files WHERE resource_type LIKE '%Attachment%'";
+		$result = mysqli_query($this->manager->conn, $query);
+		$records = mysqli_fetch_all($result,MYSQL_ASSOC);
+
+		foreach ($records as $record) {
+
+			$delete_db_record = false;
+
+			$file_name = PUBLIC_FOLDER.DS.$record['file_path'].DS.$record['file_name'];
+			
+			if (file_exists($file_name)) {
+				if (unlink($file_name)) {
+					$delete_db_record = true;
+					$deleted_fs++;
+				} else {
+					$this->errors++;
+				}
+			}
+			else $delete_db_record = true;
+
+			if ($delete_db_record == true) {
+				$query = "DELETE FROM files WHERE id = ".$record['id'];
+					
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					$deleted_db++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+		}
+
 		$query = mssql_query(	"SELECT TOP(100) d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
 								FROM Documents d
 								INNER JOIN Posts p ON p.Id = d.Second_Id
@@ -2061,47 +2099,49 @@ class Attachments extends BaseClass {
 								AND Type = 'post'
 								ORDER BY Id DESC");
 
+		$result = array();
+
 		while ($row = mssql_fetch_assoc($query)) $result[] = $row;
 
-		if ($this->truncate()) {
+		foreach ($result as $m) {
+			$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.$m['Path'];
+			$content = @file_get_contents($url);
 
-			foreach ($result as $m) {
-				$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.$m['Path'];
-				$content = @file_get_contents($url);
+			if ($content) {
+				// insert record in the db8
+				$m['Date_Creation'] = $m['Date_Creation']." ".$m['Time'];
+				$m['Date_Creation'] = str_replace(".0000000","", $m['Date_Creation']);
+				$uploader_id = findCompanyPersonId($m['Author'],$this->manager->conn);
+				$temp = explode(".",$m['Path']);
+				$extension = $temp[count($temp)-1];
+				$file_name = 'POST#'.$m['Second_Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
+				$query = "INSERT INTO files (id,name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$m['Id']."','".$m['Path']."','attachments','".$file_name."','".$extension."','App\\\Models\\\Post','".$m['Second_Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$m['Date_Creation']."')";
 
-				if ($content) {
-					// insert record in the db8
-					$m['Date_Creation'] = $m['Date_Creation']." ".$m['Time'];
-					$m['Date_Creation'] = str_replace(".0000000","", $m['Date_Creation']);
-					$uploader_id = findCompanyPersonId($m['Author'],$this->manager->conn);
-					$temp = explode(".",$m['Path']);
-					$extension = $temp[count($temp)-1];
-					$file_name = 'POST#'.$m['Second_Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
-					$query = "INSERT INTO files (id,name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$m['Id']."','".$m['Path']."','attachments','".$file_name."','".$extension."','App\\\Models\\\Post','".$m['Second_Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$m['Date_Creation']."')";
-
-					if (mysqli_query($this->manager->conn,$query) === TRUE) {
-						if (file_put_contents(ATTACHMENTS.DS.$file_name, $content)) {
-							$this->successes++;
-						}
-						else {
-							$this->errors++;
-							if ($this->debug) {
-								logMessage("DEBUG: The file couldn't be copied @ ".ATTACHMENTS.DS.$file_name);
-							}
-						}
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					$added_db++;
+					if (file_put_contents(ATTACHMENTS.DS.$file_name, $content)) {
+						$added_fs++;
 					}
 					else {
 						$this->errors++;
 						if ($this->debug) {
-							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+							logMessage("DEBUG: The file couldn't be copied @ ".ATTACHMENTS.DS.$file_name);
 						}
 					}
 				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
 			}
-
-			logMessage("Successes: ".$this->successes,'successes');
-			logMessage("Errors: ".$this->errors,'errors');
 		}
+
+		logMessage("Removed frm FileSystem: ".$deleted_fs,'successes');
+		logMessage("Removed frm Database: ".$deleted_db,'successes');
+		logMessage("Added to FileSystem: ".$added_fs,'successes');
+		logMessage("Added to Database: ".$added_db,'successes');
 	}
 }
 
@@ -2113,11 +2153,57 @@ class Thumbnails extends BaseClass {
 
 	public function importSelf() {
 
-		$query = "SELECT * FROM files WHERE thumbnail_id IS NULL";
+		$deleted_db = $deleted_fs = $added_db = $added_fs = 0;
+
+		// remove records on db and file on filesystem
+		$query = "SELECT * FROM files WHERE resource_type LIKE '%Thumbnail%'";
+		$result = mysqli_query($this->manager->conn, $query);
+		$records = mysqli_fetch_all($result,MYSQL_ASSOC);
+
+		foreach ($records as $record) {
+
+			$delete_db_record = false;
+
+			$file_name = PUBLIC_FOLDER.DS.$record['file_path'].DS.$record['file_name'];
+			
+			if (file_exists($file_name)) {
+				if (unlink($file_name)) {
+					$delete_db_record = true;
+					$deleted_fs++;
+				} else {
+					$this->errors++;
+				}
+			}
+			else $delete_db_record = true;
+
+			if ($delete_db_record == true) {
+
+				// remove thumbnail reference to resource
+				$query = "UPDATE files SET thumbnail_id = NULL WHERE thumbnail_id = ".$record['id'];
+				mysqli_query($this->manager->conn,$query);
+
+				// remove db record 
+				$query = "DELETE FROM files WHERE id = ".$record['id'];
+
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					$deleted_db++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+		}
+
+		$query = "SELECT * FROM files WHERE thumbnail_id IS NULL AND resource_type NOT LIKE '%Thumbnail%'";
 		$result = mysqli_query($this->manager->conn, $query);
 		$images = mysqli_fetch_all($result,MYSQLI_BOTH);
 
 		foreach ($images as $image) {
+
+			$remove_from_temp = false;
 
 			$path_info = pathinfo($image['file_name']);
 
@@ -2127,14 +2213,16 @@ class Thumbnails extends BaseClass {
 			
 				if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
 				{
-					$command = "sudo ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DS."public".DS."tmp ".base_path().DS."public".DS.$path;
+					$command = "sudo ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DS."public".DS."tmp ".base_path().DS."public".DS.$path." > /dev/null";
 					exec($command);
 					$source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf[0]";
+					$remove_from_temp = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf";
 				} 
 				elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
-					$command = "sudo ".env('FFMPEG','ffmpeg')." -i ".base_path().DS."public".DS.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
+					$command = "sudo ".env('FFMPEG','ffmpeg')." -i ".base_path().DS."public".DS.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png > /dev/null";
 					exec($command);
 					$source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
+					$remove_from_temp = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
 				} 
 				else {
 					$image['file_name'] .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
@@ -2148,6 +2236,10 @@ class Thumbnails extends BaseClass {
 
 				if (file_exists($destination)) {
 
+					if ($remove_from_temp) unlink($remove_from_temp);
+
+					$added_fs++;
+
 					$query = "INSERT INTO files (name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$path_info['filename'].".png','thumbnails','".$path_info['filename'].".png','png','Thumbnail',NULL,'".$image['uploader_id']."',NULL,'".$image['created_at']."','".$image['created_at']."')";
 
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
@@ -2155,25 +2247,21 @@ class Thumbnails extends BaseClass {
 						$query = "UPDATE files SET thumbnail_id = ".$id." WHERE id = ".$image['id'];
 
 						if (mysqli_query($this->manager->conn,$query) === TRUE) {
-							$this->updated++;
-							$this->successes++;
+							$added_db++;
 						}
 						else {
-							$this->errors++;
 							if ($this->debug) {
 								logMessage("DEBUG: ".mysqli_error($this->manager->conn));
 							}
 						}
 					}
 					else {
-						$this->errors++;
 						if ($this->debug) {
 							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
 						}
 					}
 				}
 				else {
-					$this->errors++;
 					if ($this->debug) {
 						logMessage("DEBUG: The file couldn't be copied @ ".$destination);
 					}
@@ -2181,8 +2269,9 @@ class Thumbnails extends BaseClass {
 			}
 		}
 
-		logMessage("Updated: ".$this->updated,'updates');
-		logMessage("Successes: ".$this->successes,'successes');
-		logMessage("Errors: ".$this->errors,'errors');
+		logMessage("Removed frm FileSystem: ".$deleted_fs,'successes');
+		logMessage("Removed frm Database: ".$deleted_db,'successes');
+		logMessage("Added to FileSystem: ".$added_fs,'successes');
+		logMessage("Added to Database: ".$added_db,'successes');
 	}
 }
