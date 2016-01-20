@@ -42,10 +42,6 @@ class ImportCommand extends Command
         $debug = $this->option('debug');
         $direct = $this->option('straight');
 
-        // var_dump($debug);
-        // var_dump($direct);
-        // die();
-
         $a = new ImportManager();
         $a->import($option,$debug,$direct);
 
