@@ -1603,6 +1603,7 @@ class TicketsHistroy extends BaseClass {
 					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",\"\",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
 					 		  
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$counter++;
 						$this->successes++;
 					}
 					else {
