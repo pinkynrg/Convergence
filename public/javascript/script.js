@@ -316,8 +316,6 @@ $(document).ready(function() {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// console.log("target: "+url.target+" target-id:"+url.target_id+" target-action:"+url.target_action);
-
 	Dropzone.autoDiscover = false;
 
 	$("#dZUpload").dropzone({
@@ -341,7 +339,6 @@ $(document).ready(function() {
             			}
             			mockFile.previewElement.classList.add('dz-success');
    						mockFile.previewElement.classList.add('dz-complete');
-            			console.log(data[c]);
             		}
 
 				},
@@ -362,11 +359,10 @@ $(document).ready(function() {
 		        url: '/files/'+file.id,
 				headers: { "X-CSRF-Token": $('[name=_token').val() },
 		        success: function (data) {
-		        	console.log(data);
 		        	var _ref;
 			        if (file.previewElement) {
 			          if ((_ref = file.previewElement) != null) {
-			            _ref.parentNode.removeChild(file.previewElement);
+			            // _ref.parentNode.removeChild(file.previewElement);
 			          }
 			        }
 		        },
@@ -379,10 +375,8 @@ $(document).ready(function() {
 		success: function (file, response) {
 			file.previewElement.classList.add("dz-success");
 			file.id = response.id;
-			console.log(response);
 		},
 		error: function (file, response) {
-		    console.log(response);
 			file.previewElement.classList.add("dz-error");
 		}
 	});

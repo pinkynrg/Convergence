@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
-
-	{!! $post->post !!}
+	
+	@include('posts.post')
 
 @endsection
