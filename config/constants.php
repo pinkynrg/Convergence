@@ -16,6 +16,8 @@
 	define("PUBLIC_FOLDER",base_path().DS."public");
 	define("ATTACHMENTS",PUBLIC_FOLDER.DS."attachments");
 	define("THUMBNAILS",PUBLIC_FOLDER.DS."thumbnails");
+	define("IMAGES",PUBLIC_FOLDER.DS."images");	
+	define("STYLE_IMAGES",IMAGES.DS."style");	
 	define("TEMP",PUBLIC_FOLDER.DS."tmp");
 	define("RESET_COLOR","\e[0m");
 	define("SET_RED","\e[0;31m");

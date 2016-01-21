@@ -19,7 +19,10 @@ class File extends CustomModel {
 	}
 
 	public function thumbnail() {
-		return DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.$this->thumbnail_id;
+		$file_exists = $this->thumbnail_id;
+		$thumbnail_url = DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR;
+		$thumbnail_url .= $file_exists ? $this->thumbnail_id : 'missing';
+		return $thumbnail_url;
 	}
 
 	public function extension() {

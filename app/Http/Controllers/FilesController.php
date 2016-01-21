@@ -25,8 +25,10 @@ class FilesController extends Controller {
 	public function show($id) {
 		$file = File::find($id);
 		
-		$path = FileManager::get($file->real_path());
-    	$type = FileManager::mimeType($file->real_path());
+		$real_path = $file ? $file->real_path() : STYLE_IMAGES.DS."missing_thumbnail.png";
+
+		$path = FileManager::get($real_path);
+    	$type = FileManager::mimeType($real_path);
     	
     	$response = Response::make($path, 200);
     	$response->header("Content-Type", $type);
