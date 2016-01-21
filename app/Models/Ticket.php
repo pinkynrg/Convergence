@@ -68,4 +68,8 @@ class Ticket extends CustomModel {
 		return $this->hasMany('App\Models\TicketHistory')->orderBy('created_at');
 	}
 
+	public function attachments() {
+		return $this->morphMany('App\Models\File','resource');
+	}
+
 }

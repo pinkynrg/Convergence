@@ -70,6 +70,20 @@
 		</div>
 	</div>
 
+	<div class="ticket_media">
+		<div class="row">
+
+			@foreach ($ticket->attachments as $attachment)
+				<div class="col-lg-1 col-xs-2">
+					<a href="{{ $attachment->path() }}" class="thumbnail">
+						<img src="{{ $attachment->thumbnail() }}" alt="...">
+					</a>
+				</div>
+			@endforeach
+
+		</div>
+	</div>
+
 	@if (count($ticket->tags)) 
 
 		<div class="tags">

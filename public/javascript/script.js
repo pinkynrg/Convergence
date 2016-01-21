@@ -2,7 +2,18 @@
 
 $(document).ready(function() {
 
-var timer;
+	var regex = /\/([a-zA-Z]*)([\/]?)(create|[\d]*)([\/]?)([a-zA-Z]*)([\/]?)/g;
+
+	var timer;
+	var path = window.location.pathname;
+	var rxres = regex.exec(path);
+
+	var url = {
+		path : path,
+		target : rxres.length >= 1 ? rxres[1] : null,
+		target_id : rxres.length >= 3 && rxres[3] != 'create' ? rxres[3] : null,
+		target_action : (rxres.length >= 3 && rxres[3] == 'create') || (rxres.length >= 5) ? rxres[3] == 'create' ? rxres[3] : rxres[5] : null
+	}
 
 // tickets filters page ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -258,16 +269,13 @@ var timer;
 
 	// save dummy ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	var path = window.location.pathname;
 	var regex = /\/tickets\/([\d]*)\/edit/g;
 	var res = regex.exec(path);
 
 	if (path == '/tickets/create') {
-		console.log('enter in create draft mode');
 		activateDraftMode();
 	}
 	else if (res && res[1]) {
-		console.log('enter in edit draft mode');
 		$.get('/tickets/'+res[1], function (data) {
 			var status_id = data.status_id;
 			if (status_id == 9) {
@@ -300,10 +308,7 @@ var timer;
 				'headers': { "X-CSRF-Token": $('[name=_token').val() },
 				'type': 'POST',
 				'url': '/tickets',
-				'data' : data,
-				'success' : function (data) {
-					console.log(data);
-				}
+				'data' : data
 			});
 
 		}, 1000);
@@ -311,28 +316,75 @@ var timer;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// console.log("target: "+url.target+" target-id:"+url.target_id+" target-action:"+url.target_action);
+
 	Dropzone.autoDiscover = false;
 
 	$("#dZUpload").dropzone({
-		url: "/media/",
-		headers: {
-        	"X-CSRF-Token": $('[name=_token').val()
-    	},
+		url: "/files",
+		addRemoveLinks: true,
+		maxFiles: 3,
+		maxFileSize: 5,
+		headers: { "X-CSRF-Token": $('[name=_token').val() },
+		init: function () {
+			var that = this;
+			$.ajax({
+				type: 'GET',
+				url: '/ajax/files/'+url.target+'/'+url.target_id,
+				headers: { "X-CSRF-Token": $('[name=_token').val() },
+				success: function (data) {
+					for (var c=0; c<data.length; c++) {
+						var mockFile = { name: data[c].file_name, id: data[c].id };
+            			that.options.addedfile.call(that, mockFile);
+            			if (data[c].thumbnail_id != null) {
+            				that.options.thumbnail.call(that, mockFile, "/files/"+data[c].thumbnail_id);
+            			}
+            			mockFile.previewElement.classList.add('dz-success');
+   						mockFile.previewElement.classList.add('dz-complete');
+            			console.log(data[c]);
+            		}
+
+				},
+				error: function (data) {
+		        	console.log(data.responseText);
+				}
+			});
+        },
     	sending: function(file, xhr, formData) {
-    		formData.append("X-CSRF-Token", $('[name=_token').val());
-    		formData.append("resource_type", $("#dZUpload").attr('type'));
-    		formData.append("uplaoder_id", $("#dZUpload").attr('type'));
+    		formData.append("target", url.target);
+    		formData.append("target_id", url.target_id);
+    		formData.append("target_action", url.target_action);
 		},
-		// addRemoveLinks: true
-		// ,
+		removedfile: function(file) {
+			
+			$.ajax({
+		        type: 'DELETE',
+		        url: '/files/'+file.id,
+				headers: { "X-CSRF-Token": $('[name=_token').val() },
+		        success: function (data) {
+		        	console.log(data);
+		        	var _ref;
+			        if (file.previewElement) {
+			          if ((_ref = file.previewElement) != null) {
+			            _ref.parentNode.removeChild(file.previewElement);
+			          }
+			        }
+		        },
+		        error: function (data) {
+		        	console.log(data.responseText);
+		        }
+
+		    });
+		},
 		success: function (file, response) {
 			file.previewElement.classList.add("dz-success");
+			file.id = response.id;
 			console.log(response);
+		},
+		error: function (file, response) {
+		    console.log(response);
+			file.previewElement.classList.add("dz-error");
 		}
-		// ,
-		// error: function (file, response) {
-		// 	file.previewElement.classList.add("dz-error");
-		// }
 	});
 
 	// add bootstrap class to tag field in ticket form page

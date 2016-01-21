@@ -15,25 +15,18 @@ class File extends CustomModel {
 	}
 
 	public function real_path() {
-		return $this->file_path.DIRECTORY_SEPARATOR.$this->file_name;
+		return base_path().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$this->file_path.DIRECTORY_SEPARATOR.$this->file_name;
 	}
 
 	public function thumbnail() {
-		return DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.$this->thumbnail_id;
+		$file_exists = $this->thumbnail_id;
+		$thumbnail_url = DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR;
+		$thumbnail_url .= $file_exists ? $this->thumbnail_id : 'missing';
+		return $thumbnail_url;
 	}
 
 	public function extension() {
 		$temp = explode(".",$this->file_name);
 		return $temp[count($temp)-1];
 	}
-
-	public function thumb() {
-		switch ($this->extension()) {
-			case 'pdf':
-			case 'png':
-			case 'jpg':
-			case 'gif': return $this->path();
-		}
-	}
-
 }
