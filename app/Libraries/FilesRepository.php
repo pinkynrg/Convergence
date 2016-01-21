@@ -10,6 +10,11 @@ class FilesRepository
 {
     public function upload($request)
     {
+        $error = false;
+        $code = 200;
+        $thumbnail_id;
+        $file_id;
+
         define("DS",DIRECTORY_SEPARATOR);
         define("PUBLIC_FOLDER",base_path().DS."public");
         define("ATTACHMENTS",PUBLIC_FOLDER.DS."attachments");
@@ -51,33 +56,70 @@ class FilesRepository
             $thumbnail = $this->createThumbnail($file);
 
             if (!$thumbnail) {
-                $response = "thumbnail can't be copied";
+                $message = "Thumbnail can't be copied";
+            }
+            else {
+                $thumbnail_id = $thumbnail->id;
             }
 
             $result = $file->save();
 
             if ($result) {
-                $response = "image copied!";
-                $code = 500;
+                $file_id = $file->id;
+                $message = "File copied!";
             }
             else {
-                // $this->remove_thumb();
-                // $this->remove_image();
-                $response = "image can't insert into db";
+                unlink(ATTACHMENTS.DS.$file->file_name);
+                
+                if ($thumbnail) {
+                    unlink($thumbnail->real_path());   
+                }
+
+                $message = "File can't insert into db";
+                $error = true;
                 $code = 500;
             }
         }
         else {
-            $response = "file can't be copied";
+            $message = "File can't be copied";
+            $error = true;
             $code = 500;
-
         }
 
-        return Response::json([
-            'error' => $response,
-            'code'  => 200
+        $response = Response::json([
+            'id' => $file_id,
+            'error' => $error,
+            'message' => $message,
+            'code'  => $code
         ], 200);
 
+        return $response;
+    }
+
+    public function destroy($id) {
+        
+        $thumbnail_id = File::find($id)->thumbnail_id;
+        $remove_file = $this->removeFile($id);
+        $remove_thumb = $this->removeFile($thumbnail_id);
+        
+        $error = !$remove_thumb || !$remove_file;
+        
+        $response = Response::json([
+            'error' => $error,
+            'code' => $error ? 500 : 200
+        ]);
+        return $response;
+    }
+
+    private function removeFile($id) {
+        
+        $success = false;
+        $file = File::find($id);
+        
+        if (unlink($file->real_path())) {
+            $success = File::destroy($id);
+        }
+        return $success;
     }
 
     private function sanitize($string, $force_lowercase = true, $anal = false)
@@ -101,15 +143,15 @@ class FilesRepository
         return strtoupper(str_singular($target))."#".$target_id."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
     }
 
-    private function createThumbnail($image) {
+    private function createThumbnail($file) {
 
         $response = false;
 
-        $path_info = pathinfo($image['file_name']);
+        $path_info = pathinfo($file['file_name']);
 
         if (!in_array($path_info['extension'],['zip','7z','rar','pam','tgz','bz2','iso','ace'])) 
         {
-            $path = $image['file_path'].DS.$image['file_name'];
+            $path = $file['file_path'].DS.$file['file_name'];
         
             if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
             {
@@ -123,8 +165,9 @@ class FilesRepository
                 $source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
             } 
             else {
-                $image['file_name'] .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
-                $source = base_path().DS."public".DS.$image['file_path'].DS.$image['file_name'];                        
+                $source_file = $file['file_name'];
+                $source_file .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
+                $source = base_path().DS."public".DS.$file['file_path'].DS.$source_file;
             }
 
             $destination = THUMBNAILS.DS.$path_info['filename'].".png";
@@ -135,18 +178,18 @@ class FilesRepository
             if (file_exists($destination)) {
 
                 $thumbnail = new File();
-                $thumbnail->name = $image['name'];
+                $thumbnail->name = $file['name'];
                 $thumbnail->file_path = 'thumbnails';
-                $thumbnail->file_name = pathinfo($image['file_name'])['filename'].".png";
+                $thumbnail->file_name = pathinfo($file['file_name'])['filename'].".png";
                 $thumbnail->file_extension = 'png';
                 $thumbnail->resource_type = "Thumbnail";
-                $thumbnail->uploader_id = $image['uploader_id'];
+                $thumbnail->uploader_id = $file['uploader_id'];
 
                 $created = $thumbnail->save();
 
                 if ($created) {
-                    $image->thumbnail_id = $thumbnail->id;
-                    $updated = $image->save();
+                    $file->thumbnail_id = $thumbnail->id;
+                    $updated = $file->save();
                     if ($updated) {
                         $response = $thumbnail;
                     }

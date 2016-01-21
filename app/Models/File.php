@@ -15,7 +15,7 @@ class File extends CustomModel {
 	}
 
 	public function real_path() {
-		return $this->file_path.DIRECTORY_SEPARATOR.$this->file_name;
+		return base_path().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$this->file_path.DIRECTORY_SEPARATOR.$this->file_name;
 	}
 
 	public function thumbnail() {

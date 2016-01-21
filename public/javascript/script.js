@@ -323,18 +323,64 @@ $(document).ready(function() {
 	$("#dZUpload").dropzone({
 		url: "/files",
 		addRemoveLinks: true,
+		maxFiles: 3,
+		maxFileSize: 5,
 		headers: { "X-CSRF-Token": $('[name=_token').val() },
+		init: function () {
+			var that = this;
+			$.ajax({
+				type: 'GET',
+				url: '/ajax/files/'+url.target+'/'+url.target_id,
+				headers: { "X-CSRF-Token": $('[name=_token').val() },
+				success: function (data) {
+					for (var c=0; c<data.length; c++) {
+						var mockFile = { name: data[c].file_name, id: data[c].id };
+            			that.options.addedfile.call(that, mockFile);
+            			that.options.thumbnail.call(that, mockFile, "/files/"+data[c].thumbnail_id);
+            			mockFile.previewElement.classList.add('dz-success');
+   						mockFile.previewElement.classList.add('dz-complete');
+            			console.log(data[c]);
+            		}
+
+				},
+				error: function (data) {
+		        	console.log(data.responseText);
+				}
+			});
+        },
     	sending: function(file, xhr, formData) {
-    		console.log(path);
     		formData.append("target", url.target);
     		formData.append("target_id", url.target_id);
     		formData.append("target_action", url.target_action);
 		},
+		removedfile: function(file) {
+			
+			$.ajax({
+		        type: 'DELETE',
+		        url: '/files/'+file.id,
+				headers: { "X-CSRF-Token": $('[name=_token').val() },
+		        success: function (data) {
+		        	console.log(data);
+		        	var _ref;
+			        if (file.previewElement) {
+			          if ((_ref = file.previewElement) != null) {
+			            _ref.parentNode.removeChild(file.previewElement);
+			          }
+			        }
+		        },
+		        error: function (data) {
+		        	console.log(data.responseText);
+		        }
+
+		    });
+		},
 		success: function (file, response) {
 			file.previewElement.classList.add("dz-success");
+			file.id = response.id;
 			console.log(response);
 		},
 		error: function (file, response) {
+		    console.log(response);
 			file.previewElement.classList.add("dz-error");
 		}
 	});

@@ -17,6 +17,11 @@ class FilesController extends Controller {
         $this->repo = $filesRepository;
     }
 
+    public function listFiles($resource, $id) {
+	    $resource_type = 'App\\Models\\'.ucfirst(str_singular($resource));
+    	return File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
+    }
+
 	public function show($id) {
 		$file = File::find($id);
 		
@@ -54,5 +59,7 @@ class FilesController extends Controller {
 	    }
     }
 
-    public function destroy() {}
+    public function destroy($id) {
+    	return $this->repo->destroy($id);
+    }
 }

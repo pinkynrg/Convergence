@@ -133,6 +133,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	//attachments
 	Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'files.show']);
 	Route::post('files', ['uses' => 'FilesController@upload', 'as' => 'files.upload']);
+	Route::delete('files/{id}', ['uses' => 'FilesController@destroy', 'as' => 'files.destroy']);
 
 	// ajax routes
 	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);
@@ -150,6 +151,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
 	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);
 	Route::get('ajax/tickets/equipments/{company_id}', ['uses' => 'TicketsController@ajaxEquipmentsRequest', 'as' => 'json.tickets.equipments']);
+	Route::get('ajax/files/{resource_type}/{id}', ['uses' => 'FilesController@listFiles', 'as' => 'files.list']);
 
 	Route::get('api/tickets/{params?}', ['uses' => 'TicketsController@getTickets', 'as' => 'api.tickets.index']);
 
