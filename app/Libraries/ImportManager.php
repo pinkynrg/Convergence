@@ -137,13 +137,20 @@ class ImportManager {
 		}
 	}
 
-	public function import($table_name, $debug=false, $direct=false) {
+	public function import($table_name='all', $debug=false, $direct=false) {
 		$this->uuid = uniqid();
 		logMessage("========================================================");
 		logMessage("NEW Import Session (UUID:".$this->uuid.")");
 		logMessage("========================================================");
-		if (isset($this->references[$table_name])) {
-			$this->references[$table_name]->import($this->uuid,$debug,$direct);
+		if ($table_name == 'all') {
+			foreach ($this->references as $reference) {
+				$reference->import($this->uuid,$debug,$direct);
+			}
+		}
+		else {
+			if (isset($this->references[$table_name])) {
+				$this->references[$table_name]->import($this->uuid,$debug,$direct);
+			}
 		}
 		logMessage("========================================================");
 		logMessage("END Import Session (UUID:".$this->uuid.")");
@@ -2143,7 +2150,7 @@ class Attachments extends BaseClass {
 class Thumbnails extends BaseClass {
 
 	public $table_name = 'thumbnails';  // this is not the real name of the table
-	public $dependency_names = [];
+	public $dependency_names = ['files'];
 	private $updated = 0;
 
 	public function importSelf() {
