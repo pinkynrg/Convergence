@@ -336,7 +336,9 @@ $(document).ready(function() {
 					for (var c=0; c<data.length; c++) {
 						var mockFile = { name: data[c].file_name, id: data[c].id };
             			that.options.addedfile.call(that, mockFile);
-            			that.options.thumbnail.call(that, mockFile, "/files/"+data[c].thumbnail_id);
+            			if (data[c].thumbnail_id != null) {
+            				that.options.thumbnail.call(that, mockFile, "/files/"+data[c].thumbnail_id);
+            			}
             			mockFile.previewElement.classList.add('dz-success');
    						mockFile.previewElement.classList.add('dz-complete');
             			console.log(data[c]);

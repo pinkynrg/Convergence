@@ -15,12 +15,6 @@ class FilesRepository
         $thumbnail_id;
         $file_id;
 
-        define("DS",DIRECTORY_SEPARATOR);
-        define("PUBLIC_FOLDER",base_path().DS."public");
-        define("ATTACHMENTS",PUBLIC_FOLDER.DS."attachments");
-        define("THUMBNAILS",PUBLIC_FOLDER.DS."thumbnails");
-        define("TEMP",PUBLIC_FOLDER.DS."tmp");
-
         $file = new File();
         
         $photo = $request['file'];
@@ -98,9 +92,8 @@ class FilesRepository
 
     public function destroy($id) {
         
-        $thumbnail_id = File::find($id)->thumbnail_id;
         $remove_file = $this->removeFile($id);
-        $remove_thumb = $this->removeFile($thumbnail_id);
+        $remove_thumb = File::find($id) ? $this->removeFile(File::find($id)->thumbnail_id) : true;
         
         $error = !$remove_thumb || !$remove_file;
         
