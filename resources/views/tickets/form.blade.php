@@ -49,7 +49,7 @@
 			{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
 		{!! Form::BSEndGroup() !!}
 
-		<div id="dZUpload" class="dropzone" type="ticket">
+		<div id="dZUpload" class="dropzone">
       		<div class="dz-message needsclick">
     			Drop files here or click to upload.<br>
   			</div>

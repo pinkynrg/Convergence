@@ -439,8 +439,8 @@ a:visited, a:link, a:active, a:visited {
 
 .post {
   margin: 0px;
-  padding: 20px;
-  border-top: 1px solid #eee;
+  padding: 0px 20px 20px 20px;
+  border-bottom: 1px solid #eee;
 }
 
 .post .thumbnail {
