@@ -1839,6 +1839,7 @@ class Users extends BaseClass {
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
+					$counter++;
 				}
 				else {
 					$this->errors++;
@@ -1861,11 +1862,12 @@ class Users extends BaseClass {
 
 				$u = trimAndNullIfEmpty($u);
 
-				$query = "INSERT INTO users (person_id,username,password,created_at,updated_at) 
-						  VALUES (".$u['Employee_Id'].",".$u['User_name'].",".$u['User_password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+				$query = "INSERT INTO users (id,person_id,username,password,created_at,updated_at) 
+						  VALUES (".$counter.",".$u['Employee_Id'].",".$u['User_name'].",".$u['User_password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
+					$counter++;
 				}
 				else {
 					$this->errors++;
