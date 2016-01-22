@@ -1,5 +1,7 @@
 <?php namespace App\Libraries;
 
+use Html2Text\Html2Text;
+
 function logMessage($message,$type = 'normal') {
 	$message = str_replace(["\t"], '', $message);
 	$message = str_replace(["\n","\r"], ' ', $message);
@@ -10,7 +12,7 @@ function logMessage($message,$type = 'normal') {
 		case 'updates' : echo SET_YELLOW; break;
 	}
 
-	echo "[".date("Y-m-d H:i:s")."] ".substr($message,0,160)."\n";
+	echo "[".date("Y-m-d H:i:s")."] ".$message."\n";
 
 	echo RESET_COLOR;
 }
@@ -29,6 +31,7 @@ function trimAndNullIfEmpty($row) {
 		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
+		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]); 
 
 		// write rules above
 
@@ -982,7 +985,7 @@ class People extends BaseClass {
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Person Id = ".$r['Id']."]");
 					}
 				}
 			}
@@ -1029,7 +1032,7 @@ class People extends BaseClass {
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Contact Id = ".$c['Id_Contact']."]");
 					}
 				}
 			}
@@ -1104,7 +1107,6 @@ class CompanyPerson extends BaseClass {
 				$query = "INSERT INTO company_person (id, person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id) VALUES 
 				(".$counter.",".$r['Id'].",'".ELETTRIC80_COMPANY_ID."',".$r['Department'].",".$r['Title'].",".$r['Phone'].",".$r['Extension'].",NULL,".$r['Email'].",'1')";
 
-
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
 					$counter++;
@@ -1112,7 +1114,7 @@ class CompanyPerson extends BaseClass {
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Employee Id = ".$r['Id']."]");
 					}
 				}
 			}
@@ -1160,11 +1162,12 @@ class CompanyPerson extends BaseClass {
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)."[Contact Id = ".$c['Id_Contact']."]");
 					}
 				}
 			}
 
+			// select contact with emails duplicated
 			$query = "SELECT email
 						FROM company_person
 						WHERE email IS NOT NULL 
@@ -1177,24 +1180,27 @@ class CompanyPerson extends BaseClass {
 
 			foreach ($emails as $email) {
 				
+				// select person ID
 				$query = "SELECT person_id FROM company_person WHERE email = '".$email[0]."'";
 
 				$result = mysqli_query($this->manager->conn,$query);
 				$record = mysqli_fetch_array($result);
 				$person_id = $record[0];
 
+				// select contacts details
 				$query = "SELECT * FROM company_person WHERE email = '".$email[0]."'";
 
 				$result = mysqli_query($this->manager->conn,$query);
 				$fixes = mysqli_fetch_all($result);
 
+				// try to update the company_person so it belongs to the same person
 				foreach ($fixes as $fix) {
 					$query = "UPDATE company_person SET person_id = ".$person_id." WHERE id = '".$fix[0]."'";
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
 						$this->updated++;
 						$this->successes++;
 					}
-					else {
+					else { // if you can't, delete it
 						$query = "DELETE FROM company_person WHERE id = '".$fix[0]."'";
 						if (mysqli_query($this->manager->conn,$query) === TRUE) {
 							$this->deleted++;
@@ -1203,7 +1209,7 @@ class CompanyPerson extends BaseClass {
 						else {
 							$this->errors++;
 							if ($this->debug) {
-								logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+								logMessage("DEBUG: ".mysqli_error($this->manager->conn)."[ERROR DELETE company_person ID 1 = ".$fix[0]."]");
 							}
 						}
 					}
@@ -1228,7 +1234,7 @@ class CompanyPerson extends BaseClass {
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)."[ERROR DELETE company_person ID 2 = ".$id[0]."]");
 					}
 				}
 			}
@@ -1254,15 +1260,20 @@ class CompanyPerson extends BaseClass {
 			$ids = mysqli_fetch_all($result);
 
 			foreach ($ids as $id) {
-				$query = "DELETE FROM people WHERE people.id = '".$id[0]."'";
-				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+				
+				$query1 = "DELETE FROM users WHERE person_id = '".$id[0]."'";
+				$res1 = mysqli_query($this->manager->conn,$query1);
+				$query2 = "DELETE FROM people WHERE people.id = '".$id[0]."'";
+				$res2 = mysqli_query($this->manager->conn,$query2);
+
+				if ($res1 === TRUE && $res2 === TRUE) {
 					$this->deleted++;
 					$this->successes++;
 				}
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [DELETE PEOPLE Id = ".$id[0]."]");
 					}
 				}
 			}
@@ -1442,33 +1453,52 @@ class Tickets extends BaseClass {
 	
 			foreach ($table as $t) {
 
+				try {
+					$convertion = Html2Text::convert($p['Ticket_Post']);
+					if (is_object($convertion)) {
+						$t['Ticket_Post_Plain'] = $convertion->getText();
+					}
+					else {
+						$t['Ticket_Post_Plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($t['Ticket_Post']))));
+					}
+				} 
+				catch (\Exception $e) {
+					$t['Ticket_Post_Plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($t['Ticket_Post']))));
+				}
+
 				$t['Contact_Id'] = findMatchingContactId($t);
 				$t['Contact_Id'] = trim($t['Contact_Id']) == '' ? '' : trim($t['Contact_Id']) + CONSTANT_GAP_CONTACTS;
-				$t['Ticket_Title'] = trim(addSlashes(str_replace('&#65533;','',strip_tags($t['Ticket_Title']))));
-				$t['Ticket_Post'] = trim(addSlashes(str_replace('&#65533;','',strip_tags($t['Ticket_Post']))));
-				$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post'];
-				
+				$t['Ticket_Title'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($t['Ticket_Title']))));
+				$t['Ticket_Post'] = addSlashes(trim($t['Ticket_Post']));
+
 				$t = trimAndNullIfEmpty($t);
+
+				// if the post without the html tags is NULL or empty string, use title for both rich and raw posts
+				$use_title = ($t['Ticket_Post_Plain'] == 'NULL' || $t['Ticket_Post_Plain'] == '');
+
+				$t['Ticket_Post_Plain'] = $use_title ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
+				$t['Ticket_Post'] = $use_title ? $t['Ticket_Title'] : $t['Ticket_Post'];
 
 				$creator_id = findCompanyPersonId($t['Creator'],$this->manager->conn);
 				$assignee_id = findCompanyPersonId($t['Id_Assignee'],$this->manager->conn);
 				$contact_id = findCompanyPersonId($t['Contact_Id'],$this->manager->conn);
 
 				$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
-				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",\"\",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
-				
-				
+				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Ticket_Post_Plain'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
+								
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
 				}
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Ticket ID = ".$t['Id']."]");
+						if (!isset($ids)) $ids = ''; $ids .= $t['Id'].",";
 					}
 				}
 			}
 
+			logMessage("Error Query: SELECT * FROM Tickets WHERE Id IN (".$ids.")");
 			logMessage("Successes: ".$this->successes,'successes');
 			logMessage("Errors: ".$this->errors,'errors');
 		}
@@ -1494,12 +1524,25 @@ class Posts extends BaseClass {
 		if ($this->truncate()) {
 	
 			foreach ($table as $p) {
-
+				
 				$p['Creation_Date'] = $p['Date_Creation']." ".$p['Time'];
 				$p['Creation_Date'] = str_replace(".0000000","", $p['Creation_Date']);
-				$p['Post'] = trim(addSlashes(str_replace('&#65533;','',strip_tags($p['Post']))));
 				$p['Post_Public'] = $p['Post_Public'] == '' ? '0' : '1';
+				$p['Post'] = addslashes(trim($p['Post']));
 
+				try {
+					$convertion = Html2Text::convert($p['Post']);
+					if (is_object($convertion)) {
+						$p['Post_Plain'] = $convertion->getText();
+					}
+					else {
+						$p['Post_Plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($p['Post']))));
+					}
+				} 
+				catch (\Exception $e) {
+					$p['Post_Plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($p['Post']))));
+				}
+		
 				if ($p['Id_Customer_User'] != '') {
 					$subquery1 = mssql_query("SELECT * FROM Customer_User_Login WHERE Customer_Id = '".$p['Id_Customer_User']."'");
 					$result1 = mssql_fetch_array($subquery1, MSSQL_ASSOC);
@@ -1514,12 +1557,13 @@ class Posts extends BaseClass {
 				$p = trimAndNullIfEmpty($p);
 
 				$p['Post'] = $p['Post'] == 'NULL' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post'];
+				$p['Post_Plain'] = $p['Post_Plain'] == 'NULL' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post_Plain'];
 
 				if (!isset($author_id)) 
 					$author_id = findCompanyPersonId($p['Author'],$this->manager->conn);
 
 				$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,is_public,created_at,updated_at) 
-						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",\"\",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",".$p['Creation_Date'].")";
+						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Post_Plain'].",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",".$p['Creation_Date'].")";
 				
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
@@ -1800,6 +1844,7 @@ class Users extends BaseClass {
 					$this->errors++;
 					if ($this->debug) {
 						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("QUERY: ".$query);
 					}
 				}
 			}
@@ -1826,6 +1871,7 @@ class Users extends BaseClass {
 					$this->errors++;
 					if ($this->debug) {
 						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("QUERY: ".$query);
 					}
 				}
 			}
