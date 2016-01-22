@@ -98,11 +98,13 @@ class ImportManager {
 			if (class_exists($class_name)) {
 				$temp = new $class_name($this);
 				$this->references[$temp->table_name] = $temp;
+				// echo $temp->table_name."\n";
 			}
 			else {
 				logMessage('Missing class: '.$class_name);
 			}
 		}
+		// die();
 
 		$this->setup();
 		$this->connect();
@@ -192,7 +194,7 @@ class BaseClass {
 			logMessage("Table ".$this->table_name." truncated successfully!");
 		}
 		else {
-			logMessage("Error truncating ".$this->table_name);
+			logMessage("Error truncating ".$this->table_name,'errors');
 		}
 
 		return $result;

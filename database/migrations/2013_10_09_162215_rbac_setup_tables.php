@@ -35,7 +35,7 @@ class RbacSetupTables extends Migration {
 
         // Create table for associating permissions to roles (Many-to-Many)
         Schema::create('permission_role', function (Blueprint $table) {
-            
+            $table->increments('id');
             $table->integer('permission_id')->unsigned();
             $table->integer('role_id')->unsigned();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -46,7 +46,7 @@ class RbacSetupTables extends Migration {
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('role_id')->references('id')->on('roles')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->primary(['permission_id', 'role_id']);
+            $table->unique(['permission_id', 'role_id']);
         });
 
         // Create table for storing groups
@@ -79,7 +79,7 @@ class RbacSetupTables extends Migration {
 
         // Create table for associating permissions to roles (Many-to-Many)
         Schema::create('group_role', function (Blueprint $table) {
-            
+            $table->increments('id');
             $table->integer('role_id')->unsigned();
             $table->integer('group_id')->unsigned();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -90,7 +90,7 @@ class RbacSetupTables extends Migration {
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('group_id')->references('id')->on('groups')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->primary(['role_id', 'group_id']);
+            $table->unique(['role_id', 'group_id']);
         });
     }
 
