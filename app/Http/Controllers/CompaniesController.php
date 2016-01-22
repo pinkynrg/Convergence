@@ -89,14 +89,14 @@ class CompaniesController extends Controller {
                 Form::deleteItem('companies.destroy', $id, 'Remove this company'),
                 Form::editItem(route('companies.edit',$id), 'Edit this company'),
                 Form::addItem(route('company_person.create',$id), 'Add Contact to this company'),
-                Form::addItem(route('equipments.create',$id),'Add new Equipment to this company'),
+                Form::addItem(route('equipment.create',$id),'Add new Equipment to this company'),
                 Form::addItem(route('services.create',$id),'Add new Service Request to this company')
             ];
 
             $data['company'] = Company::find($id);
             $data['company']->contacts = CompanyPerson::where('company_person.company_id','=',$id)->paginate(10);
             $data['company']->tickets = Ticket::where('company_id','=',$id)->paginate(10);
-            $data['company']->equipments = Equipment::where('company_id','=',$id)->paginate(10);
+            $data['company']->equipment = Equipment::where('company_id','=',$id)->paginate(10);
             $data['company']->hotels = Hotel::where('company_id','=',$id)->paginate(10);
             $data['company']->services = Service::where('company_id','=',$id)->paginate(10);
 
@@ -162,7 +162,7 @@ class CompaniesController extends Controller {
         
         $contacts = CompanyPerson::select('company_person.*');
         $contacts->leftJoin('people','people.id','=','company_person.person_id');
-        $contacts->leftJoin('company_main_contact', 'company_main_contact.main_contact_id','=','company_person.id');
+        $contacts->leftJoin('company_main_contacts', 'company_main_contacts.main_contact_id','=','company_person.id');
         $contacts->where('company_person.company_id','=',$company_id);
 
         // apply ordering
@@ -184,8 +184,8 @@ class CompaniesController extends Controller {
         parse_str($params,$params);
 
         $companies = Company::select("companies.*");
-        $companies->leftJoin("company_main_contact","companies.id","=","company_main_contact.company_id");
-        $companies->leftJoin("company_person","company_person.id","=","company_main_contact.main_contact_id");
+        $companies->leftJoin("company_main_contacts","companies.id","=","company_main_contacts.company_id");
+        $companies->leftJoin("company_person","company_person.id","=","company_main_contacts.main_contact_id");
         $companies->leftJoin("people","company_person.person_id","=","people.id");
         
         // apply search
@@ -230,26 +230,26 @@ class CompaniesController extends Controller {
         return view('companies/tickets',$data);
     }
 
-    public function ajaxEquipmentsRequest($company_id, $params = "")
+    public function ajaxEquipmentRequest($company_id, $params = "")
     {
         parse_str($params,$params);
 
-        $equipments = Equipment::select("equipments.*");
-        $equipments->leftJoin("equipment_types","equipment_types.id","=","equipments.equipment_type_id");
-        $equipments->where('company_id','=',$company_id);
+        $equipment = Equipment::select("equipment.*");
+        $equipment->leftJoin("equipment_types","equipment_types.id","=","equipment.equipment_type_id");
+        $equipment->where('company_id','=',$company_id);
 
         // apply ordering
         if (isset($params['order'])) {
-            $equipments->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $equipments->orderBy($params['order']['column'],$params['order']['type']);
+            $equipment->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
+            $equipment->orderBy($params['order']['column'],$params['order']['type']);
         }
 
         // paginate
-        $equipments = $equipments->paginate(10);
+        $equipment = $equipment->paginate(10);
 
-        $data['equipments'] = $equipments;
+        $data['equipment'] = $equipment;
 
-        return view('companies/equipments',$data);
+        return view('companies/equipment',$data);
     }
 
     public function ajaxHotelsRequest($company_id, $params = "")

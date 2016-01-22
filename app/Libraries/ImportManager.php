@@ -10,6 +10,7 @@ function logMessage($message,$type = 'normal') {
 		case 'errors' : echo SET_RED; break;
 		case 'successes' : echo SET_GREEN; break;
 		case 'updates' : echo SET_YELLOW; break;
+		case 'deletes' : echo SET_PURPLE; break;
 	}
 
 	echo "[".date("Y-m-d H:i:s")."] ".$message."\n";
@@ -147,7 +148,9 @@ class ImportManager {
 		logMessage("========================================================");
 		if ($table_name == 'all') {
 			foreach ($this->references as $reference) {
-				$reference->import($this->uuid,$debug,$direct);
+				if ($reference->table_name != 'files' && $reference->table_name != 'thumbnails' && $reference->table_name != 'hotels') {
+					$reference->import($this->uuid,$debug,$direct);
+				}
 			}
 		}
 		else {
@@ -1278,7 +1281,7 @@ class CompanyPerson extends BaseClass {
 				}
 			}
 
-			logMessage("Deleted: ".$this->deleted);
+			logMessage("Deleted: ".$this->deleted,'deletes');
 			logMessage("Updated: ".$this->updated,'updates');
 			logMessage("Successes: ".$this->successes,'successes');
 			logMessage("Errors: ".$this->errors,'errors');
@@ -1286,9 +1289,9 @@ class CompanyPerson extends BaseClass {
 	}
 }
 
-class Equipments extends BaseClass {
+class Equipment extends BaseClass {
 
-	public $table_name = 'equipments';
+	public $table_name = 'equipment';
 	public $dependency_names = ['dummies','companies','equipment_types'];
 
 	public function importSelf() {
@@ -1305,7 +1308,7 @@ class Equipments extends BaseClass {
 				
 				$r = trimAndNullIfEmpty($r);
 				
-				$query = "INSERT INTO equipments (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id) 
+				$query = "INSERT INTO equipment (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id) 
 						  VALUES (".$r['Id'].",".$r['NickName'].",".$r['CC_Number'].",".$r['Serial_Number'].",".$r['Equipment_Type'].",".$r['Notes'].",".$r['WarrantyExpiration'].",".$r['CompanyId'].")";
 				
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
@@ -1327,7 +1330,7 @@ class Equipments extends BaseClass {
 
 class CompanyMainContacts extends BaseClass {
 
-	public $table_name = 'company_main_contact';
+	public $table_name = 'company_main_contacts';
 	public $dependency_names = ['companies','contacts'];
 
 	public function importSelf() {
@@ -1353,7 +1356,7 @@ class CompanyMainContacts extends BaseClass {
 				$company_person_id = findCompanyPersonId($c['Main_Contact_Id'],$this->manager->conn);
 									
 				if ($c['Main_Contact_Id'] != 'NULL') {
-					$query = "INSERT INTO company_main_contact (id, company_id, main_contact_id) 
+					$query = "INSERT INTO company_main_contacts (id, company_id, main_contact_id) 
 						VALUES (".$counter.",".$c['Id'].",".$company_person_id.")";
 
 					if (mysqli_query($this->manager->conn, $query) === TRUE) {
@@ -1371,14 +1374,14 @@ class CompanyMainContacts extends BaseClass {
 
 
 			$query = "SELECT * FROM companies c
-					LEFT JOIN company_main_contact cmc ON (c.id = cmc.company_id)
+					LEFT JOIN company_main_contacts cmc ON (c.id = cmc.company_id)
 					WHERE cmc.company_id IS NULL";
 
 			$result = mysqli_query($this->manager->conn,$query);
 			$ids = mysqli_fetch_all($result);
 
 			foreach ($ids as $id) {
-				$query = "INSERT INTO company_main_contact (id, company_id, main_contact_id)
+				$query = "INSERT INTO company_main_contacts (id, company_id, main_contact_id)
 							SELECT ".$counter.",cp.company_id, cp.id FROM company_person cp
 							WHERE cp.company_id = ".$id[0]." LIMIT 1";
 
@@ -1403,7 +1406,7 @@ class CompanyMainContacts extends BaseClass {
 
 class CompanyAccountManagers extends BaseClass {
 
-	public $table_name = 'company_account_manager';
+	public $table_name = 'company_account_managers';
 	public $dependency_names = ['companies','company_person'];
 
 	public function importSelf() {
@@ -1418,7 +1421,7 @@ class CompanyAccountManagers extends BaseClass {
 
 				$company_person_id = findCompanyPersonId($c['Id_Employee_Account_Manager'],$this->manager->conn);
 
-				$query = "INSERT INTO company_account_manager (company_id, account_manager_id) 
+				$query = "INSERT INTO company_account_managers (company_id, account_manager_id) 
 						  VALUES (".$c['Id'].",".$company_person_id.")";
 				
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
@@ -1441,11 +1444,11 @@ class CompanyAccountManagers extends BaseClass {
 class Tickets extends BaseClass {
 		
 	public $table_name = 'tickets';
-	public $dependency_names = ['company_person','statuses','priorities','divisions','equipments','companies','job_types'];
+	public $dependency_names = ['company_person','statuses','priorities','divisions','equipment','companies','job_types'];
 
 	public function importSelf() {
 
-		$query = mssql_query("SELECT * FROM Tickets WHERE Priority != ''");
+		$query = mssql_query("SELECT * FROM Tickets");
 
 		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
 
@@ -1498,7 +1501,7 @@ class Tickets extends BaseClass {
 				}
 			}
 
-			logMessage("Error Query: SELECT * FROM Tickets WHERE Id IN (".$ids.")");
+			if (isset($ids)) { logMessage("Error Query: SELECT * FROM Tickets WHERE Id IN (".$ids.")"); }
 			logMessage("Successes: ".$this->successes,'successes');
 			logMessage("Errors: ".$this->errors,'errors');
 		}
@@ -1572,13 +1575,15 @@ class Posts extends BaseClass {
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Post ID = ".$p['Id']."]");
+						if (!isset($ids)) $ids = ''; $ids .= $p['Id'].",";
 					}
 				}
 
 				$author_id = null;
 			}
 
+			if (isset($ids)) { logMessage("Error Query: SELECT * FROM Posts WHERE Id IN (".$ids.")"); }
 			logMessage("Successes: ".$this->successes,'successes');
 			logMessage("Errors: ".$this->errors,'errors');
 		}
@@ -2031,7 +2036,7 @@ class Dummies extends BaseClass {
 			"DELETE FROM job_types WHERE id = 0",
 			"DELETE FROM priorities WHERE id = 0",
 			"DELETE FROM statuses WHERE id = 0",
-			"DELETE FROM equipments WHERE id = 0",
+			"DELETE FROM equipment WHERE id = 0",
 			"DELETE FROM company_person WHERE id = 0",
 			"DELETE FROM group_types WHERE id = 0",
 			"DELETE FROM titles WHERE id = 0",
@@ -2055,7 +2060,7 @@ class Dummies extends BaseClass {
 			"INSERT INTO titles (id,name) VALUES (0,'[undefined]')",
 			"INSERT INTO group_types (id, name, display_name, description) VALUES (0,'[undefined]','[undefined]','[undefined]')",
 			"INSERT INTO company_person (id, person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id) VALUES (0,0,0,0,0,'[undefined]','[undefined]','[undefined]',0,'[undefined]')",
-			"INSERT INTO equipments (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id) VALUES (0,'[undefined]','[undefined]','[undefined]',0,'[undefined]','[undefined]',0)",
+			"INSERT INTO equipment (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id) VALUES (0,'[undefined]','[undefined]','[undefined]',0,'[undefined]','[undefined]',0)",
 			"INSERT INTO statuses (id,name) VALUES (0,'[undefined]')",
 			"INSERT INTO priorities (id,name) VALUES (0,'[undefined]')",
 			"INSERT INTO job_types (id,name) VALUES (0,'[undefined]')"

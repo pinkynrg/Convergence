@@ -17,7 +17,7 @@ class UpdateEquipmentRequest extends Request {
 
 	public function forbiddenResponse()
 	{
-		return redirect()->route('equipments.show',$this->get('id'))->withErrors(['You are not authorized to update equipments']);
+		return redirect()->route('equipment.show',$this->get('id'))->withErrors(['You are not authorized to update equipment']);
 	}
 
 	/**

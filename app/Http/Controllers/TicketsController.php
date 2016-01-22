@@ -354,9 +354,9 @@ class TicketsController extends Controller {
     	return json_encode($contacts);
     }
 
-    public function ajaxEquipmentsRequest($id) {
-    	$equipments = Equipment::select('equipments.*')->where('company_id','=',$id);
-    	$equipments = $equipments->get();
-    	return json_encode($equipments);
+    public function ajaxEquipmentRequest($id) {
+    	$equipment = Equipment::select('equipment.*')->where('company_id','=',$id);
+    	$equipment = $equipment->get();
+    	return json_encode($equipment);
     }
 }

@@ -10,23 +10,23 @@ use Request;
 use Form; 
 use Auth;
 
-class EquipmentsController extends Controller {
+class EquipmentController extends Controller {
 	
 	public function index() {
 		if (Auth::user()->can('read-all-equipment')) {
-			$data['equipments'] = Equipment::paginate(50);
-        	$data['title'] = "Equipments";
-			return view('equipments/index',$data);
+			$data['equipment'] = Equipment::paginate(50);
+        	$data['title'] = "Equipment";
+			return view('equipment/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to equipment index page']);		
 	}
 
 	public function show($id) {
 		if (Auth::user()->can('read-equipment')) {
-			$data['menu_actions'] = [Form::editItem(route('equipments.edit', $id),"Edit this equipment")];
+			$data['menu_actions'] = [Form::editItem(route('equipment.edit', $id),"Edit this equipment")];
 			$data['equipment'] = Equipment::find($id);
 			$data['title'] = $data['equipment']->company->name." - Equipment ".$data['equipment']->name;
-			return view('equipments/show',$data);
+			return view('equipment/show',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to equipment show page']);
 	}
@@ -36,7 +36,7 @@ class EquipmentsController extends Controller {
         $data['equipment_types'] = EquipmentType::all();
         $data['company'] = Company::find($id);
 		$data['company']->company_id = $data['company']->id;
-		return view('equipments/create', $data);	
+		return view('equipment/create', $data);	
 	}
 
 	public function store(CreateEquipmentRequest $request) {
@@ -52,7 +52,7 @@ class EquipmentsController extends Controller {
         $data['equipment_types'] = EquipmentType::all();
         $data['company'] = Company::find($data['equipment']->company_id);
 		$data['company']->company_id = $data['company']->id;
-		return view('equipments/edit',$data);
+		return view('equipment/edit',$data);
 	}
 
 	public function update($id, UpdateEquipmentRequest $request) {
@@ -67,29 +67,29 @@ class EquipmentsController extends Controller {
 		return "equipment destroy method hasn't been created yet";
 	}
 
-	public function ajaxEquipmentsRequest($params = "") {
+	public function ajaxEquipmentRequest($params = "") {
 		
         parse_str($params,$params);
 
-		$equipments = Equipment::select("equipments.*");
-		$equipments->leftJoin("companies","companies.id","=","equipments.company_id");
-		$equipments->leftJoin("equipment_types","equipment_types.id","=","equipments.equipment_type_id");
+		$equipment = Equipment::select("equipment.*");
+		$equipment->leftJoin("companies","companies.id","=","equipment.company_id");
+		$equipment->leftJoin("equipment_types","equipment_types.id","=","equipment.equipment_type_id");
 
 		// apply search
         if (isset($params['search'])) {
-            $equipments->where('name','like','%'.$params['search'].'%');
+            $equipment->where('name','like','%'.$params['search'].'%');
         }
 
         // apply ordering
         if (isset($params['order'])) {
-    		$equipments->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $equipments->orderBy($params['order']['column'],$params['order']['type']);
+    		$equipment->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
+            $equipment->orderBy($params['order']['column'],$params['order']['type']);
         }
 
-		$equipments = $equipments->paginate(50);
+		$equipment = $equipment->paginate(50);
 
-		$data['equipments'] = $equipments;
+		$data['equipment'] = $equipment;
 
-        return view('equipments/equipments',$data);
+        return view('equipment/equipment',$data);
 	}
 }

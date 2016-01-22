@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCompanyAccountManagerTable extends Migration {
+class CreateCompanyMainContactsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,20 +12,20 @@ class CreateCompanyAccountManagerTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('company_account_manager', function(Blueprint $table)
+		Schema::create('company_main_contacts', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->integer('company_id')->unsigned()->unique();
-			$table->integer('account_manager_id')->unsigned();
+			$table->integer('main_contact_id')->unsigned();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
 		});
 
 
-		Schema::table('company_account_manager',function(Blueprint $table) {
+		Schema::table('company_main_contacts',function(Blueprint $table) {
 			$table->foreign('company_id')->references('id')->on('companies');
-			$table->foreign('account_manager_id')->references('id')->on('company_person');
-			
+			$table->foreign('main_contact_id')->references('id')->on('company_person');
 		});
 	}
 
@@ -36,7 +36,7 @@ class CreateCompanyAccountManagerTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('company_account_manager');
+		Schema::drop('company_main_contacts');
 	}
 
 }

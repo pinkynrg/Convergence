@@ -12,15 +12,15 @@
 		</thead>
 		<tbody>
 		
-		@foreach ($equipments as $equipment)
+		@foreach ($equipment as $equipment_unit)
 
 			<tr>
-				<td> <a href="{{ route('equipments.show', $equipment->id) }}"> {{ $equipment->cc_number }} </a> </td>
-				<td> {{ $equipment->name }} </td>
-				<td> {{ $equipment->equipment_type->name }} </td>
-				<td> {{ $equipment->serial_number }} </td>
-				<td class="hidden-xs"> {{ $equipment->notes }} </td>
-				<td class="hidden-xs"> {{ isset($equipment->warranty_expiration) ? date("m/d/Y",strtotime($equipment->warranty_expiration)) : '-' }} </td>
+				<td> <a href="{{ route('equipment.show', $equipment_unit->id) }}"> {{ $equipment_unit->cc_number }} </a> </td>
+				<td> {{ $equipment_unit->name }} </td>
+				<td> {{ $equipment_unit->equipment_type->name }} </td>
+				<td> {{ $equipment_unit->serial_number }} </td>
+				<td class="hidden-xs"> {{ $equipment_unit->notes }} </td>
+				<td class="hidden-xs"> {{ isset($equipment_unit->warranty_expiration) ? date("m/d/Y",strtotime($equipment_unit->warranty_expiration)) : '-' }} </td>
 			</tr>
 
 		@endforeach
@@ -29,6 +29,6 @@
 	</table>	
 
 	<div class="ajax_pagination" scrollup="false">
-		{!! $equipments->render() !!}
+		{!! $equipment->render() !!}
 	</div>
 </div>

@@ -12,7 +12,7 @@ class Company extends CustomModel {
 		return $this->hasMany('App\Models\Ticket');
 	}
 
-	public function equipments() {
+	public function equipment() {
 		return $this->hasMany('App\Models\Equipment');
 	}
 

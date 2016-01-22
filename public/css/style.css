@@ -237,7 +237,7 @@ input[disabled], textarea[disabled], select[disabled] {
   background: linear-gradient(to bottom, #FFD3AF , #D3A37B); /* Standard syntax */
 }
 
-#equipments.navb {
+#equipment.navb {
   border: 1px solid #E4DBB9;
   background: -webkit-linear-gradient(top, #F9E7A1 , #DFC974); /* For Safari 5.1 to 6.0 */
   background: -o-linear-gradient(bottom, #F9E7A1, #DFC974); /* For Opera 11.1 to 12.0 */

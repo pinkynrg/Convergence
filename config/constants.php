@@ -23,5 +23,6 @@
 	define("SET_RED","\e[0;31m");
 	define("SET_GREEN","\e[0;32m");
 	define("SET_YELLOW","\e[0;33m");
+	define("SET_PURPLE","\e[0;35m");
 
 ?>

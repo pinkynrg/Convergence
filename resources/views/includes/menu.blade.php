@@ -53,7 +53,7 @@ $main = Menu::items([
 		['type'=>'item','label'=>'Companies','icon'=>'fa-building','link'=>route('companies.index'),'show'=>Auth::user()->can('read-all-company')],
 		['type'=>'item','label'=>'Customer Contacts','icon'=>'fa-book','link'=>route('company_person.contacts'),'show'=>Auth::user()->can('read-all-contact')],
 		['type'=>'item','label'=>'Employees','icon'=>'fa-users','link'=>route('company_person.employees'),'show'=>Auth::user()->can('read-all-employee')],
-		['type'=>'item','label'=>'Equipments','icon'=>'fa-wrench','link'=>route('equipments.index'),'show'=>Auth::user()->can('read-all-equipment')],
+		['type'=>'item','label'=>'Equipment','icon'=>'fa-wrench','link'=>route('equipment.index'),'show'=>Auth::user()->can('read-all-equipment')],
 		['type'=>'item','label'=>'Services','icon'=>'fa-server','link'=>route('services.index'),'show'=>Auth::user()->can('read-all-service')]
 	]],
 	['type'=>'group','label'=>'Access','icon'=>'fa-cog','menu'=>[

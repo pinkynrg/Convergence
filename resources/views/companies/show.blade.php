@@ -37,14 +37,14 @@
 		</div>
 	</div>
 
-	<div ajax-route="{{ route('ajax.companies.equipments',$company->id) }}">
-		<div id="equipments" class="navb expander"> 
-			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Equipments </div>
+	<div ajax-route="{{ route('ajax.companies.equipment',$company->id) }}">
+		<div id="equipment" class="navb expander"> 
+			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Equipment </div>
 		</div>
 		<div class="to_expand">
 			
-			@if ($company->equipments->count())
-				@include('companies.equipments', array('equipments' => $company->equipments))
+			@if ($company->equipment->count())
+				@include('companies.equipment', array('equipment' => $company->equipment))
 			@else
 				@include('includes.no-contents')
 			@endif

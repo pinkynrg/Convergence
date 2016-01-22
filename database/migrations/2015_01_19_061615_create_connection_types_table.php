@@ -19,6 +19,7 @@ class CreateConnectionTypesTable extends Migration {
 			$table->string('description');
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->softDeletes();
 		});
 	}
 

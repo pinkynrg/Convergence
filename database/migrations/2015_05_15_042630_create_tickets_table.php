@@ -30,6 +30,7 @@ class CreateTicketsTable extends Migration {
 			$table->integer('job_type_id')->unsigned()->nullable();		
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
 		});
 
 		Schema::table('tickets',function(Blueprint $table) {

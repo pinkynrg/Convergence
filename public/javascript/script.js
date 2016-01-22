@@ -395,8 +395,8 @@ $(document).ready(function() {
 		});
 	} 
 
-	function updateEquipments(company_id, callback) {
-		$.get('/ajax/tickets/equipments/'+company_id, function (data) {
+	function updateEquipment(company_id, callback) {
+		$.get('/ajax/tickets/equipment/'+company_id, function (data) {
 			data = JSON.parse(data);				
 			$('select#fake_equipment_id').html('');
 			$('select#fake_equipment_id').append('<option value="NULL">-</option>');
@@ -412,7 +412,7 @@ $(document).ready(function() {
 
 		if (company_id != '') {
 			updateContacts(company_id, function () {
-				updateEquipments(company_id, function () {
+				updateEquipment(company_id, function () {
 					setSelected();
 				});
 			});			
@@ -438,7 +438,7 @@ $(document).ready(function() {
 		$("#contact_id").val(contact_id);
 	});
 
-	// update fileds related to selection of company (like contacts, equipments, ...)
+	// update fileds related to selection of company (like contacts, equipment, ...)
 	$(".ajax_trigger#company_id").on("change",function () {
 		$("#equipment_id").val("");
 		$("#contact_id").val("");

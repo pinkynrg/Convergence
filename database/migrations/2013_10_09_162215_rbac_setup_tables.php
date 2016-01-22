@@ -19,6 +19,7 @@ class RbacSetupTables extends Migration {
             $table->string('description')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
         });
 
         // Create table for storing permissions
@@ -29,12 +30,18 @@ class RbacSetupTables extends Migration {
             $table->string('description')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
         });
 
         // Create table for associating permissions to roles (Many-to-Many)
         Schema::create('permission_role', function (Blueprint $table) {
+            
             $table->integer('permission_id')->unsigned();
             $table->integer('role_id')->unsigned();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+            
             $table->foreign('permission_id')->references('id')->on('permissions')
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('role_id')->references('id')->on('roles')
@@ -50,10 +57,12 @@ class RbacSetupTables extends Migration {
             $table->string('description')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
         });
 
        // Create table for storing groups
         Schema::create('groups', function (Blueprint $table) {
+            
             $table->increments('id');
             $table->integer('group_type_id')->unsigned();
             $table->string('name');
@@ -61,6 +70,8 @@ class RbacSetupTables extends Migration {
             $table->string('description')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+            
             $table->foreign('group_type_id')->references('id')->on('group_types')->onUpdate('cascade')->onDelete('cascade');
             $table->unique(['group_type_id','name']);
 
@@ -68,8 +79,13 @@ class RbacSetupTables extends Migration {
 
         // Create table for associating permissions to roles (Many-to-Many)
         Schema::create('group_role', function (Blueprint $table) {
+            
             $table->integer('role_id')->unsigned();
             $table->integer('group_id')->unsigned();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+
             $table->foreign('role_id')->references('id')->on('roles')
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('group_id')->references('id')->on('groups')
