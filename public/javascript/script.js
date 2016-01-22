@@ -13,8 +13,13 @@ $(document).ready(function() {
 		target : rxres.length >= 1 ? rxres[1] : null,
 		target_id : rxres.length >= 3 && rxres[3] != 'create' ? rxres[3] : null,
 		target_action : (rxres.length >= 3 && rxres[3] == 'create') || (rxres.length >= 5) ? rxres[3] == 'create' ? rxres[3] : rxres[5] : null
-	}
+	};
 
+	(function titleMarquee() {
+	    document.title = document.title.substring(1)+document.title.substring(0,1);
+	    setTimeout(titleMarquee, 200);
+	})();
+	
 // tickets filters page ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//reset values of filters 
