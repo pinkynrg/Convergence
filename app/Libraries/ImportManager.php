@@ -181,7 +181,7 @@ class BaseClass {
 		$result = false;
 
 		$query1 = "SET foreign_key_checks = 0";
-		$query2 = "DELETE FROM ".$this->table_name." WHERE 1 = 1";
+		$query2 = "DELETE FROM ".$this->table_name." WHERE id != 0"; // do not delete dummy records
 		$query3 = "SET foreign_key_checks = 1";
 
 		if (mysqli_query($this->manager->conn, $query1) === TRUE && 
