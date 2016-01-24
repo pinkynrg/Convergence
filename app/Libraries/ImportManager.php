@@ -1458,6 +1458,8 @@ class Tickets extends BaseClass {
 	
 			foreach ($table as $t) {
 
+				$p['Ticket_Post'] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $p['Ticket_Post']);
+
 				try {
 					$convertion = Html2Text::convert($p['Ticket_Post']);
 					if (is_object($convertion)) {
@@ -1538,7 +1540,8 @@ class Posts extends BaseClass {
 				$p['Post'] = preg_replace("/<a[^>]+><\/a>/i", "", $p['Post']); 
 				$p['Post'] = str_replace("\xc2\xa0","",$p['Post']);
 				$p['Post'] = str_replace("\xc3\xa0","",$p['Post']);
-
+				$p['Post'] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $p['Post']);
+				
 				try {
 					$convertion = Html2Text::convert($p['Post']);
 					if (is_object($convertion)) {
