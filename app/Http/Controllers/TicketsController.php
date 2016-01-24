@@ -116,6 +116,7 @@ class TicketsController extends Controller {
 		$ticket->company_id = $request->get('company_id');
 		$ticket->contact_id = $request->get('contact_id');
 		$ticket->job_type_id = $request->get('job_type_id');
+		$ticket->emails = $request->get('emails');
 
 		$ticket->save();
 
@@ -237,6 +238,7 @@ class TicketsController extends Controller {
 		$ticket->equipment_id = $request->get('equipment_id');
 		$ticket->contact_id = $request->get('contact_id');
 		$ticket->job_type_id = $request->get('job_type_id');
+		$ticket->emails = $request->get('emails');
 
 		$ticket->save();
 

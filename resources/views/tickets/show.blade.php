@@ -63,7 +63,7 @@
 						<th>Division</th>
 						<td>{{ isset($ticket->division_id) ? $ticket->division->name : '' }}</td>
 						<th>Account Manager</th>
-						<td>{!! isset($ticket->company->account_manager->account_manager_id) ? HTML::link(route('people.show', $ticket->company->account_manager->account_manager_id), $ticket->company->account_manager->company_person->person->name()) : '' !!}</td>
+						<td>{!! isset($ticket->company->account_manager->account_manager_id) ? HTML::link(route('people.show', $ticket->company->account_manager->company_person->person_id), $ticket->company->account_manager->company_person->person->name()) : '' !!}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -178,13 +178,35 @@
 
 		<div>
 			<h3 id="write_post"> Write a post </h3>
-			<div class="checkbox is_public"> <label> <input id="is_public" value="true" name="is_public" type="checkbox"> publish </label> </div>
 		</div>
 		
 		{!! Form::hidden("ticket_id", $ticket->id) !!}
 		{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
 
 		@include('posts.form')
+
+		<div class="col-xs-6">
+
+			<div class="checkbox is_public"> 
+				<label> <input id="is_public" value="true" name="is_public" type="checkbox"> Show post to customer </label> 
+			</div>
+
+		</div>
+
+		<div class="col-xs-6">
+			<div class="checkbox">
+	  			<label><input type="checkbox" @if (!isset($ticket->company->account_manager_id)) disabled @endif value=""> Send email to account manager ~ {{ isset($ticket->company->account_manager_id) ? $ticket->company->account_manager->company_person->email : 'Not Available'}}</label>
+			</div>
+			<div class="checkbox">
+	  			<label><input type="checkbox" @if (!isset($ticket->company->group_email)) disabled @endif value=""> Send email to company group email ~ {{ isset($ticket->company->group_email) ? $ticket->company->group_email : 'Not Available' }} </label>
+			</div>
+			<div class="checkbox">
+	  			<label><input type="checkbox" @if (!isset($ticket->contact_id)) disabled @endif value=""> Send email to ticket contact reference ~ {{ isset($ticket->contact_id) ? $ticket->contact->email : 'Not Available' }} </label>
+			</div>
+			<div class="checkbox">
+	  			<label><input type="checkbox" @if (!isset($ticket->emails)) disabled @endif value=""> Send email to additional ticket emails ~ {{ isset($ticket->emails) ? $ticket->emails : 'Not Available' }} </label>
+			</div>
+		</div>
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSSubmit("Submit") !!}

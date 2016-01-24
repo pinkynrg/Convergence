@@ -59,7 +59,6 @@
 			@else 
 				{!! Form::BSText('tagit') !!}
 			@endif
-
 		{!! Form::BSEndGroup() !!}
 
 	</div>
@@ -87,8 +86,12 @@
 	<div class="col-xs-6">
 
 		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('additional_emails','Additional Emails') !!}
-			{!! Form::BSText('additional_emails',null) !!}
+			{!! Form::BSLabel('emails','Additional Emails') !!}
+			@if (isset($emails))
+				{!! Form::BSText('emails',$emails, ['data-role' => 'multiemail']) !!}
+			@else
+				{!! Form::BSText('emails',null, ['data-role' => 'multiemail']) !!}
+			@endif
 		{!! Form::BSEndGroup() !!}
 
 

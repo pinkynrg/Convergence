@@ -6,7 +6,7 @@ class Ticket extends CustomModel {
 
 	protected $table = 'tickets';
 
-	protected $fillable = ['title','post','creator_id','assignee_id','status_id','priority_id','division_id','equiment_id','company_id','contact_id','job_type_id'];
+	protected $fillable = ['title','post','creator_id','assignee_id','status_id','priority_id','division_id','equiment_id','company_id','contact_id','job_type_id','emails'];
 
 	public function status()
 	{

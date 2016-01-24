@@ -434,12 +434,6 @@ a:visited, a:link, a:active, a:visited {
   display: inline-block;
 }
 
-.is_public {
-  float: right;
-  display: inline-block;
-  font-size: 13px;
-}
-
 .post {
   margin: 0px;
   padding: 0px 0px 0px 30px;

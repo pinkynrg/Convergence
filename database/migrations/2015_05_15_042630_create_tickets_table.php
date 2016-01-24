@@ -26,6 +26,7 @@ class CreateTicketsTable extends Migration {
 			$table->integer('division_id')->unsigned();
 			$table->integer('equipment_id')->unsigned();
 			$table->integer('company_id')->unsigned();
+			$table->text('emails')->nullable();
 			$table->integer('contact_id')->unsigned()->nullable();		
 			$table->integer('job_type_id')->unsigned()->nullable();		
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
