@@ -13,7 +13,7 @@ function logMessage($message,$type = 'normal') {
 		case 'deletes' : echo SET_PURPLE; break;
 	}
 
-	echo "[".date("Y-m-d H:i:s")."] ".$message."\n";
+	echo "[".date("Y-m-d H:i:s")."] ".substr($message,0,150)."\n";
 
 	echo RESET_COLOR;
 }
@@ -1534,6 +1534,10 @@ class Posts extends BaseClass {
 				$p['Creation_Date'] = str_replace(".0000000","", $p['Creation_Date']);
 				$p['Post_Public'] = $p['Post_Public'] == '' ? '0' : '1';
 				$p['Post'] = addslashes(trim($p['Post']));
+				$p['Post'] = preg_replace("/<img[^>]+\>/i", "", $p['Post']); 
+				$p['Post'] = preg_replace("/<a[^>]+><\/a>/i", "", $p['Post']); 
+				$p['Post'] = str_replace("\xc2\xa0","",$p['Post']);
+				$p['Post'] = str_replace("\xc3\xa0","",$p['Post']);
 
 				try {
 					$convertion = Html2Text::convert($p['Post']);
@@ -2134,44 +2138,118 @@ class Attachments extends BaseClass {
 			}
 		}
 
-		$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
-								FROM Documents d
-								INNER JOIN Posts p ON p.Id = d.Second_Id
-								LEFT JOIN (
-									SELECT Path, Count(*) as counter
-									FROM Documents
-									GROUP BY Path
-								) as c ON c.Path = d.Path 
-								WHERE c.path IS NOT NULL 
-								AND c.path != '' 
-								AND Second_Id IS NOT NULL 
-								AND Type = 'post'
-								ORDER BY Id DESC");
+		if (false) {
+
+			$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
+									FROM Documents d
+									INNER JOIN Posts p ON p.Id = d.Second_Id
+									LEFT JOIN (
+										SELECT Path, Count(*) as counter
+										FROM Documents
+										GROUP BY Path
+									) as c ON c.Path = d.Path 
+									WHERE c.path IS NOT NULL 
+									AND c.path != '' 
+									AND Second_Id IS NOT NULL 
+									AND Type = 'post'
+									ORDER BY Id DESC");
+
+			$result = array();
+
+			while ($row = mssql_fetch_assoc($query)) $result[] = $row;
+
+			foreach ($result as $m) {
+
+				$query = "SELECT COUNT(*) FROM posts WHERE id = ".$m['Second_Id'];
+				$result = mysqli_query($this->manager->conn,$query);
+				$post = mysqli_fetch_array($result);
+
+				if ($post[0] > 0) {
+
+					$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.rawurlencode($m['Path']);
+					$content = @file_get_contents($url);
+
+					if ($content) {
+						// insert record in the db8
+						$m['Date_Creation'] = $m['Date_Creation']." ".$m['Time'];
+						$m['Date_Creation'] = str_replace(".0000000","", $m['Date_Creation']);
+						$uploader_id = findCompanyPersonId($m['Author'],$this->manager->conn);
+						$temp = explode(".",$m['Path']);
+						$extension = $temp[count($temp)-1];
+						$file_name = 'POST#'.$m['Second_Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
+						$query = "INSERT INTO files (id,name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$m['Id']."','".$m['Path']."','attachments','".$file_name."','".$extension."','App\\\Models\\\Post','".$m['Second_Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$m['Date_Creation']."')";
+
+						if (mysqli_query($this->manager->conn,$query) === TRUE) {
+							$added_db++;
+							if (file_put_contents(ATTACHMENTS.DS.$file_name, $content)) {
+								$added_fs++;
+							}
+							else {
+								$this->errors++;
+								if ($this->debug) {
+									logMessage("DEBUG: The file couldn't be copied @ ".ATTACHMENTS.DS.$file_name);
+								}
+							}
+						}
+						else {
+							$this->errors++;
+							if ($this->debug) {
+								logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// import images embedded manually
+		$query = mssql_query("SELECT * FROM Posts WHERE post LIKE '%<img%'");
 
 		$result = array();
 
 		while ($row = mssql_fetch_assoc($query)) $result[] = $row;
 
 		foreach ($result as $m) {
+			
+			$reg = '/(<img[^>]+\>)/i';
+			preg_match_all($reg, $m['Post'], $matches);
 
-			$query = "SELECT COUNT(*) FROM posts WHERE id = ".$m['Second_Id'];
-			$result = mysqli_query($this->manager->conn,$query);
-			$post = mysqli_fetch_array($result);
+			foreach ($matches[1] as $key=>$image_tag) {
 
-			if ($post[0] > 0) {
+				$niddle = "data:";
+				$pos = strpos($image_tag,$niddle);
 
-				$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.rawurlencode($m['Path']);
-				$content = @file_get_contents($url);
+				if ($pos !== FALSE) {
+					$temp = explode(",",$image_tag);
+					$image_tag = $temp[1];
+					$temp2 = explode("\"",$image_tag);
+					$image_tag = $temp2[0];
+					$image_tag = str_replace(' ','+',$image_tag);
+  					$content = base64_decode($image_tag);
+				}
+				else {
+					$reg = '/src[\s]*=[\s]*"(([^"])*)"/i';
+					preg_match_all($reg, $image_tag, $matches);
+					$url = $matches[1][0];
+					$content = @file_get_contents($url);
+				}
 
 				if ($content) {
 					// insert record in the db8
-					$m['Date_Creation'] = $m['Date_Creation']." ".$m['Time'];
-					$m['Date_Creation'] = str_replace(".0000000","", $m['Date_Creation']);
+					$date_creation = $m['Date_Creation']." ".$m['Time'];
+					$date_creation = str_replace(".0000000","", $date_creation);
 					$uploader_id = findCompanyPersonId($m['Author'],$this->manager->conn);
-					$temp = explode(".",$m['Path']);
-					$extension = $temp[count($temp)-1];
-					$file_name = 'POST#'.$m['Second_Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
-					$query = "INSERT INTO files (id,name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$m['Id']."','".$m['Path']."','attachments','".$file_name."','".$extension."','App\\\Models\\\Post','".$m['Second_Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$m['Date_Creation']."')";
+					
+					if (isset($url)) {
+						$temp = explode(".",$url);
+						$extension = $temp[count($temp)-1];
+					}
+					else {
+						$extension = 'png';
+					}
+
+					$file_name = 'POST#'.$m['Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
+					$query = "INSERT INTO files (name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$file_name."','attachments','".$file_name."','".$extension."','App\\\Models\\\Post','".$m['Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$date_creation."')";
 
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
 						$added_db++;
@@ -2188,6 +2266,7 @@ class Attachments extends BaseClass {
 					else {
 						$this->errors++;
 						if ($this->debug) {
+							logMessage($m['Id']);
 							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
 						}
 					}
