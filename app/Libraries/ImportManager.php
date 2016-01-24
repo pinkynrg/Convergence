@@ -1542,7 +1542,7 @@ class Posts extends BaseClass {
 				$p['Post'] = str_replace("\xc3\xa0","",$p['Post']);
 				$p['Post'] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $p['Post']);				// replace redundadt <br>, space ...
 				$p['Post'] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $p['Post']);								// removed br from end post
-				$p['Post'] = preg_replace('<p>&nbsp;</p>','',$p['Post']);
+				$p['Post'] = str_replace('<p>&nbsp;</p>','',$p['Post']);
 
 				try {
 					$convertion = Html2Text::convert($p['Post']);
