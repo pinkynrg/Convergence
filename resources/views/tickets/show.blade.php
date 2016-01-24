@@ -195,16 +195,16 @@
 
 		<div class="col-xs-6">
 			<div class="checkbox">
-	  			<label><input type="checkbox" @if (!isset($ticket->company->account_manager_id)) disabled @endif value=""> Send email to account manager ~ {{ isset($ticket->company->account_manager_id) ? $ticket->company->account_manager->company_person->email : 'Not Available'}}</label>
+	  			<label @if ((!isset($ticket->company->account_manager))) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif><input type="checkbox" @if (!isset($ticket->company->account_manager)) disabled @endif value=""> Send email to account manager ~ {{ isset($ticket->company->account_manager) ? $ticket->company->account_manager->company_person->email : 'Not Available'}}</label>
 			</div>
 			<div class="checkbox">
-	  			<label><input type="checkbox" @if (!isset($ticket->company->group_email)) disabled @endif value=""> Send email to company group email ~ {{ isset($ticket->company->group_email) ? $ticket->company->group_email : 'Not Available' }} </label>
+	  			<label @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif><input type="checkbox" @if (!isset($ticket->company->group_email)) disabled @endif value=""> Send email to company group email ~ {{ isset($ticket->company->group_email) ? $ticket->company->group_email : 'Not Available' }} </label>
 			</div>
 			<div class="checkbox">
-	  			<label><input type="checkbox" @if (!isset($ticket->contact_id)) disabled @endif value=""> Send email to ticket contact reference ~ {{ isset($ticket->contact_id) ? $ticket->contact->email : 'Not Available' }} </label>
+	  			<label @if (!isset($ticket->contact_id) || !isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif><input type="checkbox" @if (!isset($ticket->contact_id) || !isset($ticket->contact->email)) disabled @endif value=""> Send email to ticket contact reference ~ {{ isset($ticket->contact_id) ? $ticket->contact->email : 'Not Available' }} </label>
 			</div>
 			<div class="checkbox">
-	  			<label><input type="checkbox" @if (!isset($ticket->emails)) disabled @endif value=""> Send email to additional ticket emails ~ {{ isset($ticket->emails) ? $ticket->emails : 'Not Available' }} </label>
+	  			<label @if (!isset($ticket->emails)) data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif><input type="checkbox" @if (!isset($ticket->emails)) disabled @endif value=""> Send email to additional ticket emails ~ {{ isset($ticket->emails) ? $ticket->emails : 'Not Available' }} </label>
 			</div>
 		</div>
 

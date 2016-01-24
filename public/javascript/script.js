@@ -20,6 +20,10 @@ $(document).ready(function() {
 	    setTimeout(titleMarquee, 200);
 	})();
 
+	$(document).ready(function(){
+   		$('[data-toggle="tooltip"]').tooltip();   
+	});
+
 	// disable all caching so when visiting page with ajax requests, go back button of browser doesn't show you json
 	$.ajaxSetup({ cache: false });
 
