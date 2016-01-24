@@ -1458,7 +1458,7 @@ class Tickets extends BaseClass {
 	
 			foreach ($table as $t) {
 
-				$p['Ticket_Post'] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $p['Ticket_Post']);
+				$t['Ticket_Post'] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $t['Ticket_Post']);
 
 				try {
 					$convertion = Html2Text::convert($p['Ticket_Post']);
