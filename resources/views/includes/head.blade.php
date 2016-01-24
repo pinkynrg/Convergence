@@ -31,4 +31,4 @@
 
 <link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">
 
-<title>{{ isset($title) ? "&nbsp;~&nbsp;Convergence&nbsp;~&nbsp;".$title : "[missing page title]" }}</title>
+<title>{{ isset($title) ? "&nbsp;~&nbsp;Convergence&nbsp;~&nbsp;".str_replace(" ","&nbsp;",$title) : "[missing page title]" }}</title>
