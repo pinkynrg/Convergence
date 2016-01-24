@@ -2141,64 +2141,61 @@ class Attachments extends BaseClass {
 			}
 		}
 
-		if (false) {
+		$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
+								FROM Documents d
+								INNER JOIN Posts p ON p.Id = d.Second_Id
+								LEFT JOIN (
+									SELECT Path, Count(*) as counter
+									FROM Documents
+									GROUP BY Path
+								) as c ON c.Path = d.Path 
+								WHERE c.path IS NOT NULL 
+								AND c.path != '' 
+								AND Second_Id IS NOT NULL 
+								AND Type = 'post'
+								ORDER BY Id DESC");
 
-			$query = mssql_query(	"SELECT d.Id, d.Second_Id, d.Path, p.Author, c.counter, p.Date_Creation, p.Time
-									FROM Documents d
-									INNER JOIN Posts p ON p.Id = d.Second_Id
-									LEFT JOIN (
-										SELECT Path, Count(*) as counter
-										FROM Documents
-										GROUP BY Path
-									) as c ON c.Path = d.Path 
-									WHERE c.path IS NOT NULL 
-									AND c.path != '' 
-									AND Second_Id IS NOT NULL 
-									AND Type = 'post'
-									ORDER BY Id DESC");
+		$result = array();
 
-			$result = array();
+		while ($row = mssql_fetch_assoc($query)) $result[] = $row;
 
-			while ($row = mssql_fetch_assoc($query)) $result[] = $row;
+		foreach ($result as $m) {
 
-			foreach ($result as $m) {
+			$query = "SELECT COUNT(*) FROM posts WHERE id = ".$m['Second_Id'];
+			$result = mysqli_query($this->manager->conn,$query);
+			$post = mysqli_fetch_array($result);
 
-				$query = "SELECT COUNT(*) FROM posts WHERE id = ".$m['Second_Id'];
-				$result = mysqli_query($this->manager->conn,$query);
-				$post = mysqli_fetch_array($result);
+			if ($post[0] > 0) {
 
-				if ($post[0] > 0) {
+				$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.rawurlencode($m['Path']);
+				$content = @file_get_contents($url);
 
-					$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.rawurlencode($m['Path']);
-					$content = @file_get_contents($url);
+				if ($content) {
+					// insert record in the db8
+					$m['Date_Creation'] = $m['Date_Creation']." ".$m['Time'];
+					$m['Date_Creation'] = str_replace(".0000000","", $m['Date_Creation']);
+					$uploader_id = findCompanyPersonId($m['Author'],$this->manager->conn);
+					$temp = explode(".",$m['Path']);
+					$extension = $temp[count($temp)-1];
+					$file_name = 'POST#'.$m['Second_Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
+					$query = "INSERT INTO files (id,name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$m['Id']."','".$m['Path']."','attachments','".$file_name."','".$extension."','App\\\Models\\\Post','".$m['Second_Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$m['Date_Creation']."')";
 
-					if ($content) {
-						// insert record in the db8
-						$m['Date_Creation'] = $m['Date_Creation']." ".$m['Time'];
-						$m['Date_Creation'] = str_replace(".0000000","", $m['Date_Creation']);
-						$uploader_id = findCompanyPersonId($m['Author'],$this->manager->conn);
-						$temp = explode(".",$m['Path']);
-						$extension = $temp[count($temp)-1];
-						$file_name = 'POST#'.$m['Second_Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
-						$query = "INSERT INTO files (id,name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$m['Id']."','".$m['Path']."','attachments','".$file_name."','".$extension."','App\\\Models\\\Post','".$m['Second_Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$m['Date_Creation']."')";
-
-						if (mysqli_query($this->manager->conn,$query) === TRUE) {
-							$added_db++;
-							if (file_put_contents(ATTACHMENTS.DS.$file_name, $content)) {
-								$added_fs++;
-							}
-							else {
-								$this->errors++;
-								if ($this->debug) {
-									logMessage("DEBUG: The file couldn't be copied @ ".ATTACHMENTS.DS.$file_name);
-								}
-							}
+					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$added_db++;
+						if (file_put_contents(ATTACHMENTS.DS.$file_name, $content)) {
+							$added_fs++;
 						}
 						else {
 							$this->errors++;
 							if ($this->debug) {
-								logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+								logMessage("DEBUG: The file couldn't be copied @ ".ATTACHMENTS.DS.$file_name);
 							}
+						}
+					}
+					else {
+						$this->errors++;
+						if ($this->debug) {
+							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
 						}
 					}
 				}
