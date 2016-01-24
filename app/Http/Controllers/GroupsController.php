@@ -30,7 +30,7 @@ class GroupsController extends Controller {
 			$roles = Role::get();
 	    	
 	    	$roles_in_group = Role::whereHas('groups', function($q) use ($id) {
-	    		$q->where('id', $id);
+	    		$q->where('groups.id', $id);
 			})->get();
 
 	    	$counter = 0;

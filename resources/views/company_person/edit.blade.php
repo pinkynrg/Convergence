@@ -18,8 +18,8 @@
 
 		{!! Form::BSGroup() !!}
 
-			{!! Form::BSLabel("group_id", "Permission Group", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSSelect("group_id", $groups, null, array('bclass' => 'col-xs-3', "key" => "id", "value" => "display_name")) !!}
+			{!! Form::BSLabel("group_type_id", "Permission Group", ['bclass' => 'col-xs-2']) !!}
+			{!! Form::BSSelect("group_type_id", $groups, null, array('bclass' => 'col-xs-3', "key" => "id", "value" => "display_name")) !!}
 
 		{!! Form::BSEndGroup() !!}
 

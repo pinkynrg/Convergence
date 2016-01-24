@@ -2,6 +2,6 @@
 
 @section('content')
 
-	@include('company_person.contacts', array("contacts" => $contacts))
+	@include('company_person.index', array("contacts" => $contacts))
 	
 @endsection

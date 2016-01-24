@@ -242,7 +242,7 @@ class Permissions extends BaseClass {
 
 			$counter = 1;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person','service'];
+			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
 			$actions = ['create','read','read-all','update','delete'];
 
 			foreach ($targets as $target) {
@@ -297,7 +297,7 @@ class Roles extends BaseClass {
 
 			$counter = 1;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person','service'];
+			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
 			$actions = ['viewer','manager'];
 
 			foreach ($targets as $target) {
@@ -329,7 +329,7 @@ class PermissionRole extends BaseClass {
 
 	public function importSelf() {
 
-		$targets = ['permission','role','group','group-type','ticket','contact','employee','equipment','company','post','person','service'];
+		$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
 		$role_types = ['viewer','manager'];
 
 		if ($this->truncate()) {

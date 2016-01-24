@@ -17,13 +17,15 @@ use Form;
 class PeopleController extends Controller {
 
 	public function show($id) {
+		$data['person'] = Person::find($id);
 		if (Auth::user()->can('read-person')) {
+	        
 	        $data['menu_actions'] = [
 	        	Form::editItem(route('people.edit',$id), 'Edit this person'),
+	        	Form::editItem(route('users.edit',$data['person']->user->id), 'Edit associated user'),
 				Form::deleteItem('people.destroy', $id, 'Remove this person')
 	        ];
 			
-			$data['person'] = Person::find($id);
 			$data['title'] = $data['person']->name() . " - Details";
 			return view('people/show', $data);
 		}

@@ -115,10 +115,17 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::patch('people/{id}', ['uses' => 'PeopleController@update', 'as' => 'people.update']);
 	Route::get('people/{id}/edit', ['uses' => 'PeopleController@edit', 'as' => 'people.edit']);
 
+	// users routes
+	Route::get('users',['uses' => 'UsersController@index', 'as' => 'users.index']);
+	Route::get('users/create', ['uses' => 'UsersController@create', 'as' => 'users.create']);
+	Route::post('users', ['uses' => 'UsersController@store', 'as' => 'users.store']);
+	Route::get('users/{id}',['uses' => 'UsersController@show', 'as' => 'users.show']);
+	Route::patch('users/{id}', ['uses' => 'UsersController@update', 'as' => 'users.update']);
+	Route::get('users/{id}/edit', ['uses' => 'UsersController@edit', 'as' => 'users.edit']);
+
 	// company_person
-	Route::get('employees',['uses' => 'CompanyPersonController@employees', 'as' => 'company_person.employees']);
-	Route::get('contacts',['uses' => 'CompanyPersonController@contacts', 'as' => 'company_person.contacts']);
-	Route::get('contacts/create/{company_id}', ['uses' => 'CompanyPersonController@create', 'as' => 'company_person.create']);
+	Route::get('contacts',['uses' => 'CompanyPersonController@index', 'as' => 'company_person.index']);
+	Route::get('contacts/create', ['uses' => 'CompanyPersonController@create', 'as' => 'company_person.create']);
 	Route::post('people', ['uses' => 'CompanyPersonController@store', 'as' => 'company_person.store']);
 	Route::get('contacts/{company_person_id}',['uses' => 'CompanyPersonController@show', 'as' => 'company_person.show']);
 	Route::get('contacts/{company_person_id}/edit', ['uses' => 'CompanyPersonController@edit', 'as' => 'company_person.edit']);
@@ -138,11 +145,11 @@ Route::group(array('middleware' => 'auth'), function() {
 	// ajax routes
 	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);
 	Route::get('ajax/companies/{params?}', ['uses' => 'CompaniesController@ajaxCompanyRequest', 'as' => 'ajax.companies']);
+	Route::get('ajax/users/{params?}', ['uses' => 'UsersController@ajaxUsersRequest', 'as' => 'ajax.users']);
 	Route::get('ajax/companies/contacts/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxContactsRequest', 'as' => 'ajax.companies.contacts']);
 	Route::get('ajax/companies/tickets/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxTicketsRequest', 'as' => 'ajax.companies.tickets']);
 	Route::get('ajax/companies/equipment/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxEquipmentRequest', 'as' => 'ajax.companies.equipment']);
 	Route::get('ajax/companies/hotels/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxHotelsRequest', 'as' => 'ajax.companies.hotels']);
-	Route::get('ajax/employees/{params?}', ['uses' => 'CompanyPersonController@ajaxEmployeesRequest', 'as' => 'ajax.employees']);
 	Route::get('ajax/contacts/{params?}', ['uses' => 'CompanyPersonController@ajaxContactsRequest', 'as' => 'ajax.contacts']);
 	Route::get('ajax/equipment/{params?}', ['uses' => 'EquipmentController@ajaxEquipmentRequest', 'as' => 'ajax.equipment']);
 	Route::get('ajax/services/{params?}', ['uses' => 'ServicesController@ajaxServicesRequest', 'as' => 'ajax.services']);

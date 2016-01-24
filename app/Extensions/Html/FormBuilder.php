@@ -38,6 +38,16 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		return $text;
 	}
 
+	public function BSPassword($name, $options = array()) {
+		$bootstrap_class = "form-control";
+		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
+		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
+		$text = "<div class='".$options['bclass']."'>";
+		$text .= $this->password($name, $options);
+		$text .= "</div>";
+		return $text;
+	}
+
 	public function BSDatePicker($name, $value = null, $options = array()) {
 		$bootstrap_class = "form-control";
 		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";

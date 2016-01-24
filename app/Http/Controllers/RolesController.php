@@ -31,7 +31,7 @@ class RolesController extends Controller {
 			$permissions = Permission::get();
 	    	
 	    	$permissions_in_role = Permission::whereHas('roles', function($q) use ($id) {
-	    		$q->where('id', $id);
+	    		$q->where('roles.id', $id);
 			})->get();
 
 	    	$counter = 0;

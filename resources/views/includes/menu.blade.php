@@ -51,8 +51,8 @@ $main = Menu::items([
 	['type'=>'item','label'=>'Tickets','icon'=>'fa-ticket','link'=>route('tickets.index'),'show'=>Auth::user()->can('read-all-ticket')],
 	['type'=>'group','label'=>'Manage','icon'=>'fa-cog','menu'=>[
 		['type'=>'item','label'=>'Companies','icon'=>'fa-building','link'=>route('companies.index'),'show'=>Auth::user()->can('read-all-company')],
-		['type'=>'item','label'=>'Customer Contacts','icon'=>'fa-book','link'=>route('company_person.contacts'),'show'=>Auth::user()->can('read-all-contact')],
-		['type'=>'item','label'=>'Employees','icon'=>'fa-users','link'=>route('company_person.employees'),'show'=>Auth::user()->can('read-all-employee')],
+		['type'=>'item','label'=>'Contacts','icon'=>'fa-book','link'=>route('company_person.index'),'show'=>Auth::user()->can('read-all-contact')],
+		['type'=>'item','label'=>'Users','icon'=>'fa-book','link'=>route('users.index'),'show'=>Auth::user()->can('read-all-user')],
 		['type'=>'item','label'=>'Equipment','icon'=>'fa-wrench','link'=>route('equipment.index'),'show'=>Auth::user()->can('read-all-equipment')],
 		['type'=>'item','label'=>'Services','icon'=>'fa-server','link'=>route('services.index'),'show'=>Auth::user()->can('read-all-service')]
 	]],

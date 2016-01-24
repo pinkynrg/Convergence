@@ -1,6 +1,11 @@
 {!! Form::BSGroup() !!}
 
-	{!! Form::hidden("company_id", null, ['bclass' => 'col-xs-3']) !!}
+	{!! Form::BSLabel("company_id", "Company", ['bclass' => 'col-xs-2']) !!}
+	{!! Form::BSSelect("company_id", $companies,  null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "name"]) !!}
+
+{!! Form::BSEndGroup() !!}
+
+{!! Form::BSGroup() !!}
 
 	{!! Form::BSLabel("phone", "Phone", ['bclass' => 'col-xs-2']) !!}
 	{!! Form::BSText("phone", null, ['bclass' => 'col-xs-3']) !!}
