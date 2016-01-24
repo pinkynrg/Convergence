@@ -1,3 +1,5 @@
+@include('includes.image-gallery')
+
 <div id="header">
 
 	<div id="logo">

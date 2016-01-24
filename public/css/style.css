@@ -7,6 +7,10 @@ body {
 	font-size: 12px;
 }
 
+.mrg-brm-20 {
+  margin-bottom: 20px!important;
+}
+
 input, textarea, select, .bootstrap-tagsinput {
   background-color: #F7F7F7 !important;
 }
@@ -301,8 +305,7 @@ thead {
 /* Links */
 a:visited, a:link, a:active, a:visited {
 	color: #181093;
-/*	font-weight: 500;
-*/	cursor: pointer;
+  cursor: pointer;
 }
 
 .cancel {
@@ -385,8 +388,8 @@ a:visited, a:link, a:active, a:visited {
   padding: 10px;
 }
 
-#tab_contents {
-  margin: 20px 0px;
+.tab-content {
+  min-height: 35px;
 }
 
 #ticket_post {
@@ -394,8 +397,8 @@ a:visited, a:link, a:active, a:visited {
     margin: 10px 0px;
 }
 
-.post_edit {
-  float: right;
+.post_commands {
+  display: table-cell;
   font-size: 18px;
 }
 
@@ -439,8 +442,7 @@ a:visited, a:link, a:active, a:visited {
 
 .post {
   margin: 0px;
-  padding: 0px 20px 20px 20px;
-  border-bottom: 1px solid #eee;
+  padding: 0px 0px 0px 30px;
 }
 
 .post .thumbnail {
@@ -448,7 +450,7 @@ a:visited, a:link, a:active, a:visited {
 }
 
 .post_content {
-	margin: 10px 0px;
+	margin: 10px;
 }
 
 .thumb-sm {

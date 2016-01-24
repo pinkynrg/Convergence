@@ -9,7 +9,6 @@
 		<h4 class="media-heading"> <a href="{{ route('people.show', $post->author->person->id) }}"> {{ $post->author->person->name() }} </a> </h4>
 		<div> 
 			<span class="post_datetime"> {{ date("d F Y",strtotime($post->created_at)) }} @ {{ date("H:i",strtotime($post->created_at)) }} </span>
-			<span class="post_edit"> <a href="{{ route('posts.show', $post->id) }}"> Edit </a></span>
 		</div>
 
 		<div class="post_content"> {!! $post->post !!} </div>
@@ -19,7 +18,7 @@
 
 				@foreach ($post->attachments as $attachment)
 					<div class="col-lg-1 col-xs-2">
-						<a href="{{ $attachment->path() }}" class="thumbnail">
+						<a href="{{ $attachment->path() }}" class="thumbnail" data-gallery>
 							<img src="{{ $attachment->thumbnail() }}" alt="...">
 						</a>
 					</div>
@@ -29,4 +28,13 @@
 		</div>
 
 	</div>
+
+	@if (Route::getCurrentRoute()->getPath() == 'tickets/{id}')
+
+		<div class="post_commands">
+			<span> <a href="{{ route('posts.show', $post->id) }}"> Details </a></span>
+		</div>
+
+	@endif
+
 </div>

@@ -19,7 +19,12 @@ $(document).ready(function() {
 	    document.title = document.title.substring(1)+document.title.substring(0,1);
 	    setTimeout(titleMarquee, 200);
 	})();
-	
+
+	// disable all caching so when visiting page with ajax requests, go back button of browser doesn't show you json
+	$.ajaxSetup({ cache: false });
+
+
+
 // tickets filters page ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//reset values of filters 

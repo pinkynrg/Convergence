@@ -22,7 +22,7 @@ class PostsController extends Controller {
 
 		$post->save();
 
-		SlackController::sendPost($post);
+		// SlackController::sendPost($post);
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);
 	}
 

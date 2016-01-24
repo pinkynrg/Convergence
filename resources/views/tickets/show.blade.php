@@ -101,7 +101,7 @@
 	  <li class="nav"><a target="linked_tickets" href="#linked_tickets" data-toggle="tab"><i class="fa fa-link"></i> Linked Tickets</a></li>
 	</ul>
 
-	<div class="tab-content">
+	<div class="tab-content mrg-brm-20">
 		<div class="tab-pane fade in active" id="ticket_history">
 
 			@if (count($ticket->history))
@@ -150,7 +150,30 @@
 		</div>
 
 	</div>
-	
+
+	<div class="navb mrg-brm-20">
+		<div class="title"><i class="fa fa-bars"></i> All Posts</div>
+	</div>
+
+	<div id="posts_container">
+
+		@if (count($ticket->posts))
+
+			@foreach ($ticket->posts as $post) 
+
+				@include('posts.post', array("post" => $post))			
+				<hr>
+
+			@endforeach
+
+		@else
+
+			@include('includes.no-contents')
+
+		@endif
+
+	</div>
+
 	{!! Form::open(array('method' => 'POST', 'route' => 'posts.store') ) !!}
 
 		<div>
@@ -161,37 +184,13 @@
 		{!! Form::hidden("ticket_id", $ticket->id) !!}
 		{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
-		{!! Form::BSEndGroup() !!}
+		@include('posts.form')
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSSubmit("Submit") !!}
 		{!! Form::BSEndGroup() !!}
 
 	{!! Form::close() !!}
-
-	<div class="navb">
-		<div class="title"><i class="fa fa-bars"></i> All Posts</div>
-	</div>
-
-	<div id="posts_container">
-
-	@if (count($ticket->posts))
-
-		@foreach ($ticket->posts as $post) 
-
-			@include('posts.post', array("post" => $post))			
-
-		@endforeach
-
-	@else
-
-		@include('includes.no-contents')
-
-	@endif
-
-	</div>
 
 @endsection
 

@@ -1,6 +1,9 @@
 <meta name="viewport" content="width=350, initial-scale=1">
 
 <!-- Scripts -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+<script src="/javascript/bootstrap-image-gallery.js"></script>
 <script src="/javascript/jquery-1.11.2.min.js"></script>
 <script src="/javascript/jquery-migrate-1.2.1.min.js"></script>
 <script src="/javascript/bootstrap.min.js"></script>
@@ -26,8 +29,11 @@
 <link rel="stylesheet" href="/css/bootstrap-tagsinput.css">
 <link rel="stylesheet" href="/css/bootstrap-duallistbox.css">
 <link rel="stylesheet" href="/css/datepicker.css">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
+<link rel="stylesheet" href="/css/bootstrap-image-gallery.css">
 <link rel="stylesheet" href="/css/dropzone.css">
+<link rel="stylesheet" href="/css/style.css">
 
 <link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">
 

@@ -49,11 +49,7 @@
 			{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
 		{!! Form::BSEndGroup() !!}
 
-		<div id="dZUpload" class="dropzone">
-      		<div class="dz-message needsclick">
-    			Drop files here or click to upload.<br>
-  			</div>
-		</div>
+		{!! Form::dropZone() !!}		
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('tagit','Tag it!') !!}

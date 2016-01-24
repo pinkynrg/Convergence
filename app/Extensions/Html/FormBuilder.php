@@ -180,4 +180,13 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$back .= "</a>";
 		return $back;
 	}
+
+	public function dropZone() {
+		$dz = "<div id='dZUpload' class='dropzone'>";
+		$dz .= "<div class='dz-message needsclick'>";
+		$dz .= "Drop files here or click to upload.<br>";
+		$dz .= "</div>";
+		$dz .= "</div>";
+		return $dz;
+	}
 }

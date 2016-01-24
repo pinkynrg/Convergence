@@ -63,8 +63,8 @@ $main = Menu::items([
 		['type'=>'item','label'=>'Groups Types','icon'=>'fa-bars','link'=>route('group_types.index'),'show'=>Auth::user()->can('read-all-group-type')]
 	]],
 	['type'=>'group','label'=>'Info','icon'=>'fa-cog','menu'=>[	
-		['type'=>'item','label'=>'Dashboard','icon'=>'fa-dashboard','link'=>route('dashboard.logged')],
-		['type'=>'item','label'=>'Statistics','icon'=>'fa-line-chart','link'=>route('statistics.index')]
+		['type'=>'item','label'=>'Dashboard','icon'=>'fa-dashboard','link'=>route('dashboard.logged'), 'show'=>true],
+		['type'=>'item','label'=>'Statistics','icon'=>'fa-line-chart','link'=>route('statistics.index'), 'show'=>true]
 	]]
 ]);
 
