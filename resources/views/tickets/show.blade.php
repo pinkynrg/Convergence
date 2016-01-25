@@ -174,16 +174,23 @@
 
 	</div>
 
-	{!! Form::open(array('method' => 'POST', 'route' => 'posts.store') ) !!}
+	{!! Form::model($draft_post, array('method' => 'POST', 'route' => 'posts.store') ) !!}
 
 		<div>
 			<h3 id="write_post"> Write a post </h3>
 		</div>
+
+		@if(isset($draft_post->id))
+			<div class="alert alert-info" role="alert"> 
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<div> <i class="fa fa-check-circle"></i> This is a draft post lastly updated the {{ date('m/d/Y H:i:s',strtotime($draft_post->updated_at)) }} </div>
+			</div>
+		@endif
 		
 		{!! Form::hidden("ticket_id", $ticket->id) !!}
 		{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
 
-		@include('posts.form')
+		@include('posts.form',array('post' => $draft_post))
 
 		<div class="col-xs-6">
 

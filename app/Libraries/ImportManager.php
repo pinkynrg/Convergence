@@ -1512,10 +1512,40 @@ class Tickets extends BaseClass {
 	}
 }
 
+class PostStatuses extends BaseClass {
+	public $table_name = 'post_statuses';
+	public $dependency_names = [];
+
+	public function importSelf() {
+
+		if ($this->truncate()) {
+
+			$queries = ["INSERT INTO post_statuses (id, name) VALUES (1,'Draft')",
+						"INSERT INTO post_statuses (id, name) VALUES (2,'Private')",
+						"INSERT INTO post_statuses (id, name) VALUES (3,'Public')"];
+			
+			foreach ($queries as $query) {
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+		
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
 class Posts extends BaseClass {
 
 	public $table_name = 'posts';
-	public $dependency_names = ['tickets','company_person'];
+	public $dependency_names = ['tickets','company_person','post_statuses'];
 
 	public function importSelf() {
 
@@ -1534,7 +1564,7 @@ class Posts extends BaseClass {
 				
 				$p['Creation_Date'] = $p['Date_Creation']." ".$p['Time'];
 				$p['Creation_Date'] = str_replace(".0000000","", $p['Creation_Date']);
-				$p['Post_Public'] = $p['Post_Public'] == '' ? '0' : '1';
+				$p['Post_Public'] = $p['Post_Public'] == '' ? '2' : '3';
 				$p['Post'] = addslashes(trim($p['Post']));
 				$p['Post'] = preg_replace("/<img[^>]+\>/i", "", $p['Post']); 
 				$p['Post'] = preg_replace("/<a[^>]+><\/a>/i", "", $p['Post']); 
@@ -1576,7 +1606,7 @@ class Posts extends BaseClass {
 				if (!isset($author_id)) 
 					$author_id = findCompanyPersonId($p['Author'],$this->manager->conn);
 
-				$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,is_public,created_at,updated_at) 
+				$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,status_id,created_at,updated_at) 
 						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Post_Plain'].",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",".$p['Creation_Date'].")";
 				
 
@@ -2061,20 +2091,20 @@ class Dummies extends BaseClass {
 
 			"SET foreign_key_checks = 1",
 
-			"INSERT INTO people (id,first_name,last_name) VALUES ('0','[undefined]','[undefined]')",
-			"INSERT INTO connection_types (id,name,description) VALUES (0,'[undefined]','[undefined]')",
-			"INSERT INTO support_types (id,name) VALUES (0,'[undefined]')",
-			"INSERT INTO divisions (id,name) VALUES (0,'[undefined]')",
-			"INSERT INTO equipment_types (id,name) VALUES (0,'[undefined]')",
-			"INSERT INTO companies (id, name, address, country, city, state, zip_code, connection_type_id, support_type_id) VALUES (0,'[undefined]','[undefined]','[undefined]','[undefined]','[undefined]','[undefined]',0,0)",
-			"INSERT INTO departments (id,name) VALUES (0,'[undefined]')",
-			"INSERT INTO titles (id,name) VALUES (0,'[undefined]')",
-			"INSERT INTO group_types (id, name, display_name, description) VALUES (0,'[undefined]','[undefined]','[undefined]')",
-			"INSERT INTO company_person (id, person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id) VALUES (0,0,0,0,0,'[undefined]','[undefined]','[undefined]',0,'[undefined]')",
-			"INSERT INTO equipment (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id) VALUES (0,'[undefined]','[undefined]','[undefined]',0,'[undefined]','[undefined]',0)",
-			"INSERT INTO statuses (id,name) VALUES (0,'[undefined]')",
-			"INSERT INTO priorities (id,name) VALUES (0,'[undefined]')",
-			"INSERT INTO job_types (id,name) VALUES (0,'[undefined]')"
+			"INSERT INTO people (id,first_name,last_name, deleted_at) VALUES ('0','[undefined]','[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO connection_types (id,name,description, deleted_at) VALUES (0,'[undefined]','[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO support_types (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO divisions (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO equipment_types (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO companies (id, name, address, country, city, state, zip_code, connection_type_id, support_type_id, deleted_at) VALUES (0,'[undefined]','[undefined]','[undefined]','[undefined]','[undefined]','[undefined]',0,0,'".date("Y-m-d H:i:s")."')",
+			"INSERT INTO departments (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO titles (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO group_types (id, name, display_name, description, deleted_at) VALUES (0,'[undefined]','[undefined]','[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO company_person (id, person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id, deleted_at) VALUES (0,0,0,0,0,'[undefined]','[undefined]','[undefined]',0,'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO equipment (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id, deleted_at) VALUES (0,'[undefined]','[undefined]','[undefined]',0,'[undefined]','[undefined]',0,'".date("Y-m-d H:i:s")."')",
+			"INSERT INTO statuses (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO priorities (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO job_types (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')"
 		];
 				
 		foreach ($queries as $query) {							

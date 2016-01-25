@@ -6,6 +6,7 @@ use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Html2Text\Html2Text;
 use App\Models\Post;
+use Request;
 use Form; 
 use Auth;
 
@@ -13,18 +14,23 @@ class PostsController extends Controller {
 
 	public function store(CreatePostRequest $request) 
 	{
-		$post = new Post();
+		$draft = Request::ajax() ? true : false;
+
+		if ($draft) $post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$request->get("ticket_id"))->first();
 		
+		$post = isset($post->id) ? $post : new Post();
+
 		$post->ticket_id = $request->get('ticket_id');
 		$post->post = $request->get('post');
 		$post->post_plain_text = Html2Text::convert($request->get('post'));
-		$post->author_id = $request->get('author_id');
-		$post->is_public = $request->get('is_public') == "true" ? 1 : 0;
+		$post->author_id = Auth::user()->active_contact->id;
+		$post->status_id = !$draft ? $request->get('is_public') == true ? 3 : 2 : 1;
 
 		$post->save();
 
 		// SlackController::sendPost($post);
-		EmailsController::sendPost($post->id);
+		// EmailsController::sendPost($post->id);
+		
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);
 	}
 

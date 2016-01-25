@@ -6,14 +6,9 @@ body {
 }
 
 .logo {
-	height: 50px;
-	background-size: auto 50px;
+	height: 125px;
 	background-repeat: no-repeat;
-	background-image: url('http://convergence.provvedo.com/images/style/logo-elettric80.png');
-}
-
-td.heading {
-	size: 20px;
+	background-image: url('http://convergence.provvedo.com/images/style/mini-logo-elettric80.png');
 }
 
 .wrapper {

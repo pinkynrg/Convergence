@@ -24,5 +24,7 @@
 	define("SET_GREEN","\e[0;32m");
 	define("SET_YELLOW","\e[0;33m");
 	define("SET_PURPLE","\e[0;35m");
+	define("TICKET_DRAFT_STATUS_ID",9);
+	define("POST_DRAFT_STATUS_ID",1);
 
 ?>

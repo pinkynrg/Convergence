@@ -5,6 +5,7 @@ use Input;
 use Response;
 use App\Models\File;
 use App\Models\Ticket;
+use App\Models\Post;
 use File as FileManager;
 use App\Libraries\FilesRepository;
 
@@ -19,6 +20,11 @@ class FilesController extends Controller {
 
     public function listFiles($resource, $id) {
 	    $resource_type = 'App\\Models\\'.ucfirst(str_singular($resource));
+	    
+	    // if file listing request is for in a show ticket page, then I want list of files attached to mock post
+	    if ($resource == "posts") { 
+	    	$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$id)->first(); $id = $post->id;  
+	    }
     	return File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
     }
 
@@ -40,9 +46,16 @@ class FilesController extends Controller {
     {
     	if (Input::file('file')->isValid()) {
 
+    		$id = Input::get('target_id');
+
+    		// if file listing request is for in a show ticket page, then I want list of files attached to mock post
+		    if (Input::get('target') == "posts") { 
+		    	$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",Input::get('target_id'))->first(); $id = $post->id;  
+		    }
+
 	    	$request['file'] = Input::file('file');
 	        $request['target'] = Input::get('target');
-	        $request['target_id'] = Input::get('target_id');
+	        $request['target_id'] = $id;
 	        $request['target_action'] = Input::get('target_action');
 	        $request['uploader_id'] = Auth::user()->active_contact->id;
 

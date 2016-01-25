@@ -281,24 +281,21 @@ $(document).ready(function() {
 		}
 	});
 
-	// save dummy ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// save ticket dummy /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	var regex = /\/tickets\/([\d]*)\/edit/g;
-	var res = regex.exec(path);
-
-	if (path == '/tickets/create') {
-		activateDraftMode();
+	if (url.target == "tickets" && url.target_action == "create") {
+		activateTicketDraftMode();
 	}
-	else if (res && res[1]) {
-		$.get('/tickets/'+res[1], function (data) {
+	else if (url.target == "tickets" && url.target_action == "edit") {
+		$.get('/tickets/'+url.target_id, function (data) {
 			var status_id = data.status_id;
 			if (status_id == 9) {
-				activateDraftMode();
+				activateTicketDraftMode();
 			}
 		});
 	}
 
-	function activateDraftMode() {
+	function activateTicketDraftMode() {
 		setInterval(function(){ 
 			
 			var dummy_id = 0;
@@ -328,6 +325,35 @@ $(document).ready(function() {
 		}, 1000);
 	}
 
+	// save post dummy //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	CKEDITOR.instances['post'].on('change',function () {
+		
+		console.log(url.target+" "+url.target_id+" "+url.target_action);
+
+		if (url.target == "tickets" && url.target_id != "" && url.target_action == "") {			
+
+			activatePostDraftMode();
+		}
+	});
+
+	function activatePostDraftMode() {
+		setInterval(function(){ 
+			var data = {
+				'ticket_id' : url.target_id,
+				'post' : CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '[undefined]',
+			}
+
+			$.ajax({
+				'headers': { "X-CSRF-Token": $('[name=_token').val() },
+				'type': 'POST',
+				'url': '/posts',
+				'data' : data,
+			});
+
+		}, 1000);
+	}
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Dropzone.autoDiscover = false;
@@ -339,10 +365,24 @@ $(document).ready(function() {
 		maxFileSize: 5,
 		headers: { "X-CSRF-Token": $('[name=_token').val() },
 		init: function () {
+			
+			// dropzone for tickets
+			if (url.target == "tickets" && (url.target_action == "create" || url.target_action == "edit")) {
+				this.options.target = url.target;
+				this.options.target_id = url.target_id;
+			}
+			// dropzone for posts
+			if ((url.target == "posts" && url.target_action == "edit") || (url.target == "tickets" && url.target_id != "" && url.target_action == "")) {
+				this.options.target = "posts";
+				this.options.target_id = url.target_id;
+			}
+
 			var that = this;
+
+			// get list of files already loaded
 			$.ajax({
 				type: 'GET',
-				url: '/ajax/files/'+url.target+'/'+url.target_id,
+				url: '/ajax/files/'+this.options.target+'/'+this.options.target_id,
 				headers: { "X-CSRF-Token": $('[name=_token').val() },
 				success: function (data) {
 					for (var c=0; c<data.length; c++) {
@@ -362,12 +402,13 @@ $(document).ready(function() {
 			});
         },
     	sending: function(file, xhr, formData) {
-    		formData.append("target", url.target);
-    		formData.append("target_id", url.target_id);
+    		// send a file 
+    		formData.append("target", this.options.target);
+    		formData.append("target_id", this.options.target_id);
     		formData.append("target_action", url.target_action);
 		},
 		removedfile: function(file) {
-			
+			// delete a file in the dropzone
 			$.ajax({
 		        type: 'DELETE',
 		        url: '/files/'+file.id,

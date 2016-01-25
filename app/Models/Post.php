@@ -6,7 +6,7 @@ class Post extends CustomModel {
 
 	protected $table = 'posts';
 
-	protected $fillable = ['ticket_id','post','author_id','is_public'];
+	protected $fillable = ['ticket_id','post','author_id','status_id'];
 
 	public function ticket() {
 		return $this->belongsTo('App\Models\Ticket');		

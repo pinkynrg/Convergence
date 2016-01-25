@@ -36,7 +36,7 @@ class TicketsController extends Controller {
 		// if (Auth::user()->can('read-all-ticket')) {
 			$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
 			$data['active_search'] = true;
-			$data['tickets'] = Ticket::where('status_id','!=',9)->orderBy('id','desc')->paginate(50);
+			$data['tickets'] = Ticket::where('status_id','!=',TICKET_DRAFT_STATUS_ID)->orderBy('id','desc')->paginate(50);
 			// find last updated date and contact info
 			foreach ($data['tickets'] as $ticket) {
 				$last_post = Post::select('posts.*')->where('ticket_id',$ticket->id)->orderBy('updated_at','desc')->first();
@@ -165,8 +165,10 @@ class TicketsController extends Controller {
 				$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit this ticket"),
 										 Form::deleteItem('tickets.destroy', $id, 'Delete this ticket')];
 										 
-				$data['ticket'] = Ticket::find($id);//Ticket::where('id',$id)->where('status_id','!=',9)->get();
+				$data['ticket'] = Ticket::find($id);
+				$data['ticket']['posts'] = Post::where('ticket_id',$id)->where('status_id','!=',POST_DRAFT_STATUS_ID)->get();
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
+				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
 
 				switch ($data['ticket']->status_id) {
 					case '1' : $data['status_class'] = 'ticket_status_new'; break;
@@ -297,6 +299,7 @@ class TicketsController extends Controller {
     	$tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
     	$tickets->leftJoin('companies','tickets.company_id','=','companies.id');
     	$tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
+    	$tickets->where("tickets.status_id","!=",TICKET_DRAFT_STATUS_ID);
     	// $tickets->leftJoin(DB::raw('(select * from posts where posts.ticket_id = tickets.id order by id desc limit 0,1)'),function ($join) {
     	// 	$join->on('tickets.id','=','posts.ticket_id');
     	// });
@@ -321,7 +324,6 @@ class TicketsController extends Controller {
     	if (isset($params['search'])) {
     		$tickets->where('title','like','%'.$params['search'].'%');
     		$tickets->orWhere('tickets.id','=',$params['search']);
-
     	}
 
     	// apply ordering
