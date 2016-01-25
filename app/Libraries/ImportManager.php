@@ -2100,7 +2100,7 @@ class Dummies extends BaseClass {
 			"INSERT INTO departments (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
 			"INSERT INTO titles (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
 			"INSERT INTO group_types (id, name, display_name, description, deleted_at) VALUES (0,'[undefined]','[undefined]','[undefined]','".date("Y-m-d H:i:s")."')",
-			"INSERT INTO company_person (id, person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id, deleted_at) VALUES (0,0,0,0,0,'[undefined]','[undefined]','[undefined]',[undefined],'[undefined]','".date("Y-m-d H:i:s")."')",
+			"INSERT INTO company_person (id, person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id, deleted_at) VALUES (0,0,0,0,0,'[undefined]','[undefined]','[undefined]','[undefined]','[undefined]','".date("Y-m-d H:i:s")."')",
 			"INSERT INTO equipment (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id, deleted_at) VALUES (0,'[undefined]','[undefined]','[undefined]',0,'[undefined]','[undefined]',0,'".date("Y-m-d H:i:s")."')",
 			"INSERT INTO statuses (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
 			"INSERT INTO priorities (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",
