@@ -8,10 +8,9 @@ use HTML;
 
 class EmailsController extends Controller {
 
-
-
 	static $subject = null;
 	static $view = null;
+	static $content = null;
 	static $data = array();
 	static $to = array();
 	static $cc = array();
@@ -24,6 +23,7 @@ class EmailsController extends Controller {
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
 		self::add('to','biggyapple@gmail.com');
+		self::add('to','meli.f@elettric80.it');
 		self::send();	
 	}
 
@@ -35,17 +35,15 @@ class EmailsController extends Controller {
 
 		$cssToInlineStyles->setHTML($html);
 		$cssToInlineStyles->setCSS($css);
-		$content = $cssToInlineStyles->convert();
+		self::$content = $cssToInlineStyles->convert();
 
-		Mail::raw($content, function($message) { 
+		Mail::send('emails/dummy', array('content' => self::$content), function($message) { 
+			$message->setBody(self::$content,'text/html');
 			if (isset(self::$to)) { $message->to(self::$to); }
 			if (isset(self::$cc)) { $message->cc(self::$cc); }
 			if (isset(self::$bcc)) { $message->bcc(self::$bcc); }
 			$message->subject(self::$subject);
 		});
-		
-		echo "sent!";
-		die();
 
 		self::clear();
 	}

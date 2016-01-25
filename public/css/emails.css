@@ -1,4 +1,28 @@
 body {
-	background: black;
-	color: white;
+	background-repeat: repeat;
+	font-family: 'Open Sans', sans-serif;
+	background-image: url('http://convergence.provvedo.com/images/style/skulls_lightblue.png');
+	padding: 20px 10% 20px 10%;
+}
+
+.logo {
+	height: 50px;
+	background-size: auto 50px;
+	background-repeat: no-repeat;
+	background-image: url('http://convergence.provvedo.com/images/style/logo-elettric80.png');
+}
+
+td.heading {
+	size: 20px;
+}
+
+.wrapper {
+	background-color: #FFF;
+	padding: 20px 15px;
+	moz-box-shadow: 0 1px 5px rgba(0,0,0,.6);
+  	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,.6);
+  	box-shadow: 0 1px 5px rgba(0,0,0,.6);
+  	-webkit-border-radius: 5px;
+  	-moz-border-radius: 5px;
+  	border-radius: 5px;
 }
