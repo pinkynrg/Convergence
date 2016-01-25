@@ -1,60 +1,69 @@
 <?php namespace App\Http\Controllers;
 
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use App\Models\Ticket;
 use App\Models\Post;
 use Mail;
+use HTML;
 
 class EmailsController extends Controller {
 
-	private $subject = null;
-	private $route = null;
-	private $data = array();
-	private $to = array();
-	private $cc = array();
-	private $bcc = array();
 
-	public function sendPost($id) {
+
+	static $subject = null;
+	static $view = null;
+	static $data = array();
+	static $to = array();
+	static $cc = array();
+	static $bcc = array();
+
+	public static function sendPost($id) {
+
 		$post = Post::find($id);
-		$this->setSubject("New Post to Ticket #".$post->ticket->id);
-		$this->route = "emails.post";
-		$this->data['post'] = $post;
-		$this->add('to','biggyapple@gmail.com');	
+		self::setSubject("New Post to Ticket #".$post->ticket->id);
+		self::$view = "emails/post";
+		self::$data['post'] = $post;
+		self::add('to','biggyapple@gmail.com');
+		self::send();	
 	}
 
-	// public function sendSAMPLE() {
-	// 	$this->subject = "greatings";
-	// 	$this->route = "emails.test";		
-	// 	$this->data = array("greatings" => 'HELLO FRANCESCO MELI');
-	// 	$this->add('to','biggyapple@gmail.com');
-	// 	$this->add('cc','meli.f@elettric80.it');
-	// 	$this->add('bcc','iamfrancescomeli@gmail.com');
-	// 	$this->send();
-	// }
+	private static function send() {
+		
+		$html = view(self::$view,self::$data)->render();
+		$css = file_get_contents(PUBLIC_FOLDER."/css/emails.css");	
+		$cssToInlineStyles = new CssToInlineStyles();
 
-	private function send() {
-		Mail::send($this->route, $this->data, function($message) { 
-			if (isset($this->to)) { $message->to($this->to); }
-			if (isset($this->cc)) { $message->cc($this->cc); }
-			if (isset($this->bcc)) { $message->bcc($this->bcc); }
-			$message->subject($this->subject);
+		$cssToInlineStyles->setHTML($html);
+		$cssToInlineStyles->setCSS($css);
+		$content = $cssToInlineStyles->convert();
+
+		Mail::raw($content, function($message) { 
+			if (isset(self::$to)) { $message->to(self::$to); }
+			if (isset(self::$cc)) { $message->cc(self::$cc); }
+			if (isset(self::$bcc)) { $message->bcc(self::$bcc); }
+			$message->subject(self::$subject);
 		});
-		$this->clear();
+		
+		echo "sent!";
+		die();
+
+		self::clear();
 	}
 
-	private function clear() {
-		$route = null;
-		$data = array();
-		$this->to = array();
-		$this->cc = array();
-		$this->bcc = array();
+	private static function clear() {
+		self::$view = null;
+		self::$data = array();
+		self::$to = array();
+		self::$cc = array();
+		self::$bcc = array();
 	}
 
-	private function add($type, $email) {
-		if (isset($this->$type)) $this->{$type}[] = $email;
+	private static function add($type, $email) {
+		if (isset(self::$$type)) self::${$type}[] = $email;
 	}
 
-	private function setSubject($subject) {
-		$this->subject = "E80 Ticketing System - ".$subject;
+	private static function setSubject($subject) {
+		self::$subject = "E80 Ticketing System - ".$subject;
 	}
 
 }
