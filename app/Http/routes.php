@@ -27,6 +27,8 @@ Route::group(array('middleware' => 'auth'), function() {
 		return redirect()->route('tickets.index');
 	}]);
 
+	Route::get('sendemail',['uses' => 'EmailsController@sendPost', 'as' => 'emails.post']);
+
 	// group_types routes 
 	Route::get('group_types',['uses' => 'GroupTypesController@index', 'as' => 'group_types.index']);
 	Route::get('group_types/create',['uses' => 'GroupTypesController@create', 'as' => 'group_types.create']);

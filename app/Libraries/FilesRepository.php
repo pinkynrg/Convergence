@@ -4,7 +4,6 @@ use App\Models\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Config;
-use Intervention\Image\ImageManager;
 
 class FilesRepository
 {
