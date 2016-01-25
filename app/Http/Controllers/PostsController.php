@@ -16,7 +16,7 @@ class PostsController extends Controller {
 	{
 		$draft = Request::ajax() ? true : false;
 
-		if ($draft) $post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$request->get("ticket_id"))->first();
+		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$request->get("ticket_id"))->first();
 		
 		$post = isset($post->id) ? $post : new Post();
 
@@ -24,7 +24,7 @@ class PostsController extends Controller {
 		$post->post = $request->get('post');
 		$post->post_plain_text = Html2Text::convert($request->get('post'));
 		$post->author_id = Auth::user()->active_contact->id;
-		$post->status_id = !$draft ? $request->get('is_public') == true ? 3 : 2 : 1;
+		$post->status_id = !$draft ? $request->get('is_public') == true ? 3 : 2 : POST_DRAFT_STATUS_ID;
 
 		$post->save();
 
