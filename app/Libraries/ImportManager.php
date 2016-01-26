@@ -34,10 +34,14 @@ function trimAndNullIfEmpty($row) {
 		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
-		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$key]);
-		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]); 
-		$row[$key] = Encoding::fixUTF8($row[$key]);
-		$row[$key] = addslashes($row[$key]); 
+		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$key]);								// removed non-UTF8 chartacters
+		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]);													// removed redundand spaces
+		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $row[$key]);				// replace redundadt <br>, space ...
+		$row[$key] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $row[$key]);								// removed br from end post
+		$row[$key] = str_replace('<p>&nbsp;</p>','',$row[$key]);											// removed empty html paragraph
+		$row[$key] = Encoding::fixUTF8($row[$key]);															// fixes broken UTF8 characters
+		$row[$key] = stripslashes($row[$key]);																// srip existing escapes slashes
+		$row[$key] = addslashes($row[$key]);																// add them slashes now that the string is reset to no slash
 
 		// write rules above
 
@@ -1469,8 +1473,6 @@ class Tickets extends BaseClass {
 	
 			foreach ($table as $t) {
 
-				$t['Ticket_Post'] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $t['Ticket_Post']);
-
 				try {
 					$convertion = Html2Text::convert($p['Ticket_Post']);
 					if (is_object($convertion)) {
@@ -1496,7 +1498,7 @@ class Tickets extends BaseClass {
 				$use_title = ($t['Ticket_Post_Plain'] == 'NULL' || $t['Ticket_Post_Plain'] == '');
 
 				$t['Ticket_Post_Plain'] = $use_title ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
-				$t['Ticket_Post'] = $use_title ? $t['Ticket_Title'] : $t['Ticket_Post'];
+				$t['Ticket_Post'] = $use_title ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
 
 				$creator_id = findCompanyPersonId($t['Creator'],$this->manager->conn);
 				$assignee_id = findCompanyPersonId($t['Id_Assignee'],$this->manager->conn);
@@ -1580,9 +1582,6 @@ class Posts extends BaseClass {
 				$p['Post'] = trim($p['Post']);
 				$p['Post'] = preg_replace("/<img[^>]+\>/i", "", $p['Post']); 
 				$p['Post'] = preg_replace("/<a[^>]+><\/a>/i", "", $p['Post']); 
-				$p['Post'] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $p['Post']);				// replace redundadt <br>, space ...
-				$p['Post'] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $p['Post']);								// removed br from end post
-				$p['Post'] = str_replace('<p>&nbsp;</p>','',$p['Post']);
 				$p['Post'] = Purifier::clean($p['Post']);
 
 				try {
@@ -1847,7 +1846,6 @@ class ServiceTechnicians extends BaseClass {
 	
 			foreach ($table as $s) {
 
-				$s['work_description'] = str_replace("\"","'",$s['work_description']);
 				$total_days = strtotime($s['onsite_completion']) - strtotime($s['onsite_start']);
 				$s['hours_estimated_onsite'] = strpos(strtolower($s['hours_estimated_onsite']), "day") === false ? $s['hours_estimated_onsite'] : str_replace("/Day","",$s['hours_estimated_onsite']) * $total_days;
 				$s['Id_employee'] = findCompanyPersonId($s['Id_employee'],$this->manager->conn);
