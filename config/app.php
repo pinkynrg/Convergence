@@ -143,6 +143,7 @@ return [
 
 		'App\Extensions\Html\HtmlServiceProvider',
 		'Barryvdh\Snappy\ServiceProvider',
+		'Mews\Purifier\PurifierServiceProvider',
 		
 		/*
 		 * Application Service Providers...
@@ -207,7 +208,8 @@ return [
 
 		'Form'		=> 'Illuminate\Html\FormFacade', 
 		'HTML'		=> 'Illuminate\Html\HtmlFacade',
-		'Entrust' 	=> 'Zizaco\Entrust\EntrustFacade'
+		'Entrust' 	=> 'Zizaco\Entrust\EntrustFacade',
+		'Purifier' 	=> 'Mews\Purifier\Facades\Purifier',
 	],
 
 ];

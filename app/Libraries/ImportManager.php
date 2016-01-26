@@ -1,6 +1,8 @@
 <?php namespace App\Libraries;
 
 use Html2Text\Html2Text;
+use Purifier;
+use \ForceUTF8\Encoding;
 
 function logMessage($message,$type = 'normal') {
 	$message = str_replace(["\t"], '', $message);
@@ -33,6 +35,8 @@ function trimAndNullIfEmpty($row) {
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
 		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]); 
+		$row[$key] = addslashes($row[$key]); 
+		$row[$key] = Encoding::toUTF8($row[$key]);
 
 		// write rules above
 
@@ -98,7 +102,6 @@ class ImportManager {
 			if (class_exists($class_name)) {
 				$temp = new $class_name($this);
 				$this->references[$temp->table_name] = $temp;
-				// echo $temp->table_name."\n";
 			}
 			else {
 				logMessage('Missing class: '.$class_name);
@@ -1433,6 +1436,7 @@ class CompanyAccountManagers extends BaseClass {
 						  VALUES (".$c['Id'].",".$company_person_id.")";
 				
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					logMessage("SUCESS[".$c['Id']."]");
 					$this->successes++;
 				}
 				else {
@@ -1472,17 +1476,18 @@ class Tickets extends BaseClass {
 						$t['Ticket_Post_Plain'] = $convertion->getText();
 					}
 					else {
-						$t['Ticket_Post_Plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($t['Ticket_Post']))));
+						$t['Ticket_Post_Plain'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Post'])));
 					}
 				} 
 				catch (\Exception $e) {
-					$t['Ticket_Post_Plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($t['Ticket_Post']))));
+					$t['Ticket_Post_Plain'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Post'])));
 				}
 
 				$t['Contact_Id'] = findMatchingContactId($t);
 				$t['Contact_Id'] = trim($t['Contact_Id']) == '' ? '' : trim($t['Contact_Id']) + CONSTANT_GAP_CONTACTS;
-				$t['Ticket_Title'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($t['Ticket_Title']))));
-				$t['Ticket_Post'] = addSlashes(trim($t['Ticket_Post']));
+				$t['Ticket_Title'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Title'])));
+				$t['Ticket_Post'] = trim($t['Ticket_Post']);
+				$t['Ticket_Post'] = Purifier::clean($t['Ticket_Post']);
 
 				$t = trimAndNullIfEmpty($t);
 
@@ -1571,14 +1576,13 @@ class Posts extends BaseClass {
 				$p['Creation_Date'] = $p['Date_Creation']." ".$p['Time'];
 				$p['Creation_Date'] = str_replace(".0000000","", $p['Creation_Date']);
 				$p['Post_Public'] = $p['Post_Public'] == '' ? '2' : '3';
-				$p['Post'] = addslashes(trim($p['Post']));
+				$p['Post'] = trim($p['Post']);
 				$p['Post'] = preg_replace("/<img[^>]+\>/i", "", $p['Post']); 
 				$p['Post'] = preg_replace("/<a[^>]+><\/a>/i", "", $p['Post']); 
-				$p['Post'] = str_replace("\xc2\xa0","",$p['Post']);
-				$p['Post'] = str_replace("\xc3\xa0","",$p['Post']);
 				$p['Post'] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $p['Post']);				// replace redundadt <br>, space ...
 				$p['Post'] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $p['Post']);								// removed br from end post
 				$p['Post'] = str_replace('<p>&nbsp;</p>','',$p['Post']);
+				$p['Post'] = Purifier::clean($p['Post']);
 
 				try {
 					$convertion = Html2Text::convert($p['Post']);
@@ -1586,11 +1590,11 @@ class Posts extends BaseClass {
 						$p['Post_Plain'] = $convertion->getText();
 					}
 					else {
-						$p['Post_Plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($p['Post']))));
+						$p['Post_Plain'] = trim(htmlspecialchars_decode(strip_tags($p['Post'])));
 					}
 				} 
 				catch (\Exception $e) {
-					$p['Post_Plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($p['Post']))));
+					$p['Post_Plain'] = trim(htmlspecialchars_decode(strip_tags($p['Post'])));
 				}
 		
 				if ($p['Id_Customer_User'] != '') {
@@ -1644,7 +1648,7 @@ class TicketsHistroy extends BaseClass {
 
 	public function importSelf() {
 
-		$query = mssql_query("SELECT th.*, CONVERT(VARCHAR(19), th.Date_Time, 120) as 'date_time_formatted', e.Email as 'email_changed_by', e2.Email as 'email_assignee' 
+		$query = mssql_query("SELECT DISTINCT th.*, CONVERT(VARCHAR(19), th.Date_Time, 120) as 'date_time_formatted', e.Email as 'email_changed_by', e2.Email as 'email_assignee' 
 							  FROM Ticket_History th
 							  LEFT JOIN Employees e ON (e.id = th.Id_User_changed_by)
 							  LEFT JOIN Employees e2 ON (e2.id = th.Id_User)");
@@ -1662,7 +1666,10 @@ class TicketsHistroy extends BaseClass {
 				$query = "SELECT * FROM tickets WHERE id = '".trim($t['Id_Ticket'])."'";
 				$result = mysqli_query($this->manager->conn,$query);
 				$ti = mysqli_fetch_assoc($result);
-				if (count($ti)) $ti = trimAndNullIfEmpty($ti);
+				if (count($ti)) {
+					$ti['post'] = Purifier::clean($ti['post']);
+					$ti = trimAndNullIfEmpty($ti);
+				}
 
 				if (count($ti)) {
 
@@ -1677,12 +1684,24 @@ class TicketsHistroy extends BaseClass {
 					$assignee = mysqli_fetch_assoc($result);
 					if (count($assignee)) $assignee = trimAndNullIfEmpty($assignee);
 					$assignee_id = isset($assignee) ? $assignee['id'] : $ti['assignee_id'];
+					
+					// try {
+					// 	$convertion = Html2Text::convert($ti['post']);
+					// 	if (is_object($convertion)) {
+					// 		$ti['post_plain'] = $convertion->getText();
+					// 	}
+					// 	else {
+					// 		$p['post_plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($ti['post']))));
+					// 	}
+					// } 
 
 					$t = trimAndNullIfEmpty($t);
 
 					$query = "INSERT INTO tickets_history (id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
 					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",\"\",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
 					 		  
+
+
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
 						$counter++;
 						$this->successes++;

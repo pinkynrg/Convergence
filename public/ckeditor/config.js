@@ -12,7 +12,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.extraPlugins = 'codesnippet';
 	config.toolbar_Basic =
 		[
-    		[ 'Bold', 'Italic', 'Underline', 'Image', 'CodeSnippet', 'Table']
+    		[ 'Bold', 'Italic', 'Underline', 'Image', 'CodeSnippet', 'Table', 'Source']
 		];
 	config.toolbar = 'Basic';
 };
