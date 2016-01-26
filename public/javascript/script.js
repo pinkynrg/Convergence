@@ -2,8 +2,8 @@
 
 $(document).ready(function() {
 
+	var debug = true;
 	var regex = /\/([a-zA-Z]*)([\/]?)(create|[\d]*)([\/]?)([a-zA-Z]*)([\/]?)/g;
-
 	var timer;
 	var path = window.location.pathname;
 	var rxres = regex.exec(path);
@@ -13,6 +13,10 @@ $(document).ready(function() {
 		target : rxres.length >= 1 ? rxres[1] : null,
 		target_id : rxres.length >= 3 && rxres[3] != 'create' ? rxres[3] : null,
 		target_action : (rxres.length >= 3 && rxres[3] == 'create') || (rxres.length >= 5) ? rxres[3] == 'create' ? rxres[3] : rxres[5] : null
+	};
+
+	var consoleLog = function(string) {
+		if (debug) console.log(string);
 	};
 
 	(function titleMarquee() {
@@ -190,7 +194,7 @@ $(document).ready(function() {
 			url = url + "?page=" + params['page'];
 		}
 
-		console.log(url);
+		consoleLog(url);
 		
 		return url;
 	}
@@ -330,7 +334,7 @@ $(document).ready(function() {
 	if (typeof CKEDITOR.instances['post'] != 'undefined') {
 		CKEDITOR.instances['post'].on('change',function () {
 			
-			console.log(url.target+" "+url.target_id+" "+url.target_action);
+			consoleLog(url.target+" "+url.target_id+" "+url.target_action);
 
 			if (url.target == "tickets" && url.target_id != "" && url.target_action == "") {			
 
@@ -390,7 +394,7 @@ $(document).ready(function() {
 				url: '/ajax/files/'+this.options.target+'/'+this.options.target_action+"/"+this.options.target_id,
 				headers: { "X-CSRF-Token": $('[name=_token').val() },
 				success: function (data) {
-		        	console.log(data);
+		        	consoleLog(data);
 					for (var c=0; c<data.length; c++) {
 						var mockFile = { name: data[c].file_name, id: data[c].id };
             			that.options.addedfile.call(that, mockFile);
@@ -403,7 +407,7 @@ $(document).ready(function() {
 
 				},
 				error: function (data) {
-		        	console.log(data.responseText);
+		        	consoleLog(data.responseText);
 				}
 			});
         },
@@ -415,12 +419,12 @@ $(document).ready(function() {
     		formData.append("target_action", this.options.target_action);
 		},
 		success: function (file, response) {
-			console.log(response)
+			consoleLog(response)
 			file.previewElement.classList.add("dz-success");
 			file.id = response.id;
 		},
 		error: function (file, response) {
-			console.log(response)
+			consoleLog(response)
 			file.previewElement.classList.add("dz-error");
 		},
 
@@ -431,7 +435,7 @@ $(document).ready(function() {
 		        url: '/files/'+file.id,
 				headers: { "X-CSRF-Token": $('[name=_token').val() },
 		        success: function (data) {
-		        	console.log(data.responseText);
+		        	consoleLog(data);
 		        	var _ref;
 			        if (file.previewElement) {
 			          if ((_ref = file.previewElement) != null) {
@@ -440,7 +444,7 @@ $(document).ready(function() {
 			        }
 		        },
 		        error: function (data) {
-		        	console.log(data.responseText);
+		        	consoleLog(data);
 		        }
 		    });
 		}
