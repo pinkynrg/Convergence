@@ -327,15 +327,17 @@ $(document).ready(function() {
 
 	// save post dummy //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	CKEDITOR.instances['post'].on('change',function () {
-		
-		console.log(url.target+" "+url.target_id+" "+url.target_action);
+	if (typeof CKEDITOR.instances['post'] != 'undefined') {
+		CKEDITOR.instances['post'].on('change',function () {
+			
+			console.log(url.target+" "+url.target_id+" "+url.target_action);
 
-		if (url.target == "tickets" && url.target_id != "" && url.target_action == "") {			
+			if (url.target == "tickets" && url.target_id != "" && url.target_action == "") {			
 
-			activatePostDraftMode();
-		}
-	});
+				activatePostDraftMode();
+			}
+		});
+	}
 
 	function activatePostDraftMode() {
 		setInterval(function(){ 

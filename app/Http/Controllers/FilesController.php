@@ -28,7 +28,7 @@ class FilesController extends Controller {
 	    	}
 
 	    	elseif ($target_action == "edit") {
-	    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("id",$target_id)->first();
+	    		$post = Post::where("id",$target_id)->first();
 	    	}
 
 	    	$id = $post->id;  
@@ -66,7 +66,7 @@ class FilesController extends Controller {
 		    	}
 
 		    	elseif (Input::get('target_action') == "edit") {
-		    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("id",Input::get('target_id'))->first(); 
+		    		$post = Post::where("id",Input::get('target_id'))->first(); 
 		    	}
 
 	    		$id = $post->id;  
