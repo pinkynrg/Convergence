@@ -18,7 +18,7 @@ class LoginController extends Controller {
 	public function showLogin()
 	{
 		if (Auth::check()) {
-			return redirect()->route('root');
+			return redirect()->intended('defaultpage');
 		}
 		else {
 			$data['title'] = 'login';
@@ -41,7 +41,7 @@ class LoginController extends Controller {
 				$user->save();
 			}
 
-			return redirect()->route('root')->with('successes',['Accessed successfully']);
+			return redirect()->intended()->with('successes',['Accessed successfully']);
 		}
 
 		else {

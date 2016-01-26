@@ -23,7 +23,7 @@ class FilesController extends Controller {
 	    
 	    // if file listing request is for in a show ticket page, then I want list of files attached to mock post
 	    if ($resource == "posts") { 
-	    	$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$id)->first(); $id = $post->id;  
+	    	$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$id)->first(); $id = isset($post->id) ? $post->id : null;  
 	    }
     	return File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
     }

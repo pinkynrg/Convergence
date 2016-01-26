@@ -12,7 +12,7 @@ class EmailsController extends Controller {
 	static $view = null;
 	static $content = null;
 	static $data = array();
-	static $to = array();
+	static $to = ['biggyapple@gmail.com','meli.f@elettric80.it'];
 	static $cc = array();
 	static $bcc = array();
 
@@ -22,15 +22,22 @@ class EmailsController extends Controller {
 		self::setSubject("New Post to Ticket #".$post->ticket->id);
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
-		self::add('to','biggyapple@gmail.com');
-		self::add('to','meli.f@elettric80.it');
+		self::send();	
+	}
+
+	public static function sendTicket($id) {
+
+		$ticket = Ticket::find($id);
+		self::setSubject("New Ticket #".$ticket->id);
+		self::$view = "emails/ticket";
+		self::$data['ticket'] = $ticket;
 		self::send();	
 	}
 
 	private static function send() {
 		
 		$html = view(self::$view,self::$data)->render();
-		$css = file_get_contents(PUBLIC_FOLDER."/css/emails.css");	
+		$css = file_get_contents(PUBLIC_FOLDER."/css/emails.css");
 		$cssToInlineStyles = new CssToInlineStyles();
 
 		$cssToInlineStyles->setHTML($html);
@@ -44,6 +51,9 @@ class EmailsController extends Controller {
 			if (isset(self::$bcc)) { $message->bcc(self::$bcc); }
 			$message->subject(self::$subject);
 		});
+
+		echo self::$content;
+		die();
 
 		self::clear();
 	}
