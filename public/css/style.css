@@ -397,10 +397,14 @@ a:visited, a:link, a:active, a:visited {
     font-size: 15px;
     margin: 10px 0px;
 }
+
+.post_details {
+  display: table-cell;
+}
+
 .post_details a {
   color: #DDD !important;
   text-decoration: none;
-  display: table-cell;
   font-size: 18px;
 }
 

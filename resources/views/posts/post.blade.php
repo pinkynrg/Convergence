@@ -32,7 +32,7 @@
 	@if (Route::getCurrentRoute()->getPath() == 'tickets/{id}')
 
 		<div class="post_details">
-			<span> <a href="{{ route('posts.show', $post->id) }}"> Details </a></span>
+			<a href="{{ route('posts.show', $post->id) }}"> Details </a>
 		</div>
 
 	@endif

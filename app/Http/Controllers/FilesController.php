@@ -18,13 +18,24 @@ class FilesController extends Controller {
         $this->repo = $filesRepository;
     }
 
-    public function listFiles($resource, $id) {
-	    $resource_type = 'App\\Models\\'.ucfirst(str_singular($resource));
+    public function listFiles($target, $target_action, $target_id) {
+	    $resource_type = 'App\\Models\\'.ucfirst(str_singular($target));
 	    
-	    // if file listing request is for in a show ticket page, then I want list of files attached to mock post
-	    if ($resource == "posts") { 
-	    	$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$id)->first(); $id = isset($post->id) ? $post->id : null;  
+	    if ($target == "posts") { 
+	    	
+	    	if ($target_action == "create") {
+	    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$target_id)->first(); 
+	    	}
+
+	    	elseif ($target_action == "edit") {
+	    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("id",$target_id)->first();
+	    	}
+
+	    	$id = $post->id;  
 	    }
+
+	    $id = $target_id;
+
     	return File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
     }
 
@@ -48,9 +59,18 @@ class FilesController extends Controller {
 
     		$id = Input::get('target_id');
 
-    		// if file listing request is for in a show ticket page, then I want list of files attached to mock post
-		    if (Input::get('target') == "posts") { 
-		    	$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",Input::get('target_id'))->first(); $id = $post->id;  
+		    if (Input::get('target') == "posts") {
+
+		    	if (Input::get('target_action') == "create") {
+		    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",Input::get('target_id'))->first(); 
+		    	}
+
+		    	elseif (Input::get('target_action') == "edit") {
+		    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("id",Input::get('target_id'))->first(); 
+		    	}
+
+	    		$id = $post->id;  
+
 		    }
 
 	    	$request['file'] = Input::file('file');

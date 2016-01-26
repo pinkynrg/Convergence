@@ -160,7 +160,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
 	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);
 	Route::get('ajax/tickets/equipment/{company_id}', ['uses' => 'TicketsController@ajaxEquipmentRequest', 'as' => 'json.tickets.equipment']);
-	Route::get('ajax/files/{resource_type}/{id}', ['uses' => 'FilesController@listFiles', 'as' => 'files.list']);
+	Route::get('ajax/files/{target}/{target_action}/{id}', ['uses' => 'FilesController@listFiles', 'as' => 'files.list']);
 
 	Route::get('api/tickets/{params?}', ['uses' => 'TicketsController@getTickets', 'as' => 'api.tickets.index']);
 

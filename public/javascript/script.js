@@ -370,11 +370,13 @@ $(document).ready(function() {
 			if (url.target == "tickets" && (url.target_action == "create" || url.target_action == "edit")) {
 				this.options.target = url.target;
 				this.options.target_id = url.target_id;
+				this.options.target_action = url.target_action == "edit" ? "edit" : "create";
 			}
 			// dropzone for posts
 			if ((url.target == "posts" && url.target_action == "edit") || (url.target == "tickets" && url.target_id != "" && url.target_action == "")) {
 				this.options.target = "posts";
 				this.options.target_id = url.target_id;
+				this.options.target_action = url.target_action == "edit" ? "edit" : "create";
 			}
 
 			var that = this;
@@ -382,7 +384,7 @@ $(document).ready(function() {
 			// get list of files already loaded
 			$.ajax({
 				type: 'GET',
-				url: '/ajax/files/'+this.options.target+'/'+this.options.target_id,
+				url: '/ajax/files/'+this.options.target+'/'+this.options.target_action+"/"+this.options.target_id,
 				headers: { "X-CSRF-Token": $('[name=_token').val() },
 				success: function (data) {
 					for (var c=0; c<data.length; c++) {
@@ -431,8 +433,9 @@ $(document).ready(function() {
 			file.previewElement.classList.add("dz-success");
 			file.id = response.id;
 		},
-		error: function (file, response) {
+		error: function (file, responseText) {
 			file.previewElement.classList.add("dz-error");
+			console.log(responseText);
 		}
 	});
 
