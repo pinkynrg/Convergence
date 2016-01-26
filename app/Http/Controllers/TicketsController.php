@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Controllers\SlackController;
+use App\Http\Controllers\EmailsController;
 use App\Http\Requests\CreateTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
@@ -141,6 +142,7 @@ class TicketsController extends Controller {
 			}
 		}
 
+		EmailsController::sendTicket($ticket->id);
 		// SlackController::sendTicket($ticket);
 
         return (Request::ajax()) ? 'success' : redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
