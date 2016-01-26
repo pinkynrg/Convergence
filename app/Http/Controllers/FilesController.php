@@ -19,22 +19,23 @@ class FilesController extends Controller {
     }
 
     public function listFiles($target, $target_action, $target_id) {
+
 	    $resource_type = 'App\\Models\\'.ucfirst(str_singular($target));
-	    
+
 	    if ($target == "posts") { 
 	    	
 	    	if ($target_action == "create") {
-	    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",$target_id)->first(); 
+	    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",POST_DRAFT_STATUS_ID)->where("ticket_id",$target_id)->first(); 
 	    	}
 
 	    	elseif ($target_action == "edit") {
 	    		$post = Post::where("id",$target_id)->first();
 	    	}
-
 	    	$id = $post->id;  
 	    }
-
-	    $id = $target_id;
+	    else {
+	    	$id = $target_id;
+	   	}
 
     	return File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
     }
@@ -62,7 +63,7 @@ class FilesController extends Controller {
 		    if (Input::get('target') == "posts") {
 
 		    	if (Input::get('target_action') == "create") {
-		    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",1)->where("ticket_id",Input::get('target_id'))->first(); 
+		    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",POST_DRAFT_STATUS_ID)->where("ticket_id",Input::get('target_id'))->first(); 
 		    	}
 
 		    	elseif (Input::get('target_action') == "edit") {
@@ -72,6 +73,14 @@ class FilesController extends Controller {
 	    		$id = $post->id;  
 
 		    }
+		    elseif (Input::get('target') == "tickets") {
+		    	if (Input::get('target_action') == "create") {
+		        	$model = ucfirst(str_singular($request['target']));
+	        		$model = "App\\Models\\".$model;
+	        		$draft = $model::where('status_id',TICKET_DRAFT_STATUS_ID)->where('creator_id',$request['uploader_id'])->first();
+	        		$request['target_id'] = $draft->id;
+	        	}
+		    }
 
 	    	$request['file'] = Input::file('file');
 	        $request['target'] = Input::get('target');
@@ -79,18 +88,9 @@ class FilesController extends Controller {
 	        $request['target_action'] = Input::get('target_action');
 	        $request['uploader_id'] = Auth::user()->active_contact->id;
 
-	        if ($request['target_action'] == 'create') {
-	        	$model = ucfirst(str_singular($request['target']));
-	        	$model = "App\\Models\\".$model;
-	        	$draft = $model::where('status_id',9)->where('creator_id',$request['uploader_id'])->first();
-	        	$request['target_id'] = $draft->id;
-	        }
-
 	        $response = $this->repo->upload($request);
+
 	        return $response;
-	    }
-	    else {
-	    	// not valid
 	    }
     }
 

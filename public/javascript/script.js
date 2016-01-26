@@ -366,6 +366,8 @@ $(document).ready(function() {
 		maxFiles: 3,
 		maxFileSize: 5,
 		headers: { "X-CSRF-Token": $('[name=_token').val() },
+
+		// get list of files already loaded
 		init: function () {
 			
 			// dropzone for tickets
@@ -383,12 +385,12 @@ $(document).ready(function() {
 
 			var that = this;
 
-			// get list of files already loaded
 			$.ajax({
 				type: 'GET',
 				url: '/ajax/files/'+this.options.target+'/'+this.options.target_action+"/"+this.options.target_id,
 				headers: { "X-CSRF-Token": $('[name=_token').val() },
 				success: function (data) {
+		        	console.log(data);
 					for (var c=0; c<data.length; c++) {
 						var mockFile = { name: data[c].file_name, id: data[c].id };
             			that.options.addedfile.call(that, mockFile);
@@ -405,19 +407,31 @@ $(document).ready(function() {
 				}
 			});
         },
+
+        // send a file 
     	sending: function(file, xhr, formData) {
-    		// send a file 
     		formData.append("target", this.options.target);
     		formData.append("target_id", this.options.target_id);
-    		formData.append("target_action", url.target_action);
+    		formData.append("target_action", this.options.target_action);
 		},
+		success: function (file, response) {
+			console.log(response)
+			file.previewElement.classList.add("dz-success");
+			file.id = response.id;
+		},
+		error: function (file, response) {
+			console.log(response)
+			file.previewElement.classList.add("dz-error");
+		},
+
+		// delete a file in the dropzone
 		removedfile: function(file) {
-			// delete a file in the dropzone
 			$.ajax({
 		        type: 'DELETE',
 		        url: '/files/'+file.id,
 				headers: { "X-CSRF-Token": $('[name=_token').val() },
 		        success: function (data) {
+		        	console.log(data.responseText);
 		        	var _ref;
 			        if (file.previewElement) {
 			          if ((_ref = file.previewElement) != null) {
@@ -428,16 +442,7 @@ $(document).ready(function() {
 		        error: function (data) {
 		        	console.log(data.responseText);
 		        }
-
 		    });
-		},
-		success: function (file, response) {
-			file.previewElement.classList.add("dz-success");
-			file.id = response.id;
-		},
-		error: function (file, responseText) {
-			file.previewElement.classList.add("dz-error");
-			console.log(responseText);
 		}
 	});
 
