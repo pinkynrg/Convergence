@@ -34,9 +34,10 @@ function trimAndNullIfEmpty($row) {
 		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
+		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$key]);
 		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]); 
+		$row[$key] = Encoding::fixUTF8($row[$key]);
 		$row[$key] = addslashes($row[$key]); 
-		$row[$key] = Encoding::toUTF8($row[$key]);
 
 		// write rules above
 
