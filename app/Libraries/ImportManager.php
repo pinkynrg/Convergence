@@ -15,15 +15,14 @@ function logMessage($message,$type = 'normal') {
 		case 'deletes' : echo SET_PURPLE; break;
 	}
 
-	echo "[".date("Y-m-d H:i:s")."] ".substr($message,0,150)."\n";
+	echo "[".date("Y-m-d H:i:s")."] ".$message."\n";
 
 	echo RESET_COLOR;
 }
 
-function trimAndNullIfEmpty($row) {
+function sanitize($row) {
 	
 	foreach ($row as $key => $value) {
-		$row[$key] = trim($row[$key]);
 		$row[$key] = strtolower($row[$key]) == 'na' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == 'n/a' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == 'test' ? '' : $row[$key];
@@ -34,17 +33,24 @@ function trimAndNullIfEmpty($row) {
 		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
-		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$key]);								// removed non-UTF8 chartacters
+		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', ' ', $row[$key]);								// removed non-UTF8 chartacters
 		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]);													// removed redundand spaces
 		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $row[$key]);				// replace redundadt <br>, space ...
 		$row[$key] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $row[$key]);								// removed br from end post
+		$row[$key] = preg_replace('/<img[^>]+\>/i', '', $row[$key]); 
+		$row[$key] = preg_replace('/<a[^>]+><\/a>/i', '', $row[$key]); 
 		$row[$key] = str_replace('<p>&nbsp;</p>','',$row[$key]);											// removed empty html paragraph
 		$row[$key] = Encoding::fixUTF8($row[$key]);															// fixes broken UTF8 characters
+		$row[$key] = trim(trim($row[$key]));
+	}
+
+	return $row;
+}
+
+function nullIt($row) {
+	foreach ($row as $key => $value) {
 		$row[$key] = stripslashes($row[$key]);																// srip existing escapes slashes
 		$row[$key] = addslashes($row[$key]);																// add them slashes now that the string is reset to no slash
-
-		// write rules above
-
 		$row[$key] = strtolower($row[$key]) == '' ? 'NULL' : "\"".$row[$key]."\"";
 	}
 
@@ -112,7 +118,6 @@ class ImportManager {
 				logMessage('Missing class: '.$class_name);
 			}
 		}
-		// die();
 
 		$this->setup();
 		$this->connect();
@@ -527,7 +532,7 @@ class Departments extends BaseClass {
 
 			foreach ($departments as $d) {
 
-				$d = trimAndNullIfEmpty($d);
+				$d = nullIt(sanitize($d));
 
 				$query = "INSERT INTO departments (id,name) VALUES (".$d['Id'].",".$d['Department'].")";	
 
@@ -565,7 +570,7 @@ class Divisions extends BaseClass {
 
 			foreach ($divisions as $d) {
 
-				$d = trimAndNullIfEmpty($d);
+				$d = nullIt(sanitize($d));
 
 				$query = "INSERT INTO divisions (id,name) 
 						  VALUES (".$d['Id'].",".$d['Type'].")";
@@ -605,7 +610,7 @@ class EquipmentTypes extends BaseClass {
 			foreach ($equipmentTypes as $r) {
 
 				// not used since there is a TBA record that can't be NULL
-				//$e = trimAndNullIfEmpty($e);
+				//$r = nullIt(sanitize($r));
 
 				$query = "INSERT INTO equipment_types (id,name) 
 						  VALUES ('".$r['Id']."','".$r['Name']."')";
@@ -641,7 +646,7 @@ class ConnectionTypes extends BaseClass {
 
 			foreach ($connectionTypes as $r) {
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 
 				$query = "INSERT INTO connection_types (id,name,description) 
 						  VALUES (".$r[0].",".$r[1].",".$r[2].")";
@@ -678,7 +683,7 @@ class SupportTypes extends BaseClass {
 	
 			foreach ($supportTypes as $s) {
 
-				$s = trimAndNullIfEmpty($s);
+				$s = nullIt(sanitize($s));
 
 				$query = "INSERT INTO support_types (id,name) 
 						  VALUES (".$s['id'].",".$s['Type'].")";
@@ -715,7 +720,7 @@ class JobTypes extends BaseClass {
 	
 			foreach ($table as $r) {
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 
 				$query = "INSERT INTO job_types (id,name) 
 						  VALUES (".$r['id'].",".$r['Job_Type'].")";
@@ -753,7 +758,7 @@ class Tags extends BaseClass {
 	
 			foreach ($table as $r) {
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 			
 				$query = "INSERT INTO tags (id,name) 
 						  VALUES (".$r['Id'].",".$r['Tag_Description'].")";
@@ -791,7 +796,7 @@ class Priorities extends BaseClass {
 	
 			foreach ($table as $r) {
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 				
 				$query = "INSERT INTO priorities (id,name) 
 						  VALUES (".$r['Id'].",".$r['Priority'].")";
@@ -828,7 +833,7 @@ class Statuses extends BaseClass {
 	
 			foreach ($table as $r) {
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 				
 				$query = "INSERT INTO statuses (id,name) 
 					  	VALUES (".$r['Id'].",".$r['Status'].")";
@@ -879,7 +884,7 @@ class Titles extends BaseClass {
 	
 			foreach ($table as $r) {
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 				
 				$query = "INSERT INTO titles (id,name) VALUES (".$r['Id'].",".$r['Title'].")";
 				
@@ -915,7 +920,7 @@ class Companies extends BaseClass {
 	
 			foreach ($table as $r) {
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 
 				$r['Connect_Option'] = $r['Connect_Option'] == "'A'" ? "'1'" : "'2'";
 				$r['Id_Support_Type'] = $r['Id_Support_Type'] == '"0"' ? 'NULL' : $r['Id_Support_Type'];
@@ -987,7 +992,7 @@ class People extends BaseClass {
 				$r['Phone'] = str_replace(array(".","-"," ","(",")"),"",$r['Phone']);
 				$r['Phone'] = (strlen($r['Phone']) < 10 || strlen($r['Phone']) > 10) ? "" : $r['Phone'];
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 				
 				$query = "INSERT INTO people (id,first_name,last_name,created_at,updated_at) 
 						VALUES (".$r['Id'].",".$r['First_Name'].",".$r['Last_Name'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
@@ -1034,7 +1039,7 @@ class People extends BaseClass {
 
 				$c['Email'] = strtolower($c['Email']);
 
-				$c = trimAndNullIfEmpty($c);
+				$c = nullIt(sanitize($c));
 
 				$query = "INSERT INTO people (id,first_name,last_name,created_at,updated_at) 
 						  VALUES (".$c['Id_Contact'].",".$c['Name'].",".$c['Last_Name'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
@@ -1115,7 +1120,7 @@ class CompanyPerson extends BaseClass {
 				$r['Phone'] = str_replace(array(".","-"," ","(",")"),"",$r['Phone']);
 				$r['Phone'] = (strlen($r['Phone']) < 10 || strlen($r['Phone']) > 10) ? "" : $r['Phone'];
 
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 
 				$query = "INSERT INTO company_person (id, person_id, company_id, department_id, title_id,phone,extension,cellphone,email,group_type_id) VALUES 
 				(".$counter.",".$r['Id'].",'".ELETTRIC80_COMPANY_ID."',".$r['Department'].",".$r['Title'].",".$r['Phone'].",".$r['Extension'].",NULL,".$r['Email'].",'1')";
@@ -1163,7 +1168,7 @@ class CompanyPerson extends BaseClass {
 
 				$c['Email'] = strtolower($c['Email']);
 
-				$c = trimAndNullIfEmpty($c);
+				$c = nullIt(sanitize($c));
 
 				$query = "INSERT INTO company_person (id,person_id,company_id,department_id,title_id,phone,extension,cellphone,email,group_type_id, created_at,updated_at) VALUES 
 				(".$counter.",".$c['Id_Contact'].",".$c['Id_Customer'].",NULL,NULL,".$c['Phone'].",NULL,".$c['CellPhone'].",".$c['Email'].",'2','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
@@ -1322,7 +1327,7 @@ class Equipment extends BaseClass {
 
 				$r['WarrantyExpiration'] = date('Y-m-d',strtotime($r['WarrantyExpiration']));
 				
-				$r = trimAndNullIfEmpty($r);
+				$r = nullIt(sanitize($r));
 				
 				$query = "INSERT INTO equipment (id,name, cc_number, serial_number, equipment_type_id, notes, warranty_expiration, company_id) 
 						  VALUES (".$r['Id'].",".$r['NickName'].",".$r['CC_Number'].",".$r['Serial_Number'].",".$r['Equipment_Type'].",".$r['Notes'].",".$r['WarrantyExpiration'].",".$r['CompanyId'].")";
@@ -1363,7 +1368,7 @@ class CompanyMainContacts extends BaseClass {
 
 			foreach ($table as $c) {
 
-				$c = trimAndNullIfEmpty($c);
+				$c = nullIt(sanitize($c));
 
 				$query_contact = mssql_query("SELECT id_Contact FROM Contact WHERE CAST(Contact.Name AS VARCHAR(50)) = ".$c['Contact']);
 				$result = mssql_fetch_array($query_contact, MSSQL_ASSOC);
@@ -1470,35 +1475,21 @@ class Tickets extends BaseClass {
 		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
 
 		if ($this->truncate()) {
-	
 			foreach ($table as $t) {
 
-				try {
-					$convertion = Html2Text::convert($p['Ticket_Post']);
-					if (is_object($convertion)) {
-						$t['Ticket_Post_Plain'] = $convertion->getText();
-					}
-					else {
-						$t['Ticket_Post_Plain'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Post'])));
-					}
-				} 
-				catch (\Exception $e) {
-					$t['Ticket_Post_Plain'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Post'])));
-				}
+				$t = sanitize($t);
 
 				$t['Contact_Id'] = findMatchingContactId($t);
 				$t['Contact_Id'] = trim($t['Contact_Id']) == '' ? '' : trim($t['Contact_Id']) + CONSTANT_GAP_CONTACTS;
 				$t['Ticket_Title'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Title'])));
-				$t['Ticket_Post'] = trim($t['Ticket_Post']);
 				$t['Ticket_Post'] = Purifier::clean($t['Ticket_Post']);
+				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] ? Html2Text::convert($t['Ticket_Post']) : "";
 
-				$t = trimAndNullIfEmpty($t);
+				// if the post without the html tags is an empty string, use title for both rich and raw posts
+				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
+				$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
 
-				// if the post without the html tags is NULL or empty string, use title for both rich and raw posts
-				$use_title = ($t['Ticket_Post_Plain'] == 'NULL' || $t['Ticket_Post_Plain'] == '');
-
-				$t['Ticket_Post_Plain'] = $use_title ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
-				$t['Ticket_Post'] = $use_title ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
+				$t = nullIt($t);
 
 				$creator_id = findCompanyPersonId($t['Creator'],$this->manager->conn);
 				$assignee_id = findCompanyPersonId($t['Id_Assignee'],$this->manager->conn);
@@ -1513,6 +1504,7 @@ class Tickets extends BaseClass {
 				else {
 					$this->errors++;
 					if ($this->debug) {
+						logMessage($query);
 						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Ticket ID = ".$t['Id']."]");
 						if (!isset($ids)) $ids = ''; $ids .= $t['Id'].",";
 					}
@@ -1575,28 +1567,19 @@ class Posts extends BaseClass {
 		if ($this->truncate()) {
 	
 			foreach ($table as $p) {
-				
-				$p['Creation_Date'] = $p['Date_Creation']." ".$p['Time'];
-				$p['Creation_Date'] = str_replace(".0000000","", $p['Creation_Date']);
+
+				$p = sanitize($p);
+
+				$p['Date_Creation'] = $p['Date_Creation']." ".$p['Time'];
+				$p['Date_Creation'] = str_replace(".0000000","", $p['Date_Creation']);
 				$p['Post_Public'] = $p['Post_Public'] == '' ? '2' : '3';
-				$p['Post'] = trim($p['Post']);
-				$p['Post'] = preg_replace("/<img[^>]+\>/i", "", $p['Post']); 
-				$p['Post'] = preg_replace("/<a[^>]+><\/a>/i", "", $p['Post']); 
 				$p['Post'] = Purifier::clean($p['Post']);
 
-				try {
-					$convertion = Html2Text::convert($p['Post']);
-					if (is_object($convertion)) {
-						$p['Post_Plain'] = $convertion->getText();
-					}
-					else {
-						$p['Post_Plain'] = trim(htmlspecialchars_decode(strip_tags($p['Post'])));
-					}
-				} 
-				catch (\Exception $e) {
-					$p['Post_Plain'] = trim(htmlspecialchars_decode(strip_tags($p['Post'])));
-				}
-		
+				$p['Post_Plain'] = $p['Post'] ? Html2Text::convert($p['Post']) : "";
+
+				$p['Post'] = $p['Post'] == '' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post'];
+				$p['Post_Plain'] = $p['Post_Plain'] == '' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post_Plain'];
+
 				if ($p['Id_Customer_User'] != '') {
 					$subquery1 = mssql_query("SELECT * FROM Customer_User_Login WHERE Customer_Id = '".$p['Id_Customer_User']."'");
 					$result1 = mssql_fetch_array($subquery1, MSSQL_ASSOC);
@@ -1607,18 +1590,14 @@ class Posts extends BaseClass {
 					$record = mysqli_fetch_array($result);
 					$author_id = $record['id'];
 				}
-
-				$p = trimAndNullIfEmpty($p);
-
-				$p['Post'] = $p['Post'] == 'NULL' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post'];
-				$p['Post_Plain'] = $p['Post_Plain'] == 'NULL' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post_Plain'];
-
-				if (!isset($author_id)) 
+				if (!isset($author_id)) {
 					$author_id = findCompanyPersonId($p['Author'],$this->manager->conn);
+				}
+
+				$p = nullIt($p);
 
 				$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,status_id,created_at,updated_at) 
-						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Post_Plain'].",".$author_id.",".$p['Post_Public'].",".$p['Creation_Date'].",".$p['Creation_Date'].")";
-				
+						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Post_Plain'].",".$author_id.",".$p['Post_Public'].",".$p['Date_Creation'].",".$p['Date_Creation'].")";
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
@@ -1666,39 +1645,30 @@ class TicketsHistroy extends BaseClass {
 				$query = "SELECT * FROM tickets WHERE id = '".trim($t['Id_Ticket'])."'";
 				$result = mysqli_query($this->manager->conn,$query);
 				$ti = mysqli_fetch_assoc($result);
-				if (count($ti)) {
-					$ti['post'] = Purifier::clean($ti['post']);
-					$ti = trimAndNullIfEmpty($ti);
-				}
-
+				
 				if (count($ti)) {
 
-					$query = "SELECT * FROM company_person WHERE email = '".trim($t['email_changed_by'])."'";
+					$t = sanitize($t);
+
+					$query = "SELECT * FROM company_person WHERE email = '".$t['email_changed_by']."'";
 					$result = mysqli_query($this->manager->conn,$query);
 					$changer = mysqli_fetch_assoc($result);
-					if (count($changer)) $changer = trimAndNullIfEmpty($changer);
+
 					$changer_id = isset($changer) ? $changer['id'] : 'NULL';
 
 					$query = "SELECT * FROM company_person WHERE email = '".trim($t['email_assignee'])."'";
 					$result = mysqli_query($this->manager->conn,$query);
 					$assignee = mysqli_fetch_assoc($result);
-					if (count($assignee)) $assignee = trimAndNullIfEmpty($assignee);
-					$assignee_id = isset($assignee) ? $assignee['id'] : $ti['assignee_id'];
-					
-					// try {
-					// 	$convertion = Html2Text::convert($ti['post']);
-					// 	if (is_object($convertion)) {
-					// 		$ti['post_plain'] = $convertion->getText();
-					// 	}
-					// 	else {
-					// 		$p['post_plain'] = trim(addSlashes(htmlspecialchars_decode(strip_tags($ti['post']))));
-					// 	}
-					// } 
 
-					$t = trimAndNullIfEmpty($t);
+					$assignee_id = isset($assignee) ? $assignee['id'] : $ti['assignee_id'];
+
+					$t['Id_Division'] = $t['Id_Division'] == 4 ? $ti['division_id'] : $t['Id_Division'];
+
+					$t = nullIt($t);
+					$ti = nullIt($ti);
 
 					$query = "INSERT INTO tickets_history (id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
-					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",\"\",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
+					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['post_plain_text'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
 					 		  
 
 
@@ -1758,7 +1728,7 @@ class TagTickets extends BaseClass {
 				$record = mysqli_fetch_array($result);
 				$tag_id = $record[0];
 
-				$t = trimAndNullIfEmpty($t);
+				$t = nullIt(sanitize($t));
 
 				$query = "INSERT INTO tag_ticket (id,ticket_id,tag_id) 
 						  VALUES (".$counter.",".$t['Id'].",".$tag_id.")";
@@ -1802,7 +1772,7 @@ class Services extends BaseClass {
 
 				$s['Id_contact'] = $s['Id_contact'] == '' ? '' : $s['Id_contact'] + CONSTANT_GAP_CONTACTS;
 
-				$s = trimAndNullIfEmpty($s);
+				$s = nullIt(sanitize($s));
 
 				$internal_contact_id = findCompanyPersonId($s['assigment_contact'],$this->manager->conn);
 				$external_contact_id = findCompanyPersonId($s['Id_contact'],$this->manager->conn);
@@ -1850,7 +1820,7 @@ class ServiceTechnicians extends BaseClass {
 				$s['hours_estimated_onsite'] = strpos(strtolower($s['hours_estimated_onsite']), "day") === false ? $s['hours_estimated_onsite'] : str_replace("/Day","",$s['hours_estimated_onsite']) * $total_days;
 				$s['Id_employee'] = findCompanyPersonId($s['Id_employee'],$this->manager->conn);
 
-				$s = trimAndNullIfEmpty($s);
+				$s = nullIt(sanitize($s));
 
 				$query = 	"INSERT INTO service_technician (id,service_id, technician_id, division_id, work_description, internal_start, internal_end, internal_estimated_hours, onsite_start, onsite_end, onsite_estimated_hours, remote_start, remote_end, remote_estimated_hours, created_at, updated_at)
 							VALUES (".$counter.",".$s['Id_service_request'].",".$s['Id_employee'].",".$s['Id_service_role'].",".$s['work_description'].",".$s['internal_start'].",".$s['internal_completion'].",".$s['hours_estimated_internal'].",".$s['onsite_start'].",".$s['onsite_completion'].",".$s['hours_estimated_onsite'].",NULL,NULL,NULL,'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
@@ -1902,7 +1872,7 @@ class Users extends BaseClass {
 
 				$u['Id_Contact'] = $u['Id_Contact'] == '' ? '' : $u['Id_Contact'] + CONSTANT_GAP_CONTACTS;
 
-				$u = trimAndNullIfEmpty($u);
+				$u = nullIt(sanitize($u));
 
 				$query = "INSERT INTO users (id,person_id,username,password,created_at,updated_at) 
 						  VALUES (".$counter.",".$u['Id_Contact'].",".$u['Customer_User'].",".$u['Customer_Password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
@@ -1930,7 +1900,7 @@ class Users extends BaseClass {
 
 			foreach ($users as $u) {
 
-				$u = trimAndNullIfEmpty($u);
+				$u = nullIt(sanitize($u));
 
 				$query = "INSERT INTO users (id,person_id,username,password,created_at,updated_at) 
 						  VALUES (".$counter.",".$u['Employee_Id'].",".$u['User_name'].",".$u['User_password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
