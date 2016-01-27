@@ -12,13 +12,12 @@ class CreateCompanyPersonRequest extends Request {
 	 */
 	public function authorize()
 	{
-		$authorize = Request::get('company_id') == 1 ? Auth::user()->can('create-employee') : Auth::user()->can('create-contact');
-		return $authorize;
+		return Auth::user()->can('create-contact');
 	}
 
 	public function forbiddenResponse()
 	{
-		return Request::get('company_id') == 1 ? redirect()->route('company_person.employees')->withErrors(['You are not authorized to create a new employee']) : redirect()->route('companies.show',Request::get('company_id'))->withErrors(['You are not authorized to create a new company contact']);
+		return redirect()->route('companies.show',Request::get('company_id'))->withErrors(['You are not authorized to create a new contact']);
 	}
 
 	/**

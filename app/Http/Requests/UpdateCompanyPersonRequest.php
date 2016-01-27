@@ -12,8 +12,7 @@ class UpdateCompanyPersonRequest extends Request {
 	 */
 	public function authorize()
 	{
-		$authorize = Request::get('company_id') == 1 ? Auth::user()->can('update-employee') : Auth::user()->can('update-contact');
-		return $authorize;
+		return Auth::user()->can('update-contact');
 	}
 
 	public function forbiddenResponse()
