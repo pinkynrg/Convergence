@@ -29,7 +29,8 @@ class CreateTicketsHistoryTable extends Migration {
 			$table->integer('equipment_id')->unsigned();
 			$table->integer('company_id')->unsigned();
 			$table->integer('contact_id')->unsigned()->nullable();		
-			$table->integer('job_type_id')->unsigned()->nullable();		
+			$table->integer('job_type_id')->unsigned()->nullable();
+			$table->integer('level_id')->unsigned()->default(1);		
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -46,6 +47,7 @@ class CreateTicketsHistoryTable extends Migration {
 			$table->foreign('company_id')->references('id')->on('companies');
 			$table->foreign('contact_id')->references('id')->on('company_person');
 			$table->foreign('job_type_id')->references('id')->on('job_types');
+			$table->foreign('level_id')->references('id')->on('levels');
 			$table->unique( array('ticket_id','created_at') );
 
 		});		

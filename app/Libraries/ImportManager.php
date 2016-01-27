@@ -65,7 +65,7 @@ function htmlToText($html) {
 }
 
 function findCompanyPersonId($person_id,$conn) {
-	if ($person_id != 0) {
+	if ($person_id != "0") {
 		$query = "SELECT * FROM company_person WHERE person_id = ".$person_id;
 		$result = mysqli_query($conn, $query);
 		$record = mysqli_fetch_array($result);
@@ -251,6 +251,82 @@ class BaseClass {
 	private function importDependencies($uuid) {
 		foreach ($this->dependencies as $dependency) {
 			$dependency->import($uuid,$this->debug);
+		}
+	}
+}
+
+class EscalationProfiles extends BaseClass {
+	
+	public $table_name = "escalation_profiles";
+	public $dependency_names = [];
+
+	public function importSelf() {
+		
+		if ($this->truncate()) {
+
+			$queries = [
+				"INSERT INTO escalation_profiles (id, name, description) VALUES (1,'Default Company Profile','This is the default escalation company profile')"
+			];
+
+			foreach ($queries as $query) {
+
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
+class EscalationProfileEvents extends BaseClass {
+	
+	public $table_name = "escalation_profile_event";
+	public $dependency_names = ["escalation_profiles","escalation_events","priorities"];
+
+	public function importSelf() {
+		
+		if ($this->truncate()) {
+			$queries = [
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,1,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,1,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,1,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,2,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,2,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,2,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,3,28800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,3,28800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,3,28800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,4,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,4,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,4,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,5,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,5,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,5,604800)"
+			];
+
+			foreach ($queries as $query) {							
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
 		}
 	}
 }
@@ -919,7 +995,38 @@ class Statuses extends BaseClass {
 			logMessage("Errors: ".$this->errors,'errors');
 		}
 	}
-}				
+}	
+
+class Levels extends BaseClass {
+	public $table_name = 'levels';
+	public $dependency_names = [];
+
+	public function importSelf() {
+
+		if ($this->truncate()) {
+
+			$queries = ["INSERT INTO levels (id, name) VALUES (1,'Level 1')",
+						"INSERT INTO levels (id, name) VALUES (2,'Level 2')",
+						"INSERT INTO levels (id, name) VALUES (3,'Level 3')"];
+			
+			foreach ($queries as $query) {
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+		
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
 
 class Titles extends BaseClass {
 
@@ -1517,7 +1624,7 @@ class CompanyAccountManagers extends BaseClass {
 class Tickets extends BaseClass {
 		
 	public $table_name = 'tickets';
-	public $dependency_names = ['company_person','statuses','priorities','divisions','equipment','companies','job_types'];
+	public $dependency_names = ['levels','company_person','statuses','priorities','divisions','equipment','companies','job_types'];
 
 	public function importSelf() {
 
@@ -1546,8 +1653,10 @@ class Tickets extends BaseClass {
 				$assignee_id = findCompanyPersonId($t['Id_Assignee'],$this->manager->conn);
 				$contact_id = findCompanyPersonId($t['Contact_Id'],$this->manager->conn);
 
-				$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
-				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Ticket_Post_Plain'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
+				$t['Level'] = $t['Level'] == 'NULL' ? 1 : $t['Level'];
+
+				$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Ticket_Post_Plain'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Level'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
 								
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
@@ -1717,8 +1826,8 @@ class TicketsHistroy extends BaseClass {
 					$t = nullIt($t);
 					$ti = nullIt($ti);
 
-					$query = "INSERT INTO tickets_history (id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
-					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['post_plain_text'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
+					$query = "INSERT INTO tickets_history (id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['post_plain_text'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$ti['level_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
 					 		  
 
 
