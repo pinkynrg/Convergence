@@ -3,6 +3,7 @@
 use App\Http\Requests\CreateEscalationProfileRequest;
 use App\Http\Requests\UpdateEscalationProfileRequest;
 use App\Http\Requests\UpdateEscalationProfileEventsRequest;
+use App\Models\Level;
 use App\Models\EscalationProfile;
 use App\Models\EscalationEvent;
 use App\Models\Priority;
@@ -39,6 +40,7 @@ class EscalationProfilesController extends Controller {
 				foreach ($escalation_profile_events as $key => $escalation_profile_event) {
 					$data['escalation_profile_events']['delay_time'][$key] = $escalation_profile_event->delay_time;
 					$data['escalation_profile_events']['event_id'][$key] = $escalation_profile_event->event_id;
+					$data['escalation_profile_events']['level_id'][$key] = $escalation_profile_event->level_id;
 					$data['escalation_profile_events']['priority_id'][$key] = $escalation_profile_event->priority_id;
 				}
 			}
@@ -48,6 +50,7 @@ class EscalationProfilesController extends Controller {
 
 			$data['escalation_profile'] = EscalationProfile::find($id);
 			$data['escalation_events'] = EscalationEvent::all();
+			$data['levels'] = Level::all();
 			$data['priorities'] = Priority::all();
 			$data['delays'] = self::parseDelays();
 

@@ -2,6 +2,10 @@
 	<td class="escalation_level">
 	</td>
 	<td>
+		{!! Form::BSLabel("level_id[".$counter."]", " ", ['class' => 'delay_time']) !!}
+		{!! Form::BSSelect("level_id[".$counter."]", $levels, null, ['key' => 'id', 'value' => 'name', 'bclass' => 'col-xs-12', 'class' => 'level_id']) !!}
+	</td>
+	<td>
 		{!! Form::BSLabel("delay_time[".$counter."]", "After", ['bclass' => 'col-xs-2', 'class' => 'delay_time']) !!}
 		{!! Form::BSSelect("delay_time[".$counter."]", $delays, null, ['bclass' => 'col-xs-10', 'class' => 'delay_time']) !!}
 	</td>
