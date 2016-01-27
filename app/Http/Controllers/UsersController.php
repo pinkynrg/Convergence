@@ -22,14 +22,15 @@ class UsersController extends Controller {
         else return redirect()->back()->withErrors(['Access denied to users index page']);		
 	}
 
-	public function create() {
+	public function create($id=null) {
+		$data['title'] = "Create User";
+		$data['user'] = new User();
+		$data['user']->person_id = $id;
 		$people = Person::select("people.*");
 		$people->leftJoin('users','users.person_id','=','people.id');
 		$people->whereNull('users.id');
 		$people->orderBy('people.last_name');
 		$data['people'] = $people->get();
-
-		$data['title'] = "Create User";
 		return view('users/create', $data);	
 	}
 
@@ -68,7 +69,7 @@ class UsersController extends Controller {
 		if (isset($params['search'])) {
 			$contacts->where(function($query) use ($params) {
 	            $query->where('username','like','%'.$params['search'].'%');
-	            $query->where('people.last_name','like','%'.$params['search'].'%');
+	            $query->orWhere('people.last_name','like','%'.$params['search'].'%');
 	            $query->orWhere('people.first_name','like','%'.$params['search'].'%');;
 			});
 		}

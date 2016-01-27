@@ -9,6 +9,4 @@ class CompanyAccountManager extends CustomModel {
 	public function company_person() {
 		return $this->hasOne('App\Models\CompanyPerson','id','account_manager_id');
 	}
-
-
 }

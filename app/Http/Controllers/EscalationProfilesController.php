@@ -53,9 +53,9 @@ class EscalationProfilesController extends Controller {
 			
 			if (count($escalation_profile_events) > 0) {
 				foreach ($escalation_profile_events as $key => $escalation_profile_event) {
-					$data['escalation_profile_events']['delay_time'][$key] = $escalation_profile_event->delay_time;
-					$data['escalation_profile_events']['event_id'][$key] = $escalation_profile_event->event_id;
-					$data['escalation_profile_events']['fallback_contact_id'][$key] = $escalation_profile_event->fallback_contact_id;
+					$data['escalation_profile_event']['delay_time'][$key] = $escalation_profile_event->delay_time;
+					$data['escalation_profile_event']['event_id'][$key] = $escalation_profile_event->event_id;
+					$data['escalation_profile_event']['fallback_contact_id'][$key] = $escalation_profile_event->fallback_contact_id;
 				}
 			}
 			else {

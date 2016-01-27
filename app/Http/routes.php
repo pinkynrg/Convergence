@@ -121,7 +121,7 @@ Route::group(array('middleware' => 'auth'), function() {
 
 	// users routes
 	Route::get('users',['uses' => 'UsersController@index', 'as' => 'users.index']);
-	Route::get('users/create', ['uses' => 'UsersController@create', 'as' => 'users.create']);
+	Route::get('users/create/{id?}', ['uses' => 'UsersController@create', 'as' => 'users.create']);
 	Route::post('users', ['uses' => 'UsersController@store', 'as' => 'users.store']);
 	Route::get('users/{id}',['uses' => 'UsersController@show', 'as' => 'users.show']);
 	Route::patch('users/{id}', ['uses' => 'UsersController@update', 'as' => 'users.update']);
