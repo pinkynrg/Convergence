@@ -14,8 +14,9 @@ class EquipmentController extends Controller {
 	
 	public function index() {
 		if (Auth::user()->can('read-all-equipment')) {
-			$data['equipment'] = Equipment::paginate(50);
         	$data['title'] = "Equipment";
+			$data['active_search'] = true;
+			$data['equipment'] = Equipment::paginate(50);
 			return view('equipment/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to equipment index page']);		
@@ -77,7 +78,8 @@ class EquipmentController extends Controller {
 
 		// apply search
         if (isset($params['search'])) {
-            $equipment->where('name','like','%'.$params['search'].'%');
+            $equipment->where('equipment.name','like','%'.$params['search'].'%');
+            $equipment->orWhere('equipment.cc_number','=',$params['search']);
         }
 
         // apply ordering

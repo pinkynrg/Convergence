@@ -7,9 +7,11 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="name">Display Name</th>
+				<th column="display_name">Display Name</th>
 				<th column="name">Name</th>
-				<th column="name">Description </th>
+				<th column="description">Description</th>
+				<th column="created_at">Created</th>
+				<th column="updated_at">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -20,6 +22,8 @@
 					<td> <a href="{{route('group_types.show', $group_type->id) }}"> {{  $group_type->display_name }} </a> </td>
 					<td> <a href="{{route('group_types.show', $group_type->id) }}"> {{  $group_type->name }} </a> </td>
 					<td> <a href="{{route('group_types.show', $group_type->id) }}"> {{  $group_type->description }} </a> </td>
+					<td> {{ $group_type->date("created_at") }} </td>
+					<td> {{ $group_type->date("updated_at") }} </td>
 				</tr>
 
 				@endforeach

@@ -253,6 +253,47 @@ class BaseClass {
 	}
 }
 
+class EscalationEvents extends BaseClass {
+	public $table_name = 'escalation_events';
+	public $dependency_names = [];
+
+	public function importSelf() {
+
+		if ($this->truncate()) {
+
+			$queries = [
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (1,'assignee','Ticket Assignee','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (2,'helpdesk-manager','Helpdesk Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (3,'account-manager','Account Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (4,'pc-manager','PC Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (5,'plc-manager','PLC Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (6,'lgv-manager','LGV Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (7,'field-manager','Field Director','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (8,'technical-manager','Technical Director','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (9,'sales-area-manager','Sales Area Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (10,'customer-service-manager','Customer Service Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (11,'the-president','The President','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+			];
+
+			foreach ($queries as $query) {							
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+		}
+
+		logMessage("Successes: ".$this->successes,'successes');
+		logMessage("Errors: ".$this->errors,'errors');
+	}
+
+}
+
 class Permissions extends BaseClass {
 	
 	public $table_name = 'permissions';
@@ -264,7 +305,7 @@ class Permissions extends BaseClass {
 
 			$counter = 1;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
+			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
 			$actions = ['create','read','read-all','update','delete'];
 
 			foreach ($targets as $target) {
@@ -287,7 +328,8 @@ class Permissions extends BaseClass {
 
 			$queries = [
 				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (100,'update-role-permissions','Update role permissions','Permission to update role permissions','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (101,'update-group-roles','Update group roles','Permission to update group roles','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"
+				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (101,'update-group-roles','Update group roles','Permission to update group roles','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (110,'update-escalation-profile-events','Update escalation profile events','Permission to update escalation profile events','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"
 			];
 
 			foreach ($queries as $query) {							
@@ -319,7 +361,7 @@ class Roles extends BaseClass {
 
 			$counter = 1;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
+			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
 			$actions = ['viewer','manager'];
 
 			foreach ($targets as $target) {
@@ -351,7 +393,7 @@ class PermissionRole extends BaseClass {
 
 	public function importSelf() {
 
-		$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
+		$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
 		$role_types = ['viewer','manager'];
 
 		if ($this->truncate()) {
@@ -394,7 +436,8 @@ class PermissionRole extends BaseClass {
 			// extra permission_role
 			$queries = [
 				"INSERT INTO permission_role (permission_id, role_id) VALUES (100,4)",
-				"INSERT INTO permission_role (permission_id, role_id) VALUES (101,6)"
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (101,6)",
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (110,26)"
 			];
 
 			foreach ($queries as $query) {							
@@ -486,7 +529,7 @@ class GroupRole extends BaseClass {
 		if ($this->truncate()) {
 
 			$group_roles = [
-				1 => array(2,4,6,8,10,12,14,16,18,20,22,24),
+				1 => array(2,4,6,8,10,12,14,16,18,20,22,24,26),
 				2 => array(10,11,12,13,16,18,20)
 			];
 

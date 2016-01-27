@@ -9,7 +9,7 @@
 			</div>
 			<div class="media-body">
 				<div id="ticket_title" class="media-heading"> {{ $ticket->title }}  <span id="ticket_status" class="{{ $status_class }}"> <i class='fa fa-circle'></i> {{ $ticket->status->name }} </span> </div>
-				<div> {{ date("d F Y",strtotime($ticket->created_at)) }} @ {{ date("g:ha",strtotime($ticket->created_at)) }} </div>
+				<div> {{ $ticket->date("created_at") }} </div>
 				<div id="ticket_post"> {!! $ticket->post !!} </div>
 			</div>
 		</div>
@@ -126,7 +126,7 @@
 					<td> {{ $history->priority->name }} </td>
 					<td> {{ $history->division->name }} </td>
 					<td> - </td>
-					<td> {{ date("d M Y",strtotime($history->created_at)) }} @ {{ date("H:i",strtotime($history->created_at)) }} </td>
+					<td> {{ $history->date("created_at") }} </td>
 				</tr>
 
 				@endforeach
@@ -183,7 +183,7 @@
 		@if(isset($draft_post->id))
 			<div class="alert alert-info" role="alert"> 
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<div> <i class="fa fa-check-circle"></i> This is a draft post lastly updated the {{ date('m/d/Y H:i:s',strtotime($draft_post->updated_at)) }} </div>
+				<div> <i class="fa fa-info-circle"></i> This is a draft post lastly updated the $draft_post->date("updated_at") }} </div>
 			</div>
 		@endif
 		

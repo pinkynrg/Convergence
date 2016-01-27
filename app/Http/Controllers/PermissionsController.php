@@ -10,6 +10,7 @@ class PermissionsController extends Controller {
 
 	public function index() {
 		if (Auth::user()->can('read-all-permission')) {
+			$data['active_search'] = true;
 			$data['title'] = "Permissions";
 			$data['permissions'] = Permission::paginate(50);
 			$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission')];

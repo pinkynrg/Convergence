@@ -8,7 +8,7 @@
 	<div class="media-body">
 		<h4 class="media-heading"> <a href="{{ route('people.show', $post->author->person->id) }}"> {{ $post->author->person->name() }} </a> </h4>
 		<div> 
-			<span class="post_datetime"> {{ date("d F Y",strtotime($post->created_at)) }} @ {{ date("H:i",strtotime($post->created_at)) }} </span>
+			<span class="post_datetime"> {{ $post->date("created_at") }} </span>
 		</div>
 
 		<div class="post_content"> {!! $post->post !!} </div>

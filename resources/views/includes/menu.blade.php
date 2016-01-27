@@ -54,7 +54,9 @@ $main = Menu::items([
 		['type'=>'item','label'=>'Contacts','icon'=>'fa-book','link'=>route('company_person.index'),'show'=>Auth::user()->can('read-all-contact')],
 		['type'=>'item','label'=>'Users','icon'=>'fa-book','link'=>route('users.index'),'show'=>Auth::user()->can('read-all-user')],
 		['type'=>'item','label'=>'Equipment','icon'=>'fa-wrench','link'=>route('equipment.index'),'show'=>Auth::user()->can('read-all-equipment')],
-		['type'=>'item','label'=>'Services','icon'=>'fa-server','link'=>route('services.index'),'show'=>Auth::user()->can('read-all-service')]
+		['type'=>'item','label'=>'Services','icon'=>'fa-server','link'=>route('services.index'),'show'=>Auth::user()->can('read-all-service')],
+		['type'=>'item','label'=>'Escalation Profiles','icon'=>'fa-bolt','link'=>route('escalation_profiles.index'),'show'=>Auth::user()->can('read-all-escalation-profiles')]
+
 	]],
 	['type'=>'group','label'=>'Access','icon'=>'fa-cog','menu'=>[
 		['type'=>'item','label'=>'Permissions','icon'=>'fa fa-unlock','link'=>route('permissions.index'),'show'=>Auth::user()->can('read-all-permission')],

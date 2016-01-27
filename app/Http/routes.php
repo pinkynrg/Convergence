@@ -15,28 +15,20 @@ Route::get('login', array('uses' => 'LoginController@showLogin', 'as' => 'login.
 Route::post('login', array('uses' => 'LoginController@doLogin', 'as' => 'login.login'));
 Route::get('logout', array('uses' => 'LoginController@doLogout', 'as' => 'login.logout'));
 
-Route::get('import/{target?}', ['uses' => 'ImportController@import', 'as' => 'importer.import']);
-
-Route::get('test_roles', function () {
-	return view('test/roles');
-});
-
 Route::group(array('middleware' => 'auth'), function() {
 
 	Route::get('/', ['as' => 'root', function () {
 		return redirect()->route('tickets.index');
 	}]);
 
-	Route::get('sendemail',['uses' => 'EmailsController@sendPost', 'as' => 'emails.post']);
-
 	// group_types routes 
-	Route::get('group_types',['uses' => 'GroupTypesController@index', 'as' => 'group_types.index']);
-	Route::get('group_types/create',['uses' => 'GroupTypesController@create', 'as' => 'group_types.create']);
-	Route::get('group_types/{id}',['uses' => 'GroupTypesController@show', 'as' => 'group_types.show']);
-	Route::post('group_types', ['uses' => 'GroupTypesController@store', 'as' => 'group_types.store']);
-	Route::delete('group_types/{id}', ['uses' => 'GroupTypesController@destroy', 'as' => 'group_types.destroy']);
-	Route::patch('group_types/{id}', ['uses' => 'GroupTypesController@update', 'as' => 'group_types.update']);	
-	Route::get('group_types/{id}/edit', ['uses' => 'GroupTypesController@edit', 'as' => 'group_types.edit']);
+	Route::get('group-types',['uses' => 'GroupTypesController@index', 'as' => 'group_types.index']);
+	Route::get('group-types/create',['uses' => 'GroupTypesController@create', 'as' => 'group_types.create']);
+	Route::get('group-types/{id}',['uses' => 'GroupTypesController@show', 'as' => 'group_types.show']);
+	Route::post('group-types', ['uses' => 'GroupTypesController@store', 'as' => 'group_types.store']);
+	Route::delete('group-types/{id}', ['uses' => 'GroupTypesController@destroy', 'as' => 'group_types.destroy']);
+	Route::patch('group-types/{id}', ['uses' => 'GroupTypesController@update', 'as' => 'group_types.update']);	
+	Route::get('group-types/{id}/edit', ['uses' => 'GroupTypesController@edit', 'as' => 'group_types.edit']);
 
 	// groups routes 
 	Route::get('groups',['uses' => 'GroupsController@index', 'as' => 'groups.index']);
@@ -57,6 +49,16 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::patch('roles/{id}', ['uses' => 'RolesController@update', 'as' => 'roles.update']);	
 	Route::get('roles/{id}/edit', ['uses' => 'RolesController@edit', 'as' => 'roles.edit']);
 	Route::post('roles/{id}/permissions', ['uses' => 'RolesController@updateRolePermissions', 'as' => 'roles.update_permissions']);
+
+	// escalation_profiles routes
+	Route::get('escalation-profiles',['uses' => 'EscalationProfilesController@index', 'as' => 'escalation_profiles.index']);
+	Route::get('escalation-profiles/create',['uses' => 'EscalationProfilesController@create', 'as' => 'escalation_profiles.create']);
+	Route::get('escalation-profiles/{id}',['uses' => 'EscalationProfilesController@show', 'as' => 'escalation_profiles.show']);
+	Route::post('escalation-profiles', ['uses' => 'EscalationProfilesController@store', 'as' => 'escalation_profiles.store']);
+	Route::delete('escalation-profiles/{id}', ['uses' => 'EscalationProfilesController@destroy', 'as' => 'escalation_profiles.destroy']);
+	Route::patch('escalation-profiles/{id}', ['uses' => 'EscalationProfilesController@update', 'as' => 'escalation_profiles.update']);	
+	Route::get('escalation-profiles/{id}/edit', ['uses' => 'EscalationProfilesController@edit', 'as' => 'escalation_profiles.edit']);
+	Route::post('escalation-profiles/{id}/events', ['uses' => 'EscalationProfilesController@updateProfileEvents', 'as' => 'escalation_profiles.update_events']);
 
 	// permissions routes 
 	Route::get('permissions',['uses' => 'PermissionsController@index', 'as' => 'permissions.index']);
@@ -156,6 +158,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('ajax/equipment/{params?}', ['uses' => 'EquipmentController@ajaxEquipmentRequest', 'as' => 'ajax.equipment']);
 	Route::get('ajax/services/{params?}', ['uses' => 'ServicesController@ajaxServicesRequest', 'as' => 'ajax.services']);
 	Route::get('ajax/permissions/{params?}', ['uses' => 'PermissionsController@ajaxPermissionsRequest', 'as' => 'ajax.permissions']);
+	Route::get('ajax/roles/{params?}', ['uses' => 'RolesController@ajaxRolesRequest', 'as' => 'ajax.roles']);
 	Route::get('ajax/tags', ['uses' => 'TagsController@ajaxTagsRequest', 'as' => 'ajax.tags']);
 	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
 	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);
@@ -165,6 +168,3 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('api/tickets/{params?}', ['uses' => 'TicketsController@getTickets', 'as' => 'api.tickets.index']);
 
 });
-
-
-

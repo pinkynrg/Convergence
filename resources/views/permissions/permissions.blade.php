@@ -7,9 +7,11 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="name">Display Name</th>
-				<th column="name">Name</th>
-				<th column="name">Description </th>
+				<th column="permissions.display_name">Display Name</th>
+				<th column="permissions.name">Name</th>
+				<th column="permissions.description">Description</th>
+				<th column="permissions.created_at">Created</th>
+				<th column="permissions.updated_at">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -20,11 +22,13 @@
 					<td> <a href="{{route('permissions.show', $permission->id) }}"> {{  $permission->display_name }} </a> </td>
 					<td> <a href="{{route('permissions.show', $permission->id) }}"> {{  $permission->name }} </a> </td>
 					<td> <a href="{{route('permissions.show', $permission->id) }}"> {{  $permission->description }} </a> </td>
+					<td> {{ $permission->date("created_at") }} </td>
+					<td> {{ $permission->date("updated_at") }} </td>
 				</tr>
 
 				@endforeach
 			@else 
-				<tr><td colspan="3">@include('includes.no-contents')</td></tr>
+				<tr><td colspan="5">@include('includes.no-contents')</td></tr>
 			@endif 
 
 		</tbody>

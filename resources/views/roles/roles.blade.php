@@ -9,7 +9,9 @@
 			<tr class="orderable">
 				<th column="name">Display Name</th>
 				<th column="name">Name</th>
-				<th column="name">Description </th>
+				<th column="description">Description</th>
+				<th column="created_at">Created</th>
+				<th column="updated_at">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -20,11 +22,13 @@
 					<td> <a href="{{route('roles.show', $role->id) }}"> {{  $role->display_name }} </a> </td>
 					<td> <a href="{{route('roles.show', $role->id) }}"> {{  $role->name }} </a> </td>
 					<td> <a href="{{route('roles.show', $role->id) }}"> {{  $role->description }} </a> </td>
+					<td> {{ $role->date("created_at") }} </td>
+					<td> {{ $role->date("updated_at") }} </td>
 				</tr>
 
 				@endforeach
 			@else 
-				<tr><td colspan="3">@include('includes.no-contents')</td></tr>
+				<tr><td colspan="5">@include('includes.no-contents')</td></tr>
 			@endif 
 
 		</tbody>

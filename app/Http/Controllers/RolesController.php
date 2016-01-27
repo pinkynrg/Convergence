@@ -13,6 +13,7 @@ class RolesController extends Controller {
 
 	public function index() {
 		if (Auth::user()->can('read-all-role')) {
+			$data['active_search'] = true;
 			$data['title'] = "Roles";
 			$data['roles'] = Role::paginate(50);
 			$data['menu_actions'] = [Form::addItem(route('roles.create'), 'Create new role')];
@@ -83,6 +84,30 @@ class RolesController extends Controller {
 		DB::table('permission_role')->where('role_id', $id)->delete();
 		Role::find($id)->permissions()->attach($request['permissions']);
         return redirect()->route('roles.show',$id)->with('successes',['Role persmissions updated successfully']);
+	}
+
+	public function ajaxRolesRequest($params = "") {
+		
+        parse_str($params,$params);
+
+		$roles = Role::select("roles.*");
+
+		// apply search
+        if (isset($params['search'])) {
+            $roles->where('name','like','%'.$params['search'].'%');
+        }
+
+        // apply ordering
+        if (isset($params['order'])) {
+    		$roles->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
+            $roles->orderBy($params['order']['column'],$params['order']['type']);
+        }
+
+		$roles = $roles->paginate(50);
+
+		$data['roles'] = $roles;
+
+        return view('roles/roles',$data);
 	}
 }
 

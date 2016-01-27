@@ -31,8 +31,6 @@ $(document).ready(function() {
 	// disable all caching so when visiting page with ajax requests, go back button of browser doesn't show you json
 	$.ajaxSetup({ cache: false });
 
-
-
 // tickets filters page ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//reset values of filters 
@@ -603,4 +601,30 @@ $(document).ready(function() {
 	$("[id^=tech_has_onsite]").on('change', function () {
 		updateTechOnsite(this);
 	});
+
+	// escalation form //////////////////////////////////
+
+	function updateRowLevel() {
+		consoleLog("updated log level");
+		var counter = 1;
+		$(".escalation_event_form").each(function () {
+			consoleLog(counter);
+			$(this).find(".escalation_level").html("Event #"+counter);
+			counter++;
+		});
+	}
+
+	$("#add_escalation_event").on("click", function() {
+		consoleLog("added escalation event");
+		var form = $(".escalation_event_form").first().clone();
+		$(".escalation_event_form").last().after(form);
+		updateRowLevel();
+	});
+
+	$(".delete_escalation_event").live("click", function () {
+		consoleLog("delete escalation event");
+		$(this).closest('tr').remove();
+		updateRowLevel();
+	});
+
 });
