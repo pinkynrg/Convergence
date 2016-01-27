@@ -255,6 +255,82 @@ class BaseClass {
 	}
 }
 
+class EscalationProfiles extends BaseClass {
+	
+	public $table_name = "escalation_profiles";
+	public $dependency_names = [];
+
+	public function importSelf() {
+		
+		if ($this->truncate()) {
+
+			$queries = [
+				"INSERT INTO escalation_profiles (id, name, description) VALUES (1,'Default Company Profile','This is the default escalation company profile')"
+			];
+
+			foreach ($queries as $query) {
+
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
+class EscalationProfileEvents extends BaseClass {
+	
+	public $table_name = "escalation_profile_event";
+	public $dependency_names = ["escalation_profiles","escalation_events","priorities"];
+
+	public function importSelf() {
+		
+		if ($this->truncate()) {
+			$queries = [
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,7200)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,2,1,7200)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,4,1,7200)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,7200)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,2,2,7200)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,4,2,7200)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,1,3,28800)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,2,3,28800)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,4,3,28800)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,604800)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,2,4,604800)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,4,4,604800)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,1,5,604800)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,2,5,604800)",
+				"INSERT INTO escalation_profile_event (profile_id, event_id, priority_id, delay_time) VALUES (1,4,5,604800)"
+			];
+
+			foreach ($queries as $query) {							
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
 class EscalationEvents extends BaseClass {
 	public $table_name = 'escalation_events';
 	public $dependency_names = [];

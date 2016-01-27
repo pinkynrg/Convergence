@@ -41,8 +41,8 @@
 			<tr>
 				<th></th>
 				<th>Time Limit</th>
+				<th>Priority</th>
 				<th>Target</th>
-				<th>Fallback</th>
 				<th></th>
 			</tr>
 
