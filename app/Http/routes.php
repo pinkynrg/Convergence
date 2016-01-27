@@ -53,7 +53,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	// escalation_profiles routes
 	Route::get('escalation-profiles',['uses' => 'EscalationProfilesController@index', 'as' => 'escalation_profiles.index']);
 	Route::get('escalation-profiles/create',['uses' => 'EscalationProfilesController@create', 'as' => 'escalation_profiles.create']);
-	Route::get('escalation-profiles/{id}',['uses' => 'EscalationProfilesController@show', 'as' => 'escalation_profiles.show']);
+	Route::get('escalation-profiles/{id}/{num?}',['uses' => 'EscalationProfilesController@show', 'as' => 'escalation_profiles.show']);
 	Route::post('escalation-profiles', ['uses' => 'EscalationProfilesController@store', 'as' => 'escalation_profiles.store']);
 	Route::delete('escalation-profiles/{id}', ['uses' => 'EscalationProfilesController@destroy', 'as' => 'escalation_profiles.destroy']);
 	Route::patch('escalation-profiles/{id}', ['uses' => 'EscalationProfilesController@update', 'as' => 'escalation_profiles.update']);	

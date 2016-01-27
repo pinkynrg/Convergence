@@ -606,25 +606,37 @@ $(document).ready(function() {
 
 	function updateRowLevel() {
 		consoleLog("updated log level");
-		var counter = 1;
+		consoleLog("Number of rows: " + $(".escalation_event_form").length);
+		var counter = 0;
 		$(".escalation_event_form").each(function () {
-			consoleLog(counter);
-			$(this).find(".escalation_level").html("Event #"+counter);
+			// update label row
+			$(this).find(".escalation_level").html("Event #"+parseInt(counter+1));
+			// update form fields ids
+			$(this).find("select.delay_time").attr("name", "delay_time["+counter+"]");
+			$(this).find("select.event_id").attr("name", "event_id["+counter+"]");
+			$(this).find("select.fallback_contact_id").attr("name", "fallback_contact_id["+counter+"]");
+			// update record number holder
+			$("#num").val(counter+1);
 			counter++;
 		});
 	}
 
+	updateRowLevel();
+
 	$("#add_escalation_event").on("click", function() {
 		consoleLog("added escalation event");
 		var form = $(".escalation_event_form").first().clone();
+		form.find("option").prop("selected", false);
 		$(".escalation_event_form").last().after(form);
 		updateRowLevel();
 	});
 
 	$(".delete_escalation_event").live("click", function () {
 		consoleLog("delete escalation event");
-		$(this).closest('tr').remove();
-		updateRowLevel();
+		if ($(".escalation_event_form").length > 1) {
+			$(this).closest('tr').remove();
+			updateRowLevel();
+		}
 	});
 
 });

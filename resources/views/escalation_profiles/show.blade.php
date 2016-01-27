@@ -32,7 +32,9 @@
 
 	{!! Form::BSButton("Add New Custom Event",['id' => 'add_escalation_event','bclass' => 'col-xs-offset-2']) !!}
 
-	{!! Form::open(array('method' => 'POST', 'route' => array('escalation_profiles.update_events',$escalation_profile->id), 'class' => 'form-horizontal')) !!}
+	{!! Form::model($escalation_profile_events, array('method' => 'POST', 'route' => array('escalation_profiles.update_events',$escalation_profile->id), 'class' => 'form-horizontal')) !!}
+		
+		{!! Form::hidden("num", $rows, array('id' => "num")) !!}
 
 		<table id="escalation_events_table" class="table">
 		
@@ -44,7 +46,9 @@
 				<th></th>
 			</tr>
 
-			@include("escalation_profiles.form_event", ["counter" => 1])
+			@for ($k=0; $k<$rows; $k++)
+				@include("escalation_profiles.form_event",["counter" => $k])
+			@endfor
 
 		</table>
 
