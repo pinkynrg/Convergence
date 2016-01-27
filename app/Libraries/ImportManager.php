@@ -57,6 +57,11 @@ function nullIt($row) {
 	return $row;
 }
 
+function htmlToText($html) {
+	$html = mb_convert_encoding($html, 'html-entities', mb_detect_encoding($html));
+	return  Html2Text::convert($html);
+}
+
 function findCompanyPersonId($person_id,$conn) {
 	$query = "SELECT * FROM company_person WHERE person_id = ".$person_id;
 	$result = mysqli_query($conn, $query);
@@ -137,6 +142,8 @@ class ImportManager {
 
 		mysqli_select_db($this->conn, LOCAL_DB) or 
 			die("Error connecting to database: ".LOCAL_DB."\n");
+
+		mysqli_set_charset($this->conn, 'utf8');
 	}
 
 	public function addTable($class) {
@@ -1483,7 +1490,7 @@ class Tickets extends BaseClass {
 				$t['Contact_Id'] = trim($t['Contact_Id']) == '' ? '' : trim($t['Contact_Id']) + CONSTANT_GAP_CONTACTS;
 				$t['Ticket_Title'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Title'])));
 				$t['Ticket_Post'] = Purifier::clean($t['Ticket_Post']);
-				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] ? Html2Text::convert($t['Ticket_Post']) : "";
+				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] ? htmlToText($t['Ticket_Post']) : "";
 
 				// if the post without the html tags is an empty string, use title for both rich and raw posts
 				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
@@ -1504,7 +1511,6 @@ class Tickets extends BaseClass {
 				else {
 					$this->errors++;
 					if ($this->debug) {
-						logMessage($query);
 						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Ticket ID = ".$t['Id']."]");
 						if (!isset($ids)) $ids = ''; $ids .= $t['Id'].",";
 					}
@@ -1575,7 +1581,7 @@ class Posts extends BaseClass {
 				$p['Post_Public'] = $p['Post_Public'] == '' ? '2' : '3';
 				$p['Post'] = Purifier::clean($p['Post']);
 
-				$p['Post_Plain'] = $p['Post'] ? Html2Text::convert($p['Post']) : "";
+				$p['Post_Plain'] = $p['Post'] ? htmlToText($p['Post']) : "";
 
 				$p['Post'] = $p['Post'] == '' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post'];
 				$p['Post_Plain'] = $p['Post_Plain'] == '' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post_Plain'];
