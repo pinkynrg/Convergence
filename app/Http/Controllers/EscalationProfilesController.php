@@ -51,17 +51,22 @@ class EscalationProfilesController extends Controller {
 				
 			$escalation_profile_events = DB::table('escalation_profile_event')->where('profile_id',$id)->get();
 			
-			foreach ($escalation_profile_events as $key => $escalation_profile_event) {
-				$data['escalation_profile_events']['delay_time'][$key] = $escalation_profile_event->delay_time;
-				$data['escalation_profile_events']['event_id'][$key] = $escalation_profile_event->event_id;
-				$data['escalation_profile_events']['fallback_contact_id'][$key] = $escalation_profile_event->fallback_contact_id;
+			if (count($escalation_profile_events) > 0) {
+				foreach ($escalation_profile_events as $key => $escalation_profile_event) {
+					$data['escalation_profile_events']['delay_time'][$key] = $escalation_profile_event->delay_time;
+					$data['escalation_profile_events']['event_id'][$key] = $escalation_profile_event->event_id;
+					$data['escalation_profile_events']['fallback_contact_id'][$key] = $escalation_profile_event->fallback_contact_id;
+				}
+			}
+			else {
+				$data['escalation_profile_events'] = null;
 			}
 
 			$data['escalation_profile'] = EscalationProfile::find($id);
 			$data['escalation_events'] = EscalationEvent::all();
 			$data['fallbacks'] = CompanyPerson::where('company_id','=',ELETTRIC80_COMPANY_ID)->where("email","!=","")->orderBy("email")->get();
 			$data['delays'] = self::$delays;
-			$data['rows'] = is_null($num) ? count($escalation_profile_events) : $num;
+			$data['rows'] = is_null($num) ? count($escalation_profile_events) > 0 ? count($escalation_profile_events) : 3 : $num;
 
 			return view('escalation_profiles/show',$data);
 		}
