@@ -65,10 +65,12 @@ function htmlToText($html) {
 }
 
 function findCompanyPersonId($person_id,$conn) {
-	$query = "SELECT * FROM company_person WHERE person_id = ".$person_id;
-	$result = mysqli_query($conn, $query);
-	$record = mysqli_fetch_array($result);
-	return is_numeric($record['id']) ? $record['id'] : 'NULL';
+	if ($person_id != 0) {
+		$query = "SELECT * FROM company_person WHERE person_id = ".$person_id;
+		$result = mysqli_query($conn, $query);
+		$record = mysqli_fetch_array($result);
+	}
+	return (isset($record['id']) && is_numeric($record['id'])) ? $record['id'] : 'NULL';
 }
 
 function findMatchingContactId($ticket) {
@@ -265,14 +267,12 @@ class EscalationEvents extends BaseClass {
 				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (1,'assignee','Ticket Assignee','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
 				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (2,'helpdesk-manager','Helpdesk Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
 				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (3,'account-manager','Account Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (4,'pc-manager','PC Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (5,'plc-manager','PLC Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (6,'lgv-manager','LGV Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (7,'field-manager','Field Director','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (8,'technical-manager','Technical Director','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (9,'sales-area-manager','Sales Area Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (10,'customer-service-manager','Customer Service Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (11,'the-president','The President','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (4,'team-leader','Team Leader','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (5,'field-manager','Field Director','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (6,'technical-manager','Technical Director','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (7,'sales-area-manager','Sales Area Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (8,'customer-service-manager','Customer Service Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (9,'the-president','The President','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
 			];
 
 			foreach ($queries as $query) {							
