@@ -23,14 +23,23 @@
 	{!! Form::BSLabel("group_email", "Group Email", ['bclass' => 'col-xs-2']) !!}
 	{!! Form::BSText("group_email", null, ['bclass' => 'col-xs-3']) !!}
 	{!! Form::BSLabel("support_type_id", "Support Type", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSSelect("support_type_id", $support_types, isset($company) && count($company->support_type) ? $company->support_type->id : null , ['bclass' => 'col-xs-3', "key" => "id", "value" => "name"]) !!}
+	{!! Form::BSSelect("support_type_id", $support_types, null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "name"]) !!}
 {!! Form::BSEndGroup() !!}
 
 {!! Form::BSGroup() !!}
+	
 	{!! Form::BSLabel("account_manager", "Account Manager", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSSelect("account_manager_id", $account_managers, isset($company) && count($company->account_manager) ? $company->account_manager->company_person->id : null , ['bclass' => 'col-xs-3', "key" => "id", "value" => "person.name"]) !!}
+	{!! Form::BSSelect("account_manager_id", $account_managers, : null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "person.name"]) !!}
+	
 	@if (Route::currentRouteName() == "companies.edit")
 		{!! Form::BSLabel("main_contact", "Main Contact", ['bclass' => 'col-xs-2']) !!}
-		{!! Form::BSSelect("main_contact_id", $main_contacts, isset($company) && count($company->main_contact) ? $company->main_contact->company_person->id : null , ['bclass' => 'col-xs-3', "key" => "id", "value" => "person.name"]) !!}
+		{!! Form::BSSelect("main_contact_id", $main_contacts, null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "person.name"]) !!}
 	@endif
+
+{!! Form::BSEndGroup() !!}
+
+{!! Form::BSGroup() !!}
+	{!! Form::BSLabel("escalation_profile_id", "Escalation Profile", ['bclass' => 'col-xs-2']) !!}
+	{!! Form::BSSelect("escalation_profile_id", $escalation_profiles, isset($company->escalation_profile_id) ? 
+	$company->escalation_profile_id : null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "name"]) !!}
 {!! Form::BSEndGroup() !!}

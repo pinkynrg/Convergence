@@ -45,4 +45,8 @@ class Company extends CustomModel {
 		return $this->belongsTo('App\Models\SupportType');
 	}
 
+	public function escalation_profile() {
+		return $this->belongsTo('App\Models\EscalationProfile');
+	}
+
 }

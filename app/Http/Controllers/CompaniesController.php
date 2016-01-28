@@ -1,19 +1,20 @@
 <?php namespace App\Http\Controllers;
 
-use App\Models\Company;
+use App\Models\Post;
+use App\Models\Hotel;
+use App\Models\Title;
 use App\Models\Person;
 use App\Models\Ticket;
-use App\Models\Post;
-use App\Models\Title;
-use App\Models\Department;
-use App\Models\Equipment;
+use App\Models\Company;
 use App\Models\Service;
+use App\Models\Equipment;
 use App\Models\GroupType;
+use App\Models\Department;
 use App\Models\SupportType;
 use App\Models\CompanyPerson;
+use App\Models\EscalationProfile;
 use App\Models\CompanyMainContact;
 use App\Models\CompanyAccountManager;
-use App\Models\Hotel;
 use App\Http\Requests\CreateCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use Input;
@@ -112,6 +113,7 @@ class CompaniesController extends Controller {
         $data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
         $data['main_contacts'] = CompanyPerson::where('company_person.company_id','=',$id)->get();
         $data['support_types'] = SupportType::all();
+        $data['escalation_profiles'] = EscalationProfile::all();
 
         $data['title'] = "Edit " . $data['company']->name;
 
