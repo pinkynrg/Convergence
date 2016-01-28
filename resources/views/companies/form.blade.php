@@ -29,7 +29,7 @@
 {!! Form::BSGroup() !!}
 	
 	{!! Form::BSLabel("account_manager", "Account Manager", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSSelect("account_manager_id", $account_managers, : null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "person.name"]) !!}
+	{!! Form::BSSelect("account_manager_id", $account_managers, null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "person.name"]) !!}
 	
 	@if (Route::currentRouteName() == "companies.edit")
 		{!! Form::BSLabel("main_contact", "Main Contact", ['bclass' => 'col-xs-2']) !!}

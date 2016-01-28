@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 
-	{!! Form::open(array('route' => 'users.store', 'class' => "form-horizontal")) !!}
+	{!! Form::model($user, array('route' => 'users.store', 'class' => "form-horizontal")) !!}
 
 		{!! Form::BSGroup() !!}
 

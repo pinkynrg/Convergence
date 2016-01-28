@@ -22,9 +22,15 @@ class PeopleController extends Controller {
 	        
 	        $data['menu_actions'] = [
 	        	Form::editItem(route('people.edit',$id), 'Edit this person'),
-	        	Form::editItem(route('users.edit',$data['person']->user->id), 'Edit associated user'),
 				Form::deleteItem('people.destroy', $id, 'Remove this person')
 	        ];
+
+	     	if (isset($data['person']->user->id)) {
+	        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['person']->user->id), 'Edit associated user');
+	     	}
+	     	else {
+	        	$data['menu_actions'][] = Form::editItem(route('users.create',$data['person']->id), 'Create user');
+	     	}
 			
 			$data['title'] = $data['person']->name() . " - Details";
 			return view('people/show', $data);

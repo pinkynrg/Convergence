@@ -26,7 +26,16 @@ class CompaniesController extends Controller {
 
 	public function index() {
         if (Auth::user()->can('read-all-company')) {
-            $data['companies'] = Company::paginate(50);
+            
+            $companies = Company::select("companies.*");
+            $companies->leftJoin("company_main_contacts","companies.id","=","company_main_contacts.company_id");
+            $companies->leftJoin("company_person","company_person.id","=","company_main_contacts.main_contact_id");
+            $companies->leftJoin("company_account_managers","companies.id","=","company_account_managers.company_id");
+            $companies->leftJoin("company_person as account_managers","account_managers.id","=","company_account_managers.account_manager_id");
+            $companies->leftJoin("people","company_person.person_id","=","people.id");
+
+            $data['companies'] = $companies->paginate(50);
+
             $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
             $data['active_search'] = true;
             $data['title'] = "Companies";
@@ -100,6 +109,7 @@ class CompaniesController extends Controller {
             $data['company']->equipment = Equipment::where('company_id','=',$id)->paginate(10);
             $data['company']->hotels = Hotel::where('company_id','=',$id)->paginate(10);
             $data['company']->services = Service::where('company_id','=',$id)->paginate(10);
+            $data['company']->escalations = EscalationProfile::all();
 
             $data['title'] = $data['company']->name;
             
@@ -189,6 +199,9 @@ class CompaniesController extends Controller {
         $companies->leftJoin("company_main_contacts","companies.id","=","company_main_contacts.company_id");
         $companies->leftJoin("company_person","company_person.id","=","company_main_contacts.main_contact_id");
         $companies->leftJoin("people","company_person.person_id","=","people.id");
+        $companies->leftJoin("company_account_managers as cam","companies.id","=","cam.company_id");
+        $companies->leftJoin("company_person as account_manager_contact","account_manager_contact.id","=","cam.account_manager_id");
+        $companies->leftJoin("people as account_managers","account_managers.id","=","account_manager_contact.person_id");
         
         // apply search
         if (isset($params['search'])) {
