@@ -29,7 +29,7 @@ $(document).ready(function() {
 	});
 
 	// disable all caching so when visiting page with ajax requests, go back button of browser doesn't show you json
-	$.ajaxSetup({ cache: false });
+	// $.ajaxSetup({ cache: false });
 
 // tickets filters page ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,10 +153,10 @@ $(document).ready(function() {
 					params['filters'][that.attr('column')].push($(this).val());
 				});
 			}
-
 		});
 
 		if ($(".ajax_pagination").find("li[selected]").length) {
+			console.log($(".ajax_pagination").find("li.active").find('a'));
 			params['page'] = $(".ajax_pagination").find("li[selected]").find('a').attr('href').split('?page=')[1];
 		}
 		else if ($(".ajax_pagination").find("li.active").length) {
