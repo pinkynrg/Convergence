@@ -3,7 +3,7 @@
 $(document).ready(function() {
 
 	var debug = true;
-	var regex = /\/([a-zA-Z]*)([\/]?)(create|[\d]*)([\/]?)([a-zA-Z]*)([\/]?)/g;
+	var regex = /\/([a-zA-Z\-]*)([\/]?)(create|[\d]*)([\/]?)([a-zA-Z\-]*)([\/]?)/g;
 	var timer;
 	var path = window.location.pathname;
 	var rxres = regex.exec(path);
@@ -321,7 +321,13 @@ $(document).ready(function() {
 				'headers': { "X-CSRF-Token": $('[name=_token').val() },
 				'type': 'POST',
 				'url': '/tickets',
-				'data' : data
+				'data' : data,
+				'success' : function(data) {
+					consoleLog('ticket draft: '+data);
+				},
+				'error' : function (data){
+					consoleLog('ticket draft: '+data);
+				}
 			});
 
 		}, 1000);
@@ -604,6 +610,10 @@ $(document).ready(function() {
 
 	// escalation form //////////////////////////////////
 
+	if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") {
+		updateRowLevel();
+	}
+
 	function updateRowLevel() {
 		consoleLog("updated log level");
 		consoleLog("Number of rows: " + $(".escalation_event_form").length);
@@ -620,8 +630,6 @@ $(document).ready(function() {
 			counter++;
 		});
 	}
-
-	updateRowLevel();
 
 	$("#add_escalation_event").on("click", function() {
 		consoleLog("added escalation event");

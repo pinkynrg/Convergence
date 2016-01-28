@@ -28,16 +28,16 @@ class CreateTicketRequest extends Request {
 	public function rules()
 	{
 		return [
-			'status_id' => 'required|integer',  
-			'company_id' => 'required|integer',  
-			'contact_id' => 'integer',  
-			'equipment_id' => 'integer',  
-			'assignee_id' => 'required|integer',  
+			'status_id' => 'required|numeric',  
+			'company_id' => 'required|numeric',  
+			'contact_id' => 'numeric',  
+			'equipment_id' => 'numeric',  
+			'assignee_id' => 'required|numeric',  
 			'title' => 'required|string',
 			'post' => 'required|string',
-			'division_id' => 'required|integer',  
-			'job_type_id' => 'required|integer',
-			'priority_id' => 'required|integer'
+			'division_id' => 'required|numeric',  
+			'job_type_id' => 'required|numeric',
+			'priority_id' => 'required|numeric'
 		];
 	}
 

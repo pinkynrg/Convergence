@@ -201,18 +201,56 @@
 		</div>
 
 		<div class="col-xs-6">
+			
 			<div class="checkbox">
-	  			<label @if ((!isset($ticket->company->account_manager))) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif><input type="checkbox" @if (!isset($ticket->company->account_manager)) disabled @endif value=""> Send email to account manager ~ {{ isset($ticket->company->account_manager) ? $ticket->company->account_manager->company_person->email : 'Not Available'}}</label>
+				@if (!isset($ticket->company->account_manager))
+					<label data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address.">
+						<input type="checkbox" disabled value=""> Send email to account manager ~ 'Not Available'
+					</label>
+				@else
+					<label>
+						<input type="checkbox" value=""> Send email to account manager ~ {{ $ticket->company->account_manager->company_person->email }}
+					</label>
+				@endif
+	  			
 			</div>
+			
 			<div class="checkbox">
-	  			<label @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif><input type="checkbox" @if (!isset($ticket->company->group_email)) disabled @endif value=""> Send email to company group email ~ {{ isset($ticket->company->group_email) ? $ticket->company->group_email : 'Not Available' }} </label>
+				@if (!isset($ticket->company->group_email))
+					<label data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address.">
+						<input type="checkbox" disabled value=""> Send email to company group email ~ Not Available
+					</label>
+				@else
+					<label>
+						<input type="checkbox" value=""> Send email to company group email ~ {{ $ticket->company->account_manager->company_person->email }}
+					</label>
+				@endif
 			</div>
+
 			<div class="checkbox">
-	  			<label @if (!isset($ticket->contact_id) || !isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif><input type="checkbox" @if (!isset($ticket->contact_id) || !isset($ticket->contact->email)) disabled @endif value=""> Send email to ticket contact reference ~ {{ isset($ticket->contact_id) ? $ticket->contact->email : 'Not Available' }} </label>
+				@if (!isset($ticket->contact->email))
+					<label data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket.">
+						<input type="checkbox" disabled value=""> Send email to contact reference ~ Not Available
+					</label>
+				@else
+					<label>
+						<input type="checkbox" value=""> Send email to contact reference ~ {{ $ticket->contact->email }}
+					</label>
+				@endif
 			</div>
+
 			<div class="checkbox">
-	  			<label @if (!isset($ticket->emails)) data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif><input type="checkbox" @if (!isset($ticket->emails)) disabled @endif value=""> Send email to additional ticket emails ~ {{ isset($ticket->emails) ? $ticket->emails : 'Not Available' }} </label>
+				@if (!isset($ticket->emails) || $ticket->emails == '')
+					<label data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket.">
+						<input type="checkbox" disabled value=""> Send email to additional ticket emails ~ Not Available
+					</label>
+				@else
+					<label>
+						<input type="checkbox" value=""> Send email to additional ticket emails ~ {{ $ticket->emails }}
+					</label>
+				@endif
 			</div>
+
 		</div>
 
 		{!! Form::BSGroup() !!}

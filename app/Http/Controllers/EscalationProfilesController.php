@@ -26,7 +26,7 @@ class EscalationProfilesController extends Controller {
 		else return redirect()->back()->withErrors(['Access denied to esclation profiles index page']);
 	}
 
-	public function show($id,$num = null) {
+	public function show($id,$num = 3) {
 		
 		if (Auth::user()->can('read-escalation-profiles')) {
 
@@ -54,7 +54,11 @@ class EscalationProfilesController extends Controller {
 			$data['priorities'] = Priority::all();
 			$data['delays'] = self::parseDelays();
 
-			$data['rows'] = is_null($num) ? count($escalation_profile_events) > 0 ? count($escalation_profile_events) : 3 : $num;
+			$count = count($escalation_profile_events);
+
+			$num = $num > 0 ? $num : 3;
+
+			$data['rows'] = $count > 0 ? $num < $count ? $count : $num : $num;
 
 			return view('escalation_profiles/show',$data);
 		}

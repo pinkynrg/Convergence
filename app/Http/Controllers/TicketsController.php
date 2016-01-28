@@ -115,34 +115,15 @@ class TicketsController extends Controller {
 		$ticket->division_id = $request->get('division_id');
 		$ticket->equipment_id = $request->get('equipment_id');
 		$ticket->company_id = $request->get('company_id');
-		$ticket->contact_id = $request->get('contact_id');
+		$ticket->contact_id = $request->get('contact_id') != 0 ? $request->get('contact_id') : NULL;
 		$ticket->job_type_id = $request->get('job_type_id');
 		$ticket->emails = $request->get('emails');
 
 		$ticket->save();
 
-        if (Input::get('tagit')) {
-			
-			$tags = explode(",",Input::get('tagit'));
-			
-			foreach ($tags as $new_tag) {
-				
-				$tag = Tag::where('name','=',$new_tag)->first();
-				
-				if ( !isset($tag->id) ) {
-					$tag = new Tag;
-					$tag->name = $new_tag;
-					$tag->save();
-				}
+       $this->updateTags($ticket->id,Input::get('tagit'));
 
-				$tag_ticket = new TagTicket;
-				$tag_ticket->ticket_id = $ticket->id;
-				$tag_ticket->tag_id = $tag->id;
-				$tag_ticket->save();
-			}
-		}
-
-		EmailsController::sendTicket($ticket->id);
+		// EmailsController::sendTicket($ticket->id);
 		// SlackController::sendTicket($ticket);
 
         return (Request::ajax()) ? 'success' : redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
@@ -240,36 +221,41 @@ class TicketsController extends Controller {
 		$ticket->priority_id = $request->get('priority_id');
 		$ticket->division_id = $request->get('division_id');
 		$ticket->equipment_id = $request->get('equipment_id');
-		$ticket->contact_id = $request->get('contact_id');
+		$ticket->contact_id = $request->get('contact_id') != 0 ? $request->get('contact_id') : NULL;
 		$ticket->job_type_id = $request->get('job_type_id');
 		$ticket->emails = $request->get('emails');
 
 		$ticket->save();
 
-        $old_tags = TagTicket::where('ticket_id','=',$id)->delete();
+       	$this->updateTags($ticket->id,Input::get('tagit'));
+	
+        return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
+	}
 
-		if (Input::get('tagit')) {
+	private function updateTags($ticket_id, $tags) {
+
+		TagTicket::where('ticket_id',$ticket_id)->forceDelete();
+
+		if ($tags) {
 
 			$tags = explode(",",Input::get('tagit'));
 
 			foreach ($tags as $new_tag) {
 				
-				$tag = Tag::where('name','=',$new_tag)->first();
+				$tag = Tag::where('name',$new_tag)->first();
 				
-				if ( !isset($tag->id) ) {
+				if (!isset($tag->id)) {
 					$tag = new Tag;
 					$tag->name = $new_tag;
 					$tag->save();
 				}
 
 				$tag_ticket = new TagTicket;
-				$tag_ticket->ticket_id = $id;
+				$tag_ticket->ticket_id = $ticket_id;
 				$tag_ticket->tag_id = $tag->id;
 				$tag_ticket->save();
 			}
 		}
-	
-        return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
 	}
 
 	/**
