@@ -14,7 +14,7 @@ use DB;
 
 class EscalationProfilesController extends Controller {
 
-	static $delays = ["1 Hour","2 Hours","8 Hours","1 Day","2 Days","3 Days","4 Days","5 Days","6 Days","1 Week","2 Weeks","3 Weeks","1 Month","2 Months","3 Months"];
+	static $delays = ["-","1 Hour","2 Hours","8 Hours","1 Day","2 Days","3 Days","4 Days","5 Days","6 Days","1 Week","2 Weeks","3 Weeks","1 Month","2 Months","3 Months"];
 
 	public function index() {
 		if (Auth::user()->can('read-all-escalation-profiles')) {
@@ -99,6 +99,7 @@ class EscalationProfilesController extends Controller {
 		for ($k=0; $k<$request->get("num"); $k++) {
 
 			$data[] = [ 'profile_id' => $id,
+						'level_id' => $request->get("level_id")[$k],
 						'delay_time' => $request->get("delay_time")[$k], 
 					   	'event_id'=> $request->get("event_id")[$k],
 				   		'priority_id' => $request->get("priority_id")[$k]];
@@ -122,10 +123,15 @@ class EscalationProfilesController extends Controller {
 		$to_seconds['year'] = $to_seconds['day']*365;
 
 		for ($k=0; $k<count(self::$delays); $k++) {
-			$temp = explode(" ",self::$delays[$k]);
-			$multiplier = $temp[0];
-			$seconds = $to_seconds[strtolower(str_singular($temp[1]))];
-			$delays[$multiplier*$seconds] = self::$delays[$k];
+			if (self::$delays[$k] != "-") {
+				$temp = explode(" ",self::$delays[$k]);
+				$multiplier = $temp[0];
+				$seconds = $to_seconds[strtolower(str_singular($temp[1]))];
+				$delays[$multiplier*$seconds] = self::$delays[$k];
+			}
+			else {
+				$delays["-"] = self::$delays[$k];
+			}
 		}
 
 		return $delays;

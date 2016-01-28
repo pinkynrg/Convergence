@@ -42,8 +42,8 @@ class UpdateEscalationProfileEventsRequest extends Request {
 		for ($i = 0; $i < Request::get('num'); $i++) {
 			$rules['level_id.'.$i] = 'numeric|required';
 			$rules['delay_time.'.$i] = 'numeric|required';
-			$rules['event_id.'.$i] = 'numeric|required';
 			$rules['priority_id.'.$i] = 'numeric|required';
+			$rules['event_id.'.$i] = 'numeric|required';
 		}
 
 		return $rules;
