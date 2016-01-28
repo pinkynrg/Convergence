@@ -18,10 +18,10 @@ class CompanyPersonController extends Controller {
 
 	public function index() {
 		if (Auth::user()->can('read-all-contact')) {
+        	$data['title'] = "Contacts";
 	        $data['menu_actions'] = [Form::addItem(route('company_person.create'), 'Add contact')];
 			$data['active_search'] = true;
 			$data['contacts'] = CompanyPerson::paginate(50);
-        	$data['title'] = "Contacts";
 			return view('company_person/index',$data);
         }
         else return redirect()->back()->withErrors(['Access denied to contacts index page']);		
@@ -66,33 +66,43 @@ class CompanyPersonController extends Controller {
 		$contact = new CompanyPerson;
         $contact->company_id = Input::get('company_id');
         $contact->person_id = Input::get('person_id') ? Input::get('person_id') : $person->id;
-        $contact->title_id = Input::get('title_id');
         $contact->department_id = Input::get('department_id');
+        $contact->title_id = Input::get('title_id');
         $contact->phone = Input::get('phone');
         $contact->extension = Input::get('extension');
         $contact->cellphone = Input::get('cellphone');
-        $contact->group_type_id = Input::get('group_type_id');
         $contact->email = Input::get('email');
+        $contact->group_type_id = Input::get('company_id') == ELETTRIC80_COMPANY_ID ? EMPLOYEE_GROUP_TYPE : CUSTOMER_GROUP_TYPE;
         $contact->save();
 
 		return redirect()->route('company_person.index')->with('successes',['Contact created successfully']);
 	}	
 
 	public function edit($id) {
+		$data['title'] = "Edit Contact";
 		$company_person = CompanyPerson::find($id);
 		$data['titles'] = Title::all();
 		$data['departments'] = Department::all();
 		$data['companies'] = Company::all();		
 		$data['contact'] = CompanyPerson::find($id);
 		$data['groups'] = Group::where('group_type_id','=',$company_person->group_type_id)->get();
-		$data['title'] = "Edit Contact";
 
 		return view('company_person/edit', $data);	
 	}	
 
 	public function update($id, UpdateCompanyPersonRequest $request) {
+		
 		$contact = CompanyPerson::find($id);
-		$contact->update($request->all());
+		
+		$contact->department_id = Input::get('department_id');
+        $contact->title_id = Input::get('title_id');
+        $contact->phone = Input::get('phone');
+        $contact->extension = Input::get('extension');
+        $contact->cellphone = Input::get('cellphone');
+        $contact->email = Input::get('email');
+        $contact->group_id = Input::get('group_id');
+
+        $contact->save();
 
 		return redirect()->route('company_person.show',$id)->with('successes',['Contact updated successfully']);
 	}

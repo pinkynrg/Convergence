@@ -10,6 +10,8 @@
 	define("LOCAL_PASS", env('DB_PASSWORD', ''));
 	define("CONSTANT_GAP_CONTACTS",500);
 	define("ELETTRIC80_COMPANY_ID",1);
+	define("EMPLOYEE_GROUP_TYPE",1);
+	define("CUSTOMER_GROUP_TYPE",2);
 	define("GOOGLE_API_KEY","AIzaSyDrtPZysOJe6_m4wkJ7x384CnTqJ-7ROY4");
 	define("LOCATION_THIS","app/Libraries/ImportManager.php");
 	define("DS",DIRECTORY_SEPARATOR);

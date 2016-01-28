@@ -39,7 +39,8 @@ class UpdateCompanyRequest extends Request {
             'account_manager_id' => 'required|numeric',
             'support_type_id' => 'required|numeric',
             'account_manager_id' => 'required|numeric',
-            'main_contact_id' => 'required|numeric'
+            'main_contact_id' => 'required|numeric',
+            'escalation_profile_id' => 'required|numeric'
         ];
 	}
 

@@ -6,7 +6,7 @@ class Company extends CustomModel {
 
 	protected $table = 'companies';
 
-	protected $fillable = ['name', 'address', 'country', 'city', 'state', 'zip_code', 'group_email', 'support_type_id', 'connection_type_id'];
+	protected $fillable = ['name', 'address', 'country', 'city', 'state', 'zip_code', 'group_email', 'support_type_id', 'connection_type_id','escalation_profile_id'];
 
 	public function tickets() {
 		return $this->hasMany('App\Models\Ticket');

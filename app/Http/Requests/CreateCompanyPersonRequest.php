@@ -36,7 +36,6 @@ class CreateCompanyPersonRequest extends Request {
 			'email' => 'email',
 			'department_id' => 'required|numeric', 
 			'title_id' => 'required|numeric',
-			'group_type_id' => 'required|numeric',
 			'company_id' => 'required|numeric',
 			'person_id' => 'numeric'
 		];

@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-	
+
 	{!! Form::model($company, array('method' => 'PATCH', 'route' => array('companies.update',$company->id), 'class' => "form-horizontal")) !!}
 
 		@include('companies.form')

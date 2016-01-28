@@ -50,6 +50,7 @@ class CompaniesController extends Controller {
 		$data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
         $data['support_types'] = SupportType::all();
         $data['group_types'] = GroupType::all();
+        $data['escalation_profiles'] = EscalationProfile::all();
 
         $data['title'] = "Create Company";
 
@@ -76,7 +77,7 @@ class CompaniesController extends Controller {
         $contact->extension = Input::get('extension');
         $contact->cellphone = Input::get('cellphone');
         $contact->email = Input::get('email');
-        $contact->group_type_id = Input::get('group_type_id');
+        $contact->group_type_id = Input::get('company_id') == ELETTRIC80_COMPANY_ID ? EMPLOYEE_GROUP_TYPE : CUSTOMER_GROUP_TYPE;
         $contact->save();
 
         $company_main_contact = new CompanyMainContact;
@@ -120,6 +121,13 @@ class CompaniesController extends Controller {
 
 	public function edit($id) {
 		$data['company'] = Company::find($id);
+        
+        $selected_account_manager = CompanyAccountManager::where('company_id','=',$id)->first();
+        $data['company']->account_manager_id = isset($selected_account_manager) ? $selected_account_manager->account_manager_id : null;
+        
+        $selected_main_contact = CompanyMainContact::where('company_id','=',$id)->first();
+        $data['company']->main_contact_id = $selected_main_contact->main_contact_id;
+
         $data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
         $data['main_contacts'] = CompanyPerson::where('company_person.company_id','=',$id)->get();
         $data['support_types'] = SupportType::all();
@@ -131,14 +139,16 @@ class CompaniesController extends Controller {
 	}
 
 	public function update($id, UpdateCompanyRequest $request) {
-		
+
         $company = Company::find($id);
         $company->update($request->all());
 
-        $company_account_manager = CompanyAccountManager::where('company_id','=',$id);
+        $company_account_manager = CompanyAccountManager::where('company_id','=',$id)->first();
 
-        if (isset($company_account_manager->get()[0])) {
-            $company_account_manager->update(['account_manager_id' => Input::get('account_manager_id')]);
+        // update account manager
+        if (isset($company_account_manager)) {
+            $company_account_manager->account_manager_id = Input::get('account_manager_id');
+            $company_account_manager->save();
         }
         else {
             $company_account_manager = new CompanyAccountManager;
@@ -147,10 +157,12 @@ class CompaniesController extends Controller {
             $company_account_manager->save();        
         }
 
-        $main_contact = CompanyMainContact::where('company_id','=',$id);
+        // update main contact
+        $main_contact = CompanyMainContact::where('company_id','=',$id)->first();
 
-        if (isset($main_contact->get()[0])) {
-            $main_contact->update(['main_contact_id' => Input::get('main_contact_id')]);
+        if (isset($main_contact)) {
+            $main_contact->main_contact_id = Input::get('main_contact_id');
+            $main_contact->save();
         }
         else {
             $main_contact = new CompanyMainContact;

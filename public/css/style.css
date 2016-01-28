@@ -1,9 +1,5 @@
 body {
-	background-color: #ECFAFF;
-	background-image: url(/images/style/skulls_lightblue.png);
-  /*background-image: url(/images/style/login_background.png); */
-  /*background-size: 100% 100%;*/
-  /*background-attachment: fixed;*/
+  background-image: url(/images/style/background.png);
 	font-size: 12px;
 }
 
@@ -77,7 +73,8 @@ input[disabled], textarea[disabled], select[disabled] {
 }
 
 #logo img {
-	height: 100px;
+  margin-top:10px;
+	height: 80px;
   display:inline-block;
   float: left;
 }

@@ -24,8 +24,8 @@
 			<tr>
 				<td> <a href="{{ route('people.show', $contact->person->id) }}"> {{ $contact->person->name() }} </a> </td>
 				<td> <a href="{{ route('companies.show', $contact->company->id) }}"> {{ $contact->company->name }} </a> </td>
-				<td> {{ isset($contact->department_id) ? $contact->department->name : '' }} </td>
-				<td class="hidden-xs"> {{ isset($contact->title_id) ? $contact->title->name : '' }} </td>
+				<td> @if (isset($contact->department_id)) {{ $contact->department->name }} @endif </td>
+				<td> @if (isset($contact->title_id)) {{ $contact->title->name }} @endif </td>
 				<td> {!! $contact->phone() !!} </td>
 				<td> {{ $contact->email }} </td>
 				<td> {{ $contact->date("created_at") }} </td>

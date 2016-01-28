@@ -1,12 +1,15 @@
 {!! Form::BSGroup() !!}
 
-	{!! Form::BSLabel("company_id", "Company", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSSelect("company_id", $companies,  null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "name"]) !!}
+	{!! Form::BSLabel("department_id", "Department", ['bclass' => 'col-xs-2']) !!}
+	{!! Form::BSSelect("department_id", $departments, null, array('bclass' => 'col-xs-3', "key" => "id", "value" => "name")) !!}
+
+	{!! Form::BSLabel("title_id", "Title", ['bclass' => 'col-xs-2']) !!}
+	{!! Form::BSSelect("title_id", $titles, null, array('bclass' => 'col-xs-3', "key" => "id", "value" => "name")) !!}
 
 {!! Form::BSEndGroup() !!}
 
 {!! Form::BSGroup() !!}
-
+	
 	{!! Form::BSLabel("phone", "Phone", ['bclass' => 'col-xs-2']) !!}
 	{!! Form::BSText("phone", null, ['bclass' => 'col-xs-3']) !!}
 
@@ -25,12 +28,13 @@
 
 {!! Form::BSEndGroup() !!}
 
-{!! Form::BSGroup() !!}
-	
-	{!! Form::BSLabel("department_id", "Department", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSSelect("department_id", $departments, null, array('bclass' => 'col-xs-3', "key" => "id", "value" => "name")) !!}
+@if (Route::currentRouteName() == "company_person.create")
 
-	{!! Form::BSLabel("title_id", "Title", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSSelect("title_id", $titles, null, array('bclass' => 'col-xs-3', "key" => "id", "value" => "name")) !!}
+	{!! Form::BSGroup() !!}
 
-{!! Form::BSEndGroup() !!}
+		{!! Form::BSLabel("company_id", "Company", ['bclass' => 'col-xs-2']) !!}
+		{!! Form::BSSelect("company_id", $companies,  null, ['bclass' => 'col-xs-3', "key" => "id", "value" => "name"]) !!}
+
+	{!! Form::BSEndGroup() !!}
+
+@endif
