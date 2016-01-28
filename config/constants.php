@@ -28,7 +28,7 @@
 	define("SET_PURPLE","\e[0;35m");
 	define("TICKET_DRAFT_STATUS_ID",9);
 	define("POST_DRAFT_STATUS_ID",1);
-	define("DOMAIN",isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] == "local.convergence.it" ? "convergence.provvedo.com" : $_SERVER['SERVER_NAME'] : '' );
+	define("DOMAIN",isset($_SERVER['SERVER_NAME']) ? strpos($_SERVER['SERVER_NAME'],"local") !== FALSE ? "convergence.provvedo.com" : $_SERVER['SERVER_NAME'] : '' );
 	define("PROTOCOL",isset($_SERVER['SERVER_PORT']) ? (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://" : '' );
 	define("SITE_URL",PROTOCOL.DOMAIN)
 
