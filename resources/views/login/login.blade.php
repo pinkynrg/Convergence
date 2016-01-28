@@ -30,7 +30,7 @@
 	            </div>
 				
 				<div class="form-group">
-	            	{!! Form::BSSubmit("Sign in") !!}
+	            	{!! Form::BSSubmit("Sign in",["id" => "login_btn"]) !!}
 	            </div>
 
 	            <a href="#" class="forgot-password">

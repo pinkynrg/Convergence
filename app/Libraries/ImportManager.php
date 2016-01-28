@@ -65,7 +65,7 @@ function htmlToText($html) {
 }
 
 function findCompanyPersonId($person_id,$conn) {
-	if ($person_id != "0") {
+	if ($person_id != '0' && $person_id != '"0"') {
 		$query = "SELECT * FROM company_person WHERE person_id = ".$person_id;
 		$result = mysqli_query($conn, $query);
 		$record = mysqli_fetch_array($result);
