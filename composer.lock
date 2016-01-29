@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "40edb21bacd44ec370f7ed8142145b4b",
-    "content-hash": "f0bb7df9ad22952b23e8598dd8b780ca",
+    "hash": "8b3a78ecb8c3a0e988b13c263acf8de5",
+    "content-hash": "a5233c1063b9c7f32f215d5ac7750b82",
     "packages": [
         {
             "name": "barryvdh/laravel-snappy",
@@ -1556,6 +1556,57 @@
                 "text"
             ],
             "time": "2015-12-18 02:30:26"
+        },
+        {
+            "name": "spatie/activitylog",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/activitylog.git",
+                "reference": "821e703705d175fd6930ea14a353ca0180b35fa3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/activitylog/zipball/821e703705d175fd6930ea14a353ca0180b35fa3",
+                "reference": "821e703705d175fd6930ea14a353ca0180b35fa3",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/migrations"
+                ],
+                "psr-0": {
+                    "Spatie\\Activitylog\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be"
+                }
+            ],
+            "description": "A very simple activity logger to monitor the users of your website or application",
+            "homepage": "https://github.com/spatie/activitylog",
+            "keywords": [
+                "activity",
+                "laravel",
+                "log",
+                "user"
+            ],
+            "time": "2015-12-25 22:02:11"
         },
         {
             "name": "swiftmailer/swiftmailer",

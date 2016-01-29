@@ -144,6 +144,7 @@ return [
 		'App\Extensions\Html\HtmlServiceProvider',
 		'Barryvdh\Snappy\ServiceProvider',
 		'Mews\Purifier\PurifierServiceProvider',
+		'Spatie\Activitylog\ActivitylogServiceProvider',
 		
 		/*
 		 * Application Service Providers...
@@ -210,6 +211,7 @@ return [
 		'HTML'		=> 'Illuminate\Html\HtmlFacade',
 		'Entrust' 	=> 'Zizaco\Entrust\EntrustFacade',
 		'Purifier' 	=> 'Mews\Purifier\Facades\Purifier',
+		'Activity'  => 'Spatie\Activitylog\ActivitylogFacade',
 	],
 
 ];
