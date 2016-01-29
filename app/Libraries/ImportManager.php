@@ -290,7 +290,7 @@ class EscalationProfiles extends BaseClass {
 class EscalationProfileEvents extends BaseClass {
 	
 	public $table_name = "escalation_profile_event";
-	public $dependency_names = ["escalation_profiles","escalation_events","priorities"];
+	public $dependency_names = ["levels","escalation_profiles","escalation_events","priorities"];
 
 	public function importSelf() {
 		

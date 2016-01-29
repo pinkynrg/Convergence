@@ -15,12 +15,13 @@
 <script src="/javascript/bootstrap-tagsinput.min.js"></script>
 <script src="/javascript/bootstrap-multiEmail.js"></script>
 <script src="/javascript/dropzone.js"></script>
-<script src="/javascript/script.js"></script>
+<script src="/javascript/jquery-prevent-double-submit.js"></script>
 <script src="/javascript/jquery.bootstrap-duallistbox.js"></script>
 <script src="/javascript/highstocks.js"></script>
 <script src="/javascript/highcharts.3d.js"></script>
 <script src="/javascript/bootstrap-datepicker.js"></script>
 <script src="/javascript/bootstrap-switch.min.js"></script>
+<script src="/javascript/script.js"></script>
 
 <!-- Stylesheets -->
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">

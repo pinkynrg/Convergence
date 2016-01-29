@@ -28,8 +28,10 @@ $(document).ready(function() {
    		$('[data-toggle="tooltip"]').tooltip();   
 	});
 
+	$('form').preventDoubleSubmission();
+
 	// disable all caching so when visiting page with ajax requests, go back button of browser doesn't show you json
-	// $.ajaxSetup({ cache: false });
+	$.ajaxSetup({ cache: false });
 
 // tickets filters page ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,11 +158,7 @@ $(document).ready(function() {
 		});
 
 		if ($(".ajax_pagination").find("li[selected]").length) {
-			console.log($(".ajax_pagination").find("li.active").find('a'));
-			params['page'] = $(".ajax_pagination").find("li[selected]").find('a').attr('href').split('?page=')[1];
-		}
-		else if ($(".ajax_pagination").find("li.active").length) {
-			params['page'] = $(".ajax_pagination").find("li.active").find('span').html();
+			params['page'] = $(".ajax_pagination").find("li[selected] a").html();
 		}
 		else 
 			params['page'] = 1;
@@ -191,8 +189,6 @@ $(document).ready(function() {
 		if ( params['page'] != 1 ) {
 			url = url + "?page=" + params['page'];
 		}
-
-		consoleLog(url);
 		
 		return url;
 	}
