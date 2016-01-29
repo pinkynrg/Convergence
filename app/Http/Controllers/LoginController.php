@@ -1,11 +1,12 @@
 <?php namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
 use Input;
 use Auth;
 use Hash;
 use App\Models\User;
+use App\Models\Login;
 use App\Models\CompanyPerson;
+use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller {
 
@@ -40,6 +41,10 @@ class LoginController extends Controller {
 				$user->active_contact_id = $contact->id;
 				$user->save();
 			}
+
+			$login = new Login();
+			$login->user_id = Auth::user()->id;
+			$login->save();
 
 			return redirect()->intended()->with('successes',['Accessed successfully']);
 		}
