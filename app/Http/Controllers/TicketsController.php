@@ -134,6 +134,7 @@ class TicketsController extends Controller {
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 				$data['statuses'] = Status::where('id',WAITING_FOR_FEEDBACK)->orWhere('id',SOLVED)->get();
 				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
+				$data['draft_post']->post = $data['draft_post']->post != "[undefined]" ? $data['draft_post']->post : "";
 
 				switch ($data['ticket']->status_id) {
 					case '1' : $data['status_class'] = 'ticket_status_new'; break;
