@@ -371,7 +371,7 @@ Dropzone.autoDiscover = false;
 @/tickets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-if (url.target == "tickets" && url.target_action == "index") {
+if (url.target_action == "index") {
 	//reset values of filters 
 	$('.selectpicker').selectpicker('deselectAll');
 
@@ -553,7 +553,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 		addRemoveLinks: true,
 		autoProcessQueue:false,
 		maxFiles: 3,
-		maxFileSize: 5,
+		maxFileSize: 50,
 		headers: { "X-CSRF-Token": $('[name=_token').val() },
 
 		// get list of files already loaded
@@ -576,10 +576,15 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 
 			that.on("drop", function (){
 				if (that.options.target == "posts" && that.options.target_action == "create") {
-	    			consoleLog("Ticket draft created trggiered by attachment upload");
+	    			consoleLog("Ticket draft created triggered by attachment upload");
 	    			savePostDraft(function () {
 	    				that.processQueue();
 	    			});
+	    		}
+	    		else {
+	    			setTimeout(function () {
+						that.processQueue();
+	    			},500);
 	    		}
 			});
 
