@@ -62,8 +62,12 @@ class LoginController extends Controller {
 
 	public function doLogout() {
 		$data['title'] = 'login';
-		Activity::log('User Logout');
-		Auth::logout();
+
+		if (Auth::check()) {
+			Activity::log('User Logout');
+			Auth::logout();
+		}
+		
 		return view('login.login');
 	}
 }
