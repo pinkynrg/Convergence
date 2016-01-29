@@ -3,6 +3,10 @@ body {
 	font-size: 12px;
 }
 
+.bootstrap-switch {
+  margin-right: 10px!important;
+}
+
 .mrg-brm-20 {
   margin-bottom: 20px!important;
 }

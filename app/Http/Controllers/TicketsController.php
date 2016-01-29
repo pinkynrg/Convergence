@@ -28,11 +28,6 @@ use DB;
 
 class TicketsController extends Controller {
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
 	public function index() {
 		// if (Auth::user()->can('read-all-ticket')) {
 			$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
@@ -62,11 +57,6 @@ class TicketsController extends Controller {
 		// else return redirect()->back()->withErrors(['Access denied to tickets index page']);
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
 	public function create(Request $request) {
 
 		$ticket = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id","9")->first();
@@ -94,11 +84,6 @@ class TicketsController extends Controller {
 		}
 	}
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
 	public function store(CreateTicketRequest $request)
 	{
 		$draft = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id","9")->first();
@@ -121,7 +106,9 @@ class TicketsController extends Controller {
 
 		$ticket->save();
 
-       $this->updateTags($ticket->id,Input::get('tagit'));
+       	$this->updateTags($ticket->id,Input::get('tagit'));
+
+       	if (!$draft) { $this->updateHistory($ticket); }
 
 		// EmailsController::sendTicket($ticket->id);
 		// SlackController::sendTicket($ticket);
@@ -130,12 +117,6 @@ class TicketsController extends Controller {
         return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
 	}
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function show($id)
 	{
 		if (Auth::user()->can('read-ticket')) {
@@ -151,6 +132,7 @@ class TicketsController extends Controller {
 				$data['ticket'] = Ticket::find($id);
 				$data['ticket']['posts'] = Post::where('ticket_id',$id)->where('status_id','!=',POST_DRAFT_STATUS_ID)->get();
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
+				$data['statuses'] = Status::where('id',WAITING_FOR_FEEDBACK)->orWhere('id',SOLVED)->get();
 				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
 
 				switch ($data['ticket']->status_id) {
@@ -171,12 +153,6 @@ class TicketsController extends Controller {
 		else return redirect()->back()->withErrors(['Access denied to tickets show page']);	
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function edit($id)
 	{
 		$data['ticket'] = Ticket::find($id);
@@ -202,12 +178,6 @@ class TicketsController extends Controller {
 		return view('tickets/edit',$data);
 	}
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function update($id, UpdateTicketRequest $request)
 	{
 		$ticket = Ticket::find($id);
@@ -228,7 +198,9 @@ class TicketsController extends Controller {
 		$ticket->save();
 
        	$this->updateTags($ticket->id,Input::get('tagit'));
-	
+
+       	$this->updateHistory($ticket);
+
         return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
 	}
 
@@ -258,22 +230,34 @@ class TicketsController extends Controller {
 		}
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
+	private function updateHistory($ticket) {
+
+		$history = new TicketHistory;
+
+		$history->changer_id = Auth::user()->active_contact->id;
+		$history->ticket_id = $ticket->id;
+		$history->title = $ticket->title;
+		$history->post = $ticket->post;
+		$history->post_plain_text = $ticket->post_plain_text;
+		$history->creator_id = $ticket->creator_id;
+		$history->assignee_id = $ticket->assignee_id;
+		$history->status_id = $ticket->status_id;
+		$history->priority_id = $ticket->priority_id;
+		$history->division_id = $ticket->division_id;
+		$history->equipment_id = $ticket->equipment_id;
+		$history->company_id = $ticket->company_id;
+		$history->contact_id = $ticket->contact_id;
+		$history->job_type_id = $ticket->job_type_id;
+		$history->emails = $ticket->emails;
+	
+		$history->save();
+	}
+
 	public function destroy($id)
 	{
 		echo 'ticket destroy method to be created';
 	}
 
-	/**
-	 * Return list of tickets for an ajax request
-	 *
-	 * @return Response
-	 */
 	public function ajaxTicketsRequest($params = "")
     {
     	parse_str($params,$params);

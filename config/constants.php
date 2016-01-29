@@ -30,6 +30,8 @@
 	define("POST_DRAFT_STATUS_ID",1);
 	define("DOMAIN",isset($_SERVER['SERVER_NAME']) ? strpos($_SERVER['SERVER_NAME'],"local") !== FALSE ? "convergence.provvedo.com" : $_SERVER['SERVER_NAME'] : '' );
 	define("PROTOCOL",isset($_SERVER['SERVER_PORT']) ? (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://" : '' );
-	define("SITE_URL",PROTOCOL.DOMAIN)
+	define("SITE_URL",PROTOCOL.DOMAIN);
+	define("WAITING_FOR_FEEDBACK",3);
+	define("SOLVED",6);
 
 ?>

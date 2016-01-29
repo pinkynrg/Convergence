@@ -20,6 +20,7 @@
 <script src="/javascript/highstocks.js"></script>
 <script src="/javascript/highcharts.3d.js"></script>
 <script src="/javascript/bootstrap-datepicker.js"></script>
+<script src="/javascript/bootstrap-switch.min.js"></script>
 
 <!-- Stylesheets -->
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -35,6 +36,7 @@
 <link rel="stylesheet" href="/css/blueimp-gallery.min.css">
 <link rel="stylesheet" href="/css/bootstrap-image-gallery.css">
 <link rel="stylesheet" href="/css/dropzone.css">
+<link rel="stylesheet" href="/css/bootstrap-switch.min.css">
 <link rel="stylesheet" href="/css/style.css">
 
 <link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">

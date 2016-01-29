@@ -33,10 +33,10 @@ function sanitize($row) {
 		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
-		$row[$key] = nl2br($row[$key]);																		// replace \n\r \n with <br>
+		// $row[$key] = nl2br($row[$key]);																		// replace \n\r \n with <br>
 		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', ' ', $row[$key]);								// removed non-UTF8 chartacters
 		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]);													// removed redundand spaces
-		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $row[$key]);				// replace redundant <br>, space ...
+		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){2,}/', '<br />', $row[$key]);				// replace redundant <br>, space ...
 		$row[$key] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $row[$key]);								// removed br from end post -->
 		$row[$key] = preg_replace('/<img[^>]+\>/i', '', $row[$key]);  										// remove all image tags
 		$row[$key] = str_replace('&nbsp;','',$row[$key]);													// removed html space

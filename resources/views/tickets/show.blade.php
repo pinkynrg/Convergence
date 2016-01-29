@@ -183,7 +183,7 @@
 		@if(isset($draft_post->id))
 			<div class="alert alert-info" role="alert"> 
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<div> <i class="fa fa-info-circle"></i> This is a draft post lastly updated the $draft_post->date("updated_at") }} </div>
+				<div> <i class="fa fa-info-circle"></i> This is a draft post lastly updated the {{ $draft_post->date("updated_at") }} </div>
 			</div>
 		@endif
 		
@@ -194,59 +194,66 @@
 
 		<div class="col-xs-6">
 
-			<div class="checkbox is_public"> 
-				<label> <input id="is_public" value="true" name="is_public" type="checkbox"> Show post to customer </label> 
+			<div class="is_public"> 
+				<label> <input type="checkbox" id="is_public" value="true" name="is_public" class="switch"> Public </label> 
+			</div>
+
+			<div class="status_checkbox"> 
+				<label> <input type="radio" radioAllOff="true" id="set_waiting_for_feedback" value="{{WAITING_FOR_FEEDBACK}}" name="status_id" class="switch"> Waiting for feedback </label> 
+			</div>
+
+			<div class="status_checkbox"> 
+				<label> <input type="radio" radioAllOff="true" id="is_public" value="{{SOLVED}}" name="status_id" class="switch"> Solved </label> 
 			</div>
 
 		</div>
 
 		<div class="col-xs-6">
 			
-			<div class="checkbox">
+			<div class="email_checkbox">
 				@if (!isset($ticket->company->account_manager))
 					<label data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address.">
-						<input type="checkbox" disabled value=""> Send email to account manager ~ 'Not Available'
+						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" disabled value=""> Email to account manager ~ Not Available
 					</label>
 				@else
 					<label>
-						<input type="checkbox" value=""> Send email to account manager ~ {{ $ticket->company->account_manager->company_person->email }}
+						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value=""> Send email to account manager ~ {{ $ticket->company->account_manager->company_person->email }}
 					</label>
 				@endif
-	  			
 			</div>
 			
-			<div class="checkbox">
+			<div class="email_checkbox">
 				@if (!isset($ticket->company->group_email))
 					<label data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address.">
-						<input type="checkbox" disabled value=""> Send email to company group email ~ Not Available
+						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" disabled value=""> Email to company group email ~ Not Available
 					</label>
 				@else
 					<label>
-						<input type="checkbox" value=""> Send email to company group email ~ {{ $ticket->company->account_manager->company_person->email }}
+						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value=""> Email to company group email ~ {{ $ticket->company->group_email }}
 					</label>
 				@endif
 			</div>
 
-			<div class="checkbox">
+			<div class="email_checkbox">
 				@if (!isset($ticket->contact->email))
 					<label data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket.">
-						<input type="checkbox" disabled value=""> Send email to contact reference ~ Not Available
+						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" disabled value=""> Email to contact reference ~ Not Available
 					</label>
 				@else
 					<label>
-						<input type="checkbox" value=""> Send email to contact reference ~ {{ $ticket->contact->email }}
+						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value=""> Email to contact reference ~ {{ $ticket->contact->email }}
 					</label>
 				@endif
 			</div>
 
-			<div class="checkbox">
+			<div class="email_checkbox">
 				@if (!isset($ticket->emails) || $ticket->emails == '')
 					<label data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket.">
-						<input type="checkbox" disabled value=""> Send email to additional ticket emails ~ Not Available
+						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" disabled value=""> Email to additional ticket emails ~ Not Available
 					</label>
 				@else
 					<label>
-						<input type="checkbox" value=""> Send email to additional ticket emails ~ {{ $ticket->emails }}
+						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value=""> Email to additional ticket emails ~ {{ $ticket->emails }}
 					</label>
 				@endif
 			</div>

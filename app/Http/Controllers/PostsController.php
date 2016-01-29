@@ -5,6 +5,8 @@ use App\Http\Controllers\EmailsController;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Html2Text\Html2Text;
+use App\Models\TicketHistory;
+use App\Models\Ticket;
 use App\Models\Post;
 use Request;
 use Form; 
@@ -28,6 +30,9 @@ class PostsController extends Controller {
 
 		$post->save();
 
+		$status_id = $request->get('status_id');
+
+		$this->updateTicketStatus($request);
 		// SlackController::sendPost($post);
 		// EmailsController::sendPost($post->id);
 		
@@ -55,6 +60,36 @@ class PostsController extends Controller {
 		$post->post = $request->get('post');
 		$post->save();
         return redirect()->route('posts.show',$post->id)->with('successes',['Post updated successfully']);;;
+	}
+
+	private function updateTicketStatus($request) {
+		$status_id = $request->get('status_id');
+		if (isset($status_id)) {
+			
+			$ticket = Ticket::find($request->get('ticket_id'));
+			$ticket->status_id = $status_id;
+			$ticket->save();
+
+			$history = new TicketHistory();
+
+			$history->changer_id = Auth::user()->active_contact->id;
+			$history->ticket_id = $ticket->id;
+			$history->title = $ticket->title;
+			$history->post = $ticket->post;
+			$history->post_plain_text = $ticket->post_plain_text;
+			$history->creator_id = $ticket->creator_id;
+			$history->assignee_id = $ticket->assignee_id;
+			$history->status_id = $ticket->status_id;
+			$history->priority_id = $ticket->priority_id;
+			$history->division_id = $ticket->division_id;
+			$history->equipment_id = $ticket->equipment_id;
+			$history->company_id = $ticket->company_id;
+			$history->contact_id = $ticket->contact_id;
+			$history->job_type_id = $ticket->job_type_id;
+			$history->emails = $ticket->emails;
+		
+			$history->save();
+		}
 	}
 
 }
