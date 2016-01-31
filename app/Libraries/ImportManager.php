@@ -33,10 +33,10 @@ function sanitize($row) {
 		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
-		$row[$key] = nl2br($row[$key]);																		// replace \n\r \n with <br>
+		// $row[$key] = nl2br($row[$key]);																		// replace \n\r \n with <br>
 		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', ' ', $row[$key]);								// removed non-UTF8 chartacters
 		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]);													// removed redundand spaces
-		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $row[$key]);				// replace redundant <br>, space ...
+		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){2,}/', '<br />', $row[$key]);				// replace redundant <br>, space ...
 		$row[$key] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $row[$key]);								// removed br from end post -->
 		$row[$key] = preg_replace('/<img[^>]+\>/i', '', $row[$key]);  										// remove all image tags
 		$row[$key] = str_replace('&nbsp;','',$row[$key]);													// removed html space
@@ -65,10 +65,12 @@ function htmlToText($html) {
 }
 
 function findCompanyPersonId($person_id,$conn) {
-	$query = "SELECT * FROM company_person WHERE person_id = ".$person_id;
-	$result = mysqli_query($conn, $query);
-	$record = mysqli_fetch_array($result);
-	return is_numeric($record['id']) ? $record['id'] : 'NULL';
+	if ($person_id != '0' && $person_id != '"0"') {
+		$query = "SELECT * FROM company_person WHERE person_id = ".$person_id;
+		$result = mysqli_query($conn, $query);
+		$record = mysqli_fetch_array($result);
+	}
+	return (isset($record['id']) && is_numeric($record['id'])) ? $record['id'] : 'NULL';
 }
 
 function findMatchingContactId($ticket) {
@@ -253,6 +255,121 @@ class BaseClass {
 	}
 }
 
+class EscalationProfiles extends BaseClass {
+	
+	public $table_name = "escalation_profiles";
+	public $dependency_names = [];
+
+	public function importSelf() {
+		
+		if ($this->truncate()) {
+
+			$queries = [
+				"INSERT INTO escalation_profiles (id, name, description) VALUES (1,'Default Company Profile','This is the default escalation company profile')"
+			];
+
+			foreach ($queries as $query) {
+
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
+class EscalationProfileEvents extends BaseClass {
+	
+	public $table_name = "escalation_profile_event";
+	public $dependency_names = ["levels","escalation_profiles","escalation_events","priorities"];
+
+	public function importSelf() {
+		
+		if ($this->truncate()) {
+			$queries = [
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,1,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,1,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,1,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,2,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,2,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,2,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,3,28800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,3,28800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,3,28800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,4,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,4,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,4,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,5,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,5,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,5,604800)"
+			];
+
+			foreach ($queries as $query) {							
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
+class EscalationEvents extends BaseClass {
+	public $table_name = 'escalation_events';
+	public $dependency_names = [];
+
+	public function importSelf() {
+
+		if ($this->truncate()) {
+
+			$queries = [
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (1,'assignee','Ticket Assignee','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (2,'helpdesk-manager','Helpdesk Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (3,'account-manager','Account Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (4,'team-leader','Team Leader','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (5,'field-manager','Field Director','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (6,'technical-manager','Technical Director','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (7,'sales-area-manager','Sales Area Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (8,'customer-service-manager','Customer Service Manager','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO escalation_events (id, target, label, created_at, updated_at) VALUES (9,'the-president','The President','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+			];
+
+			foreach ($queries as $query) {							
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+		}
+
+		logMessage("Successes: ".$this->successes,'successes');
+		logMessage("Errors: ".$this->errors,'errors');
+	}
+
+}
+
 class Permissions extends BaseClass {
 	
 	public $table_name = 'permissions';
@@ -264,7 +381,7 @@ class Permissions extends BaseClass {
 
 			$counter = 1;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
+			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
 			$actions = ['create','read','read-all','update','delete'];
 
 			foreach ($targets as $target) {
@@ -287,7 +404,8 @@ class Permissions extends BaseClass {
 
 			$queries = [
 				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (100,'update-role-permissions','Update role permissions','Permission to update role permissions','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
-				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (101,'update-group-roles','Update group roles','Permission to update group roles','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"
+				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (101,'update-group-roles','Update group roles','Permission to update group roles','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')",
+				"INSERT INTO permissions (id, name, display_name, description, created_at, updated_at) VALUES (110,'update-escalation-profile-events','Update escalation profile events','Permission to update escalation profile events','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"
 			];
 
 			foreach ($queries as $query) {							
@@ -319,7 +437,7 @@ class Roles extends BaseClass {
 
 			$counter = 1;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
+			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
 			$actions = ['viewer','manager'];
 
 			foreach ($targets as $target) {
@@ -351,7 +469,7 @@ class PermissionRole extends BaseClass {
 
 	public function importSelf() {
 
-		$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service'];
+		$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
 		$role_types = ['viewer','manager'];
 
 		if ($this->truncate()) {
@@ -394,7 +512,8 @@ class PermissionRole extends BaseClass {
 			// extra permission_role
 			$queries = [
 				"INSERT INTO permission_role (permission_id, role_id) VALUES (100,4)",
-				"INSERT INTO permission_role (permission_id, role_id) VALUES (101,6)"
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (101,6)",
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (110,26)"
 			];
 
 			foreach ($queries as $query) {							
@@ -486,7 +605,7 @@ class GroupRole extends BaseClass {
 		if ($this->truncate()) {
 
 			$group_roles = [
-				1 => array(2,4,6,8,10,12,14,16,18,20,22,24),
+				1 => array(2,4,6,8,10,12,14,16,18,20,22,24,26),
 				2 => array(10,11,12,13,16,18,20)
 			];
 
@@ -876,7 +995,38 @@ class Statuses extends BaseClass {
 			logMessage("Errors: ".$this->errors,'errors');
 		}
 	}
-}				
+}	
+
+class Levels extends BaseClass {
+	public $table_name = 'levels';
+	public $dependency_names = [];
+
+	public function importSelf() {
+
+		if ($this->truncate()) {
+
+			$queries = ["INSERT INTO levels (id, name) VALUES (1,'Level 1')",
+						"INSERT INTO levels (id, name) VALUES (2,'Level 2')",
+						"INSERT INTO levels (id, name) VALUES (3,'Level 3')"];
+			
+			foreach ($queries as $query) {
+				if (mysqli_query($this->manager->conn, $query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+		
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
 
 class Titles extends BaseClass {
 
@@ -1474,7 +1624,7 @@ class CompanyAccountManagers extends BaseClass {
 class Tickets extends BaseClass {
 		
 	public $table_name = 'tickets';
-	public $dependency_names = ['company_person','statuses','priorities','divisions','equipment','companies','job_types'];
+	public $dependency_names = ['levels','company_person','statuses','priorities','divisions','equipment','companies','job_types'];
 
 	public function importSelf() {
 
@@ -1503,8 +1653,10 @@ class Tickets extends BaseClass {
 				$assignee_id = findCompanyPersonId($t['Id_Assignee'],$this->manager->conn);
 				$contact_id = findCompanyPersonId($t['Contact_Id'],$this->manager->conn);
 
-				$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
-				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Ticket_Post_Plain'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
+				$t['Level'] = $t['Level'] == 'NULL' ? 1 : $t['Level'];
+
+				$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Ticket_Post_Plain'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Level'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
 								
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
@@ -1674,8 +1826,8 @@ class TicketsHistroy extends BaseClass {
 					$t = nullIt($t);
 					$ti = nullIt($ti);
 
-					$query = "INSERT INTO tickets_history (id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,created_at,updated_at) 
-					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['post_plain_text'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
+					$query = "INSERT INTO tickets_history (id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['post_plain_text'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$ti['level_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
 					 		  
 
 
@@ -2386,13 +2538,13 @@ class Thumbnails extends BaseClass {
 			
 				if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
 				{
-					$command = "sudo ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DS."public".DS."tmp ".base_path().DS."public".DS.$path." > /dev/null";
+					$command = "sudo timeout 120 ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DS."public".DS."tmp ".base_path().DS."public".DS.$path." > /dev/null";
 					exec($command);
 					$source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf[0]";
 					$remove_from_temp = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf";
 				} 
 				elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
-					$command = "sudo ".env('FFMPEG','ffmpeg')." -i ".base_path().DS."public".DS.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png > /dev/null";
+					$command = "sudo timeout 300 ".env('FFMPEG','ffmpeg')." -i ".base_path().DS."public".DS.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png > /dev/null";
 					exec($command);
 					$source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
 					$remove_from_temp = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
@@ -2403,7 +2555,7 @@ class Thumbnails extends BaseClass {
 				}
 
 				$destination = THUMBNAILS.DS.$path_info['filename'].".png";
-				$command2 = "sudo ".env('CONVERT','convert')." -resize '384x384' $source $destination";
+				$command2 = "sudo timeout 120 ".env('CONVERT','convert')." -resize '384x384' $source $destination";
 				
 				$result = exec($command2);
 
