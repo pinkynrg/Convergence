@@ -2538,13 +2538,13 @@ class Thumbnails extends BaseClass {
 			
 				if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
 				{
-					$command = "sudo ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DS."public".DS."tmp ".base_path().DS."public".DS.$path." > /dev/null";
+					$command = "sudo timeout 120 ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DS."public".DS."tmp ".base_path().DS."public".DS.$path." > /dev/null";
 					exec($command);
 					$source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf[0]";
 					$remove_from_temp = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf";
 				} 
 				elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
-					$command = "sudo ".env('FFMPEG','ffmpeg')." -i ".base_path().DS."public".DS.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png > /dev/null";
+					$command = "sudo timeout 300 ".env('FFMPEG','ffmpeg')." -i ".base_path().DS."public".DS.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png > /dev/null";
 					exec($command);
 					$source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
 					$remove_from_temp = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
@@ -2555,7 +2555,7 @@ class Thumbnails extends BaseClass {
 				}
 
 				$destination = THUMBNAILS.DS.$path_info['filename'].".png";
-				$command2 = "sudo ".env('CONVERT','convert')." -resize '384x384' $source $destination";
+				$command2 = "sudo timeout 120 ".env('CONVERT','convert')." -resize '384x384' $source $destination";
 				
 				$result = exec($command2);
 
