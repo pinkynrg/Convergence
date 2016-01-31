@@ -86,7 +86,7 @@ class TicketsController extends Controller {
 
 	public function store(CreateTicketRequest $request)
 	{
-		$draft = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id","9")->first();
+		$draft = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
 
 		$ticket = $draft ? $draft : new Ticket();
 
@@ -108,7 +108,7 @@ class TicketsController extends Controller {
 
        	$this->updateTags($ticket->id,Input::get('tagit'));
 
-       	if (!$draft) { $this->updateHistory($ticket); }
+       	if ($ticket->status_id != TICKET_DRAFT_STATUS_ID) { $this->updateHistory($ticket); }
 
 		// EmailsController::sendTicket($ticket->id);
 		// SlackController::sendTicket($ticket);
@@ -171,7 +171,7 @@ class TicketsController extends Controller {
 			$data['tags'] .= $tag->name.",";
 		}
 
-		$is_draft = $data['ticket']->status_id == 9 ? true : false;
+		$is_draft = $data['ticket']->status_id == TICKET_DRAFT_STATUS_ID ? true : false;
 
 		$data['ticket']->title = ($is_draft && $data['ticket']->title == '[undefined]') ? '' : $data['ticket']->title;
 		$data['ticket']->post = ($is_draft && $data['ticket']->post_plain_text == '[undefined]') ? '' : $data['ticket']->post;
