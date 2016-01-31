@@ -86,7 +86,10 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('tickets/{id}', ['uses' => 'TicketsController@destroy', 'as' => 'tickets.destroy']);
 	Route::patch('tickets/{id}', ['uses' => 'TicketsController@update', 'as' => 'tickets.update']);	
 	Route::get('tickets/{id}/edit', ['uses' => 'TicketsController@edit', 'as' => 'tickets.edit']);
-		
+
+	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@index', 'as' => 'ajax.tickets']);
+	Route::get('api/tickets/{params?}', ['uses' => 'TicketsController@api', 'as' => 'api.tickets.index']);
+
 	// posts routes
 	Route::post('posts',['uses' => 'PostsController@store', 'as' => 'posts.store']);
 	Route::get('posts/{id}',['uses' => 'PostsController@show', 'as' => 'posts.show']);
@@ -147,7 +150,6 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('files/{id}', ['uses' => 'FilesController@destroy', 'as' => 'files.destroy']);
 
 	// ajax routes
-	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);
 	Route::get('ajax/companies/{params?}', ['uses' => 'CompaniesController@ajaxCompanyRequest', 'as' => 'ajax.companies']);
 	Route::get('ajax/users/{params?}', ['uses' => 'UsersController@ajaxUsersRequest', 'as' => 'ajax.users']);
 	Route::get('ajax/companies/contacts/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxContactsRequest', 'as' => 'ajax.companies.contacts']);
@@ -164,7 +166,5 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);
 	Route::get('ajax/tickets/equipment/{company_id}', ['uses' => 'TicketsController@ajaxEquipmentRequest', 'as' => 'json.tickets.equipment']);
 	Route::get('ajax/files/{target}/{target_action}/{id}', ['uses' => 'FilesController@listFiles', 'as' => 'files.list']);
-
-	Route::get('api/tickets/{params?}', ['uses' => 'TicketsController@getTickets', 'as' => 'api.tickets.index']);
 
 });
