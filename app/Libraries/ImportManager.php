@@ -1877,7 +1877,7 @@ class TagTickets extends BaseClass {
 
 		if ($this->truncate()) {
 
-			$counter = 0;
+			$counter = 1;
 	
 			foreach ($table as $t) {
 				
