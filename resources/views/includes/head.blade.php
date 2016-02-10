@@ -1,4 +1,4 @@
-<meta name="viewport" content="width=680, initial-scale=1">
+<meta name="viewport" content="width=320, initial-scale=1">
 
 <!-- Scripts -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
