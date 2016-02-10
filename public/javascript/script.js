@@ -92,13 +92,13 @@ var toggleOrder = function($elem) {
 			if (new_weight <= weight) new_weight = parseInt(weight)+1;
 		});
 		$elem.attr('weight',new_weight);
-		$elem.html(asc_icon+" "+$elem.html());
+		$elem.html(asc_icon+"&nbsp;"+$elem.html());
 	}
 	else if (current_type == 'asc') {
 		$elem.attr('type','desc');
 		new_weight = current_weight;
 		$elem.attr('weight',new_weight);
-		$elem.html(desc_icon+" "+$elem.html());
+		$elem.html(desc_icon+"&nbsp;"+$elem.html());
 	}
 };
 
@@ -433,7 +433,7 @@ $("tr.orderable th").each(function () {
 	if ($(this).is("[type]")) {
 		var icon = $(this).attr("type") == "asc" ? asc_icon : desc_icon; 
 		$(this).attr("weight",0);
-		$(this).html(icon+" "+$(this).html());
+		$(this).html(icon+"&nbsp;"+$(this).html());
 	}
 });
 
