@@ -437,13 +437,18 @@ $("tr.orderable th").each(function () {
 	}
 });
 
+// apply a loading overlay so when ajax request is in progress no new requests can be submitted
 $('#loading').hide().ajaxStart(function() {
 	$(this).show();
 	$("body").addClass("in-progress");
 }).ajaxStop(function() {
 	$(this).hide();
 	$("body").removeClass("in-progress");
+	$(".pagination").rPage();
 });
+
+// responsive pagination
+$(".pagination").rPage();
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @/{any} AND @/companies/{id}

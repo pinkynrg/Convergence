@@ -479,7 +479,7 @@ a:visited, a:link, a:active, a:visited {
 	clear: both;
 }
 
-.pagination>li:first-child>a, .pagination>li:first-child>span {
+/*.pagination>li:first-child>a, .pagination>li:first-child>span {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
 }
@@ -498,7 +498,7 @@ a:visited, a:link, a:active, a:visited {
 .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
   background-color: #72A4CF;
   border: 1px solid #6393BD;
-}
+}*/
 
 /* Navbar */
 .navbar-default {
