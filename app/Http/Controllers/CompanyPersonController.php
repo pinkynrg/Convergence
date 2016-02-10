@@ -9,22 +9,34 @@ use App\Models\GroupType;
 use App\Models\Company;
 use App\Http\Requests\CreateCompanyPersonRequest;
 use App\Http\Requests\UpdateCompanyPersonRequest;
+use Request;
 use Input;
 use Form;
 use DB;
 use Auth;
 
-class CompanyPersonController extends Controller {
+class CompanyPersonController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-contact')) {
-        	$data['title'] = "Contacts";
-	        $data['menu_actions'] = [Form::addItem(route('company_person.create'), 'Add contact')];
-			$data['active_search'] = true;
-			$data['contacts'] = CompanyPerson::paginate(50);
-			return view('company_person/index',$data);
+        	return parent::index();
         }
         else return redirect()->back()->withErrors(['Access denied to contacts index page']);		
+	}
+
+	protected function main() {
+		$params = Request::input() != [] ? Request::input() : ['order' => ['people.last_name|ASC']];
+    	$data['contacts'] = self::api($params);
+		$data['title'] = "Contacts";
+	    $data['menu_actions'] = [Form::addItem(route('company_person.create'), 'Add contact')];
+		$data['active_search'] = implode(",",['people.first_name']);
+		return view('company_person/index',$data);
+	}
+
+	protected function html() {
+		$params = Request::input();
+		$data['contacts'] = self::api($params);
+		return view('company_person/contacts',$data);
 	}
 
 	public function show($id) {
@@ -109,35 +121,6 @@ class CompanyPersonController extends Controller {
 
 	public function destroy($id) {
 		echo 'company person method to be implmented';
-	}
-
-	public function ajaxContactsRequest($params = "") {
-
-        parse_str($params,$params);
-
-		$contacts = CompanyPerson::select("company_person.*");
-		$contacts->leftJoin('people','company_person.person_id','=','people.id');
-		$contacts->leftJoin('companies','company_person.company_id','=','companies.id');
-		$contacts->leftJoin('titles','company_person.title_id','=','titles.id');
-		$contacts->leftJoin('departments','company_person.department_id','=','departments.id');
-		
-		if (isset($params['search'])) {
-			$contacts->where(function($query) use ($params) {
-	            $query->where('last_name','like','%'.$params['search'].'%');
-	            $query->orWhere('first_name','like','%'.$params['search'].'%');
-			});
-		}
-
-        // apply ordering
-        if (isset($params['order'])) {
-    		$contacts->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $contacts->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-		//paginate
-		$data['contacts'] = $contacts->paginate(50);
-
-        return view('company_person/index',$data);
 	}
 
 	public function ajaxPeopleRequest() {

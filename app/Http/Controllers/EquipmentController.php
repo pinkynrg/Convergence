@@ -10,16 +10,21 @@ use Request;
 use Form; 
 use Auth;
 
-class EquipmentController extends Controller {
+class EquipmentController extends BaseController {
 	
 	public function index() {
 		if (Auth::user()->can('read-all-equipment')) {
-        	$data['title'] = "Equipment";
-			$data['active_search'] = true;
-			$data['equipment'] = Equipment::paginate(50);
-			return view('equipment/index',$data);
+        	return parent::index();
 		}
 		else return redirect()->back()->withErrors(['Access denied to equipment index page']);		
+	}
+
+	protected function main() {
+		$params = Request::input() != [] ? Request::input() : ['order' => ['equipment.cc_number|DESC']];
+    	$data['equipment'] = self::api($params);
+		$data['title'] = "Equipment";
+		$data['active_search'] = implode(",",['cc_number']);
+		return view('equipment/index',$data);
 	}
 
 	public function show($id) {
@@ -66,32 +71,5 @@ class EquipmentController extends Controller {
 
 	public function destroy() {
 		return "equipment destroy method hasn't been created yet";
-	}
-
-	public function ajaxEquipmentRequest($params = "") {
-		
-        parse_str($params,$params);
-
-		$equipment = Equipment::select("equipment.*");
-		$equipment->leftJoin("companies","companies.id","=","equipment.company_id");
-		$equipment->leftJoin("equipment_types","equipment_types.id","=","equipment.equipment_type_id");
-
-		// apply search
-        if (isset($params['search'])) {
-            $equipment->where('equipment.name','like','%'.$params['search'].'%');
-            $equipment->orWhere('equipment.cc_number','=',$params['search']);
-        }
-
-        // apply ordering
-        if (isset($params['order'])) {
-    		$equipment->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $equipment->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-		$equipment = $equipment->paginate(50);
-
-		$data['equipment'] = $equipment;
-
-        return view('equipment/equipment',$data);
 	}
 }

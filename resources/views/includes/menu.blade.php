@@ -145,7 +145,7 @@ $main = Menu::items([
 
 				<div class="navbar-form navbar-right" role="search">
 					<div class="form-group">
-						<input type="text" class="form-control search" placeholder="search">
+						<input type="text" columns="{{$active_search}}" class="form-control search" placeholder="search">
 					</div>
 				</div>
 

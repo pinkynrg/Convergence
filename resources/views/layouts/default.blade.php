@@ -8,7 +8,9 @@
 
 @include('includes.header')
 
-<div class="container wrapper" ajax-route= {{ "http://$_SERVER[HTTP_HOST]"."/ajax"."$_SERVER[REQUEST_URI]" }} >
+<div id="loading"></div>
+
+<div class="container wrapper" ajax-route= {{ "http://$_SERVER[HTTP_HOST]"."$_SERVER[REQUEST_URI]" }} >
 	
 	@include('includes.menu')
 

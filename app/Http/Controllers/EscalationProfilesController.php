@@ -20,7 +20,7 @@ class EscalationProfilesController extends Controller {
 		if (Auth::user()->can('read-all-escalation-profiles')) {
 			$data['title'] = "Escalation Profiles";
 			$data['menu_actions'] = [Form::editItem( route('escalation_profiles.create'),"Add new Escalation Profile")];
-			$data['escalation_profiles'] = EscalationProfile::paginate(50);
+			$data['escalation_profiles'] = EscalationProfile::paginate(PAGINATION);
 			return view('escalation_profiles/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to esclation profiles index page']);

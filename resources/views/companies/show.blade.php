@@ -7,14 +7,16 @@
 
 	</div>
 
-	<div ajax-route="{{ route('ajax.companies.contacts',$company->id) }}">
-		<div id="contacts" class="navb expander"> 
+	<hr>
+
+	<div ajax-route="{{ route('companies.contacts',$company->id) }}">
+		<div id="contacts" class="navb"> 
 			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Contacts </div>
 		</div>
-		<div class="to_expand">
+		<div>
 		
 			@if ($company->contacts->count())
-				@include('companies.contacts', array('contacts' => $company->contacts))
+				@include('company_person.contacts', array('contacts' => $company->contacts))
 			@else
 				@include('includes.no-contents')
 			@endif
@@ -22,14 +24,16 @@
 		</div>
 	</div>
 
-	<div ajax-route="{{ route('ajax.companies.tickets',$company->id) }}">
-		<div id="tickets" class="navb expander"> 
+	<hr>
+
+	<div ajax-route="{{ route('companies.tickets',$company->id) }}">
+		<div id="tickets" class="navb"> 
 			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Tickets </div>
 		</div>
-		<div class="to_expand">
+		<div>
 
 			@if ($company->tickets->count())
-				@include('companies.tickets', array('tickets' => $company->tickets))
+				@include('tickets.tickets', array('tickets' => $company->tickets))
 			@else
 				@include('includes.no-contents')
 			@endif
@@ -37,14 +41,16 @@
 		</div>
 	</div>
 
-	<div ajax-route="{{ route('ajax.companies.equipment',$company->id) }}">
-		<div id="equipment" class="navb expander"> 
+	<hr>
+
+	<div ajax-route="{{ route('companies.equipment',$company->id) }}">
+		<div id="equipment" class="navb"> 
 			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Equipment </div>
 		</div>
-		<div class="to_expand">
+		<div>
 			
 			@if ($company->equipment->count())
-				@include('companies.equipment', array('equipment' => $company->equipment))
+				@include('equipment.equipment', array('equipment' => $company->equipment))
 			@else
 				@include('includes.no-contents')
 			@endif
@@ -52,14 +58,16 @@
 		</div>
 	</div>
 	
-	<div ajax-route="{{ route('ajax.companies.hotels',$company->id) }}">
-		<div id="hotels" class="navb expander"> 
+	<hr>
+
+	<div ajax-route="{{ route('hotels.index') }}?where[]=companies.id|=|{{$company->id}}&paginate=10">
+		<div id="hotels" class="navb"> 
 			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Hotels </div>
 		</div>
-		<div class="to_expand">
+		<div>
 			
 			@if ($company->hotels->count())
-				@include('companies.hotels', array('hotels' => $company->hotels))
+				@include('hotels.hotels', array('hotels' => $company->hotels))
 			@else
 				@include('includes.no-contents')
 			@endif
@@ -67,18 +75,21 @@
 		</div>
 	</div>
 	
+	<hr>
 
-	<div id="services" class="navb expander"> 
-		<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Services </div>
-	</div>
-	<div class="to_expand">
-		
-		@if ($company->services->count())
-			@include('companies.services', array('services' => $company->services))
-		@else
-			@include('includes.no-contents')
-		@endif
+	<div ajax-route="{{ route('services.index') }}?where[]=companies.id|=|{{$company->id}}&paginate=10">
+		<div id="services" class="navb"> 
+			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Services </div>
+		</div>
+		<div>
+			
+			@if ($company->services->count())
+				@include('services.services', array('services' => $company->services))
+			@else
+				@include('includes.no-contents')
+			@endif
 
+		</div>
 	</div>
 
 @endsection

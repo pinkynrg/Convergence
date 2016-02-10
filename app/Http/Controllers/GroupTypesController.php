@@ -3,20 +3,27 @@
 use App\Http\Requests\CreateGroupTypeRequest;
 use App\Http\Requests\UpdateGroupTypeRequest;
 use App\Models\GroupType;
+use Request;
 use Auth;
 use Form;
 
 
-class GroupTypesController extends Controller {
+class GroupTypesController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-group-type')) {
-			$data['title'] = "Group Types";
-			$data['group_types'] = GroupType::paginate(50);
-			$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type')];
-			return view('group_types/index',$data);
+			return parent::index();
 		}
 		else return redirect()->back()->withErrors(['Access denied to group types index page']);
+	}
+
+	protected function main() {
+		$params = Request::input() != [] ? Request::input() : ['order' => ['group_types.display_name|ASC']];
+        $data['group_types'] = self::api($params);
+		$data['title'] = "Group Types";
+		$data['active_search'] = implode(",",['display_name']);
+		$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type')];
+		return view('group_types/index',$data);
 	}
 
 	public function show($id) {

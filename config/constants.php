@@ -33,5 +33,7 @@
 	define("SITE_URL",PROTOCOL.DOMAIN);
 	define("WAITING_FOR_FEEDBACK",3);
 	define("SOLVED",6);
+	define("PAGINATION",50);
+	define("MAX_PAGINATION",200);
 
 ?>

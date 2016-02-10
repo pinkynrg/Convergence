@@ -7,7 +7,7 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="display_name">Display Name</th>
+				<th column="display_name" type="asc">Display Name</th>
 				<th column="name">Name</th>
 				<th column="description">Description</th>
 				<th column="created_at">Created</th>
@@ -28,7 +28,7 @@
 
 				@endforeach
 			@else 
-				<tr><td colspan="3">@include('includes.no-contents')</td></tr>
+				<tr><td colspan="5">@include('includes.no-contents')</td></tr>
 			@endif 
 
 		</tbody>

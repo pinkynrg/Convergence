@@ -6,20 +6,27 @@ use App\Http\Requests\UpdateGroupRolesRequest;
 use App\Models\GroupType;
 use App\Models\Group;
 use App\Models\Role;
+use Request;
 use Form;
 use Auth;
 use DB;
 
-class GroupsController extends Controller {
+class GroupsController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-group')) {
-			$data['title'] = "Groups";
-			$data['groups'] = Group::paginate(50);
-			$data['menu_actions'] = [Form::addItem(route('groups.create'), 'Create new group')];
-			return view('groups/index',$data);
+			return parent::index();
 		}
 		else return redirect()->back()->withErrors(['Access denied to groups index page']);
+	}
+
+	protected function main() {
+		$params = Request::input() != [] ? Request::input() : ['order' => ['groups.display_name|ASC']];
+        $data['groups'] = self::api($params);
+		$data['title'] = "Groups";
+		$data['active_search'] = implode(",",['display_name']);
+		$data['menu_actions'] = [Form::addItem(route('groups.create'), 'Create new group')];
+		return view('groups/index',$data);
 	}
 
 	public function show($id) {
@@ -83,7 +90,7 @@ class GroupsController extends Controller {
 
 	public function groups_roles() {
 		$data['title'] = "Associate Roles to Groups";
-		$data['groups'] = Group::orderBy('display_name')->paginate(50);
+		$data['groups'] = Group::orderBy('display_name')->paginate(PAGINATION);
 		$data['roles'] = Role::orderBy('display_name')->get();
 		return view('groups/groups_roles',$data);
 	}
