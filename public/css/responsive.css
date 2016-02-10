@@ -1,0 +1,5 @@
+@media (max-width: 655px) {
+  #login_panel {
+    display: none;
+  }
+}

@@ -174,14 +174,8 @@ input[disabled], textarea[disabled], select[disabled] {
   display:inline-block;
 }
 
-@media (max-width: 655px) {
-  #login_panel {
-    display: none;
-  }
-}
-
 .wrapper {
-  min-width: 350px;
+  min-width: 680px;
   max-width: 1500px;
 	width: 95%;
   /* bad for 3d table matrix */
