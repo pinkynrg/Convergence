@@ -181,7 +181,7 @@ input[disabled], textarea[disabled], select[disabled] {
 }
 
 .wrapper {
-  min-width: 400px;
+  min-width: 350px;
   max-width: 1500px;
 	width: 95%;
   /* bad for 3d table matrix */
