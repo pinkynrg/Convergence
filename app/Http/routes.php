@@ -77,6 +77,11 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('companies/{id}', ['uses' => 'CompaniesController@destroy', 'as' => 'companies.destroy']);
 	Route::patch('companies/{id}', ['uses' => 'CompaniesController@update', 'as' => 'companies.update']);	
 	Route::get('companies/{id}/edit', ['uses' => 'CompaniesController@edit', 'as' => 'companies.edit']);
+	Route::get('companies/{id}/contacts', ['uses' => 'CompaniesController@contacts', 'as' => 'companies.contacts']);
+	Route::get('companies/{id}/tickets', ['uses' => 'CompaniesController@tickets', 'as' => 'companies.tickets']);
+	Route::get('companies/{id}/equipment', ['uses' => 'CompaniesController@equipment', 'as' => 'companies.equipment']);
+	Route::get('companies/{id}/hotels', ['uses' => 'CompaniesController@hotels', 'as' => 'companies.hotels']);
+	Route::get('companies/{id}/services', ['uses' => 'CompaniesController@services', 'as' => 'companies.services']);
 
 	// tickets routes 
 	Route::get('tickets',['uses' => 'TicketsController@index', 'as' => 'tickets.index']);
@@ -86,7 +91,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('tickets/{id}', ['uses' => 'TicketsController@destroy', 'as' => 'tickets.destroy']);
 	Route::patch('tickets/{id}', ['uses' => 'TicketsController@update', 'as' => 'tickets.update']);	
 	Route::get('tickets/{id}/edit', ['uses' => 'TicketsController@edit', 'as' => 'tickets.edit']);
-		
+
 	// posts routes
 	Route::post('posts',['uses' => 'PostsController@store', 'as' => 'posts.store']);
 	Route::get('posts/{id}',['uses' => 'PostsController@show', 'as' => 'posts.show']);
@@ -136,6 +141,9 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::patch('contacts/{company_person_id}', ['uses' => 'CompanyPersonController@update', 'as' => 'company_person.update']);
 	Route::delete('contacts/{company_person_id}', ['uses' => 'CompanyPersonController@destroy', 'as' => 'company_person.destroy']);
 
+	//hotels
+	Route::get('hotels',['uses' => 'HotelsController@index', 'as' => 'hotels.index']);	
+
 	//charts
 	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);
 	Route::match(['get'], 'dashboard/{contact_id}', ['uses' => 'DashboardController@dashboardContact', 'as' => 'dashboard.show']);
@@ -147,24 +155,10 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('files/{id}', ['uses' => 'FilesController@destroy', 'as' => 'files.destroy']);
 
 	// ajax routes
-	Route::get('ajax/tickets/{params?}', ['uses' => 'TicketsController@ajaxTicketsRequest', 'as' => 'ajax.tickets']);
-	Route::get('ajax/companies/{params?}', ['uses' => 'CompaniesController@ajaxCompanyRequest', 'as' => 'ajax.companies']);
-	Route::get('ajax/users/{params?}', ['uses' => 'UsersController@ajaxUsersRequest', 'as' => 'ajax.users']);
-	Route::get('ajax/companies/contacts/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxContactsRequest', 'as' => 'ajax.companies.contacts']);
-	Route::get('ajax/companies/tickets/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxTicketsRequest', 'as' => 'ajax.companies.tickets']);
-	Route::get('ajax/companies/equipment/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxEquipmentRequest', 'as' => 'ajax.companies.equipment']);
-	Route::get('ajax/companies/hotels/{company_id}/{params?}', ['uses' => 'CompaniesController@ajaxHotelsRequest', 'as' => 'ajax.companies.hotels']);
-	Route::get('ajax/contacts/{params?}', ['uses' => 'CompanyPersonController@ajaxContactsRequest', 'as' => 'ajax.contacts']);
-	Route::get('ajax/equipment/{params?}', ['uses' => 'EquipmentController@ajaxEquipmentRequest', 'as' => 'ajax.equipment']);
-	Route::get('ajax/services/{params?}', ['uses' => 'ServicesController@ajaxServicesRequest', 'as' => 'ajax.services']);
-	Route::get('ajax/permissions/{params?}', ['uses' => 'PermissionsController@ajaxPermissionsRequest', 'as' => 'ajax.permissions']);
-	Route::get('ajax/roles/{params?}', ['uses' => 'RolesController@ajaxRolesRequest', 'as' => 'ajax.roles']);
-	Route::get('ajax/tags', ['uses' => 'TagsController@ajaxTagsRequest', 'as' => 'ajax.tags']);
+	Route::get('ajax/tags', ['uses' => 'TagsController@ajaxTagsRequest', 'as' => 'ajax.tags']);	
 	Route::get('ajax/people', ['uses' => 'CompanyPersonController@ajaxPeopleRequest', 'as' => 'ajax.people']);
 	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);
 	Route::get('ajax/tickets/equipment/{company_id}', ['uses' => 'TicketsController@ajaxEquipmentRequest', 'as' => 'json.tickets.equipment']);
 	Route::get('ajax/files/{target}/{target_action}/{id}', ['uses' => 'FilesController@listFiles', 'as' => 'files.list']);
-
-	Route::get('api/tickets/{params?}', ['uses' => 'TicketsController@getTickets', 'as' => 'api.tickets.index']);
 
 });

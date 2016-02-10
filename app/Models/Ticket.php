@@ -72,4 +72,8 @@ class Ticket extends CustomModel {
 		return $this->morphMany('App\Models\File','resource');
 	}
 
+	public function last_operation_company_person() 
+	{
+		return $this->belongsTo('App\Models\CompanyPerson');
+	}
 }

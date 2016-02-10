@@ -17,32 +17,31 @@ use App\Models\CompanyMainContact;
 use App\Models\CompanyAccountManager;
 use App\Http\Requests\CreateCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Controllers\CompanyPersonController;
+use App\Http\Controllers\TicketsController;
+use Request;
 use Input;
 use Form;
 use Auth;
 use DB;
 
-class CompaniesController extends Controller {
+class CompaniesController extends BaseController {
 
-	public function index() {
+    public function index() {
         if (Auth::user()->can('read-all-company')) {
-            
-            $companies = Company::select("companies.*");
-            $companies->leftJoin("company_main_contacts","companies.id","=","company_main_contacts.company_id");
-            $companies->leftJoin("company_person","company_person.id","=","company_main_contacts.main_contact_id");
-            $companies->leftJoin("company_account_managers","companies.id","=","company_account_managers.company_id");
-            $companies->leftJoin("company_person as account_managers","account_managers.id","=","company_account_managers.account_manager_id");
-            $companies->leftJoin("people","company_person.person_id","=","people.id");
-
-            $data['companies'] = $companies->paginate(50);
-
-            $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
-            $data['active_search'] = true;
-            $data['title'] = "Companies";
-    		return view('companies/index', $data);
+            return parent::index();
         }
         else return redirect()->back()->withErrors(['Access denied to companies index page']);      
-	}
+    }
+
+    protected function main() {
+        $params = Request::input() != [] ? Request::input() : ['order' => ['companies.name|ASC']];
+        $data['companies'] = self::api($params);
+        $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
+        $data['active_search'] = implode(",",['companies.name']);
+        $data['title'] = "Companies";
+        return view('companies/index', $data);
+    }
 
 	public function create() {
         $data['titles'] = Title::all();
@@ -105,11 +104,11 @@ class CompaniesController extends Controller {
             ];
 
             $data['company'] = Company::find($id);
-            $data['company']->contacts = CompanyPerson::where('company_person.company_id','=',$id)->paginate(10);
-            $data['company']->tickets = Ticket::where('company_id','=',$id)->paginate(10);
-            $data['company']->equipment = Equipment::where('company_id','=',$id)->paginate(10);
-            $data['company']->hotels = Hotel::where('company_id','=',$id)->paginate(10);
-            $data['company']->services = Service::where('company_id','=',$id)->paginate(10);
+            $data['company']->contacts = CompanyPersonController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['people.last_name|ASC']]);
+            $data['company']->tickets = TicketsController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['tickets.id|DESC']]);
+            $data['company']->equipment = EquipmentController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['equipment.id|DESC']]);
+            $data['company']->hotels = HotelsController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['hotels.rating|DESC']]);
+            $data['company']->services = ServicesController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['services.id|DESC']]);
             $data['company']->escalations = EscalationProfile::all();
 
             $data['title'] = $data['company']->name;
@@ -174,128 +173,42 @@ class CompaniesController extends Controller {
         return redirect()->route('companies.show',$id)->with('successes',['company updated successfully']);
 	}
 
+    public function contacts($id) {
+        // by merging array i let override the order by the requested values but I do not let override paginate and company id
+        $params = array_merge(['order' => ['people.last_name|ASC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['contacts'] = CompanyPersonController::api($params);
+        return view('company_person/contacts',$data);
+    }
+
+    public function tickets($id) {
+        // by merging array i let override the order by the requested values but I do not let override paginate and company id
+        $params = array_merge(['order' => ['tickets.id|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['tickets'] = TicketsController::api($params);
+        return view('tickets/tickets',$data);
+    }
+
+    public function equipment($id) {
+        // by merging array i let override the order by the requested values but I do not let override paginate and company id
+        $params = array_merge(['order' => ['equipment.id|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['equipment'] = EquipmentController::api($params);
+        return view('equipment/equipment',$data);
+    }
+
+    public function hotels($id) {
+        // by merging array i let override the order by the requested values but I do not let override paginate and company id
+        $params = array_merge(['order' => ['hotels.rating|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['equipment'] = HotelsController::api($params);
+        return view('hotels/hotels',$data);
+    }
+
+    public function services($id) {
+        // by merging array i let override the order by the requested values but I do not let override paginate and company id
+        $params = array_merge(['order' => ['services.id|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['services'] = ServicesController::api($params);
+        return view('services/services',$data);
+    }
+
 	public function destroy($id) {
         echo "company destroy method to be implement";
 	}
-
-    public function ajaxContactsRequest($company_id, $params = "") {
-
-        parse_str($params,$params);
-
-        $data['company'] = Company::find($company_id);
-        
-        $contacts = CompanyPerson::select('company_person.*');
-        $contacts->leftJoin('people','people.id','=','company_person.person_id');
-        $contacts->leftJoin('company_main_contacts', 'company_main_contacts.main_contact_id','=','company_person.id');
-        $contacts->where('company_person.company_id','=',$company_id);
-
-        // apply ordering
-        if (isset($params['order'])) {
-            $contacts->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $contacts->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-        // paginate
-        $contacts = $contacts->paginate(10);
-
-        $data['contacts'] = $contacts;
-
-        return view('companies/contacts',$data);
-    }
-
-    public function ajaxCompanyRequest($params = "") 
-    {    
-        parse_str($params,$params);
-
-        $companies = Company::select("companies.*");
-        $companies->leftJoin("company_main_contacts","companies.id","=","company_main_contacts.company_id");
-        $companies->leftJoin("company_person","company_person.id","=","company_main_contacts.main_contact_id");
-        $companies->leftJoin("people","company_person.person_id","=","people.id");
-        $companies->leftJoin("company_account_managers as cam","companies.id","=","cam.company_id");
-        $companies->leftJoin("company_person as account_manager_contact","account_manager_contact.id","=","cam.account_manager_id");
-        $companies->leftJoin("people as account_managers","account_managers.id","=","account_manager_contact.person_id");
-        
-        // apply search
-        if (isset($params['search'])) {
-            $companies->where('name','like','%'.$params['search'].'%');
-        }
-
-        // apply ordering
-        if (isset($params['order'])) {
-            $companies->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $companies->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-        // paginate
-        $companies = $companies->paginate(50);
-
-        $data['companies'] = $companies;
-
-        return view('companies/companies',$data); 
-    }
-
-    public function ajaxTicketsRequest($company_id, $params = "") 
-    {
-        parse_str($params,$params);
-
-        $tickets = Ticket::select("tickets.*");
-        $tickets->leftJoin("statuses","statuses.id","=","tickets.status_id");
-        $tickets->leftJoin("people as assignees","assignees.id","=","tickets.assignee_id");
-        $tickets->leftJoin("people as creators","creators.id","=","tickets.creator_id");
-        $tickets->where('company_id','=',$company_id);
-
-        // apply ordering
-        if (isset($params['order'])) {
-            $tickets->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $tickets->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-        // paginate
-        $tickets = $tickets->paginate(10);
-
-        $data['tickets'] = $tickets;
-        return view('companies/tickets',$data);
-    }
-
-    public function ajaxEquipmentRequest($company_id, $params = "")
-    {
-        parse_str($params,$params);
-
-        $equipment = Equipment::select("equipment.*");
-        $equipment->leftJoin("equipment_types","equipment_types.id","=","equipment.equipment_type_id");
-        $equipment->where('company_id','=',$company_id);
-
-        // apply ordering
-        if (isset($params['order'])) {
-            $equipment->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $equipment->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-        // paginate
-        $equipment = $equipment->paginate(10);
-
-        $data['equipment'] = $equipment;
-
-        return view('companies/equipment',$data);
-    }
-
-    public function ajaxHotelsRequest($company_id, $params = "")
-    {
-        parse_str($params,$params);
-
-        $hotels = Hotel::select("hotels.*")->where("company_id",$company_id);
-
-        // apply ordering
-        if (isset($params['order'])) {
-            $hotels->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $hotels->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-        // paginate
-        $hotels = $hotels->paginate(10);
-
-        $data['hotels'] = $hotels;
-
-        return view('companies/hotels',$data);
-    }
 }

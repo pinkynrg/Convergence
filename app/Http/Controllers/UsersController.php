@@ -4,22 +4,28 @@ use App\Models\User;
 use App\Models\Person;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Request;
 use Form;
 use Auth;
 use Input;
 use Hash; 
 
-class UsersController extends Controller {
+class UsersController extends BaseController {
 	
 	public function index() {
 		if (Auth::user()->can('read-all-user')) {
-	        $data['menu_actions'] = [Form::addItem(route('users.create'), 'Add user')];
-			$data['active_search'] = true;	        
-			$data['users'] = User::paginate(50);
-        	$data['title'] = "Users";
-			return view('users/index',$data);
+			return parent::index();
         }
         else return redirect()->back()->withErrors(['Access denied to users index page']);		
+	}
+
+	protected function main() {
+		$params = Request::input() != [] ? Request::input() : ['order' => ['people.last_name|ASC']];
+    	$data['users'] = self::api($params);
+		$data['menu_actions'] = [Form::addItem(route('users.create'), 'Add user')];
+		$data['active_search'] = implode(",",['users.username']);
+		$data['title'] = "Users";
+		return view('users/index',$data);
 	}
 
 	public function create($id=null) {
@@ -57,33 +63,5 @@ class UsersController extends Controller {
 		$user->password = Hash::make(Input::get('password')); 
         $user->save();
 		return redirect()->route('people.show',$user->owner->id)->with('successes',['User updated successfully']);
-	}
-
-	public function ajaxUsersRequest($params = "") {
-
-        parse_str($params,$params);
-
-		$contacts = User::select("users.*");
-		$contacts->leftJoin('people','users.person_id','=','people.id');
-		
-		if (isset($params['search'])) {
-			$contacts->where(function($query) use ($params) {
-	            $query->where('username','like','%'.$params['search'].'%');
-	            $query->orWhere('people.last_name','like','%'.$params['search'].'%');
-	            $query->orWhere('people.first_name','like','%'.$params['search'].'%');;
-			});
-		}
-
-        // apply ordering
-        if (isset($params['order'])) {
-    		$contacts->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $contacts->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-		//paginate
-		$data['users'] = $contacts->paginate(50);
-
-        return view('users/users
-        	',$data);
 	}
 }

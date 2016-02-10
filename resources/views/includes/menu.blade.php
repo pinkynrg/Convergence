@@ -14,7 +14,7 @@ class Menu {
 	static function add($item) {
 		$object = new \StdClass();
 		$object->label = isset($item['label']) ? $item['label'] : 'label-missing';
-		$object->icon = isset($item['icon']) ? "<i class='fa ".$item['icon']."'></i>" : "<i class='fa fa-question-circle'></i>";
+		$object->icon = isset($item['icon']) ? "<i class='".$item['icon']."'></i>" : "<i class='".MISSING_ICON."'></i>";
 		
 		if ($item['type'] == 'item') {
 			
@@ -48,25 +48,25 @@ class Menu {
 }
 
 $main = Menu::items([
-	['type'=>'item','label'=>'Tickets','icon'=>'fa-ticket','link'=>route('tickets.index'),'show'=>Auth::user()->can('read-all-ticket')],
-	['type'=>'group','label'=>'Manage','icon'=>'fa-cog','menu'=>[
-		['type'=>'item','label'=>'Companies','icon'=>'fa-building','link'=>route('companies.index'),'show'=>Auth::user()->can('read-all-company')],
-		['type'=>'item','label'=>'Contacts','icon'=>'fa-book','link'=>route('company_person.index'),'show'=>Auth::user()->can('read-all-contact')],
-		['type'=>'item','label'=>'Users','icon'=>'fa-book','link'=>route('users.index'),'show'=>Auth::user()->can('read-all-user')],
-		['type'=>'item','label'=>'Equipment','icon'=>'fa-wrench','link'=>route('equipment.index'),'show'=>Auth::user()->can('read-all-equipment')],
-		['type'=>'item','label'=>'Services','icon'=>'fa-server','link'=>route('services.index'),'show'=>Auth::user()->can('read-all-service')],
-		['type'=>'item','label'=>'Escalation Profiles','icon'=>'fa-bolt','link'=>route('escalation_profiles.index'),'show'=>Auth::user()->can('read-all-escalation-profiles')]
+	['type'=>'item','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::user()->can('read-all-ticket')],
+	['type'=>'group','label'=>'Manage','icon'=>MANAGE_ICON,'menu'=>[
+		['type'=>'item','label'=>'Companies','icon'=>COMPANIES_ICON,'link'=>route('companies.index'),'show'=>Auth::user()->can('read-all-company')],
+		['type'=>'item','label'=>'Contacts','icon'=>CONTACTS_ICON,'link'=>route('company_person.index'),'show'=>Auth::user()->can('read-all-contact')],
+		['type'=>'item','label'=>'Users','icon'=>USERS_ICON,'link'=>route('users.index'),'show'=>Auth::user()->can('read-all-user')],
+		['type'=>'item','label'=>'Equipment','icon'=>EQUIPMENT_ICON,'link'=>route('equipment.index'),'show'=>Auth::user()->can('read-all-equipment')],
+		['type'=>'item','label'=>'Services','icon'=>SERVICES_ICON,'link'=>route('services.index'),'show'=>Auth::user()->can('read-all-service')],
+		['type'=>'item','label'=>'Escalation Profiles','icon'=>ESCALATIONS_ICON,'link'=>route('escalation_profiles.index'),'show'=>Auth::user()->can('read-all-escalation-profiles')]
 
 	]],
-	['type'=>'group','label'=>'Access','icon'=>'fa-cog','menu'=>[
-		['type'=>'item','label'=>'Permissions','icon'=>'fa fa-unlock','link'=>route('permissions.index'),'show'=>Auth::user()->can('read-all-permission')],
-		['type'=>'item','label'=>'Roles','icon'=>'fa-male','link'=>route('roles.index'),'show'=>Auth::user()->can('read-all-role')],
-		['type'=>'item','label'=>'Groups','icon'=>'fa-users','link'=>route('groups.index'),'show'=>Auth::user()->can('read-all-group')],
-		['type'=>'item','label'=>'Groups Types','icon'=>'fa-bars','link'=>route('group_types.index'),'show'=>Auth::user()->can('read-all-group-type')]
+	['type'=>'group','label'=>'Access','icon'=>ACCESS_ICON,'menu'=>[
+		['type'=>'item','label'=>'Permissions','icon'=>PERMISSIONS_ICON,'link'=>route('permissions.index'),'show'=>Auth::user()->can('read-all-permission')],
+		['type'=>'item','label'=>'Roles','icon'=>ROLES_ICON,'link'=>route('roles.index'),'show'=>Auth::user()->can('read-all-role')],
+		['type'=>'item','label'=>'Groups','icon'=>USERS_ICON,'link'=>route('groups.index'),'show'=>Auth::user()->can('read-all-group')],
+		['type'=>'item','label'=>'Groups Types','icon'=>GROUP_TYPES_ICON,'link'=>route('group_types.index'),'show'=>Auth::user()->can('read-all-group-type')]
 	]],
-	['type'=>'group','label'=>'Info','icon'=>'fa-cog','menu'=>[	
-		['type'=>'item','label'=>'Dashboard','icon'=>'fa-dashboard','link'=>route('dashboard.logged'), 'show'=>true],
-		['type'=>'item','label'=>'Statistics','icon'=>'fa-line-chart','link'=>route('statistics.index'), 'show'=>true]
+	['type'=>'group','label'=>'Info','icon'=>INFO_ICON,'menu'=>[	
+		['type'=>'item','label'=>'Dashboard','icon'=>DASHBOARD_ICON,'link'=>route('dashboard.logged'), 'show'=>true],
+		['type'=>'item','label'=>'Statistics','icon'=>STATISTICS_ICON,'link'=>route('statistics.index'), 'show'=>true]
 	]]
 ]);
 
@@ -145,7 +145,7 @@ $main = Menu::items([
 
 				<div class="navbar-form navbar-right" role="search">
 					<div class="form-group">
-						<input type="text" class="form-control search" placeholder="search">
+						<input type="text" columns="{{$active_search}}" class="form-control search" placeholder="search">
 					</div>
 				</div>
 

@@ -2172,6 +2172,8 @@ class Hotels extends BaseClass {
 						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 						$response = json_decode(curl_exec($ch), true);
 
+						logMessage("SECOND RESPONSE DEBUG: ".json_encode($response));
+
 						if (count($response['rows']) > 0) {
 
 							$matrix['distance'] = $response['rows'][0]['elements'][0]['distance']['value'];
@@ -2191,6 +2193,8 @@ class Hotels extends BaseClass {
 								$element['rating'] = isset($element['rating']) ? $element['rating'] : 'NULL';
 
 								$query = "INSERT INTO hotels (id,name,address,company_id,rating,walking_time,driving_time,distance) VALUES (".$counter.",\"".str_replace('"',"'",$element['name'])."\",\"".str_replace('"',"'",$element['vicinity'])."\",".$company['id'].",".$element['rating'].",".$matrix['walking_time'].",".$matrix['driving_time'].",".$matrix['distance'].")";
+
+								logMessage("QUERY DEBUG: ".$query);
 
 								if (mysqli_query($this->manager->conn,$query) === TRUE) {
 									$this->successes++;

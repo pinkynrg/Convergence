@@ -1,8 +1,10 @@
 <div class="content">
 
-	<div class="ajax_pagination" scrollup="false">
-		{!! $tickets->appends(Input::except('page'))->render() !!}
-	</div>
+	@if (Route::currentRouteName() == "tickets.index")
+		<div class="ajax_pagination" scrollup="false">
+			{!! $tickets->appends(Input::except('page'))->render() !!}
+		</div>
+	@endif
 
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
@@ -12,9 +14,13 @@
 				<th column="statuses.name">Status</th>
 				<th column="priorities.id" class="hidden-xs">Priority</th>
 				<th column="assignees.last_name" class="hidden-xs">Asignee</th>
-				<th column="companies.name">Company</th>
+				
+				@if (Route::currentRouteName() == "tickets.index")
+					<th column="companies.name">Company</th>
+				@endif
+
 				<th column="divisions.name" class="hidden-xs">Division</th>
-				<th column="tickets.updated_at" class="hidden-xs">Updated</th>
+				<th column="last_operation_date" class="hidden-xs">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -30,11 +36,19 @@
 					<td> {{ $ticket->status->name }} </td>
 					<td class="hidden-xs"> {{ $ticket->priority->name }} </td>
 					<td class="hidden-xs"> <a href="{{ route('people.show', $ticket->assignee->person->id) }}"> {{ $ticket->assignee->person->name() }} </a> </td>
-					<td> <a href="{{ route('companies.show', $ticket->company->id) }}"> {{ $ticket->company->name }} </a> </td>
+					
+					@if (Route::currentRouteName() == "tickets.index")
+						<td> <a href="{{ route('companies.show', $ticket->company->id) }}"> {{ $ticket->company->name }} </a> </td>
+					@endif
+
 					<td class="hidden-xs"> {{ $ticket->division->name }} </td>
 					<td class="hidden-xs"> 
-						{{ date("m/d/Y",strtotime($ticket->last_operation_date)) }}
-						<div class="ticket_foot_details"> by <a href="{{ route('people.show', $ticket->last_operation_company_person->person->id) }}"> {{ $ticket->last_operation_company_person->person->name() }} </a> </div>
+						{{ date("m/d/Y",strtotime($ticket->last_operation_date )) }}
+						<div class="ticket_foot_details"> by 
+							<a href="{{ route('people.show', $ticket->last_operation_company_person->person_id) }}"> 
+								{{ $ticket->last_operation_company_person->person->name() }} 
+							</a> 
+						</div>
 					</td>
 				</tr>
 
@@ -46,8 +60,16 @@
 		</tbody>
 	</table>
 
-	<div class="ajax_pagination" scrollup="true">
-		{!! $tickets->appends(Input::except('page'))->render() !!}
-	</div>
+	@if (Route::currentRouteName() == "tickets.index")
+		<div class="ajax_pagination" scrollup="true">
+			{!! $tickets->render() !!}
+		</div>
+	@endif 
+
+	@if (Route::currentRouteName() == "companies.tickets" || Route::currentRouteName() == "companies.show")
+		<div class="ajax_pagination" scrollup="false">
+			{!! $tickets->render() !!}
+		</div>
+	@endif
 
 </div>

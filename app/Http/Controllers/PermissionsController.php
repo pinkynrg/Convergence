@@ -3,20 +3,32 @@
 use App\Http\Requests\CreatePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
 use App\Models\Permission;
+use Request;
 use Form;
 use Auth;
 
-class PermissionsController extends Controller {
+class PermissionsController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-permission')) {
-			$data['active_search'] = true;
-			$data['title'] = "Permissions";
-			$data['permissions'] = Permission::paginate(50);
-			$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission')];
-			return view('permissions/index',$data);
+			return parent::index();
 		}
 		else return redirect()->back()->withErrors(['Access denied to permissions index page']);
+	}
+
+	protected function main() {
+		$params = Request::input();
+        $data['permissions'] = self::api($params);
+		$data['active_search'] = implode(",",['display_name']);
+		$data['title'] = "Permissions";
+		$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission')];
+		return view('permissions/index',$data);
+	}
+
+	protected function html() {
+		$params = Request::input();
+        $data['permissions'] = self::api($params);
+        return view('permissions/permissions',$data);
 	}
 
 	public function show($id) {
@@ -49,30 +61,6 @@ class PermissionsController extends Controller {
 	public function store(CreatePermissionRequest $request) {
         $groupType = Permission::create($request->all());
         return redirect()->route('permissions.index')->with('successes',['Permission created successfully']);;
-	}
-
-	public function ajaxPermissionsRequest($params = "") {
-		
-        parse_str($params,$params);
-
-		$permissions = Permission::select("permissions.*");
-
-		// apply search
-        if (isset($params['search'])) {
-            $permissions->where('name','like','%'.$params['search'].'%');
-        }
-
-        // apply ordering
-        if (isset($params['order'])) {
-    		$permissions->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-            $permissions->orderBy($params['order']['column'],$params['order']['type']);
-        }
-
-		$permissions = $permissions->paginate(50);
-
-		$data['permissions'] = $permissions;
-
-        return view('permissions/permissions',$data);
 	}
 }
 

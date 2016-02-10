@@ -7,7 +7,7 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="name">Display Name</th>
+				<th column="name" type="asc">Display Name</th>
 				<th column="name">Name</th>
 				<th column="description">Description</th>
 				<th column="created_at">Created</th>

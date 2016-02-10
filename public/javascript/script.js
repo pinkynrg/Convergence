@@ -2,9 +2,13 @@
 
 $(document).ready(function() {
 
+var desc_icon = '<i class="fa fa-sort-amount-desc"></i>';
+var asc_icon = '<i class="fa fa-sort-amount-asc"></i>';
 var debug = true;
 var regex = /\/([a-zA-Z\-]*)([\/]?)(create|[\d]*)([\/]?)([a-zA-Z\-]*)([\/]?)/g;
 var timer;
+var protocol = window.location.protocol;
+var host = window.location.hostname;
 var path = window.location.pathname;
 var rxres = regex.exec(path);
 
@@ -34,6 +38,23 @@ var scrollUp = function(ms) {
     }, ms);
 };
 
+var getUrlParameter = function (sPageURL, sParam) {
+    var sURLVariables = sPageURL.replace("?","&").split('&'),
+        sParameterName,
+        i;
+
+    consoleLog("Parameters in href clicked page: ");
+    consoleLog(sURLVariables);
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
 var resetFilter = function($this) {
 	var $target = $this.closest("div[ajax-route]");
 	$target.find('.selectpicker').selectpicker('deselectAll');
@@ -47,103 +68,141 @@ var ajaxUpdate = function($target) {
 	}
 	timer = setTimeout(function () {
 		var params = getParams($target);
-		var url = $target.attr("ajax-route");
-		url = getUrl(url,params);
+		url = getUrl(params,$target);
 		ajaxRequest(url,$target);
 	}, 500);
 };
 
 var toggleOrder = function($elem) {
-	var desc_icon = '<i class="fa fa-sort-amount-desc"></i>';
-	var asc_icon = '<i class="fa fa-sort-amount-asc"></i>';
-	if ($elem.attr('type') == 'asc') {
-		$elem.parent().find("th").each(function() {
-			$(this).removeAttr("type");
-			$(this).html($(this).html().replace(asc_icon,"").replace(desc_icon,""));
-		});
-		$elem.attr('type','desc');
-		$elem.html(desc_icon+" "+$elem.html());
-	} 
-	else {
-		$elem.parent().find("th").each(function() {
-			$(this).removeAttr("type");
-			$(this).html($(this).html().replace(asc_icon,"").replace(desc_icon,""));
-		});
+
+	var current_type = $elem.attr("type");
+	var current_weight = $elem.attr("weight");
+	
+	var $ordered_columns = $elem.parent().find("th[type]");
+	var new_weight = 0;
+
+	$elem.removeAttr("type");
+	$elem.removeAttr("weight");
+	$elem.html($elem.html().replace(asc_icon,"").replace(desc_icon,""));
+
+	if (typeof current_type == 'undefined') {
 		$elem.attr('type','asc');
+		$ordered_columns.each(function () {
+			var weight = $(this).attr("weight");
+			if (new_weight <= weight) new_weight = parseInt(weight)+1;
+		});
+		$elem.attr('weight',new_weight);
 		$elem.html(asc_icon+" "+$elem.html());
+	}
+	else if (current_type == 'asc') {
+		$elem.attr('type','desc');
+		new_weight = current_weight;
+		$elem.attr('weight',new_weight);
+		$elem.html(desc_icon+" "+$elem.html());
 	}
 };
 
 var getParams = function($target) {
 	var params = {};
 	
-	params['order'] = {};
-	params['filters'] = {};
-	params['search'] = "";
+	params['order'] = [];
+	params['where'] = [];
 	params['page'] = 1;
 
-	var table_order = $target.find("tr.orderable th[type]");
-	var multifilter = $target.find("select.selectpicker.multifilter");
+	var $search = $target.find("input[type='text'].search");
+	var $table_order = $target.find("tr.orderable th[type]");
+	var $multifilter = $target.find("select.selectpicker.multifilter");
 
-	params['search'] = $target.find("input[type='text'].search").length != 0 ? $target.find("input[type='text'].search").val() : "";
-
-	if (table_order.length) {
-		params['order'][table_order.attr('column')] = table_order.attr('type');
+	if ($search.val() != null && $search.val().length != 0) {
+		var key_words = $search.val().replace(" ",":");
+		var columns = $search.attr('columns').split(",");
+		consoleLog("search columns: " + columns);
+		for (var i=0; i<columns.length; i++) {
+			params['where'].push(columns[i] + "|LIKE|" + key_words);
+		}
 	}
 
-	multifilter.each(function () {
-		var that = $(this);
-		if ($(this).find("option:selected").length) {
-			params['filters'][that.attr('column')] = [];
-			$(this).find("option:selected").each(function() {
-				params['filters'][that.attr('column')].push($(this).val());
-			});
+	if ($table_order.length) {
+		$table_order.each(function () {
+			params['order'][$(this).attr('weight')] = $(this).attr('column')+"|"+$(this).attr('type');
+		});
+	}
+
+	$multifilter.each(function () {
+		if ($(this).val() != null && $(this).val().length > 0) {
+			params['where'].push($(this).attr('column') + "|IN|" + $(this).val().join(":"));
 		}
 	});
 
 	if ($(".ajax_pagination").find("li[selected]").length) {
-		params['page'] = $(".ajax_pagination").find("li[selected] a").html();
+		var url = $(".ajax_pagination").find("li[selected] a").attr("href");
+		consoleLog("Href on clicked page: " + url);
+		params['page'] = getUrlParameter(url,"page");
+
 	}
-	else 
-		params['page'] = 1;
 
 	return params;
 };
 
-var getUrl = function(url, params) {
+var getUrl = function(params, $target) {
 
-	url = url + "/";
+	var url = $target.attr('ajax-route');
+
+	var url_parts = [];
+
+	url_parts.push("type=html");
 	
-	if (params['search'] != "") url = url + "&" + "search" + "=" + encodeURIComponent(params['search']);
-	
-	if ( params['order'] != {} ) {
+	if ( params['order'].length != 0 ) {
 		for (var key in params['order']) {
-			url = url + "&" + encodeURIComponent("order[column]=") + encodeURIComponent(key) + "&" + encodeURIComponent("order[type]") + "=" + encodeURIComponent(params['order'][key]);
+			url_parts.push("order["+key+"]="+params['order'][key]);
 		}
 	}
 
-	if ( params['filters'] != {} ) {
-		for (var key in params['filters']) {
-			for (var subkey in params['filters'][key]) {
-				url = url + "&" + encodeURIComponent("filters["+key+"]["+subkey+"]") + "=" + encodeURIComponent(params['filters'][key][subkey]);
-			}
+	if ( params['where'].length != 0 ) {
+		for (var key in params['where']) {
+			url_parts.push("where[]="+params['where'][key]);
 		}
 	}
 
 	if ( params['page'] != 1 ) {
-		url = url + "?page=" + params['page'];
+		url_parts.push("page="+params['page']);
 	}
-	
+
+
+	consoleLog("Index of ? in url: " + (url.indexOf('*')));
+
+	for (var i=0; i<url_parts.length; i++) {
+		if (i == 0 && url.indexOf('?') === -1) {
+			url = url + "?" + url_parts[i];
+		}
+		else {
+			url = url + "&" + url_parts[i];
+		}
+	}
+
+	consoleLog("base path: " + path);
+	consoleLog("params: " + params);
+	consoleLog("url parts: " + url_parts);
+	consoleLog("final url: " + url);
+
 	return url;
 };
 
 var ajaxRequest = function(url,$target) {
 
-	$.get(url, function (data) {
-		$target.find(".content table tbody").html($(data).find('tbody').html());
-		$target.find(".ajax_pagination[scrollup='true']").html($(data).find(".ajax_pagination[scrollup='true']").html());
-		$target.find(".ajax_pagination[scrollup='false']").html($(data).find(".ajax_pagination[scrollup='false']").html());
+	$.ajax({
+		type: 'GET',
+		url: url,
+		success: function (data) {
+			$target.find(".content table tbody").html($(data).find('tbody').html());
+			$target.find(".ajax_pagination[scrollup='true']").html($(data).find(".ajax_pagination[scrollup='true']").html());
+			$target.find(".ajax_pagination[scrollup='false']").html($(data).find(".ajax_pagination[scrollup='false']").html());
+		},
+		error: function (data) {
+			console.log(data);
+		}
 	});
+
 };
 
 var activateTicketDraftMode = function() {
@@ -178,13 +237,6 @@ var activateTicketDraftMode = function() {
 				consoleLog('ticket draft: '+data);
 			}
 		});
-
-	}, 1000);
-};
-
-var activatePostDraftMode = function() {
-	setInterval(function(){ 
-		
 
 	}, 1000);
 };
@@ -363,15 +415,55 @@ $('form').preventDoubleSubmission();
 // title maquee
 titleMarquee();
 
-consoleLog(url);
-
 Dropzone.autoDiscover = false;
 
+// trigger ajax request when changing page
+$(".ajax_pagination li").live('click',function (e) {
+	var $target = $(this).closest("div[ajax-route]");
+	e.preventDefault();
+	$(this).attr("selected","true");
+	ajaxUpdate($target);
+	if ($(this).closest(".ajax_pagination").attr('scrollup') == 'true') {
+		scrollUp(500);
+	}
+});
+
+// preset column order
+$("tr.orderable th").each(function () {
+	if ($(this).is("[type]")) {
+		var icon = $(this).attr("type") == "asc" ? asc_icon : desc_icon; 
+		$(this).attr("weight",0);
+		$(this).html(icon+" "+$(this).html());
+	}
+});
+
+$('#loading').hide().ajaxStart(function() {
+	$(this).show();
+	$("body").addClass("in-progress");
+}).ajaxStop(function() {
+	$(this).hide();
+	$("body").removeClass("in-progress");
+});
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@/tickets
+@/{any} AND @/companies/{id}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+if ((url.target_action == "index") || (url.target == "companies" && url.target_action == "show")) {
+	// trigger ajax request when ordering
+	$("tr.orderable th").on("click", function () {
+		var $target = $(this).closest("div[ajax-route]");
+		toggleOrder($(this));
+		ajaxUpdate($target);
+	});
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@/{any}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 if (url.target_action == "index") {
+
 	//reset values of filters 
 	$('.selectpicker').selectpicker('deselectAll');
 
@@ -381,13 +473,6 @@ if (url.target_action == "index") {
 	// trigger ajax request when searching
 	$("input[type='text'].search").on("keyup", function () {
 		var $target = $(this).closest("div[ajax-route]");
-		ajaxUpdate($target);
-	});
-
-	// trigger ajax request when ordering
-	$("tr.orderable th").on("click", function () {
-		var $target = $(this).closest("div[ajax-route]");
-		toggleOrder($(this));
 		ajaxUpdate($target);
 	});
 
@@ -401,17 +486,6 @@ if (url.target_action == "index") {
 	$("input#reset_filters").on("click", function() {
 		var $target = $(this).closest("div[ajax-route]");
 		resetFilter($target);
-	});
-
-	// trigger ajax request when changing page
-	$(".ajax_pagination li").live('click',function (e) {
-		var $target = $(this).closest("div[ajax-route]");
-		e.preventDefault();
-		$(this).attr("selected","true");
-		ajaxUpdate($target);
-		if ($(this).closest(".ajax_pagination").attr('scrollup') == 'true') {
-			scrollUp(500);
-		}
 	});
 }
 

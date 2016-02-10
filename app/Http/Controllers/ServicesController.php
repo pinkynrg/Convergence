@@ -9,15 +9,22 @@ use App\Models\Service;
 use App\Models\ServiceTechnician;
 use App\Models\Hotel;
 use Carbon\Carbon;
+use Request;
 use Form; 
 use Auth;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 
-class ServicesController extends Controller {
+class ServicesController extends BaseController {
 
     public function index() {
-        $data['services'] = Service::paginate(50);
+        return parent::index();
+    }
+
+    protected function main() {
+        $params = Request::input() != [] ? Request::input() : ['order' => ['services.id|DESC']];
+        $data['services'] = self::api($params);
         $data['title'] = "Services";
+        $data['active_search'] = implode(",",['services.id']);
         return view('services/index',$data);
     }
 
@@ -103,7 +110,7 @@ class ServicesController extends Controller {
             $services->orderBy($params['order']['column'],$params['order']['type']);
         }
 
-        $services = $services->paginate(50);
+        $services = $services->paginate(PAGINATION);
 
         $data['services'] = $services;
 

@@ -1,15 +1,18 @@
 <div class="content">
 
-	<div class="ajax_pagination" scrollup="false">
-		{!! $equipment->render() !!}
-	</div>
+
+	@if (Route::currentRouteName() == "equipment.index")
+		<div class="ajax_pagination" scrollup="false">
+			{!! $equipment->render() !!}
+		</div>
+	@endif
 
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="cc_number">CC</th>
+				<th column="cc_number" type="desc">CC</th>
 				<th column="equipment.name" class="hidden-xs">Name</th>
-				<th column="companies.company_name" class="hidden-xs">Customer</th>
+				<th column="companies.name" class="hidden-xs">Customer</th>
 				<th column="serial_number" class="hidden-xs">Serial Number</th>
 				<th column="equipment_types.name" class="hidden-xs">Equipment Type</th>
 				<th column="warranty_expiration" class="hidden-xs">Warranty Expiration</th>
@@ -40,7 +43,16 @@
 		</tbody>
 	</table>
 
-	<div class="ajax_pagination" scrollup="true">
-		{!! $equipment->render() !!}
-	</div>
+	@if (Route::currentRouteName() == "equipment.index")
+		<div class="ajax_pagination" scrollup="true">
+			{!! $equipment->render() !!}
+		</div>
+	@endif 
+
+	@if (Route::currentRouteName() == "companies.equipment" || Route::currentRouteName() == "companies.show")
+		<div class="ajax_pagination" scrollup="false">
+			{!! $equipment->render() !!}
+		</div>
+	@endif
+
 </div>

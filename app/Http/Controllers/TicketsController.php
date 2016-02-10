@@ -26,35 +26,30 @@ use Auth;
 use DB;
 
 
-class TicketsController extends Controller {
+class TicketsController extends BaseController {
 
 	public function index() {
-		// if (Auth::user()->can('read-all-ticket')) {
-			$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
-			$data['active_search'] = true;
-			$data['tickets'] = Ticket::where('status_id','!=',TICKET_DRAFT_STATUS_ID)->orderBy('id','desc')->paginate(50);
-			// find last updated date and contact info
-			foreach ($data['tickets'] as $ticket) {
-				$last_post = Post::select('posts.*')->where('ticket_id',$ticket->id)->orderBy('updated_at','desc')->first();
-				$which = count($last_post) ? $last_post->updated_at > $ticket->updated_at ? 'post' : 'ticket' : 'ticket';
-				$ticket['last_operation_date'] = $which == 'post' ? $last_post->updated_at : $ticket->updated_at;
-				$company_person_id = $which == 'post' ? $last_post->author_id : $ticket->creator_id;
-				$ticket['last_operation_company_person'] = CompanyPerson::find($company_person_id);
-			}
-			$data['companies'] = Company::orderBy('name','asc')->get();
-			$employees = CompanyPerson::select('company_person.*');
-			$employees->leftJoin('people','people.id','=','company_person.person_id');
-			$employees->where('company_person.company_id','=',1);
-			$employees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
-			$data['employees'] = $employees->get();
-			$data['divisions'] = Division::orderBy('name','asc')->get();
-			$data['statuses'] = Status::orderBy('id','asc')->get();
+		if (Auth::user()->can('read-all-company')) {
+			return parent::index();
+		}
+		else return redirect()->back()->withErrors(['Access denied to tickets index page']);      
+	}
 
-	        $data['title'] = "Tickets";
-
-			return view('tickets/index',$data);
-		// }
-		// else return redirect()->back()->withErrors(['Access denied to tickets index page']);
+	protected function main() {
+		$params = Request::input() != [] ? Request::input() : ['order' => ['tickets.id|DESC']];
+    	$data['tickets'] = self::api($params);
+    	$data['title'] = "Tickets";
+		$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
+		$data['active_search'] = implode(",",['tickets.title','tickets.post']);
+		$data['companies'] = Company::orderBy('name','asc')->get();
+		$employees = CompanyPerson::select('company_person.*');
+		$employees->leftJoin('people','people.id','=','company_person.person_id');
+		$employees->where('company_person.company_id','=',1);
+		$employees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
+		$data['employees'] = $employees->get();
+		$data['divisions'] = Division::orderBy('name','asc')->get();
+		$data['statuses'] = Status::orderBy('id','asc')->get();
+		return view('tickets/index',$data);
 	}
 
 	public function create(Request $request) {
@@ -261,68 +256,6 @@ class TicketsController extends Controller {
 	{
 		echo 'ticket destroy method to be created';
 	}
-
-	public function ajaxTicketsRequest($params = "")
-    {
-    	parse_str($params,$params);
-
-    	$tickets = Ticket::select('tickets.*');
-    	$tickets->leftJoin('company_person as creator_contacts','tickets.creator_id','=','creator_contacts.id');
-    	$tickets->leftJoin('company_person as assignee_contacts','tickets.assignee_id','=','assignee_contacts.id');
-    	$tickets->leftJoin('people as assignees','assignee_contacts.person_id','=','assignees.id');
-    	$tickets->leftJoin('people as creators','creator_contacts.person_id','=','creators.id');
-    	$tickets->leftJoin('statuses','tickets.status_id','=','statuses.id');
-    	$tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
-    	$tickets->leftJoin('companies','tickets.company_id','=','companies.id');
-    	$tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
-    	$tickets->where("tickets.status_id","!=",TICKET_DRAFT_STATUS_ID);
-    	// $tickets->leftJoin(DB::raw('(select * from posts where posts.ticket_id = tickets.id order by id desc limit 0,1)'),function ($join) {
-    	// 	$join->on('tickets.id','=','posts.ticket_id');
-    	// });
-
-
-    	// apply filters
-    	if (isset($params['filters'])) {
-    		foreach ($params['filters'] as $key => $filter) {
-    			
-    			$tickets->where(function($query) use ($filter,$key) {
-    				for ($i=0; $i<count($filter); $i++) {
-	    				if ($i == 0)
-	    					$query->where($key,'=',$filter[$i]);
-	    				else
-	    					$query->orWhere($key,'=',$filter[$i]);
-    				}
-    			});
-    		}
-    	}
-
-    	// apply search
-    	if (isset($params['search'])) {
-    		$tickets->where('title','like','%'.$params['search'].'%');
-    		$tickets->orWhere('tickets.id','=',$params['search']);
-    	}
-
-    	// apply ordering
-    	if (isset($params['order'])) {
-    		$tickets->orderByRaw("case when ".$params['order']['column']." is null then 1 else 0 end asc");
-    		$tickets->orderBy($params['order']['column'],$params['order']['type']);
-    	}
-
-    	// paginate
-   		$tickets = $tickets->paginate(50);
-
-	    $data['tickets'] = $tickets;
-
-	    foreach ($data['tickets'] as $ticket) {
-			$last_post = Post::select('posts.*')->where('ticket_id',$ticket->id)->orderBy('updated_at','desc')->first();
-			$which = count($last_post) ? $last_post->updated_at > $ticket->updated_at ? 'post' : 'ticket' : 'ticket';
-			$ticket['last_operation_date'] = $which == 'post' ? $last_post->updated_at : $ticket->updated_at;
-			$company_person_id = $which == 'post' ? $last_post->author_id : $ticket->creator_id;
-			$ticket['last_operation_company_person'] = CompanyPerson::find($company_person_id);
-		}
-
-        return view('tickets/tickets',$data);
-    }
 
     public function ajaxContactsRequest($id) {
     	$contacts = CompanyPerson::select('company_person.id','people.first_name','people.last_name');
