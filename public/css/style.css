@@ -535,7 +535,7 @@ a:visited, a:link, a:active, a:visited {
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
   color: #744b07;
-  background-color: #e5ab49;
+  background-color: transparent;
 }
 .navbar-default .navbar-toggle {
   border-color: #e5ab49;
@@ -559,6 +559,10 @@ a:visited, a:link, a:active, a:visited {
 .navbar-nav>li>.dropdown-menu {
   background-color: #FFF5D7;
   font-size:11px !important;
+}
+
+.navbar-default .navbar-nav .open .dropdown-menu>li>a {
+    color: #262626;
 }
 
 .dropdown-menu>li>a {
