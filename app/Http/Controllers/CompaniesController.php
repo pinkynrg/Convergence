@@ -197,7 +197,7 @@ class CompaniesController extends BaseController {
     public function hotels($id) {
         // by merging array i let override the order by the requested values but I do not let override paginate and company id
         $params = array_merge(['order' => ['hotels.rating|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
-        $data['equipment'] = HotelsController::api($params);
+        $data['hotels'] = HotelsController::api($params);
         return view('hotels/hotels',$data);
     }
 

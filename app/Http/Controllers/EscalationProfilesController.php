@@ -7,23 +7,29 @@ use App\Models\Level;
 use App\Models\EscalationProfile;
 use App\Models\EscalationEvent;
 use App\Models\Priority;
-use App\Http\Requests\Request;
+use Request;
 use Form;
 use Auth;
 use DB;
 
-class EscalationProfilesController extends Controller {
+class EscalationProfilesController extends BaseController {
 
 	static $delays = ["-","1 Hour","2 Hours","8 Hours","1 Day","2 Days","3 Days","4 Days","5 Days","6 Days","1 Week","2 Weeks","3 Weeks","1 Month","2 Months","3 Months"];
 
 	public function index() {
 		if (Auth::user()->can('read-all-escalation-profiles')) {
-			$data['title'] = "Escalation Profiles";
-			$data['menu_actions'] = [Form::editItem( route('escalation_profiles.create'),"Add new Escalation Profile")];
-			$data['escalation_profiles'] = EscalationProfile::paginate(PAGINATION);
-			return view('escalation_profiles/index',$data);
+			return parent::index();
 		}
 		else return redirect()->back()->withErrors(['Access denied to esclation profiles index page']);
+	}
+
+	protected function main() {
+		$params = Request::input() != [] ? Request::input() : ['order' => ['escalation_profiles.name|ASC']];
+    	$data['escalation_profiles'] = self::api($params);
+		$data['title'] = "Escalation Profiles";
+		$data['active_search'] = implode(",",['name']);
+		$data['menu_actions'] = [Form::editItem( route('escalation_profiles.create'),"Add new Escalation Profile")];
+		return view('escalation_profiles/index',$data);
 	}
 
 	public function show($id,$num = 3) {

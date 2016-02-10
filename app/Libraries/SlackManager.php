@@ -1,9 +1,9 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Libraries;
 
 use Request;
 use Route;
 
-class SlackController extends Controller {
+class SlackManager {
 
 	const POST_TO_TEST_CHANNEL = "https://hooks.slack.com/services/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";
 	const POST_TO_PC_CHANNEL = "https://hooks.slack.com/services/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";

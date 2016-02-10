@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers;
 
-use App\Http\Controllers\SlackController;
-use App\Http\Controllers\EmailsController;
+use App\Libraries\SlackController;
+use App\Libraries\EmailsManager;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Html2Text\Html2Text;
@@ -33,8 +33,8 @@ class PostsController extends Controller {
 		$status_id = $request->get('status_id');
 
 		$this->updateTicketStatus($request);
-		// SlackController::sendPost($post);
-		// EmailsController::sendPost($post->id);
+		// SlackManager::sendPost($post);
+		// EmailsManager::sendPost($post->id);
 		
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);
 	}

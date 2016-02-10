@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers;
 
-use App\Http\Controllers\SlackController;
-use App\Http\Controllers\EmailsController;
+use App\Libraries\SlackController;
+use App\Libraries\EmailsManager;
 use App\Http\Requests\CreateTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
@@ -105,8 +105,8 @@ class TicketsController extends BaseController {
 
        	if ($ticket->status_id != TICKET_DRAFT_STATUS_ID) { $this->updateHistory($ticket); }
 
-		// EmailsController::sendTicket($ticket->id);
-		// SlackController::sendTicket($ticket);
+		// EmailsManager::sendTicket($ticket->id);
+		// SlackManager::sendTicket($ticket);
 
         return (Request::ajax()) ? 'success' : redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
         return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);

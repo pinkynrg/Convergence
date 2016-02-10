@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Libraries;
 
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use App\Models\Ticket;
@@ -6,7 +6,7 @@ use App\Models\Post;
 use Mail;
 use HTML;
 
-class EmailsController extends Controller {
+class EmailsManager {
 
 	static $subject = null;
 	static $view = null;
