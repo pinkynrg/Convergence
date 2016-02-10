@@ -36,4 +36,22 @@
 	define("PAGINATION",50);
 	define("MAX_PAGINATION",200);
 
+	define("MISSING_ICON", "fa fa-question-circle");
+	define("TICKETS_ICON", "fa fa-ticket");
+	define("MANAGE_ICON", "fa fa-cog");
+	define("COMPANIES_ICON", "fa fa-building");
+	define("CONTACTS_ICON", "fa fa-book");
+	define("USERS_ICON", "fa fa-book");
+	define("EQUIPMENT_ICON", "fa fa-wrench");
+	define("SERVICES_ICON", "fa fa-server");
+	define("ESCALATIONS_ICON", "fa fa-bolt");
+	define("ACCESS_ICON", "fa fa-cog");
+	define("PERMISSIONS_ICON", "fa fa-unlock");
+	define("ROLES_ICON", "fa fa-male");
+	define("GROUPS_ICON", "fa fa-users");
+	define("GROUP_TYPES_ICON", "fa fa-bars");
+	define("INFO_ICON", "fa fa-info");
+	define("DASHBOARD_ICON", "fa fa-dashboard");
+	define("HOTELS_ICON", "fa fa-building");
+	define("STATISTICS_ICON", "fa fa-line-chart");
 ?>

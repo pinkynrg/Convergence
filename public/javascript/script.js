@@ -75,17 +75,29 @@ var ajaxUpdate = function($target) {
 
 var toggleOrder = function($elem) {
 
-	var current = $elem.attr("type");
+	var current_type = $elem.attr("type");
+	var current_weight = $elem.attr("weight");
 	
+	var $ordered_columns = $elem.parent().find("th[type]");
+	var new_weight = 0;
+
 	$elem.removeAttr("type");
+	$elem.removeAttr("weight");
 	$elem.html($elem.html().replace(asc_icon,"").replace(desc_icon,""));
 
-	if (typeof current == 'undefined') {
+	if (typeof current_type == 'undefined') {
 		$elem.attr('type','asc');
+		$ordered_columns.each(function () {
+			var weight = $(this).attr("weight");
+			if (new_weight <= weight) new_weight = parseInt(weight)+1;
+		});
+		$elem.attr('weight',new_weight);
 		$elem.html(asc_icon+" "+$elem.html());
 	}
-	else if (current == 'asc') {
+	else if (current_type == 'asc') {
 		$elem.attr('type','desc');
+		new_weight = current_weight;
+		$elem.attr('weight',new_weight);
 		$elem.html(desc_icon+" "+$elem.html());
 	}
 };
@@ -97,24 +109,26 @@ var getParams = function($target) {
 	params['where'] = [];
 	params['page'] = 1;
 
-	var search = $target.find("input[type='text'].search");
-	var table_order = $target.find("tr.orderable th[type]");
-	var multifilter = $target.find("select.selectpicker.multifilter");
+	var $search = $target.find("input[type='text'].search");
+	var $table_order = $target.find("tr.orderable th[type]");
+	var $multifilter = $target.find("select.selectpicker.multifilter");
 
-	if (search.val() != null && search.val().length != 0) {
-		var key_words = search.val().replace(" ",":");
-		var columns = search.attr('columns').split(",");
+	if ($search.val() != null && $search.val().length != 0) {
+		var key_words = $search.val().replace(" ",":");
+		var columns = $search.attr('columns').split(",");
 		consoleLog("search columns: " + columns);
 		for (var i=0; i<columns.length; i++) {
 			params['where'].push(columns[i] + "|LIKE|" + key_words);
 		}
 	}
 
-	if (table_order.length) {
-		params['order'].push(table_order.attr('column')+"|"+table_order.attr('type'));
+	if ($table_order.length) {
+		$table_order.each(function () {
+			params['order'][$(this).attr('weight')] = $(this).attr('column')+"|"+$(this).attr('type');
+		});
 	}
 
-	multifilter.each(function () {
+	$multifilter.each(function () {
 		if ($(this).val() != null && $(this).val().length > 0) {
 			params['where'].push($(this).attr('column') + "|IN|" + $(this).val().join(":"));
 		}
@@ -140,7 +154,7 @@ var getUrl = function(params, $target) {
 	
 	if ( params['order'].length != 0 ) {
 		for (var key in params['order']) {
-			url_parts.push("order[]="+params['order'][key]);
+			url_parts.push("order["+key+"]="+params['order'][key]);
 		}
 	}
 
@@ -418,6 +432,7 @@ $(".ajax_pagination li").live('click',function (e) {
 $("tr.orderable th").each(function () {
 	if ($(this).is("[type]")) {
 		var icon = $(this).attr("type") == "asc" ? asc_icon : desc_icon; 
+		$(this).attr("weight",0);
 		$(this).html(icon+" "+$(this).html());
 	}
 });
@@ -458,13 +473,6 @@ if (url.target_action == "index") {
 	// trigger ajax request when searching
 	$("input[type='text'].search").on("keyup", function () {
 		var $target = $(this).closest("div[ajax-route]");
-		ajaxUpdate($target);
-	});
-
-	// trigger ajax request when ordering
-	$("tr.orderable th").on("click", function () {
-		var $target = $(this).closest("div[ajax-route]");
-		toggleOrder($(this));
 		ajaxUpdate($target);
 	});
 

@@ -11,7 +11,7 @@
 
 	<div ajax-route="{{ route('companies.contacts',$company->id) }}">
 		<div id="contacts" class="navb"> 
-			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Contacts </div>
+			<div class="title"><i class="{{ CONTACTS_ICON }}"></i> Contacts </div>
 		</div>
 		<div>
 		
@@ -28,7 +28,7 @@
 
 	<div ajax-route="{{ route('companies.tickets',$company->id) }}">
 		<div id="tickets" class="navb"> 
-			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Tickets </div>
+			<div class="title"><i class="{{ TICKETS_ICON }}"></i> Tickets </div>
 		</div>
 		<div>
 
@@ -45,7 +45,7 @@
 
 	<div ajax-route="{{ route('companies.equipment',$company->id) }}">
 		<div id="equipment" class="navb"> 
-			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Equipment </div>
+			<div class="title"><i class="{{ EQUIPMENT_ICON }}"></i> Equipment </div>
 		</div>
 		<div>
 			
@@ -60,9 +60,9 @@
 	
 	<hr>
 
-	<div ajax-route="{{ route('hotels.index') }}?where[]=companies.id|=|{{$company->id}}&paginate=10">
+	<div ajax-route="{{ route('companies.hotels',$company->id) }}">
 		<div id="hotels" class="navb"> 
-			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Hotels </div>
+			<div class="title"><i class="{{ HOTELS_ICON }}"></i> Hotels </div>
 		</div>
 		<div>
 			
@@ -77,9 +77,9 @@
 	
 	<hr>
 
-	<div ajax-route="{{ route('services.index') }}?where[]=companies.id|=|{{$company->id}}&paginate=10">
+	<div ajax-route="{{ route('companies.services',$company->id) }}">
 		<div id="services" class="navb"> 
-			<div class="title"><i class="fa fa-plus-square-o fa-2"></i> Services </div>
+			<div class="title"><i class="{{ SERVICES_ICON }}"></i> Services </div>
 		</div>
 		<div>
 			

@@ -5,7 +5,7 @@
 			<tr class="orderable">
 				<th column="hotels.name">Name</th>
 				<th column="hotels.address" class="hidden-xs">Address</th>
-				<th column="hotels.rating" class="hidden-xs">Rating</th>
+				<th column="hotels.rating" type="desc" class="hidden-xs">Rating</th>
 				<th column="hotels.distance" class="hidden-xs">Distance</th>
 				<th column="hotels.walking_time" class="hidden-xs">Walking Time</th>
 				<th column="hotels.driving_time" class="hidden-xs">Driving Time</th>
