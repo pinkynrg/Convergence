@@ -9,7 +9,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="statuses.name" class="visible-xs"></th>
+				<th column="statuses.name" class="visible-xs"> </th>
 				<th column="tickets.id" type="desc">Ticket</th>
 				<th column="tickets.title">Title</th>
 				<th column="statuses.name" class="hidden-xs">Status</th>
@@ -29,7 +29,7 @@
 				@foreach ($tickets as $ticket) 	
 
 				<tr>
-					<th column="statuses.name" class="visible-xs"><i class="{{ $ticket->status_icon() }}"></i></th>
+					<td column="statuses.name" class="visible-xs"><i class="{{ $ticket->status_icon() }}"></i></td>
 					<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
 					<td> 
 						<a href="{{ route('tickets.show', $ticket->id) }}"> {{ $ticket->title }} </a> 

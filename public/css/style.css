@@ -3,6 +3,10 @@ body {
 	font-size: 12px;
 }
 
+td {
+  vertical-align: middle!important;
+}
+
 #loading {
   width: 100%;
   height: 100%; 
