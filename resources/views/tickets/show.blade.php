@@ -199,11 +199,11 @@
 			</div>
 
 			<div class="status_checkbox"> 
-				<label> <input type="radio" radioAllOff="true" id="set_waiting_for_feedback" value="{{WAITING_FOR_FEEDBACK}}" name="status_id" class="switch"> Waiting for feedback </label> 
+				<label> <input type="radio" radioAllOff="true" id="set_waiting_for_feedback" value="{{TICKET_WFF_STATUS_ID}}" name="status_id" class="switch"> Waiting for feedback </label> 
 			</div>
 
 			<div class="status_checkbox"> 
-				<label> <input type="radio" radioAllOff="true" id="is_public" value="{{SOLVED}}" name="status_id" class="switch"> Solved </label> 
+				<label> <input type="radio" radioAllOff="true" id="is_public" value="{{TICKET_SOLVED_STATUS_ID}}" name="status_id" class="switch"> Solved </label> 
 			</div>
 
 		</div>

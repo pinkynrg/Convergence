@@ -76,7 +76,7 @@ class CompaniesController extends BaseController {
         $contact->extension = Input::get('extension');
         $contact->cellphone = Input::get('cellphone');
         $contact->email = Input::get('email');
-        $contact->group_type_id = Input::get('company_id') == ELETTRIC80_COMPANY_ID ? EMPLOYEE_GROUP_TYPE : CUSTOMER_GROUP_TYPE;
+        $contact->group_type_id = Input::get('company_id') == ELETTRIC80_COMPANY_ID ? EMPLOYEE_GROUP_TYPE_ID : CUSTOMER_GROUP_TYPE_ID;
         $contact->save();
 
         $company_main_contact = new CompanyMainContact;

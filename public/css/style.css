@@ -355,13 +355,6 @@ a:visited, a:link, a:active, a:visited {
 	padding: 0px;
 }
 
-/*Check Mark*/
-.fa-check-circle-o {
-  font-size: 14px;
-  color: #DDD;
-  margin:0px;
-}
-
 .no-content {
 	padding: 5px 20px;
 	background-color: #d9edf7;

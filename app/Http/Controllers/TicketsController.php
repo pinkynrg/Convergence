@@ -4,6 +4,7 @@ use App\Libraries\SlackController;
 use App\Libraries\EmailsManager;
 use App\Http\Requests\CreateTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Http\Controllers\CompanyPersonController;
 use App\Models\Ticket;
 use App\Models\TicketHistory;
 use App\Models\Company;
@@ -42,11 +43,7 @@ class TicketsController extends BaseController {
 		$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
 		$data['active_search'] = implode(",",['tickets.title','tickets.post']);
 		$data['companies'] = Company::orderBy('name','asc')->get();
-		$employees = CompanyPerson::select('company_person.*');
-		$employees->leftJoin('people','people.id','=','company_person.person_id');
-		$employees->where('company_person.company_id','=',1);
-		$employees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
-		$data['employees'] = $employees->get();
+		$data['employees'] = CompanyPersonController::api(['where' => ['company_person.company_id|=|1'], 'order' => ['people.last_name|ASC','people.first_name|ASC'], 'paginate' => 'false']);
 		$data['divisions'] = Division::orderBy('name','asc')->get();
 		$data['statuses'] = Status::orderBy('id','asc')->get();
 		return view('tickets/index',$data);
@@ -127,7 +124,7 @@ class TicketsController extends BaseController {
 				$data['ticket'] = Ticket::find($id);
 				$data['ticket']['posts'] = Post::where('ticket_id',$id)->where('status_id','!=',POST_DRAFT_STATUS_ID)->get();
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
-				$data['statuses'] = Status::where('id',WAITING_FOR_FEEDBACK)->orWhere('id',SOLVED)->get();
+				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
 				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
 				
 				if (isset($data['draft_post']->post)) {

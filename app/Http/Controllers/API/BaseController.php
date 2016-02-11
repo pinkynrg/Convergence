@@ -40,7 +40,7 @@ class BaseController extends Controller {
         }
 
         // paginate
-        $model = isset($params['paginate']) ? $model->paginate($params['paginate']) : $model->paginate(PAGINATION);
+        $model = isset($params['paginate']) ? $params['paginate'] == "false" ? $model->get() : $model->paginate($params['paginate']) : $model->paginate(PAGINATION);
         return $model;
     }
 
@@ -52,7 +52,7 @@ class BaseController extends Controller {
 
         $params['order'] = isset($params['order']) && is_array($params['order']) ? $params['order'] : array();
         $params['where'] = isset($params['where']) && is_array($params['where']) ? $params['where'] : array();
-        $params['paginate'] = isset($params['paginate']) && $params['paginate'] <= MAX_PAGINATION ? $params['paginate'] : PAGINATION;
+        $params['paginate'] = isset($params['paginate']) && (($params['paginate'] <= MAX_PAGINATION && $params['paginate'] > 0) || $params['paginate'] == "false") ? $params['paginate'] : PAGINATION;
 
         foreach ($params['order'] as $key => $order) {
             if (is_string($order)) {
