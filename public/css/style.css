@@ -613,49 +613,6 @@ a:visited, a:link, a:active, a:visited {
   overflow-x: auto;
 }
 
-/*rotated table headers*/
-.table-header-rotated {
-  border-collapse: collapse;
-}
-.csstransforms .table-header-rotated td {
-  width: 30px;
-}
-.no-csstransforms .table-header-rotated th {
-  padding: 5px 10px;
-}
-.table-header-rotated td {
-  text-align: center;
-  padding: 10px 5px!important;
-  border: 1px solid #ccc;
-}
-.csstransforms .table-header-rotated th.rotate {
-  height: 140px;
-  white-space: nowrap;
-}
-.csstransforms .table-header-rotated th.rotate > div {
-  -webkit-transform: translate(22px, 51px) rotate(-45deg);
-  -ms-transform: translate(22px, 51px) rotate(-45deg);
-  transform: translate(22px, 51px) rotate(-45deg);
-  width: 30px;
-}
-.csstransforms td {
-    width: 50px;
-}
-.csstransforms .table-header-rotated th.rotate > div > span {
-  border-bottom: 1px solid #ccc;
-  padding: 5px 10px;
-}
-.table-header-rotated th.row-header {
-  padding: 0 10px;
-  border-bottom: 1px solid #ccc!important;
-  font-weight: bold!important;
-  background-color: #FFF;
-}
-
-.csstransforms thead tr {
-  background-color: #FFF;
-}
-
 .datepicker {
   margin-top: 0px;
 }

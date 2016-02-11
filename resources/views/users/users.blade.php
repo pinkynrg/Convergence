@@ -8,7 +8,7 @@
 		<thead>
 			<tr class="orderable">
 				<th column="people.last_name" type="asc">Person Name</th>
-				<th column="users.username" class="hidden-xs">Username</th>
+				<th column="users.username">Username</th>
 				<th column="users.password" class="hidden-xs">Hashed Password</th>
 				<th column="users.created_at" class="hidden-xs">Created</th>
 				<th column="users.updated_at" class="hidden-xs">Updated</th>
@@ -21,9 +21,9 @@
 				<tr>
 					<td> <a href="{{ route('people.show', $user->owner->id) }}"> {{ $user->owner->name() }} </a> </td>
 					<td> {{ $user->username }} </td>
-					<td> {{ $user->password }} </td>
-					<td> {{ $user->date("created_at") }} </td>
-					<td> {!! $user->date("updated_at") !!} </td>
+					<td class="hidden-xs"> {{ $user->password }} </td>
+					<td class="hidden-xs"> {{ $user->date("created_at") }} </td>
+					<td class="hidden-xs"> {!! $user->date("updated_at") !!} </td>
 				</tr>
 
 			@endforeach

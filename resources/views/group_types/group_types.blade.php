@@ -9,9 +9,9 @@
 			<tr class="orderable">
 				<th column="display_name" type="asc">Display Name</th>
 				<th column="name">Name</th>
-				<th column="description">Description</th>
-				<th column="created_at">Created</th>
-				<th column="updated_at">Updated</th>
+				<th column="description" class="hidden-xs">Description</th>
+				<th column="created_at" class="hidden-xs">Created</th>
+				<th column="updated_at" class="hidden-xs">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -21,9 +21,9 @@
 				<tr>
 					<td> <a href="{{route('group_types.show', $group_type->id) }}"> {{  $group_type->display_name }} </a> </td>
 					<td> <a href="{{route('group_types.show', $group_type->id) }}"> {{  $group_type->name }} </a> </td>
-					<td> <a href="{{route('group_types.show', $group_type->id) }}"> {{  $group_type->description }} </a> </td>
-					<td> {{ $group_type->date("created_at") }} </td>
-					<td> {{ $group_type->date("updated_at") }} </td>
+					<td class="hidden-xs"> <a href="{{route('group_types.show', $group_type->id) }}"> {{  $group_type->description }} </a> </td>
+					<td class="hidden-xs"> {{ $group_type->date("created_at") }} </td>
+					<td class="hidden-xs"> {{ $group_type->date("updated_at") }} </td>
 				</tr>
 
 				@endforeach

@@ -15,10 +15,10 @@
 					<th column="companies.name">Company</th>
 				@endif
 
-				<th column="internals.last_name">Internal Contact</th>
-				<th column="externals.last_name">External Contact</th>
-				<th column="services.created_at">Created</th>
-				<th column="services.updated_at">Updated</th>
+				<th column="internals.last_name" class="hidden-xs">Internal Contact</th>
+				<th column="externals.last_name" class="hidden-xs">External Contact</th>
+				<th column="services.created_at" class="hidden-xs">Created</th>
+				<th column="services.updated_at" class="hidden-xs">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -31,10 +31,10 @@
 						<td><a href="{{ route('companies.show', $service->company->id) }}"> {{ $service->company->name }} </a> </td>
 					@endif
 
-					<td> {{ isset($service->internal_contact_id) ? $service->internal_contact->person->name() : '' }} </td>
-					<td> {{ isset($service->external_contact_id) ? $service->external_contact->person->name() : '' }} </td>
-					<td> {{ $service->date("created_at") }} </td>
-					<td> {{ $service->date("updated_at") }} </td>
+					<td class="hidden-xs"> {{ isset($service->internal_contact_id) ? $service->internal_contact->person->name() : '' }} </td>
+					<td class="hidden-xs"> {{ isset($service->external_contact_id) ? $service->external_contact->person->name() : '' }} </td>
+					<td class="hidden-xs"> {{ $service->date("created_at") }} </td>
+					<td class="hidden-xs"> {{ $service->date("updated_at") }} </td>
 				</tr>
 			@endforeach
 		@else 

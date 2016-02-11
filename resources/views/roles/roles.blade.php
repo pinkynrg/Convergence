@@ -9,9 +9,9 @@
 			<tr class="orderable">
 				<th column="name" type="asc">Display Name</th>
 				<th column="name">Name</th>
-				<th column="description">Description</th>
-				<th column="created_at">Created</th>
-				<th column="updated_at">Updated</th>
+				<th column="description" class="hidden-xs">Description</th>
+				<th column="created_at" class="hidden-xs">Created</th>
+				<th column="updated_at" class="hidden-xs">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -21,9 +21,9 @@
 				<tr>
 					<td> <a href="{{route('roles.show', $role->id) }}"> {{  $role->display_name }} </a> </td>
 					<td> <a href="{{route('roles.show', $role->id) }}"> {{  $role->name }} </a> </td>
-					<td> <a href="{{route('roles.show', $role->id) }}"> {{  $role->description }} </a> </td>
-					<td> {{ $role->date("created_at") }} </td>
-					<td> {{ $role->date("updated_at") }} </td>
+					<td class="hidden-xs"> <a href="{{route('roles.show', $role->id) }}"> {{  $role->description }} </a> </td>
+					<td class="hidden-xs"> {{ $role->date("created_at") }} </td>
+					<td class="hidden-xs"> {{ $role->date("updated_at") }} </td>
 				</tr>
 
 				@endforeach
