@@ -29,7 +29,7 @@
 				@foreach ($tickets as $ticket) 	
 
 				<tr>
-					<td column="statuses.name" class="visible-xs"><i class="{{ $ticket->status_icon() }}"></i></td>
+					<td class="visible-xs"><i class="ticket_status_icon {{ $ticket->status_icon() }}"></i></td>
 					<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
 					<td> 
 						<a href="{{ route('tickets.show', $ticket->id) }}"> {{ $ticket->title }} </a> 

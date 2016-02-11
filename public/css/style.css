@@ -89,10 +89,6 @@ input[disabled], textarea[disabled], select[disabled] {
   display: inline-block;
 }
 
-.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
-  width: 155px;
-}
-
 #logo img {
   margin-top:10px;
 	height: 80px;
@@ -232,12 +228,12 @@ input[disabled], textarea[disabled], select[disabled] {
 	line-height: 25px;
 	font-size: 16px;
 	display: inline-block;
-	float: left;
 }
 
-.filters {
-  height: 50px;
-  padding: 7px;
+#filters {
+  text-align: center;
+  padding: 10px 10px 0px 10px;
+  margin: 0px 0px 20px 0px;
   background: -webkit-linear-gradient(top, #D8EFE8 , #E9F7F3); /* For Safari 5.1 to 6.0 */
   background: -o-linear-gradient(bottom, #D8EFE8, #E9F7F3); /* For Opera 11.1 to 12.0 */
   background: -moz-linear-gradient(bottom, #D8EFE8, #E9F7F3); /* For Firefox 3.6 to 15 */
@@ -245,8 +241,24 @@ input[disabled], textarea[disabled], select[disabled] {
   border: 1px solid #CAE0DA;
 }
 
+#expand_filters {
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+  width: 100%!important;
+}
+
 #reset_filters {
-  float: right;
+  height: 35px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+#reset_filters button {
+  width: 100%;
+  font-weight: bold;
 }
 
 .searching {
@@ -377,6 +389,35 @@ a:visited, a:link, a:active, a:visited {
 
 /* Ticket page */
 
+.ticket_status_icon {
+  margin-left: 5px;
+  font-size: 15px;
+}
+
+.ticket_status_icon.fa-exclamation-circle {
+  color: #5B6CFF;
+}
+
+.ticket_status_icon.fa-coffee {
+  color: #693200;
+}
+
+.ticket_status_icon.fa-commenting-o {
+  color: #888115;
+}
+
+.ticket_status_icon.fa-truck {
+  color: #264034;
+}
+
+.ticket_status_icon.fa-check-circle-o {
+  color: #00802F;
+}
+
+.ticket_status_icon.fa-times-circle-o {
+  color: #656565;
+}
+
 .ticket_foot_details {
   font-size: 9px;
 }
@@ -475,27 +516,6 @@ a:visited, a:link, a:active, a:visited {
 #company_form, #contact_form {
 	clear: both;
 }
-
-/*.pagination>li:first-child>a, .pagination>li:first-child>span {
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
-
-.pagination>li:last-child>a, .pagination>li:last-child>span {
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px; 
-}
-
-.pagination>li>a, .pagination>li>span, .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
-  margin: 0px 2px;
-  background-color: #F7F7F7;
-  color: #767676;
-}
-
-.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
-  background-color: #72A4CF;
-  border: 1px solid #6393BD;
-}*/
 
 /* Navbar */
 .navbar-default {

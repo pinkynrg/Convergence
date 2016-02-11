@@ -488,31 +488,9 @@ if (url.target_action == "index") {
 	});
 
 	// reset filters
-	$("input#reset_filters").on("click", function() {
+	$("#reset_filters > button").on("click", function() {
 		var $target = $(this).closest("div[ajax-route]");
 		resetFilter($target);
-	});
-}
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@/companies/{id}
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-if (url.target == "companies" && url.target_action == "show") {
-
-	//for expandable divs
-	$('.expander').click(function() {
-		var minus_icon = "fa fa-minus-square-o fa-2";
-		var plus_icon = "fa fa-plus-square-o fa-2";
-		var to_expand = $(this).next('.to_expand'),
-			expander = $(this);
-		
-		if (to_expand.css('display') == 'none')
-			expander.html(expander.html().replace('<i class="'+plus_icon+'"></i>','<i class="'+minus_icon+'"></i>'));
-		else 
-			expander.html(expander.html().replace('<i class="'+minus_icon+'"></i>','<i class="'+plus_icon+'"></i>'))
-
-		to_expand.toggle(500);
 	});
 }
 
@@ -619,6 +597,11 @@ if (url.target == "tickets" && url.target_action == "show") {
 		}
 	});
 }
+
+$("#expand_filters").click(function() {
+	$("#filters").style("display","block","important");
+	$(this).remove();
+});
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @/tickets/create AND @/tickets/{id}/edit AND @/posts/{id}/edit

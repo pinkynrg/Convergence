@@ -22,6 +22,7 @@
 <script src="/javascript/bootstrap-datepicker.js"></script>
 <script src="/javascript/bootstrap-switch.min.js"></script>
 <script src="/javascript/responsive-paginate.js"></script>
+<script src="/javascript/jquery.style.js"></script>
 <script src="/javascript/script.js"></script>
 
 <!-- Stylesheets -->
