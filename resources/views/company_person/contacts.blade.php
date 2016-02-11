@@ -16,7 +16,7 @@
 				@endif 
 
 				@if (Route::currentRouteName() == "companies.contacts" || Route::currentRouteName() == "companies.show")
-					<th column="is_main_contact" class="hidden-xs">Main Contact</th>
+					<th column="is_main_contact">Main Contact</th>
 				@endif
 
 				<th column="departments.name" class="hidden-xs">Department</th>
