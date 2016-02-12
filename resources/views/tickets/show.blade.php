@@ -4,17 +4,29 @@
 	<div id="ticket_container">
 
 		<div id="ticket_content" class="media">
-			<div class="media-left media-middle">
+			<div class="media-left">
 				<img class="thumbnail thumb-md" src="{{ $ticket->creator->person->image() }}" alt=" {{ $ticket->creator->person->image() }} ">
 			</div>
 			<div class="media-body">
-				<div id="ticket_title" class="media-heading"> {{ $ticket->title }}  <span id="ticket_status" class="{{ $status_class }}"> <i class='fa fa-circle'></i> {{ $ticket->status->name }} </span> </div>
+				
+				<div class="row">
+					
+					<div id="ticket_status" class="{{ $status_class }} col-xs-12 col-lg-3"> 
+						<span> <i class='fa fa-circle'></i> </span>
+						<span> {{ $ticket->status->name }} </span>
+					</div> 
+					
+					<div id="ticket_title" class="media-heading col-xs-12 col-lg-9"> 
+						<span> {{ $ticket->title }} </span>
+					</div>
+				</div>
+
 				<div> {{ $ticket->date("created_at") }} </div>
 				<div id="ticket_post"> {!! $ticket->post !!} </div>
 			</div>
 		</div>
 
-		<div id="ticket_bottom">
+		<div id="ticket_bottom" class="table-responsive">
 			<table class="table borderless table-striped-warm">
 				<tbody>
 					<tr>
@@ -97,8 +109,8 @@
 
 	<ul class="nav nav-tabs">
 	  <li class="nav active"><a target="ticket_history" href="#ticket_history" data-toggle="tab"><i class="fa fa-history"></i> Ticket History</a></li>
-	  <li class="nav"><a target="time_history" href="#time_history" data-toggle="tab"><i class="fa fa-clock-o"></i> Time History</a></li>
-	  <li class="nav"><a target="linked_tickets" href="#linked_tickets" data-toggle="tab"><i class="fa fa-link"></i> Linked Tickets</a></li>
+	  <!-- <li class="nav"><a target="time_history" href="#time_history" data-toggle="tab"><i class="fa fa-clock-o"></i> Time History</a></li> -->
+	  <!-- <li class="nav"><a target="linked_tickets" href="#linked_tickets" data-toggle="tab"><i class="fa fa-link"></i> Linked Tickets</a></li> -->
 	</ul>
 
 	<div class="tab-content mrg-brm-20">
@@ -109,11 +121,11 @@
 			<table class="table table-striped">
 				<thead>
 					<th> Changed by </th>
-					<th> Assignee </th>
-					<th> Status </th>
-					<th> Priority </th>
-					<th> Division </th>
-					<th> Equipment </th>
+					<th class="hidden-xs"> Assignee </th>
+					<th class="hidden-xs"> Status </th>
+					<th class="hidden-xs"> Priority </th>
+					<th class="hidden-xs"> Division </th>
+					<th class="hidden-xs"> Equipment </th>
 					<th> Date </th>
 				</thead>
 
@@ -121,11 +133,11 @@
 
 				<tr>
 					<td> {{ isset($history->changer_id) ? $history->changer->person->name() : '' }} </td>
-					<td> {{ $history->assignee->person->name() }} </td>
-					<td> {{ $history->status->name }} </td>
-					<td> {{ $history->priority->name }} </td>
-					<td> {{ $history->division->name }} </td>
-					<td> - </td>
+					<td class="hidden-xs"> {{ $history->assignee->person->name() }} </td>
+					<td class="hidden-xs"> {{ $history->status->name }} </td>
+					<td class="hidden-xs"> {{ $history->priority->name }} </td>
+					<td class="hidden-xs"> {{ $history->division->name }} </td>
+					<td class="hidden-xs"> - </td>
 					<td> {{ $history->date("created_at") }} </td>
 				</tr>
 
@@ -141,13 +153,13 @@
 
 		</div>
 
-		<div class="tab-pane fade" id="time_history">
+		<!-- <div class="tab-pane fade" id="time_history">
 			time history
 		</div>
 
 		<div class="tab-pane fade" id="linked_tickets">
 			linked tickets
-		</div>
+		</div> -->
 
 	</div>
 

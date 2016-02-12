@@ -1,6 +1,5 @@
 <div class="content">
 
-
 	@if (Route::currentRouteName() == "equipment.index")
 		<div class="ajax_pagination" scrollup="false">
 			{!! $equipment->render() !!}
