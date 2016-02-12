@@ -218,8 +218,8 @@ input[disabled], textarea[disabled], select[disabled] {
 	height: 35px;
 	padding: 5px 5px 5px 10px;
 	margin-bottom: 10px;
-	background-color: #F7C879;
-	border: 1px solid #E2C391;
+	background-color: #F9E4C0;
+	border: 1px solid #ECD5AF;
 }
 
 .navb .title {
@@ -585,6 +585,13 @@ a:visited, a:link, a:active, a:visited {
   margin-top: 0px;
 }
 
+.ticket_header {
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #F7E5E5;
+  vertical-align: middle!important;
+}
+
 .ticket_header > div, .post_header > div {
   display: inline-block;
   vertical-align: top;
@@ -595,7 +602,7 @@ a:visited, a:link, a:active, a:visited {
 }
 
 .ticket_header_details, .post_header_details {
-  width: 60%;
+  width: 50%;
 }
 
 .thumbnail > div {
