@@ -1736,8 +1736,8 @@ class Posts extends BaseClass {
 
 				$p['Post_Plain'] = $p['Post'] ? htmlToText($p['Post']) : "";
 
-				$p['Post'] = $p['Post'] == '' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post'];
-				$p['Post_Plain'] = $p['Post_Plain'] == '' ? $p['Counter'] > 1 ? '"see attachments"' : '"see attachment"' : $p['Post_Plain'];
+				$p['Post'] = $p['Post'] == '' ? $p['Counter'] > 1 ? '<p>see attachments</p>' : '<p>see attachment</p>' : $p['Post'];
+				$p['Post_Plain'] = $p['Post_Plain'] == '' ? $p['Counter'] > 1 ? '<p>see attachments</p>' : '<p>see attachment</p>' : $p['Post_Plain'];
 
 				if ($p['Id_Customer_User'] != '') {
 					$subquery1 = mssql_query("SELECT * FROM Customer_User_Login WHERE Customer_Id = '".$p['Id_Customer_User']."'");
