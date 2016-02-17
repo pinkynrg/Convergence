@@ -65,58 +65,61 @@
 	<div class="tab-content mrg-brm-20">
 
 		<div class="tab-pane fade in active" id="ticket_details">
-			<table class="table table-striped table-condensed table-hover">
-				<tbody>
-					<tr>
-						<th>Customer Name: </th>
-						<td>{!! HTML::link(route('companies.show', $ticket->company->id), $ticket->company->name) !!}</td>
-					</tr>
-					<tr>
-						<th>Customer Contact: </th>
-						<td> {!! $ticket->contact_id ? HTML::link(route('people.show', $ticket->contact->person->id), $ticket->contact->person->name()) : '' !!} </td>
-					</tr>
-					<tr>
-						<th>Customer Contact Phone: </th>
-						<td>{!! isset($ticket->contact_id) ? $ticket->contact->phone() : '' !!}</td>
-					</tr>
-					<tr>
-						<th>Customer Contact Cell: </th>
-						<td>{!! isset($ticket->contact_id) ? $ticket->contact->cellphone() : '' !!}</td>
-					</tr>
-					<tr>
-						<th>Customer Support Type: </th>
-						<td>{{ isset($ticket->company->support_type_id) ? $ticket->company->support_type->name : '' }}</td>
-					</tr>
-					<tr>
-						<th>Customer Connection Type: </th>
-						<td> <b> {{ $ticket->company->connection_type->name }} </b> {{ ": " . $ticket->company->connection_type->description }} </td>
-					</tr>
-					</tr>
-						<th>Customer Group Email: </th>
-						<td>{{ $ticket->company->group_email }}</td>
-					</tr>
-					<tr>
-						<th>Customer Account Manager:</th>
-						<td>{!! isset($ticket->company->account_manager->account_manager_id) ? HTML::link(route('people.show', $ticket->company->account_manager->company_person->person_id), $ticket->company->account_manager->company_person->person->name()) : '' !!}</td>
-					</tr>
-					<tr>
-						<th>Ticket Assignee: </th>
-						<td> {!! $ticket->assignee_id ? HTML::link(route('people.show', $ticket->assignee->person->id), $ticket->assignee->person->name()) : '' !!} </td>
-					</tr>
-					<tr>
-						<th>Ticket Job Type: </th>
-						<td>{{ count($ticket->job_type) ? $ticket->job_type->name : '' }}</td>
-					</tr>
-					<tr>
-						<th>Ticket Division: </th>
-						<td>{{ isset($ticket->division_id) ? $ticket->division->name : '' }}</td>
-					</tr>
-					<tr>
-						<th>Customer CC Number: </th>
-						<td>{{ count($ticket->equipment) ? $ticket->equipment->cc() : '' }}</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="table-responsive">
+
+				<table class="table table-striped table-condensed table-hover">
+					<tbody>
+						<tr>
+							<th class="col-xs-6 col-md-3 col-lg-2">Customer Name: </th>
+							<td>{!! HTML::link(route('companies.show', $ticket->company->id), $ticket->company->name) !!}</td>
+						</tr>
+						<tr>
+							<th>Customer Contact: </th>
+							<td> {!! $ticket->contact_id ? HTML::link(route('people.show', $ticket->contact->person->id), $ticket->contact->person->name()) : '' !!} </td>
+						</tr>
+						<tr>
+							<th>Customer Contact Phone: </th>
+							<td>{!! isset($ticket->contact_id) ? $ticket->contact->phone() : '' !!}</td>
+						</tr>
+						<tr>
+							<th>Customer Contact Cell: </th>
+							<td>{!! isset($ticket->contact_id) ? $ticket->contact->cellphone() : '' !!}</td>
+						</tr>
+						<tr>
+							<th>Customer Support Type: </th>
+							<td>{{ isset($ticket->company->support_type_id) ? $ticket->company->support_type->name : '' }}</td>
+						</tr>
+						<tr>
+							<th>Customer Connection Type: </th>
+							<td> <b> {{ $ticket->company->connection_type->name }} </b> {{ ": " . $ticket->company->connection_type->description }} </td>
+						</tr>
+						</tr>
+							<th>Customer Group Email: </th>
+							<td>{{ $ticket->company->group_email }}</td>
+						</tr>
+						<tr>
+							<th>Customer Account Manager:</th>
+							<td>{!! isset($ticket->company->account_manager->account_manager_id) ? HTML::link(route('people.show', $ticket->company->account_manager->company_person->person_id), $ticket->company->account_manager->company_person->person->name()) : '' !!}</td>
+						</tr>
+						<tr>
+							<th>Ticket Assignee: </th>
+							<td> {!! $ticket->assignee_id ? HTML::link(route('people.show', $ticket->assignee->person->id), $ticket->assignee->person->name()) : '' !!} </td>
+						</tr>
+						<tr>
+							<th>Ticket Job Type: </th>
+							<td>{{ count($ticket->job_type) ? $ticket->job_type->name : '' }}</td>
+						</tr>
+						<tr>
+							<th>Ticket Division: </th>
+							<td>{{ isset($ticket->division_id) ? $ticket->division->name : '' }}</td>
+						</tr>
+						<tr>
+							<th>Customer CC Number: </th>
+							<td>{{ count($ticket->equipment) ? $ticket->equipment->cc() : '' }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 
 		<div class="tab-pane fade" id="ticket_history">
