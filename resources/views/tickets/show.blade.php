@@ -57,10 +57,9 @@
 	@endif
 
 	<ul class="nav nav-tabs">
-	  <li class="nav active"><a target="ticket_details" href="#ticket_details" data-toggle="tab"><i class="fa fa-history"></i> Ticket Details</a></li>
-	  <li class="nav"><a target="ticket_history" href="#ticket_history" data-toggle="tab"><i class="fa fa-history"></i> Ticket History</a></li>
-	  <!-- <li class="nav"><a target="time_history" href="#time_history" data-toggle="tab"><i class="fa fa-clock-o"></i> Time History</a></li> -->
-	  <!-- <li class="nav"><a target="linked_tickets" href="#linked_tickets" data-toggle="tab"><i class="fa fa-link"></i> Linked Tickets</a></li> -->
+	  <li class="nav active"><a target="ticket_details" href="#ticket_details" data-toggle="tab"><i class="fa fa-history"></i> Details </a></li>
+	  <li class="nav"><a target="ticket_history" href="#ticket_history" data-toggle="tab"><i class="fa fa-history"></i> History </a></li>
+	  <li class="nav"><a target="linked_tickets" href="#linked_tickets" data-toggle="tab"><i class="fa fa-link"></i> Links </a></li>
 	</ul>
 
 	<div class="tab-content mrg-brm-20">
@@ -159,13 +158,23 @@
 
 		</div>
 
-		<!-- <div class="tab-pane fade" id="time_history">
-			time history
-		</div>
-
 		<div class="tab-pane fade" id="linked_tickets">
-			linked tickets
-		</div> -->
+			
+			<h5>Linked To:</h5>
+			@if (count($ticket->links))
+				@include('tickets.tickets', array('tickets' => $ticket->links))
+			@else
+				@include('includes.no-contents')
+			@endif
+
+			<h5>Linked By:</h5>
+			@if (count($ticket->linked_to))
+				@include('tickets.tickets', array('tickets' => $ticket->linked_to))
+			@else
+				@include('includes.no-contents')
+			@endif
+
+		</div>
 
 	</div>
 

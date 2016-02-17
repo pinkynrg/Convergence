@@ -68,7 +68,7 @@ var ajaxUpdate = function($target) {
 	}
 	timer = setTimeout(function () {
 		var params = getParams($target);
-		url = getUrl(params,$target);
+		var url = getUrl(params,$target);
 		ajaxRequest(url,$target);
 	}, 500);
 };
@@ -130,7 +130,7 @@ var getParams = function($target) {
 
 	$multifilter.each(function () {
 		if ($(this).val() != null && $(this).val().length > 0) {
-			params['where'].push($(this).attr('column') + "|IN|" + $(this).val().join(":"));
+			params['where'].push($(this).attr('id') + "|IN|" + $(this).val().join(":"));
 		}
 	});
 
@@ -214,6 +214,7 @@ var activateTicketDraftMode = function() {
 			'company_id' 		: $("select#company_id").val() ? $("select#company_id").val() : dummy_id,
 			'contact_id' 		: $("input#contact_id").val() ? $("input#contact_id").val() : dummy_id,
 			'equipment_id' 		: $("input#equipment_id").val() ? $("input#equipment_id").val() : dummy_id,
+			'linked_tickets_id' : $("input#linked_tickets_id").val() ? $("input#linked_tickets_id").val() : '',
 			'title' 			: $("input#title").val() ? $("input#title").val() : '[undefined]',
 			'assignee_id' 		: $("select#assignee_id").val() ? $("select#assignee_id").val() : dummy_id,
 			'post' 				: CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '[undefined]',
@@ -231,10 +232,12 @@ var activateTicketDraftMode = function() {
 			'url': '/tickets',
 			'data' : data,
 			'success' : function(data) {
-				consoleLog('ticket draft: '+data);
+				consoleLog('success ticket draft:');
+				consoleLog(data);
 			},
 			'error' : function (data){
-				consoleLog('ticket draft: '+data);
+				consoleLog('error ticket draft:');
+				consoleLog(data.responseText);
 			}
 		});
 
@@ -268,23 +271,34 @@ var savePostDraft = function(callback) {
 };
 
 var updateContacts = function(company_id, callback) {
-	$.get('/ajax/tickets/contacts/'+company_id, function (data) {
-		data = JSON.parse(data);
-		$('select#fake_contact_id').html('');
-		$('select#fake_contact_id').append('<option value="NULL">-</option>');
+	var target = $('select#fake_contact_id')
+	$.get('/contacts?type=json&where[]=companies.id|=|'+company_id+'&order[0]=people.last_name|ASC&order[1]=people.first_name|ASC&paginate=false', function (data) {
+		target.html('');
+		target.append('<option value="NULL">-</option>');
 		for (var i = 0; i<data.length; i++)
-			$('select#fake_contact_id').append('<option value="'+data[i].id+'">'+data[i].last_name+' '+data[i].first_name+'</option>');
+			target.append('<option value="'+data[i].id+'">'+data[i].last_name+' '+data[i].first_name+'</option>');
 		if (typeof callback === 'function') callback();
 	});
 };
 
 var updateEquipment = function(company_id, callback) {
-	$.get('/ajax/tickets/equipment/'+company_id, function (data) {
-		data = JSON.parse(data);				
-		$('select#fake_equipment_id').html('');
-		$('select#fake_equipment_id').append('<option value="NULL">-</option>');
+	var target = $('select#fake_equipment_id');
+	$.get('/equipment?type=json&where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
+		target.html('');
+		target.append('<option value="NULL">-</option>');
 		for (var i = 0; i<data.length; i++)
-			$('select#fake_equipment_id').append('<option value="'+data[i].id+'">'+data[i].notes+'</option>');
+			target.append('<option value="'+data[i].id+'">'+data[i].serial_number+" - "+data[i].notes+'</option>');
+		if (typeof callback === 'function') callback();
+	});
+};
+
+var updateLinkableTickets = function(company_id, callback) {
+	var target = $('select#fake_linked_tickets_id');
+	$.get('/tickets?type=json&where[]=companies.id|=|'+company_id+'&where[]=tickets.id|!=|'+url.target_id+'&order[0]=tickets.id|DESC&paginate=false', function (data) {
+		target.html('');
+		for (var i = 0; i<data.length; i++)
+			target.append('<option value="'+data[i].id+'">#'+data[i].id+" - "+data[i].title+'</option>');
+			$('.selectpicker').selectpicker('refresh');
 		if (typeof callback === 'function') callback();
 	});
 };
@@ -296,7 +310,9 @@ var fillSelectFields = function(callback) {
 	if (company_id != '') {
 		updateContacts(company_id, function () {
 			updateEquipment(company_id, function () {
-				setSelected();
+				updateLinkableTickets(company_id, function () {
+					setSelected();					
+				});
 			});
 		});			
 	}
@@ -305,8 +321,10 @@ var fillSelectFields = function(callback) {
 var setSelected = function() {
 	var fake_equipment = $("#equipment_id").val() == 0 || $("#equipment_id").val() == '' ? "NULL" : $("#equipment_id").val();
 	var fake_contact = $("#contact_id").val() == 0 || $("#contact_id").val() == '' ? "NULL" : $("#contact_id").val();
+	var fake_linked_tickets = $("#linked_tickets_id").val() == 0 || $("#linked_tickets_id").val() == '' ? "" : $("#linked_tickets_id").val();
 	$("#fake_equipment_id").val(fake_equipment);
 	$("#fake_contact_id").val(fake_contact);
+	$("#fake_linked_tickets_id").selectpicker('val',fake_linked_tickets.split(","));
 };
 
 var updateInternal = function() {
@@ -391,6 +409,9 @@ var updateServicePage = function () {
 @ boot-strap jquery tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+// url id, action, target
+consoleLog(url);
+
 // date picker
 $('.datepicker').datepicker({ autoclose: true });
 
@@ -439,12 +460,16 @@ $("tr.orderable th").each(function () {
 
 // apply a loading overlay so when ajax request is in progress no new requests can be submitted
 $('#loading').hide().ajaxStart(function() {
-	$(this).show();
-	$("body").addClass("in-progress");
+	if (url.target_action == "index") {
+		$(this).show();
+		$("body").addClass("in-progress");
+	}
 }).ajaxStop(function() {
-	$(this).hide();
-	$("body").removeClass("in-progress");
-	$(".pagination").rPage();
+	if (url.target_action == "index") {
+		$(this).hide();
+		$("body").removeClass("in-progress");
+		$(".pagination").rPage();
+	}
 });
 
 // responsive pagination
@@ -552,10 +577,16 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 		$("#contact_id").val(contact_id);
 	});
 
+	$("#fake_linked_tickets_id").on("change",function () {
+		var linked_tickets_id = $(this).val() ? $(this).val().join(",") : "";
+		$("#linked_tickets_id").val(linked_tickets_id);
+	});
+
 	// update fileds related to selection of company (like contacts, equipment, ...)
 	$(".ajax_trigger#company_id").on("change",function () {
 		$("#equipment_id").val("");
 		$("#contact_id").val("");
+		$("#linked_tickets_id").val("");
 		fillSelectFields();
 	});
 
@@ -683,7 +714,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 			file.id = response.id;
 		},
 		error: function (file, response) {
-			// consoleLog(response)
+			consoleLog(response)
 			file.previewElement.classList.add("dz-error");
 		},
 

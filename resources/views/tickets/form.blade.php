@@ -61,6 +61,18 @@
 			@endif
 		{!! Form::BSEndGroup() !!}
 
+		{!! Form::BSGroup() !!}
+
+			{!! Form::BSLabel('linked_tickets_id','Linked Tickets') !!}
+			{!! Form::BSHidden('linked_tickets_id',null,['id' => 'linked_tickets_id']) !!}
+
+			{!! 
+				Form::BSMultiSelect("link_tickets", [], 
+				["id" => "fake_linked_tickets_id", "search" => "true"]) 
+			!!}
+
+		{!! Form::BSEndGroup() !!}
+
 	</div>
 </div>
 

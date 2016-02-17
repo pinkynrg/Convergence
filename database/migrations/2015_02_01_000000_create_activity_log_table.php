@@ -15,7 +15,9 @@ class CreateActivityLogTable extends Migration
             $table->integer('user_id')->nullable();
             $table->string('text');
             $table->string('ip_address', 64);
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
         });
     }
 

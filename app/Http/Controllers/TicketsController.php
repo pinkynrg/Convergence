@@ -6,6 +6,7 @@ use App\Http\Requests\CreateTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Controllers\CompanyPersonController;
 use App\Models\Ticket;
+use App\Models\TicketLink;
 use App\Models\TicketHistory;
 use App\Models\Company;
 use App\Models\Person;
@@ -61,12 +62,11 @@ class TicketsController extends BaseController {
 			// otherwise redirect to empty form
 			$data['companies'] = Company::all();
 			$data['priorities'] = Priority::all();
-			$data['companies'] = Company::orderBy('name','asc')->get();
-			$assignees = CompanyPerson::select('company_person.*');
-			$assignees->leftJoin('people','people.id','=','company_person.person_id');
-			$assignees->where('company_person.company_id','=',1);
-			$assignees->orderBy('people.last_name','asc')->orderBy('people.first_name','asc');
-			$data['assignees'] = $assignees->get();
+			
+			$data['assignees'] = CompanyPersonController::api(
+				["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
+			);
+
 			$data['divisions'] = Division::all();
 			$data['job_types'] = JobType::all();
 
@@ -98,7 +98,8 @@ class TicketsController extends BaseController {
 
 		$ticket->save();
 
-       	$this->updateTags($ticket->id,Input::get('tagit'));
+       	$this->updateTags($ticket);
+       	$this->updateLinks($ticket);
 
        	if ($ticket->status_id != TICKET_DRAFT_STATUS_ID) { $this->updateHistory($ticket); }
 
@@ -127,17 +128,27 @@ class TicketsController extends BaseController {
 				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
 				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
 				
+				$links = [];
+				$temp = TicketLink::where("ticket_id","=",$id)->get();
+				foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
+				$data['ticket']['links'] = self::api(['where' => ['tickets.id|IN|'.implode(":",$links)]]);
+
+				$linked_to = [];
+				$temp = TicketLink::where("linked_ticket_id","=",$id)->get();
+				foreach ($temp as $elem) $linked_to[] = $elem->ticket_id;
+				$data['ticket']['linked_to'] = self::api(['where' => ['tickets.id|IN|'.implode(":",$linked_to)]]);
+
 				if (isset($data['draft_post']->post)) {
 					$data['draft_post']->post = $data['draft_post']->post != "[undefined]" ? $data['draft_post']->post : "";
 				}
 
 				switch ($data['ticket']->status_id) {
-					case '1' : $data['status_class'] = 'ticket_status_new'; break;
+					case '1' :
 					case '2' : $data['status_class'] = 'ticket_status_new'; break;
-					case '3' : $data['status_class'] = 'ticket_status_on_hold'; break;
-					case '4' : $data['status_class'] = 'ticket_status_on_hold'; break;
+					case '3' :
+					case '4' :
 					case '5' : $data['status_class'] = 'ticket_status_on_hold'; break;
-					case '6' : $data['status_class'] = 'ticket_status_closed'; break;
+					case '6' :
 					case '7' : $data['status_class'] = 'ticket_status_closed'; break;
 				};
 
@@ -152,11 +163,20 @@ class TicketsController extends BaseController {
 	public function edit($id)
 	{
 		$data['ticket'] = Ticket::find($id);
+
+		$temp = DB::table("ticket_links")->where("ticket_id","=",$id)->get();
+		foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
+		$data['ticket']['linked_tickets_id'] = isset($links) ? implode(",",$links) : '';
+
 		$data['companies'] = Company::all();
 		$data['divisions'] = Division::all();
 		$data['job_types'] = JobType::all();
 		$data['priorities'] = Priority::all();
-		$data['assignees'] = CompanyPerson::where("company_id","=","1")->get();
+		
+		$data['assignees'] = CompanyPersonController::api(
+			["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
+		);
+
 		$data['tags'] = "";
 
 		foreach ($data['ticket']->tags as $tag) {
@@ -193,18 +213,19 @@ class TicketsController extends BaseController {
 
 		$ticket->save();
 
-       	$this->updateTags($ticket->id,Input::get('tagit'));
-
+       	$this->updateTags($ticket);
        	$this->updateHistory($ticket);
+       	$this->updateLinks($ticket);
+
 
         return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
 	}
 
-	private function updateTags($ticket_id, $tags) {
+	private function updateTags($ticket) {
 
-		TagTicket::where('ticket_id',$ticket_id)->forceDelete();
+		TagTicket::where('ticket_id',$ticket->id)->forceDelete();
 
-		if ($tags) {
+		if (Input::get('tagit')) {
 
 			$tags = explode(",",Input::get('tagit'));
 
@@ -219,9 +240,27 @@ class TicketsController extends BaseController {
 				}
 
 				$tag_ticket = new TagTicket;
-				$tag_ticket->ticket_id = $ticket_id;
+				$tag_ticket->ticket_id = $ticket->id;
 				$tag_ticket->tag_id = $tag->id;
 				$tag_ticket->save();
+			}
+		}
+	}
+
+	private function updateLinks($ticket) {
+
+		TicketLink::where('ticket_id',$ticket->id)->forceDelete();
+
+		if (Input::get('linked_tickets_id')) {
+
+			$links = explode(",",Input::get('linked_tickets_id'));
+
+			foreach ($links as $link) {
+				
+				$new_link = new TicketLink;
+				$new_link->ticket_id = $ticket->id;
+				$new_link->linked_ticket_id = $link;
+				$new_link->save();
 			}
 		}
 	}
@@ -253,20 +292,4 @@ class TicketsController extends BaseController {
 	{
 		echo 'ticket destroy method to be created';
 	}
-
-    public function ajaxContactsRequest($id) {
-    	$contacts = CompanyPerson::select('company_person.id','people.first_name','people.last_name');
-    	$contacts->leftJoin('people','company_person.person_id','=','people.id');
-    	$contacts->where('company_id','=',$id);
-    	$contacts->orderByRaw("case when people.last_name is null then 1 else 0 end asc");
-    	$contacts = $contacts->orderBy('people.last_name','asc');
-    	$contacts = $contacts->get();
-    	return json_encode($contacts);
-    }
-
-    public function ajaxEquipmentRequest($id) {
-    	$equipment = Equipment::select('equipment.*')->where('company_id','=',$id);
-    	$equipment = $equipment->get();
-    	return json_encode($equipment);
-    }
 }

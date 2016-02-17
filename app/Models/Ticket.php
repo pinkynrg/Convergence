@@ -53,7 +53,7 @@ class Ticket extends CustomModel {
 
 	public function company()
 	{
-		return $this->belongsTo('App\Models\Company');		
+		return $this->belongsTo('App\Models\Company');
 	}
 
 	public function division()
@@ -84,6 +84,16 @@ class Ticket extends CustomModel {
 	public function history() 
 	{
 		return $this->hasMany('App\Models\TicketHistory')->orderBy('created_at');
+	}
+
+	public function links() 
+	{
+		return $this->belongsToMany('App\Models\Ticket', 'ticket_links', 'linked_ticket_id', 'ticket_id');
+	}
+
+	public function linked_by() 
+	{
+		return $this->hasMany('App\Models\TicketLink','linked_ticket_id')->orderBy('ticket_id');
 	}
 
 	public function attachments() {

@@ -81,6 +81,46 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		return $textarea;
 	}
 
+	public function BSMultiSelect($name, $list = array(), $options = array()) {
+		$options['id'] = isset($options['id']) ? $options['id'] : '';
+		$options['title'] = isset($options['title']) ? ucfirst($options['title']) : ucwords(str_replace("_"," ",$name));
+		$options['multiple'] = isset($options['multiple']) && $options['multiple'] == false ? "" : "multiple";
+		$options['selected'] = isset($options['selected']) && is_array($options['selected']) ? $options['selected'] : [];
+		$options['selected_text'] = isset($options['selected_text']) ? $options['selected_text'] : false;
+		$options['search'] = isset($options['search']) ? $options['search'] == true ? "true" : "false" : "true";
+		$options['value'] = isset($options['value']) ? $options['value'] : '';
+		$options['label'] = isset($options['label']) ? $options['label'] : '';
+
+		$multi = "<select id='".$options['id']."' class='selectpicker multifilter' ".$options['multiple']." title='".$options['title']."'";
+		
+		if ($options['selected_text']) {
+			$multi .= "data-count-selected-text='".$options['selected_text']."' data-selected-text-format='count>0'";
+		}
+
+		$multi .= "data-live-search='".$options['search']."'>";
+
+		foreach ($list as $item) {
+			$label = "";
+			$multi .= "<option value=".$item->{$options['value']}.">";
+
+			if (is_array($options['label'])) {
+				foreach ($options['label'] as $part) {
+					$label .= $part[0] == "!" ? $item->{substr($part,1)} : $part;
+				}
+			}
+			else {
+				$label .= $options['label'][0] == "!" ? $item->{substr($options['label'],1)} : $options['label'];
+			}
+
+			$multi .= trim($label);
+			$multi .= "</option>";
+		}
+		
+		$multi .= "</select>";
+
+		return $multi;
+	}
+
 	public function BSSelect($name, $list = array(), $selected = null, $options = array()) {
 		$bootstrap_class = "form-control";
 		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";

@@ -9,43 +9,38 @@
 	<div id="filters" class="row hidden-xs">
 		
 		<div class="col-xs-12 col-sm-4 col-md-2">
-			<select column="tickets.company_id" class="selectpicker multifilter" multiple title="Companies" data-count-selected-text="Companies Active" data-selected-text-format="count>0" data-live-search="true">			
-				@foreach ($companies as $company)
-					<option value="{{ $company->id }}"> {{ $company->name }} </option>
-				@endforeach
-			</select>
+			{!! 
+				Form::BSMultiSelect("companies", $companies, 
+				["id" => "tickets.company_id", "selected_text" => "Companies Active", "search" => "true", "value" => "id", "label" => "!name"]);
+			!!}
 		</div>
 
 		<div class="col-xs-12 col-sm-4 col-md-2">
-			<select column="tickets.assignee_id" class="selectpicker multifilter"  multiple title="Assignees" data-count-selected-text="Assignees Active" data-selected-text-format="count>0" data-live-search="true">
-				@foreach ($employees as $employee)
-					<option value="{{ $employee->id }}"> {{ $employee->person->name() }} </option>
-				@endforeach
-			</select>
+			{!! 
+				Form::BSMultiSelect("assignees", $employees, 
+				["id" => "tickets.assignee_id", "selected_text" => "Assignees Active", "search" => "true", "value" => "id", "label" => ["!first_name"," ","!last_name"]]);
+			!!}
 		</div>
 
 		<div class="col-xs-12 col-sm-4 col-md-2">
-			<select column="tickets.creator_id" class="selectpicker multifilter"  multiple title="Creators" data-count-selected-text="Creators Active" data-selected-text-format="count>0" data-live-search="true">
-				@foreach ($employees as $employee)
-					<option value="{{ $employee->id }}"> {{ $employee->person->name() }} </option>
-				@endforeach
-			</select>
+			{!! 
+				Form::BSMultiSelect("creators", $employees, 
+				["id" => "tickets.creator_id", "selected_text" => "Creators Active", "search" => "true", "value" => "id", "label" => ["!first_name"," ","!last_name"]]) 
+			!!}
 		</div>
 
 		<div class="col-xs-12 col-sm-4 col-md-2">
-			<select column="tickets.division_id" class="selectpicker multifilter"  multiple title="Divisions" data-count-selected-text="Divisions Active" data-selected-text-format="count>0" data-live-search="true">
-				@foreach ($divisions as $division)
-					<option value="{{ $division->id }}"> {{ $division->name }} </option>
-				@endforeach
-			</select>
+			{!! 
+				Form::BSMultiSelect("divisions", $divisions, 
+				["id" => "tickets.division_id", "selected_text" => "Divisions Active", "search" => "true", "value" => "id", "label" => "!name"]) 
+			!!}
 		</div>
 
 		<div class="col-xs-12 col-sm-4 col-md-2">
-			<select column="tickets.status_id" class="selectpicker multifilter"  multiple title="Statuses" data-count-selected-text="Statuses Active" data-selected-text-format="count>0" data-live-search="true">
-				@foreach ($statuses as $status)
-					<option value="{{ $status->id }}"> {{ $status->name }} </option>
-				@endforeach
-			</select>
+			{!! 
+				Form::BSMultiSelect("statuses", $statuses, 
+				["id" => "tickets.status_id", "selected_text" => "Statuses Active", "search" => "true", "value" => "id", "label" => "!name"]) 
+			!!}
 		</div>
 
 		<div class="col-xs-12 col-sm-4 col-md-2" id="reset_filters">
