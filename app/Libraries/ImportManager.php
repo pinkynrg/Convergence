@@ -769,8 +769,8 @@ class ConnectionTypes extends BaseClass {
 
 		if ($this->truncate()) {
 
-			$connectionTypes = array(1 => array('1','A','Connection to site always authorized'),
-									 2 => array('2','B','Connection to site needs prior approval'));
+			$connectionTypes = array(1 => array('1','A','Always authorized'),
+									 2 => array('2','B','Needs prior approval'));
 
 			foreach ($connectionTypes as $r) {
 
