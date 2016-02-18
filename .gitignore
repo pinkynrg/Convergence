@@ -8,3 +8,5 @@
 composer.phar
 /public/ckfinder/userfiles
 /backups
+/bower_components
+npm-debug.log

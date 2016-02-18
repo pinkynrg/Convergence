@@ -412,6 +412,11 @@ var updateServicePage = function () {
 // url id, action, target
 consoleLog(url);
 
+// set scrolling select list default phone browser
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+  $('.selectpicker').selectpicker('mobile');
+}
+
 // date picker
 $('.datepicker').datepicker({ autoclose: true });
 
@@ -806,6 +811,5 @@ if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") 
 		}
 	});
 }
-
 
 });
