@@ -413,9 +413,7 @@ var updateServicePage = function () {
 consoleLog(url);
 
 // set scrolling select list default phone browser
-if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-  $('.selectpicker').selectpicker('mobile');
-}
+$('.selectpicker').selectpicker('mobile');
 
 // date picker
 $('.datepicker').datepicker({ autoclose: true });
