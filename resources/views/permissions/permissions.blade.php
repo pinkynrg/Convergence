@@ -9,9 +9,9 @@
 			<tr class="orderable">
 				<th column="permissions.display_name">Display Name</th>
 				<th column="permissions.name">Name</th>
-				<th column="permissions.description" class="hidden-xs">Description</th>
-				<th column="permissions.created_at" class="hidden-xs">Created</th>
-				<th column="permissions.updated_at" class="hidden-xs">Updated</th>
+				<th column="permissions.description" class="hidden-xs hidden-ms">Description</th>
+				<th column="permissions.created_at" class="hidden-xs hidden-ms">Created</th>
+				<th column="permissions.updated_at" class="hidden-xs hidden-ms">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -21,9 +21,9 @@
 				<tr>
 					<td> <a href="{{route('permissions.show', $permission->id) }}"> {{  $permission->display_name }} </a> </td>
 					<td> <a href="{{route('permissions.show', $permission->id) }}"> {{  $permission->name }} </a> </td>
-					<td class="hidden-xs"> <a href="{{route('permissions.show', $permission->id) }}"> {{  $permission->description }} </a> </td>
-					<td class="hidden-xs"> {{ $permission->date("created_at") }} </td>
-					<td class="hidden-xs"> {{ $permission->date("updated_at") }} </td>
+					<td class="hidden-xs hidden-ms"> <a href="{{route('permissions.show', $permission->id) }}"> {{  $permission->description }} </a> </td>
+					<td class="hidden-xs hidden-ms"> {{ $permission->date("created_at") }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $permission->date("updated_at") }} </td>
 				</tr>
 
 				@endforeach

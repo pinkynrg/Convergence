@@ -35,7 +35,7 @@
 		
 		<div class="row">
 			@foreach ($ticket->attachments as $attachment)
-				<div class="col-lg-1 col-xs-2">
+				<div class="col-xs-3 col-ms-2 col-sm-2 col-md-1 col-lg-1">
 					<a href="{{ $attachment->path() }}" class="thumbnail">
 						<img src="{{ $attachment->thumbnail() }}" alt="...">
 					</a>
@@ -129,11 +129,11 @@
 			<table class="table table-striped">
 				<thead>
 					<th> Changed by </th>
-					<th class="hidden-xs"> Assignee </th>
-					<th class="hidden-xs"> Status </th>
-					<th class="hidden-xs"> Priority </th>
-					<th class="hidden-xs"> Division </th>
-					<th class="hidden-xs"> Equipment </th>
+					<th class="hidden-xs hidden-ms"> Assignee </th>
+					<th class="hidden-xs hidden-ms"> Status </th>
+					<th class="hidden-xs hidden-ms"> Priority </th>
+					<th class="hidden-xs hidden-ms"> Division </th>
+					<th class="hidden-xs hidden-ms"> Equipment </th>
 					<th> Date </th>
 				</thead>
 
@@ -141,11 +141,11 @@
 
 				<tr>
 					<td> {{ isset($history->changer_id) ? $history->changer->person->name() : '' }} </td>
-					<td class="hidden-xs"> {{ $history->assignee->person->name() }} </td>
-					<td class="hidden-xs"> {{ $history->status->name }} </td>
-					<td class="hidden-xs"> {{ $history->priority->name }} </td>
-					<td class="hidden-xs"> {{ $history->division->name }} </td>
-					<td class="hidden-xs"> - </td>
+					<td class="hidden-xs hidden-ms"> {{ $history->assignee->person->name() }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $history->status->name }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $history->priority->name }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $history->division->name }} </td>
+					<td class="hidden-xs hidden-ms"> - </td>
 					<td> {{ $history->date("created_at") }} </td>
 				</tr>
 

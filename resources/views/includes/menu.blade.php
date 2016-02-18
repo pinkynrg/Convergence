@@ -48,8 +48,8 @@ class Menu {
 }
 
 $main = Menu::items([
-	['type'=>'item','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::user()->can('read-all-ticket')],
 	['type'=>'group','label'=>'Manage','icon'=>MANAGE_ICON,'menu'=>[
+		['type'=>'item','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::user()->can('read-all-ticket')],
 		['type'=>'item','label'=>'Companies','icon'=>COMPANIES_ICON,'link'=>route('companies.index'),'show'=>Auth::user()->can('read-all-company')],
 		['type'=>'item','label'=>'Contacts','icon'=>CONTACTS_ICON,'link'=>route('company_person.index'),'show'=>Auth::user()->can('read-all-contact')],
 		['type'=>'item','label'=>'Users','icon'=>USERS_ICON,'link'=>route('users.index'),'show'=>Auth::user()->can('read-all-user')],

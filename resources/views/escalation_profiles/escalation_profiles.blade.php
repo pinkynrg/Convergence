@@ -8,9 +8,9 @@
 		<thead>
 			<tr class="orderable">
 				<th column="name">Name</th>
-				<th column="description" class="hidden-xs">Description</th>
-				<th column="created_at" class="hidden-xs">Created</th>
-				<th column="updated_at" class="hidden-xs">Updated</th>
+				<th column="description" class="hidden-xs hidden-ms">Description</th>
+				<th column="created_at" class="hidden-xs hidden-ms">Created</th>
+				<th column="updated_at" class="hidden-xs hidden-ms">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -20,9 +20,9 @@
 
 				<tr>
 					<td> <a href="{{ route('escalation_profiles.show', $escalation_profile->id) }}"> {{ $escalation_profile->name }} </a> </td>
-					<td class="hidden-xs"> <a href="{{ route('escalation_profiles.show', $escalation_profile->id) }}"> {{ $escalation_profile->description }} </a> </td>
-					<td class="hidden-xs"> {{ $escalation_profile->date("created_at") }} </td>
-					<td class="hidden-xs"> {{ $escalation_profile->date("updated_at") }} </td>
+					<td class="hidden-xs hidden-ms"> <a href="{{ route('escalation_profiles.show', $escalation_profile->id) }}"> {{ $escalation_profile->description }} </a> </td>
+					<td class="hidden-xs hidden-ms"> {{ $escalation_profile->date("created_at") }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $escalation_profile->date("updated_at") }} </td>
 				</tr>
 				@endforeach
 			@else 

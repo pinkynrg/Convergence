@@ -25,8 +25,7 @@ class File extends CustomModel {
 		return $thumbnail_url;
 	}
 
-	public function extension() {
-		$temp = explode(".",$this->file_name);
-		return $temp[count($temp)-1];
+	public function is_image() {
+		return  in_array($this->file_extension, ['gif','jpeg','jpg','png']) ? true : false;
 	}
 }

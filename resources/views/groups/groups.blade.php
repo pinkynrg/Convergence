@@ -8,11 +8,11 @@
 		<thead>
 			<tr class="orderable">
 				<th column="groups.display_name" type="asc">Display Name</th>
-				<th column="groups.name" class="hidden-xs">Name</th>
+				<th column="groups.name" class="hidden-xs hidden-ms">Name</th>
 				<th column="group_types.display_name">Group Type</th>
-				<th column="groups.description" class="hidden-xs">Description</th>
-				<th column="name" class="hidden-xs">Created</th>
-				<th column="name" class="hidden-xs">Updated</th>
+				<th column="groups.description" class="hidden-xs hidden-ms">Description</th>
+				<th column="name" class="hidden-xs hidden-ms">Created</th>
+				<th column="name" class="hidden-xs hidden-ms">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -21,11 +21,11 @@
 				@foreach ($groups as $group) 	
 				<tr>
 					<td> <a href="{{route('groups.show', $group->id) }}"> {{  $group->display_name }} </a> </td>
-					<td class="hidden-xs"> <a href="{{route('groups.show', $group->id) }}"> {{  $group->name }} </a> </td>
+					<td class="hidden-xs hidden-ms"> <a href="{{route('groups.show', $group->id) }}"> {{  $group->name }} </a> </td>
 					<td> <a href="{{route('groups.show', $group->id) }}"> {{  $group->group_type->display_name }} </a> </td>
-					<td class="hidden-xs"> <a href="{{route('groups.show', $group->id) }}"> {{  $group->description }} </a> </td>
-					<td class="hidden-xs"> {{ $group->date("created_at") }} </td>
-					<td class="hidden-xs"> {{ $group->date("updated_at") }} </td>
+					<td class="hidden-xs hidden-ms"> <a href="{{route('groups.show', $group->id) }}"> {{  $group->description }} </a> </td>
+					<td class="hidden-xs hidden-ms"> {{ $group->date("created_at") }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $group->date("updated_at") }} </td>
 				</tr>
 
 				@endforeach

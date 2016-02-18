@@ -12,19 +12,19 @@
 				<th column="people.last_name" type="asc">Name</th>
 				
 				@if (Route::currentRouteName() == "company_person.index")
-					<th column="companies.name" class="hidden-xs">Company</th>
+					<th column="companies.name" class="hidden-xs hidden-ms">Company</th>
 				@endif 
 
 				@if (Route::currentRouteName() == "companies.contacts" || Route::currentRouteName() == "companies.show")
 					<th column="is_main_contact">Main Contact</th>
 				@endif
 
-				<th column="departments.name" class="hidden-xs">Department</th>
-				<th column="titles.name" class="hidden-xs">Title</th>
-				<th column="company_person.phone" class="hidden-xs">Phone</th>
-				<th column="company_person.email" class="hidden-xs">Email</th>
-				<th column="company_person.created_at" class="hidden-xs">Created</th>
-				<th column="company_person.updated_at" class="hidden-xs">Updated</th>		
+				<th column="departments.name" class="hidden-xs hidden-ms">Department</th>
+				<th column="titles.name" class="hidden-xs hidden-ms">Title</th>
+				<th column="company_person.phone" class="hidden-xs hidden-ms">Phone</th>
+				<th column="company_person.email" class="hidden-xs hidden-ms">Email</th>
+				<th column="company_person.created_at" class="hidden-xs hidden-ms">Created</th>
+				<th column="company_person.updated_at" class="hidden-xs hidden-ms">Updated</th>		
 			</tr>
 		</thead>
 		<tbody>
@@ -35,7 +35,7 @@
 				<td> <a href="{{ route('people.show', $contact->person->id) }}"> {{ $contact->person->name() }} </a> </td>
 				
 				@if (Route::currentRouteName() == "company_person.index")
-					<td class="hidden-xs"> <a href="{{ route('companies.show', $contact->company->id) }}"> {{ $contact->company->name }} </a> </td>
+					<td class="hidden-xs hidden-ms"> <a href="{{ route('companies.show', $contact->company->id) }}"> {{ $contact->company->name }} </a> </td>
 				@endif
 
 				@if (Route::currentRouteName() == "companies.contacts" || Route::currentRouteName() == "companies.show")
@@ -48,12 +48,12 @@
 					</td>
 				@endif
 
-				<td class="hidden-xs"> @if (isset($contact->department_id)) {{ $contact->department->name }} @endif </td>
-				<td class="hidden-xs"> @if (isset($contact->title_id)) {{ $contact->title->name }} @endif </td>
-				<td class="hidden-xs"> {!! $contact->phone() !!} </td>
-				<td class="hidden-xs"> {{ $contact->email }} </td>			
-				<td class="hidden-xs"> {{ $contact->date("created_at") }} </td>
-				<td class="hidden-xs"> {{ $contact->date("updated_at") }} </td>
+				<td class="hidden-xs hidden-ms"> @if (isset($contact->department_id)) {{ $contact->department->name }} @endif </td>
+				<td class="hidden-xs hidden-ms"> @if (isset($contact->title_id)) {{ $contact->title->name }} @endif </td>
+				<td class="hidden-xs hidden-ms"> {!! $contact->phone() !!} </td>
+				<td class="hidden-xs hidden-ms"> {{ $contact->email }} </td>			
+				<td class="hidden-xs hidden-ms"> {{ $contact->date("created_at") }} </td>
+				<td class="hidden-xs hidden-ms"> {{ $contact->date("updated_at") }} </td>
 			</tr>
 
 			@endforeach

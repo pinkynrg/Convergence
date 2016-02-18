@@ -533,6 +533,10 @@ a:visited, a:link, a:active, a:visited {
     color: #262626;
 }
 
+.navbar-nav>li>a {
+  padding: 15px 10px;
+}
+
 .dropdown-menu>li>a {
   padding: 5px 20px;
 }

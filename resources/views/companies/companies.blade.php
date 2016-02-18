@@ -8,13 +8,13 @@
 		<thead>
 			<tr class="orderable">
 				<th column="name" type="asc">Company</th>
-				<th column="account_managers.last_name" class="hidden-xs">Account Manager</th>
-				<th column="people.last_name" class="hidden-xs">Main Contact Name</th>
-				<th column="company_person.cellphone" class="hidden-xs">Main Contact Phone</th>
-				<th column="company_person.country" class="hidden-xs">Country</th>
-				<th column="company_person.city" class="hidden-xs">City</th>
-				<th column="company_person.created_at" class="hidden-xs">Created</th>
-				<th column="company_person.updated_at" class="hidden-xs">Updated</th>
+				<th column="account_managers.last_name" class="hidden-xs hidden-ms">Account Manager</th>
+				<th column="people.last_name" class="hidden-xs hidden-ms">Main Contact Name</th>
+				<th column="company_person.cellphone" class="hidden-xs hidden-ms">Main Contact Phone</th>
+				<th column="company_person.country" class="hidden-xs hidden-ms">Country</th>
+				<th column="company_person.city" class="hidden-xs hidden-ms">City</th>
+				<th column="company_person.created_at" class="hidden-xs hidden-ms">Created</th>
+				<th column="company_person.updated_at" class="hidden-xs hidden-ms">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -26,13 +26,13 @@
 						<a href="{{route('companies.show', $company->id) }}"> {{  $company->name }} </a> 
 					</td>
 					
-					<td class="hidden-xs"> 
+					<td class="hidden-xs hidden-ms"> 
 						@if (isset($company->account_manager->account_manager_id)) 
 							<a href="{{route('people.show', $company->account_manager->company_person->person->id) }}"> {{  $company->account_manager->company_person->person->name() }} </a> 
 						@endif 
 					</td>
 					
-					<td class="hidden-xs"> 
+					<td class="hidden-xs hidden-ms"> 
 						@if (isset($company->main_contact->main_contact_id)) 
 							<a href="{{route('people.show', $company->main_contact->company_person->person->id) }}"> 
 								{{ $company->main_contact->company_person->person->name() }} 
@@ -40,11 +40,11 @@
 						@endif 
 					</td>
 
-					<td class="hidden-xs"> {!! isset($company->main_contact->main_contact_id) ? $company->main_contact->company_person->cellphone() : '' !!} </td>
-					<td class="hidden-xs"> {{ $company->country }} </td>
-					<td class="hidden-xs"> {{ $company->zip_code }} </td>
-					<td class="hidden-xs"> {{ $company->date("created_at") }} </td>
-					<td class="hidden-xs"> {{ $company->date("updated_at") }} </td>
+					<td class="hidden-xs hidden-ms"> {!! isset($company->main_contact->main_contact_id) ? $company->main_contact->company_person->cellphone() : '' !!} </td>
+					<td class="hidden-xs hidden-ms"> {{ $company->country }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $company->zip_code }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $company->date("created_at") }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $company->date("updated_at") }} </td>
 				</tr>
 
 				@endforeach

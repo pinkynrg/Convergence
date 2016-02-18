@@ -10,13 +10,13 @@
 		<thead>
 			<tr class="orderable">
 				<th column="cc_number" type="desc">CC</th>
-				<th column="equipment.name" class="hidden-xs">Name</th>
+				<th column="equipment.name" class="hidden-xs hidden-ms">Name</th>
 				<th column="serial_number">Serial Number</th>
-				<th column="equipment_types.name" class="hidden-xs">Equipment Type</th>
+				<th column="equipment_types.name" class="hidden-xs hidden-ms">Equipment Type</th>
 				<th column="companies.name">Customer</th>
-				<th column="warranty_expiration" class="hidden-xs">Warranty Expiration</th>
-				<th column="equipment.created_at" class="hidden-xs">Created</th>
-				<th column="equipment.updated_at" class="hidden-xs">Updated</th>
+				<th column="warranty_expiration" class="hidden-xs hidden-ms">Warranty Expiration</th>
+				<th column="equipment.created_at" class="hidden-xs hidden-ms">Created</th>
+				<th column="equipment.updated_at" class="hidden-xs hidden-ms">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -26,13 +26,13 @@
 
 				<tr>
 					<td> <a href="{{ route('equipment.show', $equipment_unit->id) }}"> {{ '#'.$equipment_unit->cc_number }} </a> </td>
-					<td class="hidden-xs"> <a href="{{ route('equipment.show', $equipment_unit->id) }}"> {{ $equipment_unit->name }} </a> </td>
+					<td class="hidden-xs hidden-ms"> <a href="{{ route('equipment.show', $equipment_unit->id) }}"> {{ $equipment_unit->name }} </a> </td>
 					<td> <a href="{{ route('equipment.show', $equipment_unit->id) }}"> {{ $equipment_unit->serial_number }} </a> </td>
-					<td class="hidden-xs"> {{ $equipment_unit->equipment_type->name }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $equipment_unit->equipment_type->name }} </td>
 					<td> <a href="{{ route('companies.show', $equipment_unit->company->id) }}"> {{ $equipment_unit->company->name }} </a> </td>
-					<td class="hidden-xs"> {{ isset($equipment_unit->warranty_expiration) ? date("m/d/Y",strtotime($equipment_unit->warranty_expiration)) : '-' }} </td>
-					<td class="hidden-xs"> {{ $equipment_unit->date("created_at") }} </td>
-					<td class="hidden-xs"> {{ $equipment_unit->date("updated_at") }} </td>
+					<td class="hidden-xs hidden-ms"> {{ isset($equipment_unit->warranty_expiration) ? date("m/d/Y",strtotime($equipment_unit->warranty_expiration)) : '-' }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $equipment_unit->date("created_at") }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $equipment_unit->date("updated_at") }} </td>
 				</tr>
 				@endforeach
 			@else 

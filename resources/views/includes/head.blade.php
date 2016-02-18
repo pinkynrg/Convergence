@@ -40,6 +40,7 @@
 <link rel="stylesheet" href="/css/bootstrap-image-gallery.css">
 <link rel="stylesheet" href="/css/dropzone.css">
 <link rel="stylesheet" href="/css/bootstrap-switch.min.css">
+<link rel="stylesheet" href="/css/bootstrap-grid-ms.css">
 <link rel="stylesheet" href="/css/style.css">
 
 <link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">
