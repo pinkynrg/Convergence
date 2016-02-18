@@ -11,35 +11,35 @@
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("companies", $companies, 
-				["id" => "tickets.company_id", "selected_text" => "Companies Active", "search" => "true", "value" => "id", "label" => "!name"]);
+				["id" => "tickets.company_id", "selected_text" => "Companies Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]);
 			!!}
 		</div>
 
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("assignees", $employees, 
-				["id" => "tickets.assignee_id", "selected_text" => "Assignees Active", "search" => "true", "value" => "id", "label" => ["!first_name"," ","!last_name"]]);
+				["id" => "tickets.assignee_id", "selected_text" => "Assignees Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!first_name"," ","!last_name"]]);
 			!!}
 		</div>
 
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("creators", $employees, 
-				["id" => "tickets.creator_id", "selected_text" => "Creators Active", "search" => "true", "value" => "id", "label" => ["!first_name"," ","!last_name"]]) 
+				["id" => "tickets.creator_id", "selected_text" => "Creators Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!first_name"," ","!last_name"]]) 
 			!!}
 		</div>
 
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("divisions", $divisions, 
-				["id" => "tickets.division_id", "selected_text" => "Divisions Active", "search" => "true", "value" => "id", "label" => "!name"]) 
+				["id" => "tickets.division_id", "selected_text" => "Divisions Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]) 
 			!!}
 		</div>
 
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("statuses", $statuses, 
-				["id" => "tickets.status_id", "selected_text" => "Statuses Active", "search" => "true", "value" => "id", "label" => "!name"]) 
+				["id" => "tickets.status_id", "selected_text" => "Statuses Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]) 
 			!!}
 		</div>
 

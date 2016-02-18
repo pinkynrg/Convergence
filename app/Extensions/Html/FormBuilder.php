@@ -87,6 +87,7 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$options['multiple'] = isset($options['multiple']) && $options['multiple'] == false ? "" : "multiple";
 		$options['selected'] = isset($options['selected']) && is_array($options['selected']) ? $options['selected'] : [];
 		$options['selected_text'] = isset($options['selected_text']) ? $options['selected_text'] : false;
+		$options['data-size'] = isset($options['data-size']) ? $options['data-size'] : 'auto';
 		$options['search'] = isset($options['search']) ? $options['search'] == true ? "true" : "false" : "true";
 		$options['value'] = isset($options['value']) ? $options['value'] : '';
 		$options['label'] = isset($options['label']) ? $options['label'] : '';
@@ -94,7 +95,7 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$multi = "<select id='".$options['id']."' class='selectpicker multifilter' ".$options['multiple']." title='".$options['title']."'";
 		
 		if ($options['selected_text']) {
-			$multi .= "data-count-selected-text='".$options['selected_text']."' data-selected-text-format='count>0'";
+			$multi .= "data-count-selected-text='".$options['selected_text']."' width='100px' data-size='".$options['data-size']."' data-selected-text-format='count>0'";
 		}
 
 		$multi .= "data-live-search='".$options['search']."'>";
