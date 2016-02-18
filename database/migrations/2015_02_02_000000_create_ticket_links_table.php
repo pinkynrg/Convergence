@@ -11,6 +11,7 @@ class CreateTicketLinksTable extends Migration
     public function up()
     {
         Schema::create('ticket_links', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('ticket_id')->unsigned();;
             $table->integer('linked_ticket_id')->unsigned();;
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

@@ -1628,7 +1628,10 @@ class Tickets extends BaseClass {
 
 	public function importSelf() {
 
-		$query = mssql_query("SELECT * FROM Tickets");
+		$query = mssql_query("SELECT * FROM Tickets 
+							  WHERE Creator != 0 AND Creator IS NOT NULL
+							  AND Status != 0 AND Status IS NOT NULL
+							  AND Priority != 0 AND Priority IS NOT NULL");
 
 		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
 
@@ -1646,6 +1649,7 @@ class Tickets extends BaseClass {
 				// if the post without the html tags is an empty string, use title for both rich and raw posts
 				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
 				$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
+				$t['Deleted_At'] = $t['Deleted_Ticket'] == '1' ? $t['Date_Update'] : '';
 
 				$t = nullIt($t);
 
@@ -1655,8 +1659,8 @@ class Tickets extends BaseClass {
 
 				$t['Level'] = $t['Level'] == 'NULL' ? 1 : $t['Level'];
 
-				$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
-				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Ticket_Post_Plain'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Level'].",".$t['Date_Creation'].",".$t['Date_Update'].")";
+				$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at,deleted_at) 
+				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Ticket_Post_Plain'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Level'].",".$t['Date_Creation'].",".$t['Date_Update'].",".$t['Deleted_At'].")";
 								
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
@@ -1671,6 +1675,48 @@ class Tickets extends BaseClass {
 			}
 
 			if (isset($ids)) { logMessage("Error Query: SELECT * FROM Tickets WHERE Id IN (".$ids.")"); }
+			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Errors: ".$this->errors,'errors');
+		}
+	}
+}
+
+class TicketLinks extends BaseClass {
+	public $table_name = 'ticket_links';
+	public $dependency_names = ['tickets'];
+
+	public function importSelf() {
+
+		$query = mssql_query("SELECT * FROM Link l INNER JOIN Tickets t1 ON t1.Id = l.Ticket_Id INNER JOIN Tickets t2 ON t2.Id = l.Ticket_Id_Linked");
+
+		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
+
+		mssql_free_result($query);
+
+		if ($this->truncate()) {
+
+			$counter = 0;
+
+			foreach ($table as $r) {
+				
+				$r = nullIt(sanitize($r));
+
+				$query = "INSERT INTO ticket_links (id,ticket_id,linked_ticket_id) 
+					  	VALUES (".$counter.",".$r['Ticket_Id'].",".$r['Ticket_Id_Linked'].")";
+				
+				
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					$this->successes++;
+					$counter++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+		
 			logMessage("Successes: ".$this->successes,'successes');
 			logMessage("Errors: ".$this->errors,'errors');
 		}
