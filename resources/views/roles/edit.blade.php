@@ -1,11 +1,11 @@
 @extends('layouts.default')
 @section('content')
 	
-	{!! Form::model($role, array('method' => 'PATCH', 'route' => array('roles.update',$role->id), 'class' => "form-horizontal")) !!}
+	{!! Form::model($role, array('method' => 'PATCH', 'route' => array('roles.update',$role->id))) !!}
 
 		@include('roles.form')
 
-		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
+		{!! Form::BSSubmit("Submit") !!}
 
 	{!! Form::close() !!}
 

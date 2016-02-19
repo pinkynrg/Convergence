@@ -42,7 +42,7 @@ class TicketsController extends BaseController {
     	$data['tickets'] = self::api($params);
     	$data['title'] = "Tickets";
 		$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
-		$data['active_search'] = implode(",",['tickets.id','tickets.title','tickets.post']);
+		$data['active_search'] = implode(",",['tickets.title','tickets.post']);
 		$data['companies'] = Company::orderBy('name','asc')->get();
 		$data['employees'] = CompanyPersonController::api(['where' => ['company_person.company_id|=|1'], 'order' => ['people.last_name|ASC','people.first_name|ASC'], 'paginate' => 'false']);
 		$data['divisions'] = Division::orderBy('name','asc')->get();

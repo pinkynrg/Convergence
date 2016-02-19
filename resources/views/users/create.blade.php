@@ -1,29 +1,38 @@
 @extends('layouts.default')
 @section('content')
 
-	{!! Form::model($user, array('route' => 'users.store', 'class' => "form-horizontal")) !!}
+	{!! Form::model($user, array('route' => 'users.store')) !!}
 
-		{!! Form::BSGroup() !!}
+		<div class="row">
+			<div class="col-xs-6">
+				
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("person_id", "Person") !!}
+					{!! Form::BSSelect("person_id", $people, null, ["key" => "id", "value" => "name"]) !!}
+				{!! Form::BSEndGroup() !!}
+				
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("password", "Password") !!}
+					{!! Form::BSPassword("password") !!}
+				{!! Form::BSEndGroup() !!}
 
-			{!! Form::BSLabel("person_id", "Person", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSSelect("person_id", $people, null, array('bclass' => 'col-xs-3', "key" => "id", "value" => "name")) !!}
+			</div>
+			<div class="col-xs-6">
+				
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("username", "Username") !!}
+					{!! Form::BSText("username") !!}
+				{!! Form::BSEndGroup() !!}
 
-			{!! Form::BSLabel("username", "Username", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSText("username", null, array('bclass' => 'col-xs-3')) !!}
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("password2", "Repeat Password") !!}
+					{!! Form::BSPassword("password2") !!}
+				{!! Form::BSEndGroup() !!}
 
-		{!! Form::BSEndGroup() !!}
+			</div>
+		</div>
 
-		{!! Form::BSGroup() !!}
-			
-			{!! Form::BSLabel("password", "Password", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSPassword("password", array('bclass' => 'col-xs-3')) !!}
-
-			{!! Form::BSLabel("password2", "Repeat Password", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSPassword("password2", array('bclass' => 'col-xs-3')) !!}
-
-		{!! Form::BSEndGroup() !!}
-
-		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
+		{!! Form::BSSubmit("Submit") !!}
 
 	{!! Form::close() !!}
 

@@ -1,10 +1,21 @@
 body {
-  background-image: url(/images/style/background.png);
+  /*background-image: url(/images/style/background.png);*/
+  background-color: #E4EFF3;
 	font-size: 12px;
 }
 
 td {
   vertical-align: middle!important;
+}
+
+.inner_container {
+  max-width: 1250px;
+  margin: auto;
+}
+
+.thiner-form {
+  max-width: 1100px;
+  margin: auto;
 }
 
 #loading {
@@ -76,7 +87,7 @@ input[disabled], textarea[disabled], select[disabled] {
 }
 
 .delete_escalation_event, .escalation_level {
-  font-size: 20px;
+  font-size: 12px;
   line-height: 34px;
 }
 
@@ -628,6 +639,29 @@ a:visited, a:link, a:active, a:visited {
 .email_checkbox_input, .email_checkbox_label {
   float: left;
   font-weight: bold;
+}
+
+fieldset {
+    border: 1px solid #ede0c0;
+    margin: 2%;
+    padding-bottom: 15px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
+    color: #58471E;
+    padding: 3%;
+    background-color: #F7F6F3;
+}
+
+legend {
+    border: 0px;
+    width: auto;
+    padding: 10px;
+    margin: 0px;
+    margin-left: 10px;
+    font-size: 1.375em;
+    color: #58471E;
 }
 
 /*responsive*/

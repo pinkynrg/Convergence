@@ -5,7 +5,7 @@
 	
 		@include('tickets.form')
 
-		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-12']) !!}
+		{!! Form::BSSubmit("Submit") !!}
 		
 	{!! Form::close() !!}
 

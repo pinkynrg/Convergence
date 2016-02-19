@@ -1,12 +1,12 @@
 @extends('layouts.default')
 @section('content')
 
-	{!! Form::open(array('route' => 'company_person.store', 'class' => "form-horizontal")) !!}
+	{!! Form::open(array('route' => 'company_person.store')) !!}
 
 		@include('people.create')
 		@include('company_person.form')
 
-		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
+		{!! Form::BSSubmit("Submit") !!}
 
 	{!! Form::close() !!}
 

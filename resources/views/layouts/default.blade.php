@@ -15,15 +15,13 @@
 	@include('includes.menu')
 
 	<h2 class="title"> {!! isset($title) ? $title : "[missing page title]" !!} </h2> 
-
 	<hr>
 
-	@include('includes.errors')
-
-	@yield('content')
-
-	<hr>
-	
+	<div class="inner_container">
+		@include('includes.errors')
+		@yield('content')
+		<hr>
+	</div>
 </div>
 
 @include('includes.footer')

@@ -1,20 +1,25 @@
 @extends('layouts.default')
 @section('content')
 	
-	{!! Form::model($person, array('method' => 'PATCH', 'route' => array('people.update',$person->id), 'class' => "form-horizontal")) !!}
+	{!! Form::model($person, array('method' => 'PATCH', 'route' => array('people.update',$person->id))) !!}
 
-		{!! Form::BSGroup() !!}
-			
+		<div class="row">
 			{!! Form::hidden("company_id", null, array("id" => "company_id")) !!}
 			{!! Form::hidden("person_id", null, array("id" => "person_id")) !!}
 
-			{!! Form::BSLabel("first_name", "First Name", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSText("first_name", null, ['bclass' => 'col-xs-3']) !!}
-			{!! Form::BSLabel("last_name", "Last Name", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSText("last_name", null, ['bclass' => 'col-xs-3']) !!}
-		{!! Form::BSEndGroup() !!}
-
-		{!! Form::BSSubmit("Submit", ['bclass' => 'col-xs-offset-2']) !!}
+			<div class="col-xs-6">
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("first_name", "First Name") !!}
+					{!! Form::BSText("first_name") !!}
+				{!! Form::BSEndGroup() !!}
+			</div>
+			<div class="col-xs-6">
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("last_name", "Last Name") !!}
+					{!! Form::BSText("last_name") !!}
+				{!! Form::BSEndGroup() !!}
+			</div>
+		</div>
 
 	{!! Form::close() !!}
 

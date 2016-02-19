@@ -3,10 +3,12 @@
 
 	{!! Form::open( array('route' => 'tickets.store') ) !!}		
 
-		@include('tickets.form')
-
-		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-12']) !!}
-		
+		<!-- <fieldset> -->
+			<!-- <legend> Ticket </legend> -->
+			@include('tickets.form')
+			{!! Form::BSSubmit("Submit") !!}
+		<!-- </fieldset> -->
+			
 	{!! Form::close() !!}
 
 @endsection

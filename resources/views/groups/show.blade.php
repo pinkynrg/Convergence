@@ -21,7 +21,7 @@
 
 	<h3 class="subtitle"> Group Roles </h2>
 
-	{!! Form::open(array('method' => 'POST', 'route' => array('groups.update_roles',$group->id), 'class' => "form-horizontal")) !!}
+	{!! Form::open(array('method' => 'POST', 'route' => array('groups.update_roles',$group->id))) !!}
 
 		<div class="group_update_roles">
 			<select multiple="multiple" name="roles[]" size="10" style="display: none;">

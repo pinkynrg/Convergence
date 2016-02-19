@@ -18,7 +18,7 @@
 
 	<h3 class="subtitle"> Role Permissions </h2>
 
-	{!! Form::open(array('method' => 'POST', 'route' => array('roles.update_permissions',$role->id), 'class' => "form-horizontal")) !!}
+	{!! Form::open(array('method' => 'POST', 'route' => array('roles.update_permissions',$role->id))) !!}
 
 		<div class="role_update_permissions">
 			<select multiple="multiple" name="permissions[]" size="10" style="display: none;">

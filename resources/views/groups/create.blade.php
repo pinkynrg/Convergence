@@ -1,11 +1,11 @@
 @extends('layouts.default')
 @section('content')
 
-	{!! Form::open(array('route' => 'groups.store', 'class' => "form-horizontal")) !!}
+	{!! Form::open(array('route' => 'groups.store')) !!}
 
 		@include('groups.form')
 
-		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
+		{!! Form::BSSubmit("Submit") !!}
 
 	{!! Form::close() !!}
 

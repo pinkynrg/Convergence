@@ -1,8 +1,8 @@
 <meta name="viewport" content="width=320, initial-scale=1">
 
 <!-- Scripts -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://www.google.com/jsapi"></script>
+<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+<!-- <script src="https://www.google.com/jsapi"></script> -->
 <script src="/ckeditor/ckeditor.js"></script>
 <script src="/javascript/jquery.blueimp-gallery.min.js"></script>
 <script src="/javascript/bootstrap-image-gallery.js"></script>
@@ -26,7 +26,7 @@
 <script src="/javascript/script.js"></script>
 
 <!-- Stylesheets -->
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> -->
 <link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/font-awesome.min.css">
 <link rel="stylesheet" href="/css/bootstrap-select.min.css">

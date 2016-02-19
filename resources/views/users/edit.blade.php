@@ -1,19 +1,25 @@
 @extends('layouts.default')
 @section('content')
 
-	{!! Form::open(array('method' => 'PATCH', 'route' => array('users.update',$user->id), 'class' => "form-horizontal")) !!}
+	{!! Form::open(array('method' => 'PATCH', 'route' => array('users.update',$user->id))) !!}
 
-		{!! Form::BSGroup() !!}
+		<div class="row">
+			<div class="col-xs-6">
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("password", "Password") !!}
+					{!! Form::BSPassword("password") !!}
+				{!! Form::BSEndGroup() !!}				
+			</div>
 			
-			{!! Form::BSLabel("password", "Password", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSPassword("password", array('bclass' => 'col-xs-3')) !!}
+			<div class="col-xs-6">
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("password2", "Repeat Password") !!}
+					{!! Form::BSPassword("password2") !!}
+				{!! Form::BSEndGroup() !!}
+			</div>
+		</div>
 
-			{!! Form::BSLabel("password2", "Repeat Password", ['bclass' => 'col-xs-2']) !!}
-			{!! Form::BSPassword("password2", array('bclass' => 'col-xs-3')) !!}
-
-		{!! Form::BSEndGroup() !!}
-
-		{!! Form::BSSubmit("Submit",['bclass' => 'col-xs-offset-2']) !!}
+		{!! Form::BSSubmit("Submit") !!}
 
 	{!! Form::close() !!}
 

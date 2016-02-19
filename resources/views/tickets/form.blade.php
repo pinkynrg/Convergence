@@ -42,7 +42,7 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('title','Ticket Title') !!}
-			{!! Form::BSText('title',null) !!}
+			{!! Form::BSText('title') !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
