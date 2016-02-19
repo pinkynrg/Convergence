@@ -748,10 +748,20 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 @/roles/{id}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-if (url.target == "role" && url.target_action == "show") {
-	$('.role_update_permissions').bootstrapDualListbox({'infoText':""});
-	$('.group_update_roles').bootstrapDualListbox({'infoText':""});
+if (url.target == "groups" && url.target_action == "show") {
+	$(".group_update_roles").bootstrapDualListbox({'infoText':""});
+	consoleLog("bootstrapDualListbox loaded");
 }
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@/groups/{id}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+if (url.target == "roles" && url.target_action == "show") {
+	$('.role_update_permissions').bootstrapDualListbox({'infoText':""});
+	consoleLog("bootstrapDualListbox loaded");
+}
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @/profiles/create/{company_id}/{tech?}
