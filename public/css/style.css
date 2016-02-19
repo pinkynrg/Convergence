@@ -621,6 +621,15 @@ a:visited, a:link, a:active, a:visited {
   font-size: 18px;
 }
 
+.email_checkbox {
+  height: 40px;
+}
+
+.email_checkbox_input, .email_checkbox_label {
+  float: left;
+  font-weight: bold;
+}
+
 /*responsive*/
 
 @media (max-width: 700px) {
