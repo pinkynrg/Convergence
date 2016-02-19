@@ -1,9 +1,14 @@
-{!! Form::BSGroup() !!}
-	
-	{!! Form::BSLabel("name", "Name", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSText("name", null, ['bclass' => 'col-xs-3']) !!}
-
-	{!! Form::BSLabel("description", "Description", ['bclass' => 'col-xs-2']) !!}
-	{!! Form::BSText("description", null, ['bclass' => 'col-xs-3']) !!}
-
-{!! Form::BSEndGroup() !!}
+<div class="row">
+	<div class="col-xs-6">
+		{!! Form::BSGroup() !!}
+			{!! Form::BSLabel("name", "Name") !!}
+			{!! Form::BSText("name") !!}
+		{!! Form::BSEndGroup() !!}
+	</div>
+	<div class="col-xs-6">
+		{!! Form::BSGroup() !!}
+			{!! Form::BSLabel("description", "Description") !!}
+			{!! Form::BSText("description") !!}
+		{!! Form::BSEndGroup() !!}
+	</div>
+</div>
