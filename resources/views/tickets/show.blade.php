@@ -70,36 +70,32 @@
 				<table class="table table-striped table-condensed table-hover">
 					<tbody>
 						<tr>
-							<th class="col-xs-6 col-md-3 col-lg-2">Customer Name: </th>
+							<th class="col-xs-6 col-md-3 col-lg-2">Cust. Name: </th>
 							<td>{!! HTML::link(route('companies.show', $ticket->company->id), $ticket->company->name) !!}</td>
 						</tr>
 						<tr>
-							<th>Customer Contact: </th>
+							<th>Cust. Contact: </th>
 							<td> {!! $ticket->contact_id ? HTML::link(route('people.show', $ticket->contact->person->id), $ticket->contact->person->name()) : '' !!} </td>
 						</tr>
 						<tr>
-							<th>Customer Contact Phone: </th>
+							<th>Cust. Contact Phone: </th>
 							<td>{!! isset($ticket->contact_id) ? $ticket->contact->phone() : '' !!}</td>
 						</tr>
 						<tr>
-							<th>Customer Contact Cell: </th>
+							<th>Cust. Contact Cell: </th>
 							<td>{!! isset($ticket->contact_id) ? $ticket->contact->cellphone() : '' !!}</td>
 						</tr>
 						<tr>
-							<th>Customer Support Type: </th>
+							<th>Cust. Support Type: </th>
 							<td>{{ isset($ticket->company->support_type_id) ? $ticket->company->support_type->name : '' }}</td>
 						</tr>
 						<tr>
-							<th>Customer Connection Type: </th>
+							<th>Cust. Connection Type: </th>
 							<td> <b> {{ $ticket->company->connection_type->name }} </b> {{ ": " . $ticket->company->connection_type->description }} </td>
 						</tr>
 						</tr>
-							<th>Customer Group Email: </th>
+							<th>Cust. Group Email: </th>
 							<td>{{ $ticket->company->group_email }}</td>
-						</tr>
-						<tr>
-							<th>Customer Account Manager:</th>
-							<td>{!! isset($ticket->company->account_manager->account_manager_id) ? HTML::link(route('people.show', $ticket->company->account_manager->company_person->person_id), $ticket->company->account_manager->company_person->person->name()) : '' !!}</td>
 						</tr>
 						<tr>
 							<th>Ticket Assignee: </th>
@@ -114,7 +110,11 @@
 							<td>{{ isset($ticket->division_id) ? $ticket->division->name : '' }}</td>
 						</tr>
 						<tr>
-							<th>Customer CC Number: </th>
+							<th>Account Manager:</th>
+							<td>{!! isset($ticket->company->account_manager->account_manager_id) ? HTML::link(route('people.show', $ticket->company->account_manager->company_person->person_id), $ticket->company->account_manager->company_person->person->name()) : '' !!}</td>
+						</tr>
+						<tr>
+							<th>CC Number: </th>
 							<td>{{ count($ticket->equipment) ? $ticket->equipment->cc() : '' }}</td>
 						</tr>
 					</tbody>
@@ -222,7 +222,9 @@
 
 		@include('posts.form',array('post' => $draft_post))
 
-		<div class="col-xs-6">
+		<div class="col-xs-12 col-sm-6">
+
+			<h5> Change ticket status: </h5>
 
 			<div class="is_public"> 
 				<label> <input type="checkbox" id="is_public" value="true" name="is_public" class="switch"> Public </label> 
@@ -238,54 +240,49 @@
 
 		</div>
 
-		<div class="col-xs-6">
+		<div class="col-xs-12 col-sm-6">
+
+			<h5> Send email to: </h5>
 			
 			<div class="email_checkbox">
-				@if (!isset($ticket->company->account_manager))
-					<label data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address.">
-						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" disabled value=""> Email to account manager ~ Not Available
-					</label>
-				@else
-					<label>
-						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value=""> Send email to account manager ~ {{ $ticket->company->account_manager->company_person->email }}
-					</label>
-				@endif
+				<div class="email_checkbox_input"> 
+					<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->account_manager)) disabled @endif> 
+				</div>
+				
+				<div class="email_checkbox_label" @if (!isset($ticket->company->account_manager)) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif >
+					<div>Account manager:</div>
+					<div>{{ (!isset($ticket->company->account_manager)) ? "Not Available" : $ticket->company->account_manager->company_person->email }}</div>
+				</div>
 			</div>
 			
 			<div class="email_checkbox">
-				@if (!isset($ticket->company->group_email))
-					<label data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address.">
-						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" disabled value=""> Email to company group email ~ Not Available
-					</label>
-				@else
-					<label>
-						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value=""> Email to company group email ~ {{ $ticket->company->group_email }}
-					</label>
-				@endif
+				<div class="email_checkbox_input"> 
+					<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->group_email)) disabled @endif>  
+				</div>
+				<div class="email_checkbox_label" @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif > 
+					<div>Company group email:</div>
+					<div>{{ (!isset($ticket->company->group_email)) ? "Not Available" : $ticket->company->group_email }} </div>
+				</div>
 			</div>
 
 			<div class="email_checkbox">
-				@if (!isset($ticket->contact->email))
-					<label data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket.">
-						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" disabled value=""> Email to contact reference ~ Not Available
-					</label>
-				@else
-					<label>
-						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value=""> Email to contact reference ~ {{ $ticket->contact->email }}
-					</label>
-				@endif
+				<div class="email_checkbox_input"> 
+					<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
+				</div>
+				<div class="email_checkbox_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
+					<div>Contact reference:</div>
+					<div>{{ (!isset($ticket->contact->email)) ? "Not Available" : $ticket->contact->email }} </div>
+				</div>
 			</div>
 
 			<div class="email_checkbox">
-				@if (!isset($ticket->emails) || $ticket->emails == '')
-					<label data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket.">
-						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" disabled value=""> Email to additional ticket emails ~ Not Available
-					</label>
-				@else
-					<label>
-						<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value=""> Email to additional ticket emails ~ {{ $ticket->emails }}
-					</label>
-				@endif
+				<div class="email_checkbox_input"> 
+					<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
+				</div>
+				<div class="email_checkbox_label" @if (!isset($ticket->emails) || $ticket->emails == '') data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif >
+					<div>Additional emails:</div>
+					<div>{{ (!isset($ticket->emails) || $ticket->emails == '') ? "Not Available" : $ticket->emails }} </div>
+				</div>
 			</div>
 
 		</div>
