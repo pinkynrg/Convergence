@@ -18,14 +18,14 @@
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("assignees", $employees, 
-				["id" => "tickets.assignee_id", "selected_text" => "Assignees Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!first_name"," ","!last_name"]]);
+				["id" => "tickets.assignee_id", "selected_text" => "Assignees Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!last_name"," ","!first_name"]]);
 			!!}
 		</div>
 
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("creators", $employees, 
-				["id" => "tickets.creator_id", "selected_text" => "Creators Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!first_name"," ","!last_name"]]) 
+				["id" => "tickets.creator_id", "selected_text" => "Creators Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!last_name"," ","!first_name"]]) 
 			!!}
 		</div>
 
