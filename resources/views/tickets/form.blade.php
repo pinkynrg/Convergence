@@ -49,14 +49,7 @@
 			{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
 		{!! Form::BSEndGroup() !!}
 
-		<div id="dZUpload"><form action="/upload" class="dropzone needsclick dz-clickable" id="demo-upload">
-
-  <div class="dz-message needsclick">
-    Drop files here or click to upload.<br>
-    <span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>
-  </div>
-
-</form></div>		
+		{!! Form::dropZone() !!}		
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('tagit','Tag it!') !!}

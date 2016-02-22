@@ -630,11 +630,13 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 if (url.target == "tickets" && url.target_action == "show") {
-	CKEDITOR.instances['post'].on('change',function () {
-		if (url.target == "tickets" && url.target_action == "show") {			
-			savePostDraft();
-		}
-	});
+	if (typeof CKEDITOR.instances['post'] != 'undefined') {								// if it is supported
+		CKEDITOR.instances['post'].on('change',function () {
+			if (url.target == "tickets" && url.target_action == "show") {			
+				savePostDraft();
+			}
+		});
+	}
 
 	$("#is_public").on('switchChange.bootstrapSwitch',function() {						// if toggle public
 		var current = $(this).bootstrapSwitch('state');
