@@ -48,7 +48,8 @@ define("TICKET_DRAFT_STATUS_ID",9);
 define("TICKET_SOLVED_STATUS_ID",6);
 define("TICKET_CLOSED_STATUS_ID",7);
 define("POST_DRAFT_STATUS_ID",1);
-
+define("POST_PRIVATE_STATUS_ID",2);
+define("POST_PUBLIC_STATUS_ID",3);
 // ICONS
 
 define("MISSING_ICON", "fa fa-question-circle");

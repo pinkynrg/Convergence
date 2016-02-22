@@ -430,6 +430,20 @@ a:visited, a:link, a:active, a:visited {
   margin: 20px 0px;
 }
 
+.post {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.post p {
+  margin: 0px;
+}
+
+.post_private {
+  background-color: #F5F5F5;
+  color: #5D5D5D;
+}
+
 .post_details {
   display: table-cell;
 }

@@ -192,7 +192,6 @@
 			@foreach ($ticket->posts as $post) 
 
 				@include('posts.post', array("post" => $post))			
-				<hr>
 
 			@endforeach
 

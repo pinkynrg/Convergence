@@ -1777,7 +1777,7 @@ class Posts extends BaseClass {
 
 				$p['Date_Creation'] = $p['Date_Creation']." ".$p['Time'];
 				$p['Date_Creation'] = str_replace(".0000000","", $p['Date_Creation']);
-				$p['Post_Public'] = $p['Post_Public'] == '' ? '2' : '3';
+				$p['Post_Public'] = $p['Post_Public'] == '0' ? '2' : '3';
 				$p['Post'] = Purifier::clean($p['Post']);
 
 				$p['Post_Plain'] = $p['Post'] ? htmlToText($p['Post']) : "";
