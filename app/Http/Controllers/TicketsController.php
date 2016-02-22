@@ -170,6 +170,7 @@ class TicketsController extends BaseController {
 
 		$data['companies'] = Company::all();
 		$data['divisions'] = Division::all();
+		$data['statuses'] = Status::all();
 		$data['job_types'] = JobType::all();
 		$data['priorities'] = Priority::all();
 		

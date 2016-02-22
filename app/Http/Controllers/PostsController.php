@@ -30,11 +30,11 @@ class PostsController extends Controller {
 
 		$post->save();
 
-		$status_id = $request->get('status_id');
-
-		$this->updateTicketStatus($request);
-		// SlackManager::sendPost($post);
-		// EmailsManager::sendPost($post->id);
+		if ($post->status_id != POST_DRAFT_STATUS_ID) {
+			$this->updateTicketStatus($request);
+			// SlackManager::sendPost($post);
+			// EmailsManager::sendPost($post->id);
+		}
 		
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);
 	}
@@ -59,14 +59,17 @@ class PostsController extends Controller {
 		$post = Post::find($id);
 		$post->post = $request->get('post');
 		$post->save();
-        return redirect()->route('posts.show',$post->id)->with('successes',['Post updated successfully']);;;
+        return redirect()->route('posts.show',$post->id)->with('successes',['Post updated successfully']);
 	}
 
 	private function updateTicketStatus($request) {
-		$status_id = $request->get('status_id');
+
+		$ticket = Ticket::find($request->get('ticket_id'));
+
+		$status_id = $request->get('status_id') === null ? $ticket->status_id == TICKET_NEW_STATUS_ID ? TICKET_IN_PROGRESS_STATUS_ID : null : $request->get('status_id');
+
 		if (isset($status_id)) {
 			
-			$ticket = Ticket::find($request->get('ticket_id'));
 			$ticket->status_id = $status_id;
 			$ticket->save();
 

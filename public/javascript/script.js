@@ -520,6 +520,11 @@ if (url.target_action == "index") {
 		var $target = $(this).closest("div[ajax-route]");
 		resetFilter($target);
 	});
+
+	$("#expand_filters").click(function() {
+		$("#filters").style("display","block","important");
+		$(this).remove();
+	});
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -630,12 +635,30 @@ if (url.target == "tickets" && url.target_action == "show") {
 			savePostDraft();
 		}
 	});
-}
 
-$("#expand_filters").click(function() {
-	$("#filters").style("display","block","important");
-	$(this).remove();
-});
+	$("#is_public").on('switchChange.bootstrapSwitch',function() {						// if toggle public
+		var current = $(this).bootstrapSwitch('state');
+		if (current) {
+			$("#email_company_contact").bootstrapSwitch('state', true, current);		// send to contacts if toggle public 
+		}
+	});
+
+	$("#set_waiting_for_feedback").on('switchChange.bootstrapSwitch',function() {		// if toggle wff
+		var current = $(this).bootstrapSwitch('state');
+		if (current) {
+			$("#is_public").bootstrapSwitch('state', true, current);					// set public true
+			$("#email_company_contact").bootstrapSwitch('state', true, current);		// send to contacts if toggle public 
+		}
+	});
+
+	$("#set_solved").on('switchChange.bootstrapSwitch',function() {		
+		var current = $(this).bootstrapSwitch('state');
+		if (current) {
+			$("#is_public").bootstrapSwitch('state', true, current);					// set public true
+			$("#email_company_contact").bootstrapSwitch('state', true, current);		// send to contacts if toggle public 
+		}
+	});
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @/tickets/create AND @/tickets/{id}/edit AND @/posts/{id}/edit

@@ -97,6 +97,13 @@
 	</div>
 	<div class="col-xs-6">
 
+		@if (Route::currentRouteName() == "tickets.edit" && $ticket['status_id'] != TICKET_DRAFT_STATUS_ID)
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel('status_id','Status') !!}
+				{!! Form::BSSelect("status_id", $statuses, null, ['key' => 'id', 'value' => 'name']) !!}
+			{!! Form::BSEndGroup() !!}
+		@endif
+
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('emails','Additional Emails') !!}
 			@if (isset($emails))

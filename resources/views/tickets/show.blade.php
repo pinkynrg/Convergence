@@ -57,14 +57,71 @@
 	@endif
 
 	<ul class="nav nav-tabs">
-	  <li class="nav active"><a target="ticket_details" href="#ticket_details" data-toggle="tab"><i class="fa fa-history"></i> Details </a></li>
-	  <li class="nav"><a target="ticket_history" href="#ticket_history" data-toggle="tab"><i class="fa fa-history"></i> History </a></li>
+	  <li class="nav active"><a target="ticket_history" href="#ticket_history" data-toggle="tab"><i class="fa fa-history"></i> History </a></li>
 	  <li class="nav"><a target="linked_tickets" href="#linked_tickets" data-toggle="tab"><i class="fa fa-link"></i> Links </a></li>
+	  <li class="nav"><a target="ticket_details" href="#ticket_details" data-toggle="tab"><i class="fa fa-history"></i> Details </a></li>
 	</ul>
 
 	<div class="tab-content mrg-brm-20">
 
-		<div class="tab-pane fade in active" id="ticket_details">
+		<div class="tab-pane fade in active" id="ticket_history">
+
+			@if (count($ticket->history))
+			
+			<table class="table table-striped">
+				<thead>
+					<th> Changed by </th>
+					<th class="hidden-xs hidden-ms"> Assignee </th>
+					<th class="hidden-xs hidden-ms"> Status </th>
+					<th class="hidden-xs hidden-ms"> Priority </th>
+					<th class="hidden-xs hidden-ms"> Division </th>
+					<th class="hidden-xs hidden-ms"> Equipment </th>
+					<th> Date </th>
+				</thead>
+
+				@foreach ($ticket->history as $history)
+
+				<tr>
+					<td> {{ isset($history->changer_id) ? $history->changer->person->name() : '' }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $history->assignee->person->name() }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $history->status->name }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $history->priority->name }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $history->division->name }} </td>
+					<td class="hidden-xs hidden-ms"> - </td>
+					<td> {{ $history->date("created_at") }} </td>
+				</tr>
+
+				@endforeach
+
+			</table>
+
+			@else 
+
+				@include('includes.no-contents')
+
+			@endif
+
+		</div>
+
+		<div class="tab-pane fade" id="linked_tickets">
+			
+			<h5>Linked To:</h5>
+			@if (count($ticket->links))
+				@include('tickets.tickets', array('tickets' => $ticket->links))
+			@else
+				@include('includes.no-contents')
+			@endif
+
+			<h5>Linked By:</h5>
+			@if (count($ticket->linked_to))
+				@include('tickets.tickets', array('tickets' => $ticket->linked_to))
+			@else
+				@include('includes.no-contents')
+			@endif
+
+		</div>
+
+		<div class="tab-pane fade" id="ticket_details">
 			<div class="table-responsive">
 
 				<table class="table table-striped table-condensed table-hover">
@@ -122,63 +179,6 @@
 			</div>
 		</div>
 
-		<div class="tab-pane fade" id="ticket_history">
-
-			@if (count($ticket->history))
-			
-			<table class="table table-striped">
-				<thead>
-					<th> Changed by </th>
-					<th class="hidden-xs hidden-ms"> Assignee </th>
-					<th class="hidden-xs hidden-ms"> Status </th>
-					<th class="hidden-xs hidden-ms"> Priority </th>
-					<th class="hidden-xs hidden-ms"> Division </th>
-					<th class="hidden-xs hidden-ms"> Equipment </th>
-					<th> Date </th>
-				</thead>
-
-				@foreach ($ticket->history as $history)
-
-				<tr>
-					<td> {{ isset($history->changer_id) ? $history->changer->person->name() : '' }} </td>
-					<td class="hidden-xs hidden-ms"> {{ $history->assignee->person->name() }} </td>
-					<td class="hidden-xs hidden-ms"> {{ $history->status->name }} </td>
-					<td class="hidden-xs hidden-ms"> {{ $history->priority->name }} </td>
-					<td class="hidden-xs hidden-ms"> {{ $history->division->name }} </td>
-					<td class="hidden-xs hidden-ms"> - </td>
-					<td> {{ $history->date("created_at") }} </td>
-				</tr>
-
-				@endforeach
-
-			</table>
-
-			@else 
-
-				@include('includes.no-contents')
-
-			@endif
-
-		</div>
-
-		<div class="tab-pane fade" id="linked_tickets">
-			
-			<h5>Linked To:</h5>
-			@if (count($ticket->links))
-				@include('tickets.tickets', array('tickets' => $ticket->links))
-			@else
-				@include('includes.no-contents')
-			@endif
-
-			<h5>Linked By:</h5>
-			@if (count($ticket->linked_to))
-				@include('tickets.tickets', array('tickets' => $ticket->linked_to))
-			@else
-				@include('includes.no-contents')
-			@endif
-
-		</div>
-
 	</div>
 
 	<div class="navb mrg-brm-20">
@@ -223,18 +223,20 @@
 
 		<div class="col-xs-12 col-sm-6">
 
-			<h5> Change ticket status: </h5>
+			<h5> Post visibility: </h5>
 
 			<div class="is_public"> 
 				<label> <input type="checkbox" id="is_public" value="true" name="is_public" class="switch"> Public </label> 
 			</div>
+
+			<h5> Change ticket status: </h5>
 
 			<div class="status_checkbox"> 
 				<label> <input type="radio" radioAllOff="true" id="set_waiting_for_feedback" value="{{TICKET_WFF_STATUS_ID}}" name="status_id" class="switch"> Waiting for feedback </label> 
 			</div>
 
 			<div class="status_checkbox"> 
-				<label> <input type="radio" radioAllOff="true" id="is_public" value="{{TICKET_SOLVED_STATUS_ID}}" name="status_id" class="switch"> Solved </label> 
+				<label> <input type="radio" radioAllOff="true" id="set_solved" value="{{TICKET_SOLVED_STATUS_ID}}" name="status_id" class="switch"> Solved </label> 
 			</div>
 
 		</div>
@@ -245,7 +247,7 @@
 			
 			<div class="email_checkbox">
 				<div class="email_checkbox_input"> 
-					<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->account_manager)) disabled @endif> 
+					<input type="checkbox" id="email_account_manager" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->account_manager)) disabled @endif> 
 				</div>
 				
 				<div class="email_checkbox_label" @if (!isset($ticket->company->account_manager)) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif >
@@ -256,7 +258,7 @@
 			
 			<div class="email_checkbox">
 				<div class="email_checkbox_input"> 
-					<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->group_email)) disabled @endif>  
+					<input type="checkbox" id="email_company_group_email" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->group_email)) disabled @endif>  
 				</div>
 				<div class="email_checkbox_label" @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif > 
 					<div>Company group email:</div>
@@ -266,7 +268,7 @@
 
 			<div class="email_checkbox">
 				<div class="email_checkbox_input"> 
-					<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
+					<input type="checkbox"  id="email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
 				</div>
 				<div class="email_checkbox_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
 					<div>Contact reference:</div>
@@ -276,7 +278,7 @@
 
 			<div class="email_checkbox">
 				<div class="email_checkbox_input"> 
-					<input type="checkbox" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
+					<input type="checkbox" id="email_ticket_emails" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
 				</div>
 				<div class="email_checkbox_label" @if (!isset($ticket->emails) || $ticket->emails == '') data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif >
 					<div>Additional emails:</div>
