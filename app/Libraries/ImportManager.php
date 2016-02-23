@@ -574,7 +574,8 @@ class Groups extends BaseClass {
 		if ($this->truncate()) {
 
 			$queries = ["INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (1,1,'convergence-adminstrator','Convergence Administrator', 'The Administrator of Convergence')",
-						"INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (2,1,'help-desk-user','Help Desk User', 'The Basic Help Desk User')"];
+						"INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (2,1,'help-desk-user','Help Desk User', 'The Basic Help Desk User')",
+						"INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (3,2,'customer-administrator','Customer Administrator', 'Basic Customer Aministrator')"];
 
 			foreach ($queries as $query) {							
 			
@@ -606,7 +607,8 @@ class GroupRole extends BaseClass {
 
 			$group_roles = [
 				1 => array(2,4,6,8,10,12,14,16,18,20,22,24,26),
-				2 => array(10,11,12,13,16,18,20)
+				2 => array(10,11,12,13,16,18,20),
+				3 => array(10,11,13,15,17,20),
 			];
 
 			foreach ($group_roles as $group_id => $roles) {
@@ -1416,10 +1418,13 @@ class CompanyPerson extends BaseClass {
 				}
 			}
 
-			$queries = ["UPDATE company_person SET group_id = 1 WHERE email = 'meli.f@elettric80.it'",
-					  "UPDATE company_person SET group_id = 1 WHERE email = 'melzi.a@elettric80.it'",
-					  "UPDATE company_person SET group_id = 1 WHERE email = 'passarini.r@elettric80.it'",
-					  "UPDATE company_person SET group_id = 1 WHERE email = 'kotsakos.t@elettric80.it'"];
+			$queries = ["UPDATE company_person SET group_id = 2 WHERE group_type_id = 1",
+						"UPDATE company_person SET group_id = 1 WHERE email = 'meli.f@elettric80.it'",
+						"UPDATE company_person SET group_id = 1 WHERE email = 'hopic.d@elettric80.it'",
+					  	"UPDATE company_person SET group_id = 1 WHERE email = 'melzi.a@elettric80.it'",
+					  	"UPDATE company_person SET group_id = 1 WHERE email = 'passarini.r@elettric80.it'",
+					  	"UPDATE company_person SET group_id = 1 WHERE email = 'kotsakos.t@elettric80.it'",
+					  	"UPDATE company_person SET group_id = 3 WHERE group_type_id = 2"];
 
 
 			foreach ($queries as $query) {
