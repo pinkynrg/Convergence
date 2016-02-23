@@ -43,7 +43,6 @@ class CompanyPersonController extends BaseController {
 		if (Auth::user()->can('read-contact')) {
 			$data['menu_actions'] = [
 	        	Form::editItem(route('company_person.edit',$id), 'Edit this contact'),
-				Form::deleteItem('company_person.destroy', $id, 'Remove this contact')
 	        ];
 			$data['company_person'] = CompanyPerson::find($id);
 

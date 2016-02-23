@@ -212,6 +212,7 @@ return [
 		'Entrust' 	=> 'Zizaco\Entrust\EntrustFacade',
 		'Purifier' 	=> 'Mews\Purifier\Facades\Purifier',
 		'Activity'  => 'Spatie\Activitylog\ActivitylogFacade',
+		'Menu' 		=> 'App\Libraries\MenuBuilder',
 	],
 
 ];

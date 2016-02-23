@@ -96,11 +96,10 @@ class CompaniesController extends BaseController {
         if (Auth::user()->can('read-company')) {
             
             $data['menu_actions'] = [
-                Form::deleteItem('companies.destroy', $id, 'Remove this company'),
                 Form::editItem(route('companies.edit',$id), 'Edit this company'),
-                Form::addItem(route('company_person.create',$id), 'Add Contact to this company'),
-                Form::addItem(route('equipment.create',$id),'Add new Equipment to this company'),
-                Form::addItem(route('services.create',$id),'Add new Service Request to this company')
+                Form::addItem(route('company_person.create',$id), 'Add Contact'),
+                Form::addItem(route('equipment.create',$id),'Add new Equipment'),
+                Form::addItem(route('services.create',$id),'Add new Service')
             ];
 
             $data['company'] = Company::find($id);

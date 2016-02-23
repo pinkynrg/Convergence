@@ -1,7 +1,7 @@
 <div class="post @if ($post->status_id == POST_PRIVATE_STATUS_ID) post_private @endif">
 	
 	<div class="post_header">
-		<div class="thumbnail thumb-sm post_header">
+		<div class="thumbnail thumb-sm">
 			<img src="{{ $post->author->person->image() }}" alt=" {{ $post->author->person->image() }} ">
 		</div>
 

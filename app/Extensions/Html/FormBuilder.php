@@ -197,39 +197,19 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 	}
 
 	public function addItem($route, $label = null) {
-		$label = is_null($label) ? "Add" : $label;
-		$add = "<a href='".$route."' class='action'>";
-		$add .= " <i class='fa fa-plus'></i> ".$label;
-		$add .= "</a>";
+		$add['label'] = is_null($label) ? "Add" : $label;
+		$add['link'] = $route;
+		$add['icon'] = "<i class='fa fa-plus'></i>";
+
 		return $add;
+
 	}
 
 	public function editItem($route, $label = null) {
-		$label = is_null($label) ? "Edit" : $label;
-		$edit = "<a href='".$route."' class='action'>";
-		$edit .= "<i class='fa fa-pencil-square-o'></i> ".$label;
-		$edit .= "</a>";
+		$edit['label'] = is_null($label) ? "Edit" : $label;
+		$edit['link'] = $route;
+		$edit['icon'] = "<i class='fa fa-pencil-square-o'></i>";
 		return $edit;
-	}
-
-	public function deleteItem($route_name, $id, $label = null) {
-		$label = is_null($label) ? "Remove" : $label;
-		$delete = "<a class='action'>";
-		$delete .= $this->open(array('method' => 'DELETE', 'route' => array($route_name,$id)));
-		$delete .= "<button type='submit' class='nobutton'>";
-		$delete .= "<i class='fa fa-trash'></i> ".$label;
- 		$delete .= "</button>";
-		$delete .= $this->close();
-		$delete .= "</a>";
-		return $delete;
-	}
-
-	public function back($link, $label = null) {
-		$label = is_null($label) ? "Back" : $label;
-		$back = "<a href='".$link."' class='action'>";
-		$back .= "<i class='fa fa-arrow-left'></i> ".$label;
-		$back .= "</a>";
-		return $back;
 	}
 
 	public function dropZone() {

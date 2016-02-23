@@ -37,8 +37,10 @@ class EscalationProfilesController extends BaseController {
 		if (Auth::user()->can('read-escalation-profiles')) {
 
 			$data['title'] = "Escalation Profile";
-			$data['menu_actions'] = [Form::editItem(route('escalation_profiles.edit', $id),"Edit this Escalation Profile"),
-									 Form::deleteItem('escalation_profiles.destroy', $id, 'Delete this Escalation Profile')];
+			
+			$data['menu_actions'] = [
+				Form::editItem(route('escalation_profiles.edit', $id),"Edit this Escalation Profile")
+			];
 				
 			$escalation_profile_events = DB::table('escalation_profile_event')->where('profile_id',$id)->get();
 			

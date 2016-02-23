@@ -21,8 +21,7 @@ class PeopleController extends Controller {
 		if (Auth::user()->can('read-person')) {
 	        
 	        $data['menu_actions'] = [
-	        	Form::editItem(route('people.edit',$id), 'Edit this person'),
-				Form::deleteItem('people.destroy', $id, 'Remove this person')
+	        	Form::editItem(route('people.edit',$id), 'Edit this person')
 	        ];
 
 	     	if (isset($data['person']->user->id)) {

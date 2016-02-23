@@ -119,8 +119,9 @@ class TicketsController extends BaseController {
 			}
 			else {
 
-				$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit this ticket"),
-										 Form::deleteItem('tickets.destroy', $id, 'Delete this ticket')];
+				$data['menu_actions'] = [
+					Form::editItem( route('tickets.edit', $id),"Edit this ticket")
+				];
 										 
 				$data['ticket'] = Ticket::find($id);
 				$data['ticket']['posts'] = Post::where('ticket_id',$id)->where('status_id','!=',POST_DRAFT_STATUS_ID)->get();

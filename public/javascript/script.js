@@ -412,6 +412,29 @@ var updateServicePage = function () {
 // url id, action, target
 consoleLog(url);
 
+$(window).scroll(function(){
+
+	var wrapper_top = parseInt($('.wrapper').offset().top);
+	var wrapper_height = parseInt($('.wrapper').css('height'));
+	var wrapper_padding = parseInt($('.wrapper').css('padding-top'));
+	var menu_height = parseInt($('.vertical_menu .panel-group').css('height'));
+	var from_top = parseInt($(this).scrollTop());
+	var left_over = wrapper_height - from_top;
+	var offset = (left_over + wrapper_top) - menu_height - wrapper_padding;
+
+    if ($(this).scrollTop() > wrapper_top) {
+    	if (offset < wrapper_padding) {
+    		$('.vertical_menu').css('position','fixed').css('top',offset+'px');
+    	}
+    	else {
+    		$('.vertical_menu').css('position','fixed').css('top',wrapper_padding+'px');
+    	}
+
+    } else {
+        $('.vertical_menu').css('position','relative').css('top','0px');
+    }
+});
+
 // set scrolling select list default phone browser
 $('.selectpicker').selectpicker('mobile');
 
