@@ -502,7 +502,7 @@ a:visited, a:link, a:active, a:visited {
 }
 
 .navbar-default .navbar-collapse, .navbar-default .navbar-form {
-  background-color: #FFDEA4;
+  background-color: #F5C36E;
   border-color: #E0C589;
 }
 
@@ -682,6 +682,19 @@ legend {
   body {
     font-size: 10px;
   }
+}
+
+@media (max-width: 767px) {
+    .navbar-default .navbar-collapse, .navbar-default .navbar-form {
+      background-color: #FFFAF2;
+      border-color: #E6E6E6;
+    }
+    .navbar-default {
+      border-color: #E6E6E6;
+    }
+    .navbar-default .navbar-nav > li > a {
+      color: #777;
+    }
 }
 
 /*menu section*/

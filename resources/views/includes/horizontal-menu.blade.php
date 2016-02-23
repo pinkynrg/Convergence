@@ -82,7 +82,7 @@
 
 							@foreach ($menu_actions as $menu_action)
 
-				  				<li><a href="{{ $menu_action['link'] }}">{!! $menu_action['icon'] !!} {{ $menu_action['label'] }}</a>></li>
+				  				<li><a href="{{ $menu_action['link'] }}">{!! $menu_action['icon'] !!} {{ $menu_action['label'] }}</a></li>
 
 							@endforeach
 

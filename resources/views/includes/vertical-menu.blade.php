@@ -28,40 +28,42 @@
 			</div>
 		</div>
 	</div>
-
+	
 @endif
 
 
 @foreach (Menu::build() as $elem)
+	
+	@if ($elem->show)
+		<div class="panel panel-default">
+	    	<div class="panel-heading" data-toggle="collapse" href="#{{ Menu::getId($elem) }}">
+	    		<h4 class="panel-title">
+					<a data-parent="#accordion">
+						<span class="icon"> {!! $elem->icon !!} </span> {{ $elem->label }}
+	    			</a>
+	    		</h4>
+	    	</div>
+	    
+			<div id="{{ Menu::getId($elem) }}" class="panel-collapse collapse in"> 
 
-	<div class="panel panel-default">
-    	<div class="panel-heading" data-toggle="collapse" href="#{{ Menu::getId($elem) }}">
-    		<h4 class="panel-title">
-				<a data-parent="#accordion">
-					<span class="icon"> {!! $elem->icon !!} </span> {{ $elem->label }}
-    			</a>
-    		</h4>
-    	</div>
-    
-		<div id="{{ Menu::getId($elem) }}" class="panel-collapse collapse in"> 
+				<div class="panel-body">
 
-			<div class="panel-body">
+					@foreach ($elem->menu as $subelem)
 
-				@foreach ($elem->menu as $subelem)
+						@if ($subelem->show)
+							<a href="{{ $subelem->link }}">
+								<div class="menu-item"> 
+									<span class="icon"> {!! $subelem->icon !!} </span> {{ $subelem->label }}
+			        			</div>
+			        		</a>
+			        	@endif
 
-					<a href="{{ $subelem->link }}">
-						<div class="menu-item"> 
-							<span class="icon"> {!! $subelem->icon !!} </span> {{ $subelem->label }}
-	        			</div>
-	        		</a>
+					@endforeach
 
-				@endforeach
-
-    		</div>
-
-    	</div>
-
-    </div>
+	    		</div>
+	    	</div>
+	    </div>
+	@endif
 
 @endforeach
 

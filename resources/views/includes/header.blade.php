@@ -16,7 +16,7 @@
 				<img src="{!! Auth::user()->owner->image() !!}">
 			</div>
 			<div id="loginfo">
-				<div> {{ 'Hello '.Auth::user()->owner->name() }} </div>
+				<div> {{ Auth::user()->owner->name() }} </div>
 				<div> <a href="/logout"> Logout </a> </div>
 			</div>
 		</div>
