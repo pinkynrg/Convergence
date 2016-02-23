@@ -1,13 +1,11 @@
 <meta name="viewport" content="width=320, initial-scale=1">
 
 <!-- Scripts -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://www.google.com/jsapi"></script>
+<script src="/javascript/jquery-1.11.2.min.js"></script>
+<script src="/javascript/jquery-migrate-1.2.1.min.js"></script>
 <script src="/ckeditor/ckeditor.js"></script>
 <script src="/javascript/jquery.blueimp-gallery.min.js"></script>
 <script src="/javascript/bootstrap-image-gallery.js"></script>
-<script src="/javascript/jquery-1.11.2.min.js"></script>
-<script src="/javascript/jquery-migrate-1.2.1.min.js"></script>
 <script src="/javascript/bootstrap.min.js"></script>
 <script src="/javascript/jquery.autocomplete.js"></script>
 <script src="/javascript/bootstrap-select.js"></script>

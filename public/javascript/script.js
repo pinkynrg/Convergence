@@ -227,7 +227,7 @@ var activateTicketDraftMode = function() {
 		}
 
 		$.ajax({
-			'headers': { "X-CSRF-Token": $('[name=_token').val() },
+			'headers': { "X-CSRF-Token": $('[name=_token]').val() },
 			'type': 'POST',
 			'url': '/tickets',
 			'data' : data,
@@ -257,7 +257,7 @@ var savePostDraft = function(callback) {
 		}
 
 		$.ajax({
-			'headers': { "X-CSRF-Token": $('[name=_token').val() },
+			'headers': { "X-CSRF-Token": $('[name=_token]').val() },
 			'type': 'POST',
 			'url': '/posts',
 			'data' : data,
@@ -698,7 +698,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 		autoProcessQueue:false,
 		maxFiles: 3,
 		maxFileSize: 50,
-		headers: { "X-CSRF-Token": $('[name=_token').val() },
+		headers: { "X-CSRF-Token": $("[name=_token]").val() },
 
 		// get list of files already loaded
 		init: function () {
@@ -735,7 +735,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 			$.ajax({
 				type: 'GET',
 				url: "/ajax/files/"+that.options.target+"/"+that.options.target_action+"/"+that.options.target_id,
-				headers: { "X-CSRF-Token": $('[name=_token').val() },
+				headers: { "X-CSRF-Token": $("[name=_token]").val() },
 				success: function (data) {
 		        	consoleLog(data);
 					for (var c=0; c<data.length; c++) {
@@ -774,7 +774,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 			$.ajax({
 		        type: 'DELETE',
 		        url: '/files/'+file.id,
-				headers: { "X-CSRF-Token": $('[name=_token').val() },
+				headers: { "X-CSRF-Token": $('[name=_token]').val() },
 		        success: function (data) {
 		        	consoleLog(data);
 		        	var _ref;
