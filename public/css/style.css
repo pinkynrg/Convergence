@@ -19,6 +19,7 @@ hr {
 .inner_container {
   overflow: hidden;
   margin-bottom: 10px;
+  min-height: 1000px;
 }
 
 .thiner-form {
