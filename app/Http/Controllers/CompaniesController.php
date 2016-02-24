@@ -124,7 +124,7 @@ class CompaniesController extends BaseController {
         $data['company']->account_manager_id = isset($selected_account_manager) ? $selected_account_manager->account_manager_id : null;
         
         $selected_main_contact = CompanyMainContact::where('company_id','=',$id)->first();
-        $data['company']->main_contact_id = $selected_main_contact->main_contact_id;
+        $data['company']->main_contact_id = isset($selected_main_contact) ? $selected_main_contact->main_contact_id : null;
 
         $data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
         $data['main_contacts'] = CompanyPerson::where('company_person.company_id','=',$id)->get();
