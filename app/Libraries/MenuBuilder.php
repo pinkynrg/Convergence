@@ -1,5 +1,6 @@
 <?php namespace App\Libraries;
 
+use Request;
 use Auth;
 
 class MenuBuilder {
@@ -90,16 +91,10 @@ class MenuBuilder {
 	public static function isExpanded($elem) 
 	{
 		$is_expanded = false;
-		$redirect_url = $_SERVER['REDIRECT_URL'][strlen($_SERVER['REDIRECT_URL'])-1] == "/" ? substr($_SERVER['REDIRECT_URL'], 0, strlen($_SERVER['REDIRECT_URL']) - 1) : $_SERVER['REDIRECT_URL'];
-		$current_url = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . $redirect_url;
 
 		if (isset($elem->menu)) {
-			foreach ($elem->menu as $elem) 
-			{
-				if (isset($elem->link) && $elem->link == $current_url) 
-				{
-					$is_expanded = true;
-				}
+			foreach ($elem->menu as $elem) {
+				$is_expanded = (isset($elem->link) && $elem->link == Request::url()) ? true : $is_expanded;
 			}
 		}
 
@@ -108,9 +103,7 @@ class MenuBuilder {
 
 	public static function isSelected($elem)
 	{
-		$redirect_url = $_SERVER['REDIRECT_URL'][strlen($_SERVER['REDIRECT_URL'])-1] == "/" ? substr($_SERVER['REDIRECT_URL'], 0, strlen($_SERVER['REDIRECT_URL']) - 1) : $_SERVER['REDIRECT_URL'];
-		$current_url = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . $redirect_url;
-		return $current_url == $elem->link ? true : false;	}
+		return $elem->link == Request::url();
+	}
 }
-
 ?>

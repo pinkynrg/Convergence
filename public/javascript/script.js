@@ -11,6 +11,7 @@ var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	host = window.location.hostname,
 	path = window.location.pathname,
 	rxres = regex.exec(path),
+	golden_ratio = 1.62;
 
 var url = (function () {
 	return {
@@ -137,7 +138,7 @@ var splitSearch = function(search) {
 	}
 
 	return list;
-}
+};
 
 var getParams = function($target) {
 	var params = {};
@@ -474,7 +475,7 @@ var updateMenuPosition = function () {
     } else {
         $('.vertical_menu').css('position','relative').css('top','0px');
     }
-}
+};
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @ boot-strap jquery tools
@@ -552,6 +553,7 @@ $('#loading').hide().ajaxStart(function() {
 
 $('.panel-heading[data-toggle="collapse"]').click(function () {
 	$('.panel-collapse').collapse('hide');
+	updateMenuPosition();
 })
 
 // responsive pagination
@@ -923,3 +925,5 @@ if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") 
 		}
 	});
 }
+
+});
