@@ -2223,12 +2223,10 @@ class Hotels extends BaseClass {
 						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 						$response = json_decode(curl_exec($ch), true);
 
-						logMessage("SECOND RESPONSE DEBUG: ".json_encode($response));
-
 						if (count($response['rows']) > 0) {
 
-							$matrix['distance'] = $response['rows'][0]['elements'][0]['distance']['value'];
-							$matrix['walking_time'] = $response['rows'][0]['elements'][0]['duration']['value'];
+							$matrix['distance'] = isset($response['rows'][0]['elements'][0]['distance']['value']) ? $response['rows'][0]['elements'][0]['distance']['value'] : 'NULL';
+							$matrix['walking_time'] = isset($response['rows'][0]['elements'][0]['duration']['value']) ? $response['rows'][0]['elements'][0]['duration']['value'] : 'NULL';
 
 							$matrix_url = "https://maps.googleapis.com/maps/api/distancematrix/json?key=".GOOGLE_API_KEY."&origins=".$lat.",".$lng."&destinations=".$dest_lat.",".$dest_lng."&mode=driving";
 
@@ -2239,13 +2237,11 @@ class Hotels extends BaseClass {
 
 							if (count($response['rows']) > 0) {
 
-								$matrix['driving_time'] = $response['rows'][0]['elements'][0]['duration']['value'];
+								$matrix['driving_time'] = isset($response['rows'][0]['elements'][0]['duration']['value']) ? $response['rows'][0]['elements'][0]['duration']['value'] : 'NULL';
 
 								$element['rating'] = isset($element['rating']) ? $element['rating'] : 'NULL';
 
 								$query = "INSERT INTO hotels (id,name,address,company_id,rating,walking_time,driving_time,distance) VALUES (".$counter.",\"".str_replace('"',"'",$element['name'])."\",\"".str_replace('"',"'",$element['vicinity'])."\",".$company['id'].",".$element['rating'].",".$matrix['walking_time'].",".$matrix['driving_time'].",".$matrix['distance'].")";
-
-								logMessage("QUERY DEBUG: ".$query);
 
 								if (mysqli_query($this->manager->conn,$query) === TRUE) {
 									$this->successes++;
