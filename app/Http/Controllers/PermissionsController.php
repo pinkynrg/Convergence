@@ -19,7 +19,7 @@ class PermissionsController extends BaseController {
 	protected function main() {
 		$params = Request::input();
         $data['permissions'] = self::api($params);
-		$data['active_search'] = implode(",",['display_name']);
+		$data['active_search'] = implode(",",['display_name','name','description']);
 		$data['title'] = "Permissions";
 		$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission')];
 		return view('permissions/index',$data);

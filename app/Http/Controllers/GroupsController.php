@@ -24,7 +24,7 @@ class GroupsController extends BaseController {
 		$params = Request::input() != [] ? Request::input() : ['order' => ['groups.display_name|ASC']];
         $data['groups'] = self::api($params);
 		$data['title'] = "Groups";
-		$data['active_search'] = implode(",",['display_name']);
+		$data['active_search'] = implode(",",['display_name','name','description']);
 		$data['menu_actions'] = [Form::addItem(route('groups.create'), 'Create new group')];
 		return view('groups/index',$data);
 	}

@@ -22,7 +22,7 @@ class BaseController extends Controller {
                     foreach ($targets as $target) {
                         if ($operand == "LIKE") {
                             foreach ($values as $elem) {
-                                $query->orWhere($target,$operand,"%".$elem."%");                          // TODO: check if column exists
+                                $query->orWhere($target,$operand,$elem);                                // TODO: check if column exists
                             }
                         }
                         elseif ($operand == "=" || $operand == "IN") {
@@ -88,6 +88,7 @@ class BaseController extends Controller {
                     unset($params['where'][$key]);
                 }
                 else {
+                    $temp[2] = str_replace("*","%",$temp[2]);
                     $params['where'][$key] = implode("|",$temp);
                 }
             }

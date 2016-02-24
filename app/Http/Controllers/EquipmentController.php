@@ -23,7 +23,7 @@ class EquipmentController extends BaseController {
 		$params = Request::input() != [] ? Request::input() : ['order' => ['equipment.cc_number|DESC']];
     	$data['equipment'] = self::api($params);
 		$data['title'] = "Equipment";
-		$data['active_search'] = implode(",",['cc_number']);
+		$data['active_search'] = implode(",",['cc_number','equipment.name','serial_number','equipment_types.name','companies.name']);
 		return view('equipment/index',$data);
 	}
 

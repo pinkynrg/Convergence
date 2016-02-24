@@ -102,6 +102,43 @@ var toggleOrder = function($elem) {
 	}
 };
 
+var splitSearch = function(search) {
+	var list = [],
+		keyword = "",
+		open_quote = false;
+	
+	for (var i=0; i<search.length; i++) {
+
+		if ((search[i] === '\'' || search[i] === '"') && open_quote === false) {
+			if (keyword.length) list.push(keyword);
+			keyword = "";
+			open_quote = search[i];
+			keyword+=search[i];
+		}
+		else if (open_quote === search[i]) {
+			open_quote = false;
+			keyword+=search[i];
+			list.push(keyword);
+			keyword = "";
+		}
+		else if (open_quote !== false) {
+			keyword+=search[i];
+		}
+		else if (open_quote === false && search[i] != " ") {
+			keyword+=search[i];
+			if (i == search.length-1) {
+				list.push(keyword);
+			}
+		}
+		else if (keyword.length) {
+			list.push(keyword);
+			keyword = "";
+		}
+	}
+
+	return list;
+}
+
 var getParams = function($target) {
 	var params = {};
 	
@@ -113,14 +150,23 @@ var getParams = function($target) {
 	var $table_order = $target.find("tr.orderable th[type]");
 	var $multifilter = $target.find("select.selectpicker.multifilter");
 
-	console.log("ciao");
-
 	if ($search.val() != null && $search.val().length != 0) {
-		var key_words = $search.val().split(" ");
-		var columns = $search.attr('columns').replace(",",":");
+		var keywords = splitSearch($search.val());
+		var columns = $search.attr('columns').replace(/,/g,':');
 		consoleLog("search columns: " + columns);
-		for (var i=0; i<key_words.length; i++) {
-			params['where'].push(columns + "|LIKE|" + key_words[i]);
+		for (var i=0; i<keywords.length; i++) {
+
+			var keyword = keywords[i];
+
+			if ((keyword[0] == "'" && keyword[keyword.length-1] == "'") || (keyword[0] == '"' && keyword[keyword.length-1] == '"')) {
+				keyword = keyword.substring(1,keyword.length-1);
+				params['where'].push(columns + "|LIKE|"+keyword+':* '+keyword+' *');
+			}
+			else 
+			{
+        		keyword = '*'+keyword+'*';
+				params['where'].push(columns + "|LIKE|" + keyword);
+			}
 		}
 	}
 

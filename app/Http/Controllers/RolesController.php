@@ -22,7 +22,7 @@ class RolesController extends BaseController {
 	protected function main() {
         $params = Request::input() != [] ? Request::input() : ['order' => ['roles.display_name|ASC']];
         $data['roles'] = self::api($params);
-		$data['active_search'] = implode(",",['display_name']);
+		$data['active_search'] = implode(",",['display_name','name','description']);
 		$data['title'] = "Roles";
 		$data['menu_actions'] = [Form::addItem(route('roles.create'), 'Create new role')];
 		return view('roles/index',$data);

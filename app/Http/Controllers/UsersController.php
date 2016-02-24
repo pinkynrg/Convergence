@@ -23,7 +23,7 @@ class UsersController extends BaseController {
 		$params = Request::input() != [] ? Request::input() : ['order' => ['people.last_name|ASC']];
     	$data['users'] = self::api($params);
 		$data['menu_actions'] = [Form::addItem(route('users.create'), 'Add user')];
-		$data['active_search'] = implode(",",['users.username']);
+		$data['active_search'] = implode(",",['users.username','people.first_name','people.last_name']);
 		$data['title'] = "Users";
 		return view('users/index',$data);
 	}
