@@ -15,20 +15,24 @@ class BaseController extends Controller {
             foreach ($params['where'] as $exp) {
                 $model->where(function($query) use ($exp) {
                     $temp = explode("|",$exp);
-                    $target = $temp[0];
+                    $targets = explode(":",$temp[0]);
                     $operand = $temp[1];
                     $values = explode(":",$temp[2]);
-                    if ($operand == "LIKE") {
-                        foreach ($values as $elem) {
-                            $query->where($target,$operand,"%".$elem."%");                          // TODO: check if column exists
+                   
+                    foreach ($targets as $target) {
+                        if ($operand == "LIKE") {
+                            foreach ($values as $elem) {
+                                $query->orWhere($target,$operand,"%".$elem."%");                          // TODO: check if column exists
+                            }
+                        }
+                        elseif ($operand == "=" || $operand == "IN") {
+                            $query->orWhereIn($target,$values);                                         // TODO: check if column exists
+                        }
+                        elseif ($operand == "!=") {
+                            $query->orWhere($target,$operand,$values);
                         }
                     }
-                    elseif ($operand == "=" || $operand == "IN") {
-                        $query->orWhereIn($target,$values);                                         // TODO: check if column exists
-                    }
-                    elseif ($operand == "!=") {
-                        $query->orWhere($target,$operand,$values);
-                    }
+
                 });
             }
         }
@@ -47,8 +51,8 @@ class BaseController extends Controller {
         return $model;
     }
 
-    public static function api($params) {
-        throw new \Exception('API method not implemented');
+    public static function read($params) {
+        throw new \Exception('Read API method not implemented');
     }
 
     private static function sanitize($params) {
