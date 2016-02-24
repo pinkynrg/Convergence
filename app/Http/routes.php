@@ -119,6 +119,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('services/generate/pdf/{id}', ['uses' => 'ServicesController@generatePdf', 'as' => 'services.generate_pdf']);
 
 	// people routes
+	Route::get('people',['uses' => 'PeopleController@index', 'as' => 'people.index']);
 	Route::get('people/{id}',['uses' => 'PeopleController@show', 'as' => 'people.show']);
 	Route::delete('people/{id}', ['uses' => 'PeopleController@destroy', 'as' => 'people.destroy']);
 	Route::patch('people/{id}', ['uses' => 'PeopleController@update', 'as' => 'people.update']);

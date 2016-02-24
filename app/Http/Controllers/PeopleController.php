@@ -14,7 +14,14 @@ use Auth;
 use Input;
 use Form;
 
-class PeopleController extends Controller {
+class PeopleController extends BaseController {
+
+	public function index() {
+		if (Auth::user()->can('read-all-person')) {
+			return parent::index();
+		}
+		else return redirect()->back()->withErrors(['Access denied to people index page']);
+	}
 
 	public function show($id) {
 		$data['person'] = Person::find($id);
@@ -47,9 +54,5 @@ class PeopleController extends Controller {
         $person = Person::find($id);
         $person->update($request->all());
         return redirect()->route('people.show',$id)->with('successes',['person updated successfully']);
-	}
-
-	public function destroy($id) {
-		echo 'people destroy method to be created';
 	}
 }
