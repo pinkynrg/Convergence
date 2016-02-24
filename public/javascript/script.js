@@ -612,7 +612,7 @@ if (url.target_action == "index") {
 @/contacts/create
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-if (url.target == "companies" && url.target_action == "create") {
+if ((url.target == "companies" || url.target == "contacts") && url.target_action == "create") {
 	// removes link contact->person
 	$(".cancel").click(function () {
 	    $("#person_fn, #person_ln").prop("readonly",false);
@@ -629,22 +629,34 @@ if (url.target == "companies" && url.target_action == "create") {
 
 	// autocomplete for first and last name
 	$("#person_fn, #person_ln").devbridgeAutocomplete({
-
-	    serviceUrl: "/ajax/people",
-
+	    serviceUrl: function (query) {
+	    	return "/people?type=json&paginate=false&where[]=first_name:last_name|LIKE|"+query;
+	    },
 	    onSelect: function (suggestion) {
+	    	console.log(suggestion);
 	    	$("#person_id").prop("disabled",false);
 			$("#person_fn, #person_ln").prop("readonly",true);
-	    	$("#person_id").val(suggestion.id);
-	    	$("#person_fn").val(suggestion.first_name);		    	
-	    	$("#person_ln").val(suggestion.last_name);
+	    	$("#person_id").val(suggestion.data.id);
+	    	$("#person_fn").val(suggestion.data.first_name);		    	
+	    	$("#person_ln").val(suggestion.data.last_name);
 	    	$(".input-group-addon").css("display","table-cell");
 	    	$("#input_group_fn, #input_group_ln").addClass("input-group");
 	    },
-	    formatResult: function (suggestion, currentValue) {
-	    	 var returned = suggestion.last_name + " " + suggestion.first_name + " @ " + suggestion.company_name;
-	        return returned;
-	    }
+    	transformResult: function(response) {
+
+        	var data = JSON.parse(response);
+
+        	var returned = {
+        		query: "Unit",
+            	suggestions: $.map(data, function(dataItem) {
+            		var value = dataItem.last_name+' '+dataItem.first_name;
+            		var dataItem = dataItem;
+                	return { value: value, data: dataItem};
+        		})
+        	};
+
+    		return returned;
+    	}
 	});
 }
 
