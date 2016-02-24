@@ -3,7 +3,7 @@
 @if (isset($menu_actions) && count($menu_actions))
 
 	<div class="panel panel-default">
-    	<div class="panel-heading" data-toggle="collapse" href="#actions">
+    	<div class="panel-heading" href="#actions">
     		<h4 class="panel-title">
 				<a data-parent="#accordion">
 					<span class="icon"> <i class="fa fa-bars"></i> </span> Actions
@@ -11,7 +11,7 @@
     		</h4>
     	</div>
 
-		<div id="actions" class="panel-collapse collapse in"> 
+		<div id="actions"> 
 			<div class="panel-body">
 
 				@foreach ($menu_actions as $menu_action)
@@ -31,7 +31,6 @@
 	
 @endif
 
-
 @foreach (Menu::build() as $elem)
 	
 	@if ($elem->show)
@@ -44,7 +43,7 @@
 	    		</h4>
 	    	</div>
 	    
-			<div id="{{ Menu::getId($elem) }}" class="panel-collapse collapse in"> 
+			<div id="{{ Menu::getId($elem) }}" class="panel-collapse collapse @if (Menu::isExpanded($elem)) in @endif"> 
 
 				<div class="panel-body">
 
@@ -52,7 +51,7 @@
 
 						@if ($subelem->show)
 							<a href="{{ $subelem->link }}">
-								<div class="menu-item"> 
+								<div class="menu-item @if(Menu::isSelected($subelem)) selected @endif" >
 									<span class="icon"> {!! $subelem->icon !!} </span> {{ $subelem->label }}
 			        			</div>
 			        		</a>

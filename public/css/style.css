@@ -573,12 +573,8 @@ a:visited, a:link, a:active, a:visited {
   margin: 0px 10px;
 }
 
-#user_tickets_table, #user_tickets_involvement_table, #tickets_status_table, #tickets_division_table {
-  margin-top: 35px;
-}
-
-#user_tickets_chart, #user_tickets_involvement_chart, #tickets_status_chart, #tickets_division_chart {
-  height: 300px;
+.chart {
+  width: 100%;
 }
 
 #dashboard_thumb img {
@@ -710,7 +706,7 @@ legend {
 .vertical_menu .panel-body a:hover { color:#333!important; }
 .vertical_menu .panel-heading { background-color: #EDBE6D; border:1px solid #EFC06D; border-radius: 0px; } 
 .vertical_menu .panel-heading:hover { cursor:pointer; }
-.vertical_menu .menu-item { background-color: #FFFAF2; cursor:pointer; }
+.vertical_menu .menu-item { background-color: #FFFAF2; cursor:pointer; border-top: 1px solid transparent; border-bottom: 1px solid transparent;}
 .vertical_menu .panel-body .menu-item { padding: 10px 10px 10px 20px; }
 .vertical_menu .panel-body .submenu-item { padding:10px 10px 10px 30px; }
-.vertical_menu .selected { background-color: #EEF3FF; }
+.vertical_menu .selected { background-color: #F9F1DA; border-top: 1px solid #E4DCC2; border-bottom: 1px solid #E4DCC2; }

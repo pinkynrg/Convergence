@@ -25,9 +25,18 @@ class MenuBuilder {
 				['type'=>'item','label'=>'Groups','icon'=>USERS_ICON,'link'=>route('groups.index'),'show'=>Auth::user()->can('read-all-group')],
 				['type'=>'item','label'=>'Groups Types','icon'=>GROUP_TYPES_ICON,'link'=>route('group_types.index'),'show'=>Auth::user()->can('read-all-group-type')]
 			]],
-			['type'=>'group','label'=>'Info','icon'=>INFO_ICON,'menu'=>[	
-				['type'=>'item','label'=>'Dashboard','icon'=>DASHBOARD_ICON,'link'=>route('dashboard.logged'), 'show'=>true],
-				['type'=>'item','label'=>'Statistics','icon'=>STATISTICS_ICON,'link'=>route('statistics.index'), 'show'=>true]
+			// ['type'=>'group','label'=>'Info','icon'=>INFO_ICON,'menu'=>[	
+			// 	['type'=>'item','label'=>'Dashboard','icon'=>DASHBOARD_ICON,'link'=>route('dashboard.logged'), 'show'=>true],
+			// 	['type'=>'item','label'=>'Statistics','icon'=>STATISTICS_ICON,'link'=>route('statistics.index'), 'show'=>true]
+			// ]],
+			['type'=>'group','label'=>'Statistics','icon'=>STATISTICS_ICON,'menu'=>[	
+				['type'=>'item','label'=>'General Statistics','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
+				['type'=>'item','label'=>'Tickets Status','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
+				['type'=>'item','label'=>'Tickets Divisions','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
+				['type'=>'item','label'=>'Customer','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
+				['type'=>'item','label'=>'Date','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
+				['type'=>'item','label'=>'Employee','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
+				['type'=>'item','label'=>'Month','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true]
 			]]
 		]);
 	}
@@ -80,13 +89,28 @@ class MenuBuilder {
 
 	public static function isExpanded($elem) 
 	{
-		return false;
+		$is_expanded = false;
+		$redirect_url = $_SERVER['REDIRECT_URL'][strlen($_SERVER['REDIRECT_URL'])-1] == "/" ? substr($_SERVER['REDIRECT_URL'], 0, strlen($_SERVER['REDIRECT_URL']) - 1) : $_SERVER['REDIRECT_URL'];
+		$current_url = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . $redirect_url;
+
+		if (isset($elem->menu)) {
+			foreach ($elem->menu as $elem) 
+			{
+				if (isset($elem->link) && $elem->link == $current_url) 
+				{
+					$is_expanded = true;
+				}
+			}
+		}
+
+		return $is_expanded;
 	}
 
 	public static function isSelected($elem)
 	{
-		return false;
-	}
+		$redirect_url = $_SERVER['REDIRECT_URL'][strlen($_SERVER['REDIRECT_URL'])-1] == "/" ? substr($_SERVER['REDIRECT_URL'], 0, strlen($_SERVER['REDIRECT_URL']) - 1) : $_SERVER['REDIRECT_URL'];
+		$current_url = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . $redirect_url;
+		return $current_url == $elem->link ? true : false;	}
 }
 
 ?>

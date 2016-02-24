@@ -2,15 +2,15 @@
 
 $(document).ready(function() {
 
-var desc_icon = '<i class="fa fa-sort-amount-desc"></i>';
-var asc_icon = '<i class="fa fa-sort-amount-asc"></i>';
-var debug = true;
-var regex = /\/([a-zA-Z\-]*)([\/]?)(create|[\d]*)([\/]?)([a-zA-Z\-]*)([\/]?)/g;
-var timer;
-var protocol = window.location.protocol;
-var host = window.location.hostname;
-var path = window.location.pathname;
-var rxres = regex.exec(path);
+var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
+	asc_icon = '<i class="fa fa-sort-amount-asc"></i>',
+	debug = true,
+	regex = /\/([a-zA-Z\-]*)([\/]?)(create|[\d]*)([\/]?)([a-zA-Z\-]*)([\/]?)/g,
+	timer,
+	protocol = window.location.protocol,
+	host = window.location.hostname,
+	path = window.location.pathname,
+	rxres = regex.exec(path),
 
 var url = (function () {
 	return {
@@ -453,24 +453,17 @@ var updateServicePage = function () {
 	});
 };
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@ boot-strap jquery tools
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+var updateMenuPosition = function () {
+	
+	var wrapper_top = parseInt($('.wrapper').offset().top),
+		wrapper_height = parseInt($('.wrapper').css('height')),
+		wrapper_padding = parseInt($('.wrapper').css('padding-top')),
+		menu_height = parseInt($('.vertical_menu .panel-group').css('height')),
+		from_top = parseInt($(document).scrollTop()),
+		left_over = wrapper_height - from_top,
+		offset = (left_over + wrapper_top) - menu_height - wrapper_padding;
 
-// url id, action, target
-consoleLog(url);
-
-$(window).scroll(function(){
-
-	var wrapper_top = parseInt($('.wrapper').offset().top);
-	var wrapper_height = parseInt($('.wrapper').css('height'));
-	var wrapper_padding = parseInt($('.wrapper').css('padding-top'));
-	var menu_height = parseInt($('.vertical_menu .panel-group').css('height'));
-	var from_top = parseInt($(this).scrollTop());
-	var left_over = wrapper_height - from_top;
-	var offset = (left_over + wrapper_top) - menu_height - wrapper_padding;
-
-    if ($(this).scrollTop() > wrapper_top) {
+    if ($(document).scrollTop() > wrapper_top) {
     	if (offset < wrapper_padding) {
     		$('.vertical_menu').css('position','fixed').css('top',offset+'px');
     	}
@@ -481,6 +474,17 @@ $(window).scroll(function(){
     } else {
         $('.vertical_menu').css('position','relative').css('top','0px');
     }
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@ boot-strap jquery tools
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+// url id, action, target
+consoleLog(url);
+
+$(window).scroll(function(){
+	updateMenuPosition();
 });
 
 // set scrolling select list default phone browser
@@ -545,6 +549,10 @@ $('#loading').hide().ajaxStart(function() {
 		$(".pagination").rPage();
 	}
 });
+
+$('.panel-heading[data-toggle="collapse"]').click(function () {
+	$('.panel-collapse').collapse('hide');
+})
 
 // responsive pagination
 $(".pagination").rPage();
@@ -915,5 +923,3 @@ if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") 
 		}
 	});
 }
-
-});

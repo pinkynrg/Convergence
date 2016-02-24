@@ -1,7 +1,6 @@
 <?php 
 
 // GENERAL CONFIGURATION
-
 define("DOMAIN",isset($_SERVER['SERVER_NAME']) ? strpos($_SERVER['SERVER_NAME'],"local") !== FALSE ? "convergence.provvedo.com" : $_SERVER['SERVER_NAME'] : '' );
 define("PROTOCOL",isset($_SERVER['SERVER_PORT']) ? (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://" : '' );
 define("SITE_URL",PROTOCOL.DOMAIN);
@@ -9,7 +8,6 @@ define("PAGINATION",50);
 define("MAX_PAGINATION",200);
 
 // IMPORT CONFIGURATION FROM Convergence 1.0
-
 define("CONVERGENCE_HOST", "198.154.99.22:1088");
 define("CONVERGENCE_DB", "Elettric80Inc");	
 define("CONVERGENCE_USER", "saa");
@@ -35,7 +33,6 @@ define("SET_YELLOW","\e[0;33m");
 define("SET_PURPLE","\e[0;35m");
 
 // RELEVANT IDs 
-
 define("ELETTRIC80_COMPANY_ID",1);
 define("EMPLOYEE_GROUP_TYPE_ID",1);
 define("CUSTOMER_GROUP_TYPE_ID",2);
@@ -50,8 +47,8 @@ define("TICKET_CLOSED_STATUS_ID",7);
 define("POST_DRAFT_STATUS_ID",1);
 define("POST_PRIVATE_STATUS_ID",2);
 define("POST_PUBLIC_STATUS_ID",3);
-// ICONS
 
+// ICONS
 define("MISSING_ICON", "fa fa-question-circle");
 define("TICKETS_ICON", "fa fa-ticket");
 define("MANAGE_ICON", "fa fa-cog");
