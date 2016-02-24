@@ -718,7 +718,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 				that.options.target_action = url.target_action == "edit" ? "edit" : "create";
 			}
 
-			that.on("drop", function (){
+			that.on("addedfile", function (){
 				if (that.options.target == "posts" && that.options.target_action == "create") {
 	    			consoleLog("Ticket draft created triggered by attachment upload");
 	    			savePostDraft(function () {
