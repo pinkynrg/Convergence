@@ -1,7 +1,8 @@
 <meta name="viewport" content="width=320, initial-scale=1">
 
 <!-- Scripts -->
-<script src="/javascript/jquery-1.11.2.min.js"></script>
+<!-- <script src="/javascript/jquery-1.12.min.js"></script> -->
+<script src="/javascript/jquery-1.11.3.min.js"></script>
 <script src="/javascript/jquery-migrate-1.2.1.min.js"></script>
 <script src="/ckeditor/ckeditor.js"></script>
 <script src="/javascript/jquery.blueimp-gallery.min.js"></script>

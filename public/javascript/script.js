@@ -75,6 +75,14 @@ var ajaxUpdate = function($target) {
 };
 
 var toggleOrder = function($elem) {
+	if (first_ordering && typeof $elem.attr('type') == 'undefined') {
+		$elem.closest('tr').find('th').each(function () {
+			$(this).removeAttr("type");
+			$(this).removeAttr("weight");
+			$(this).html($(this).html().replace(asc_icon,"").replace(desc_icon,""));
+		});
+		first_ordering = false;
+	}
 
 	var current_type = $elem.attr("type");
 	var current_weight = $elem.attr("weight");
