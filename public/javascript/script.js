@@ -630,7 +630,7 @@ if ((url.target == "companies" || url.target == "contacts") && url.target_action
 	// autocomplete for first and last name
 	$("#person_fn, #person_ln").devbridgeAutocomplete({
 	    serviceUrl: function (query) {
-	    	return "/people?type=json&paginate=false&where[]=first_name:last_name|LIKE|"+query;
+	    	return "/people?type=json&paginate=false&where[]=first_name:last_name|LIKE|*"+query+"*";
 	    },
 	    onSelect: function (suggestion) {
 	    	console.log(suggestion);

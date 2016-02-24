@@ -5,7 +5,7 @@ use DB;
 
 class PeopleController extends BaseController {
 
-    public static function read($params)
+    public static function api($params)
     {
         $params['order'] = isset($params['order']) ? $params['order'] : ['last_name|ASC','first_name|ASC'];
         $users = Person::select("people.*");
