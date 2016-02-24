@@ -7,6 +7,7 @@
 <script src="/javascript/jquery.blueimp-gallery.min.js"></script>
 <script src="/javascript/bootstrap-image-gallery.js"></script>
 <script src="/javascript/bootstrap.min.js"></script>
+<script src="/javascript/bootstrap-switch.min.js"></script>
 <script src="/javascript/jquery.autocomplete.js"></script>
 <script src="/javascript/bootstrap-select.js"></script>
 <script src="/javascript/bootstrap3-typeahead.min.js"></script>
@@ -18,7 +19,6 @@
 <script src="/javascript/highstocks.js"></script>
 <script src="/javascript/highcharts.3d.js"></script>
 <script src="/javascript/bootstrap-datepicker.js"></script>
-<script src="/javascript/bootstrap-switch.min.js"></script>
 <script src="/javascript/responsive-paginate.js"></script>
 <script src="/javascript/jquery.style.js"></script>
 <script src="/javascript/script.js"></script>

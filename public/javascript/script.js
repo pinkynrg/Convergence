@@ -109,16 +109,18 @@ var getParams = function($target) {
 	params['where'] = [];
 	params['page'] = 1;
 
-	var $search = $target.find("input[type='text'].search");
+	var $search = $target.find("input[type='text'].search:visible");
 	var $table_order = $target.find("tr.orderable th[type]");
 	var $multifilter = $target.find("select.selectpicker.multifilter");
 
+	console.log("ciao");
+
 	if ($search.val() != null && $search.val().length != 0) {
-		var key_words = $search.val().replace(" ",":");
-		var columns = $search.attr('columns').split(",");
+		var key_words = $search.val().split(" ");
+		var columns = $search.attr('columns').replace(",",":");
 		consoleLog("search columns: " + columns);
-		for (var i=0; i<columns.length; i++) {
-			params['where'].push(columns[i] + "|LIKE|" + key_words);
+		for (var i=0; i<key_words.length; i++) {
+			params['where'].push(columns + "|LIKE|" + key_words[i]);
 		}
 	}
 
