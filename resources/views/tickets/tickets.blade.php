@@ -32,7 +32,7 @@
 					<td class="visible-xs"><i class="ticket_status_icon {{ $ticket->status_icon() }}"></i></td>
 					<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
 					<td> 
-						<a href="{{ route('tickets.show', $ticket->id) }}"> {{ $ticket->title }} </a> 
+						<b><a href="{{ route('tickets.show', $ticket->id) }}"> {{ $ticket->title }} </a></b>
 						<div class="ticket_foot_details"> Reported by <a href="{{ route('people.show', $ticket->creator->person->id) }}"> {{ $ticket->creator->person->name() }} </a> on {{ date("m/d/Y",strtotime($ticket->created_at)) }} </div> 
 					</td>
 					<td class="hidden-xs"> {{ $ticket->status->name }} </td>
