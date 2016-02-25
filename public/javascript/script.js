@@ -11,7 +11,8 @@ var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	host = window.location.hostname,
 	path = window.location.pathname,
 	rxres = regex.exec(path),
-	first_ordering = true;
+	first_ordering = true,
+	draft_ticket_id = 8;
 
 var url = (function () {
 	return {
@@ -280,7 +281,7 @@ var activateTicketDraftMode = function() {
 			'additional_emails' : $("input#additional_emails").val() ? $("input#additional_emails").val() : '[undefined]',
 			'job_type_id' 		: $("select#job_type_id").val() ? $("select#job_type_id").val() : dummy_id,
 			'priority_id' 		: $("select#priority_id").val() ? $("select#priority_id").val() : dummy_id,
-			'status_id' 		: 9,
+			'status_id' 		: draft_ticket_id,
 		}
 
 		$.ajax({
@@ -719,7 +720,7 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 	else if (url.target == "tickets" && url.target_action == "edit") {
 		$.get('/tickets/'+url.target_id, function (data) {
 			var status_id = data.status_id;
-			if (status_id == 9) {
+			if (status_id == draft_ticket_id) {
 				activateTicketDraftMode();
 			}
 		});

@@ -52,7 +52,7 @@ class TicketsController extends BaseController {
 
 	public function create(Request $request) {
 
-		$ticket = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id","9")->first();
+		$ticket = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
 		
 		if ($ticket) {
 			// if there is a started draft redirect to that
