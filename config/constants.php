@@ -58,7 +58,7 @@ define("USERS_ICON", "fa fa-book");
 define("EQUIPMENT_ICON", "fa fa-wrench");
 define("SERVICES_ICON", "fa fa-server");
 define("ESCALATIONS_ICON", "fa fa-bolt");
-define("ACCESS_ICON", "fa fa-cog");
+define("ACCESS_ICON", "fa fa-hand-paper-o");
 define("PERMISSIONS_ICON", "fa fa-unlock");
 define("ROLES_ICON", "fa fa-male");
 define("GROUPS_ICON", "fa fa-users");

@@ -24,15 +24,17 @@
 	
 	<div class="inner_container">
 		<div class="header_container row">
-			<div class="col-sm-6 col-ms-12">
+			<div class="col-sm-6 col-ms-6 col-xs-12">
 				<h2 class="title"> {!! isset($title) ? $title : "[missing page title]" !!} </h2>
 			</div>
+			
 			@if (isset($active_search))
-				<div class="col-lg-3 col-sm-1"></div>
-				<div class="col-lg-3 col-sm-5 hidden-ms hidden-sm hidden-xs form-group">
+				<div class="col-lg-3 col-sm-2 col-ms-1 col-xs-0"></div>
+				<div class="col-lg-3 col-sm-4 col-ms-5 col-xs-12 form-group">
 					<input type="text" columns="{{$active_search}}" class="form-control search" placeholder="search">
 				</div>
 			@endif
+
 		</div>
 		<hr>
 		@include('includes.errors')

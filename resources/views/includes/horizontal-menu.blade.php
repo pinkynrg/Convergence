@@ -25,14 +25,15 @@
 						@if ($elem->show)
 
 							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {!! $elem->icon !!} {!! $elem->label !!} <span class="caret"></span></a>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> 
+									<span class="icon">{!! $elem->icon !!}</span> {!! $elem->label !!} <span class="caret"></span></a>
           						<ul class="dropdown-menu">
 
           							@foreach ($elem->menu as $subelem)
 
           								@if ($subelem->show)
 
-											<li><a href="{{ $subelem->link }}"> {!! $subelem->icon !!} {!! $subelem->label !!} </a></li>
+											<li><a href="{{ $subelem->link }}"> <span class="icon">{!! $subelem->icon !!}</span> {!! $subelem->label !!} </a></li>
 
 										@endif
 
@@ -63,21 +64,12 @@
 
 			</ul>
 
-			@if (isset($active_search))
-
-				<div class="navbar-form navbar-right" role="search">
-					<div class="form-group">
-						<input type="text" columns="{{$active_search}}" class="form-control search" placeholder="search">
-					</div>
-				</div>
-
-			@endif
-
 			@if (isset($menu_actions) && count($menu_actions))
 
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> Actions <span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> 
+						<span class="icon"><i class="fa fa-list"></i></span> Actions <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 
 							@foreach ($menu_actions as $menu_action)
