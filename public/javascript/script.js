@@ -169,7 +169,7 @@ var getParams = function($target) {
 
 			if ((keyword[0] == "'" && keyword[keyword.length-1] == "'") || (keyword[0] == '"' && keyword[keyword.length-1] == '"')) {
 				keyword = keyword.substring(1,keyword.length-1);
-				params['where'].push(columns + "|LIKE|"+keyword+':* '+keyword+' *');
+				params['where'].push(columns + "|LIKE|"+keyword+':* '+keyword+' *:'+keyword+' *:* '+keyword);
 			}
 			else 
 			{
