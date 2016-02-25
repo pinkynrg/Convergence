@@ -12,15 +12,16 @@
 
 <div class="container wrapper" ajax-route= {{ "http://$_SERVER[HTTP_HOST]"."$_SERVER[REQUEST_URI]" }} >
 	
-	<div class="horizontal_menu hidden-lg hidden-md hidden-sm">	
+	<div class="horizontal_menu hidden-lg">	
 		@include('includes.horizontal-menu')
 	</div>
 
-	<div class="vertical_menu_container hidden-xs hidden-ms">
+	<div class="vertical_menu_container hidden-xs hidden-ms hidden-sm hidden-md">
 		<div class="vertical_menu">
 			@include('includes.vertical-menu')
 		</div>
 	</div>
+	
 	<div class="inner_container">
 		<div class="header_container row">
 			<div class="col-sm-6 col-ms-12">
