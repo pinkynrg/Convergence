@@ -9,11 +9,15 @@ td {
 }
 
 h2.title {
-  margin: 0px 0px 10px 0px;
+  margin: 0px;
 }
 
 hr {
-  margin: 5px 0px;
+  margin: 0px;
+}
+
+.header_container div {
+  margin-bottom: 15px;
 }
 
 .inner_container {
@@ -254,8 +258,8 @@ input[disabled], textarea[disabled], select[disabled] {
 
 #filters {
   text-align: center;
-  padding: 10px 10px 0px 10px;
-  margin: 10px 0px 0px 0px;
+  margin-top: 15px;
+  margin-bottom: 5px;
 }
 
 #expand_filters {
@@ -491,7 +495,7 @@ a:visited, a:link, a:active, a:visited {
 .navbar-default {
   background-color: #F5C36E;
   border: 1px solid #E0C589;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   border-radius: 0px;
   font-size: 13px;
 }
