@@ -128,7 +128,8 @@ class TicketsController extends BaseController {
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
 				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
-				
+				$data['important_post'] = Post::where('ticket_id',$id)->whereIn('ticket_status_id',[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])->orderBy('created_at','desc')->first();
+
 				$links = [];
 				$temp = TicketLink::where("ticket_id","=",$id)->get();
 				foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
@@ -144,13 +145,28 @@ class TicketsController extends BaseController {
 				}
 
 				switch ($data['ticket']->status_id) {
-					case '1' :
-					case '2' : $data['status_class'] = 'ticket_status_new'; break;
-					case '3' :
-					case '4' :
-					case '5' : $data['status_class'] = 'ticket_status_on_hold'; break;
-					case '6' :
-					case '7' : $data['status_class'] = 'ticket_status_closed'; break;
+					case TICKET_NEW_STATUS_ID 			: $data['status_class'] = 'ticket_status_new'; 
+														  break;
+					case TICKET_IN_PROGRESS_STATUS_ID 	: $data['status_class'] = 'ticket_status_new'; 
+														  break;
+					case TICKET_WFF_STATUS_ID 			: $data['status_class'] = 'ticket_status_on_hold'; 
+														  if (isset($data['important_post'])) { 
+														  	$data['important_post']->alert_type = "danger"; 
+														  }
+														  break;
+					case TICKET_WFP_STATUS_ID 			: $data['status_class'] = 'ticket_status_on_hold'; 
+														  break;
+					case TICKET_REQUESTING_STATUS_ID 	: $data['status_class'] = 'ticket_status_on_hold'; 
+														  break;
+					case TICKET_SOLVED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
+														  if (isset($data['important_post'])) {
+														  	$data['important_post']->alert_type = "success";
+														  }
+														  break;
+					case TICKET_CLOSED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
+														  break;
+					case TICKET_DRAFT_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
+														  break;
 				};
 
 			    $data['title'] = "Ticket #".$id;

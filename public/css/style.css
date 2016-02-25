@@ -425,8 +425,8 @@ a:visited, a:link, a:active, a:visited {
   border: 1px solid #DCD8C5;
   padding: 15px;
   margin: 20px 0px;
-  float: left;
   width: 100%;
+  border-radius: 4px;
 }
 
 .post {

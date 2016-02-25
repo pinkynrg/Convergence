@@ -19,6 +19,7 @@ class CreatePostsTable extends Migration {
 			$table->text('post_plain_text');
 			$table->integer('author_id')->unsigned();
 			$table->integer('status_id')->unsigned();
+			$table->integer('ticket_status_id')->unsigned();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -28,6 +29,7 @@ class CreatePostsTable extends Migration {
 			$table->foreign('ticket_id')->references('id')->on('tickets');
 			$table->foreign('author_id')->references('id')->on('company_person');
 			$table->foreign('status_id')->references('id')->on('post_statuses');			
+			$table->foreign('ticket_status_id')->references('id')->on('statuses');			
 		});	
 	}
 

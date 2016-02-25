@@ -31,6 +31,14 @@
 
 	</div>
 
+
+	@if (isset($important_post))
+		<div class="alert alert-{{ $important_post->alert_type }}" role="{{ $important_post->alert_type }}"> 
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<div> <i class="fa fa-info-circle"></i> TICKET IS {{ strtoupper($ticket->status->name) }}: <br> {{ $important_post->post_plain_text }} </div>
+		</div>
+	@endif
+
 	<div class="ticket_attachments">
 		
 		<div class="row">

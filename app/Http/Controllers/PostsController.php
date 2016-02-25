@@ -27,6 +27,7 @@ class PostsController extends Controller {
 		$post->post_plain_text = Html2Text::convert($request->get('post'));
 		$post->author_id = Auth::user()->active_contact->id;
 		$post->status_id = !$draft ? $request->get('is_public') == true ? 3 : 2 : POST_DRAFT_STATUS_ID;
+		$post->ticket_status_id = $request->get('is_public') !== null ? $request->get('is_public') : $post->ticket->status_id;
 
 		$post->save();
 

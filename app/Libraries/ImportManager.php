@@ -980,8 +980,7 @@ class Statuses extends BaseClass {
 				}
 			}
 
-			$queries = ["INSERT INTO statuses (id,name) VALUES (8,'Requesting')",
-						"INSERT INTO statuses (id,name) VALUES (9,'Draft')"];
+			$queries = ["INSERT INTO statuses (id,name) VALUES (8,'Draft')"];
 
 			foreach ($queries as $query) {							
 			
@@ -1784,7 +1783,6 @@ class Posts extends BaseClass {
 				$p['Date_Creation'] = str_replace(".0000000","", $p['Date_Creation']);
 				$p['Post_Public'] = $p['Post_Public'] == '0' ? '2' : '3';
 				$p['Post'] = Purifier::clean($p['Post']);
-
 				$p['Post_Plain'] = $p['Post'] ? htmlToText($p['Post']) : "";
 
 				$p['Post'] = $p['Post'] == '' ? $p['Counter'] > 1 ? '<p>see attachments</p>' : '<p>see attachment</p>' : $p['Post'];
@@ -1806,8 +1804,53 @@ class Posts extends BaseClass {
 
 				$p = nullIt($p);
 
-				$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,status_id,created_at,updated_at) 
-						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Post_Plain'].",".$author_id.",".$p['Post_Public'].",".$p['Date_Creation'].",".$p['Date_Creation'].")";
+				if (strpos($p['Post'],"<p>Waiting for feedback") !== false) {
+					$p['Post'] = str_replace("Waiting for feedback: ", "", $p['Post']);
+					$p['Post_Plain'] = str_replace("Waiting for feedback: ","",$p['Post_Plain']);
+					$p['Ticket_Status_Id'] = TICKET_WFF_STATUS_ID;
+				}
+				else {
+					$p['Ticket_Status_Id'] = TICKET_IN_PROGRESS_STATUS_ID;	
+				}
+
+				$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,status_id,ticket_status_id,created_at,updated_at) 
+						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Post_Plain'].",".$author_id.",".$p['Post_Public'].",".$p['Ticket_Status_Id'].",".$p['Date_Creation'].",".$p['Date_Creation'].")";
+
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Post ID = ".$p['Id']."]");
+						if (!isset($ids)) $ids = ''; $ids .= $p['Id'].",";
+					}
+				}
+
+				$author_id = null;
+			}
+
+			$table = [];
+
+			$query = mssql_query("SELECT * FROM Tickets
+								  WHERE Status IN (6,7) 
+								  ORDER BY Id");
+
+			while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
+
+			foreach ($table as $p) {
+	
+				$p = sanitize($p);
+
+				$p['Post'] = trim($p['Comment']) == "" ? "Ticket Closed" : $p['Comment'];
+				$p['Post'] = Purifier::clean($p['Post']);
+				$p['Post_Plain'] = $p['Post'] ? htmlToText($p['Post']) : "";
+				$assignee_id = findCompanyPersonId($p['Id_Assignee'],$this->manager->conn);
+
+				$p = nullIt($p);
+
+				$query = "INSERT INTO posts (ticket_id,post,post_plain_text,author_id,status_id,ticket_status_id,created_at,updated_at) 
+						  VALUES (".$p['Id'].",".$p['Post'].",".$p['Post_Plain'].",".$assignee_id.",3,".TICKET_SOLVED_STATUS_ID.",".$p['Date_Update'].",".$p['Date_Update'].")";
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
