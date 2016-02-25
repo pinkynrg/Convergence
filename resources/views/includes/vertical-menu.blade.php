@@ -16,10 +16,9 @@
 
 				@foreach ($menu_actions as $menu_action)
 				
-					<a>
+					<a href="{!! $menu_action['link'] !!}">
 						<div class="menu-item"> 
-							<span class="icon"> {!! $menu_action['icon'] !!} </span> 
-							<a href="{!! $menu_action['link'] !!}"> {{ $menu_action['label'] }} </a>
+							<span class="icon"> {!! $menu_action['icon'] !!} </span> {{ $menu_action['label'] }}
 	        			</div>
 	        		</a>
 

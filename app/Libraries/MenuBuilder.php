@@ -31,13 +31,13 @@ class MenuBuilder {
 			// 	['type'=>'item','label'=>'Statistics','icon'=>STATISTICS_ICON,'link'=>route('statistics.index'), 'show'=>true]
 			// ]],
 			['type'=>'group','label'=>'Statistics','icon'=>STATISTICS_ICON,'menu'=>[	
-				['type'=>'item','label'=>'General Statistics','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
-				['type'=>'item','label'=>'Tickets Status','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
-				['type'=>'item','label'=>'Tickets Divisions','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
-				['type'=>'item','label'=>'Customer','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
-				['type'=>'item','label'=>'Date','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
-				['type'=>'item','label'=>'Employee','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true],
-				['type'=>'item','label'=>'Month','icon'=>STATISTICS_ICON,'link'=>'', 'show'=>true]
+				['type'=>'item','label'=>'General Statistics','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
+				['type'=>'item','label'=>'Tickets Status','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
+				['type'=>'item','label'=>'Tickets Divisions','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
+				['type'=>'item','label'=>'Customer','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
+				['type'=>'item','label'=>'Date','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
+				['type'=>'item','label'=>'Employee','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
+				['type'=>'item','label'=>'Month','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true]
 			]]
 		]);
 	}
@@ -94,7 +94,7 @@ class MenuBuilder {
 
 		if (isset($elem->menu)) {
 			foreach ($elem->menu as $elem) {
-				$is_expanded = (isset($elem->link) && $elem->link == Request::url()) ? true : $is_expanded;
+				$is_expanded = (isset($elem->link) && strpos(Request::url(), $elem->link) !== false) ? true : $is_expanded;
 			}
 		}
 
@@ -103,7 +103,7 @@ class MenuBuilder {
 
 	public static function isSelected($elem)
 	{
-		return $elem->link == Request::url();
+		return strpos(Request::url(), $elem->link) !== false;
 	}
 }
 ?>
