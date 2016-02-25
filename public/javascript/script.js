@@ -11,7 +11,7 @@ var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	host = window.location.hostname,
 	path = window.location.pathname,
 	rxres = regex.exec(path),
-	golden_ratio = 1.62;
+	first_ordering = true;
 
 var url = (function () {
 	return {
