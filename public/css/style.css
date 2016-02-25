@@ -40,6 +40,14 @@ hr {
   position: fixed; 
 }
 
+.post_attachments > img {
+  width: 100%;
+}
+
+.post_attachments > .row > div {
+  margin-bottom: 10px;
+}
+
 .in-progress {
   cursor:progress!important;
 }
