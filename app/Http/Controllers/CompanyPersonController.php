@@ -29,7 +29,7 @@ class CompanyPersonController extends BaseController {
     	$data['contacts'] = self::api($params);
 		$data['title'] = "Contacts";
 	    $data['menu_actions'] = [Form::addItem(route('company_person.create'), 'Add contact')];
-		$data['active_search'] = implode(",",['people.first_name']);
+		$data['active_search'] = implode(",",['people.first_name','people.last_name','companies.name','email']);
 		return view('company_person/index',$data);
 	}
 
