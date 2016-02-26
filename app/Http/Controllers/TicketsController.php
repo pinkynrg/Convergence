@@ -101,10 +101,11 @@ class TicketsController extends BaseController {
        	$this->updateTags($ticket);
        	$this->updateLinks($ticket);
 
-       	if ($ticket->status_id != TICKET_DRAFT_STATUS_ID) { $this->updateHistory($ticket); }
-
-		// EmailsManager::sendTicket($ticket->id);
-		// SlackManager::sendTicket($ticket);
+       	if ($ticket->status_id != TICKET_DRAFT_STATUS_ID) { 
+       		$this->updateHistory($ticket); 
+       		EmailsManager::sendTicket($ticket->id);
+			// SlackManager::sendTicket($ticket);
+       	}
 
         return (Request::ajax()) ? 'success' : redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
         return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);

@@ -54,7 +54,7 @@ return [
 	|
 	*/
 
-	'from' => ['address' => 'stefano@provvedo.com', 'name' => 'Stefano Bertelli'],
+	'from' => ['address' => env('MAIL_EMAIL'), 'name' => env('MAIL_NAME')],
 
 	/*
 	|--------------------------------------------------------------------------

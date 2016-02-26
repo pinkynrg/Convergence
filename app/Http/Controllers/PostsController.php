@@ -33,8 +33,9 @@ class PostsController extends Controller {
 
 		if ($post->status_id != POST_DRAFT_STATUS_ID) {
 			$this->updateTicketStatus($request);
+			EmailsManager::sendPost($post->id);
 			// SlackManager::sendPost($post);
-			// EmailsManager::sendPost($post->id);
+
 		}
 		
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);

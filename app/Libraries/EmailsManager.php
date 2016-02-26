@@ -5,6 +5,7 @@ use App\Models\Ticket;
 use App\Models\Post;
 use Mail;
 use HTML;
+use Auth;
 
 class EmailsManager {
 
@@ -12,14 +13,15 @@ class EmailsManager {
 	static $view = null;
 	static $content = null;
 	static $data = array();
-	static $to = ['biggyapple@gmail.com','meli.f@elettric80.it'];
-	static $cc = array();
+	static $to = array();
+	static $cc = ['biggyapple@gmail.com'];
 	static $bcc = array();
 
 	public static function sendPost($id) {
 
 		$post = Post::find($id);
 		self::setSubject("New Post to Ticket #".$post->ticket->id);
+       	self::add("to",Auth::user()->active_contact->email);
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
 		self::send();	
@@ -29,6 +31,7 @@ class EmailsManager {
 
 		$ticket = Ticket::find($id);
 		self::setSubject("New Ticket #".$ticket->id);
+       	self::add("to",Auth::user()->active_contact->email);
 		self::$view = "emails/ticket";
 		self::$data['ticket'] = $ticket;
 		self::send();	
