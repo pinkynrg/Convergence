@@ -29,11 +29,6 @@ var consoleLog = function(string) {
 	}
 };
 
-var titleMarquee = function() {
-    document.title = document.title.substring(1)+document.title.substring(0,1);
-    setTimeout(titleMarquee, 200);
-};
-
 var scrollUp = function(ms) {
 	$("html, body").animate({
         scrollTop: 0
@@ -520,9 +515,6 @@ $.ajaxSetup({ cache: false });
 
 // prevent double submittion script
 $('form').preventDoubleSubmission();
-
-// title maquee
-titleMarquee();
 
 Dropzone.autoDiscover = false;
 
