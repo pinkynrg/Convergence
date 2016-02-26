@@ -20,13 +20,6 @@ hr {
   white-space: nowrap;
 }
 
-.ellipsis {
-  max-width:180px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .header_container div {
   margin-bottom: 15px;
 }
@@ -443,8 +436,13 @@ a:visited, a:link, a:active, a:visited {
   color: #656565;
 }
 
+.ticket_head_details {
+  font-size: 10px;
+}
+
 .ticket_foot_details {
   font-size: 9px;
+  font-style: italic!important;
 }
 
 #ticket_wrapper {
