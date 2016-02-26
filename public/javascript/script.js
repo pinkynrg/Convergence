@@ -774,8 +774,8 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 	$("#dZUpload").dropzone({
 		url: "/files",
 		addRemoveLinks: true,
-		autoProcessQueue:false,
-		maxFiles: 3,
+		autoProcessQueue: false,
+		maxFiles: 10,
 		maxFileSize: 50,
 		headers: { "X-CSRF-Token": $("[name=_token]").val() },
 
