@@ -302,27 +302,35 @@ input[disabled], textarea[disabled], select[disabled] {
   margin: 15px 0px;
 }
 
-#contacts.navb {
+.small-header {
+  height: 35px;
+  line-height: 35px;
+  font-size: 16px;
+  padding-left: 10px;
+  margin-top: 30px;
+}
+
+#contacts.small-header {
   border: 1px solid #F5A38F;
   background-color: #FFB3AA;
 }
 
-#tickets.navb {
+#tickets.small-header {
   border: 1px solid #EAC2A0;
   background-color: #FFD3AF;
 }
 
-#equipment.navb {
+#equipment.small-header {
   border: 1px solid #E4DBB9;
   background-color: #F9E7A1;
 }
 
-#hotels.navb {
+#hotels.small-header {
 	border: 1px solid #8FA7F7;
   background-color: #AABEFF;
 }
 
-#services.navb {
+#services.small-header {
   border: 1px solid #8EE8E2;
   background-color: #B6EAE6;
 }

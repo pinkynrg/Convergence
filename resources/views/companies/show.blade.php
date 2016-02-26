@@ -7,10 +7,8 @@
 
 	</div>
 
-	<hr>
-
 	<div ajax-route="{{ route('companies.contacts',$company->id) }}">
-		<div id="contacts" class="navb"> 
+		<div id="contacts" class="small-header"> 
 			<div class="title"><i class="{{ CONTACTS_ICON }}"></i> Contacts </div>
 		</div>
 		<div>
@@ -24,10 +22,8 @@
 		</div>
 	</div>
 
-	<hr>
-
 	<div ajax-route="{{ route('companies.tickets',$company->id) }}">
-		<div id="tickets" class="navb"> 
+		<div id="tickets" class="small-header"> 
 			<div class="title"><i class="{{ TICKETS_ICON }}"></i> Tickets </div>
 		</div>
 		<div>
@@ -41,10 +37,8 @@
 		</div>
 	</div>
 
-	<hr>
-
 	<div ajax-route="{{ route('companies.equipment',$company->id) }}">
-		<div id="equipment" class="navb"> 
+		<div id="equipment" class="small-header"> 
 			<div class="title"><i class="{{ EQUIPMENT_ICON }}"></i> Equipment </div>
 		</div>
 		<div>
@@ -58,10 +52,8 @@
 		</div>
 	</div>
 	
-	<hr>
-
 	<div ajax-route="{{ route('companies.hotels',$company->id) }}">
-		<div id="hotels" class="navb"> 
+		<div id="hotels" class="small-header"> 
 			<div class="title"><i class="{{ HOTELS_ICON }}"></i> Hotels </div>
 		</div>
 		<div>
@@ -75,10 +67,8 @@
 		</div>
 	</div>
 	
-	<hr>
-
 	<div ajax-route="{{ route('companies.services',$company->id) }}">
-		<div id="services" class="navb"> 
+		<div id="services" class="small-header"> 
 			<div class="title"><i class="{{ SERVICES_ICON }}"></i> Services </div>
 		</div>
 		<div>
