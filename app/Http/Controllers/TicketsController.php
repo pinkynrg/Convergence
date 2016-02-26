@@ -129,7 +129,7 @@ class TicketsController extends BaseController {
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
 				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
-				$data['important_post'] = Post::where('ticket_id',$id)->whereIn('ticket_status_id',[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])->orderBy('created_at','desc')->first();
+				$data['important_post'] = Post::where('ticket_id',$id)->whereIn('ticket_status_id',[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])->where('ticket_status_id',$data['ticket']->status_id)->orderBy('created_at','desc')->first();
 
 				$links = [];
 				$temp = TicketLink::where("ticket_id","=",$id)->get();
