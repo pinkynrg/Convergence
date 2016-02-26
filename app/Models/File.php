@@ -28,4 +28,9 @@ class File extends CustomModel {
 	public function is_image() {
 		return  in_array($this->file_extension, ['gif','jpeg','jpg','png']) ? true : false;
 	}
+
+	public function name() {
+		$length = strlen($this->name);
+		return ($length > 16) ? substr($this->name,0,7)."...".substr($this->name,$length-8,$length) : $this->name;
+	}
 }
