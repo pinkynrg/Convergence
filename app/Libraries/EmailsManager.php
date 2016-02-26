@@ -55,8 +55,8 @@ class EmailsManager {
 			$message->subject(self::$subject);
 		});
 
-		echo self::$content;
-		die();
+		// echo self::$content;
+		// die();
 
 		self::clear();
 	}
