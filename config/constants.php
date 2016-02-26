@@ -1,7 +1,7 @@
 <?php 
 
 // GENERAL CONFIGURATION
-define("DOMAIN", strpos($_SERVER['HTTP_HOST'],"local") !== FALSE ? "convergence.provvedo.com" : $_SERVER['HTTP_HOST']);
+define("DOMAIN", isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'],"local") !== FALSE ? $_SERVER['HTTP_HOST'] : 'local.convergence.it');
 define("PROTOCOL","http://");
 define("SITE_URL",PROTOCOL.DOMAIN);
 define("PAGINATION",50);

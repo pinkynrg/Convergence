@@ -15,7 +15,8 @@ class CreateDivisionsTable extends Migration {
 		Schema::create('divisions', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name')->nullable();
+			$table->string('name');
+			$table->string('label');
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->softDeletes();

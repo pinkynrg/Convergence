@@ -31,6 +31,10 @@ class Ticket extends CustomModel {
 		return $icon;
 	}
 
+	public function title() {
+		return strlen($this->title) > 30 ? substr($this->title,0,30)."..." : $this->title;
+	}
+
 	public function priority()
 	{
 		return $this->belongsTo('App\Models\Priority');		

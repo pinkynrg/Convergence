@@ -31,19 +31,19 @@
 				<tr>
 					<td class="visible-xs"><i class="ticket_status_icon {{ $ticket->status_icon() }}"></i></td>
 					<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
-					<td> 
+					<td class="ellipsis"> 
 						<b><a href="{{ route('tickets.show', $ticket->id) }}"> {{ $ticket->title }} </a></b>
 						<div class="ticket_foot_details"> Reported by <a href="{{ route('people.show', $ticket->creator->person->id) }}"> {{ $ticket->creator->person->name() }} </a> on {{ date("m/d/Y",strtotime($ticket->created_at)) }} </div> 
 					</td>
-					<td class="hidden-xs"> {{ $ticket->status->name }} </td>
-					<td class="hidden-xs hidden-ms"> {{ $ticket->priority->name }} </td>
+					<td class="hidden-xs nowrap"> {{ $ticket->status->label }} </td>
+					<td class="hidden-xs hidden-ms nowrap"> {{ $ticket->priority->label }} ({{ $ticket->priority->weight }}) </td>
 					<td class="hidden-xs hidden-ms"> <a href="{{ route('people.show', $ticket->assignee->person->id) }}"> {{ $ticket->assignee->person->name() }} </a> </td>
 					
 					@if (Route::currentRouteName() == "tickets.index")
 						<td> <a href="{{ route('companies.show', $ticket->company->id) }}"> {{ $ticket->company->name }} </a> </td>
 					@endif
 
-					<td class="hidden-xs hidden-ms"> {{ $ticket->division->name }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $ticket->division->label }} </td>
 					<td class="hidden-xs hidden-ms"> 
 						{{ date("m/d/Y",strtotime($ticket->last_operation_date )) }}
 						<div class="ticket_foot_details"> by 

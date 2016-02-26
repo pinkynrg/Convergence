@@ -689,22 +689,20 @@ class Divisions extends BaseClass {
 	public $dependency_names = ['dummies'];
 
 	public function importSelf() {
-
-		$query = mssql_query('SELECT * FROM System_Type');
-
-		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $divisions[] = $row;
-
-		mssql_free_result($query);
+			
+		$queries = ["INSERT INTO divisions (id, name, label) VALUES (1,'Lgv','LGV')",
+					"INSERT INTO divisions (id, name, label) VALUES (2,'Plc','PLC')",
+					"INSERT INTO divisions (id, name, label) VALUES (3,'Pc','PC')",
+					"INSERT INTO divisions (id, name, label) VALUES (5,'Bema','BEMA')",
+					"INSERT INTO divisions (id, name, label) VALUES (6,'Field','FIELD')",
+					"INSERT INTO divisions (id, name, label) VALUES (7,'Other','OTHER')",
+					"INSERT INTO divisions (id, name, label) VALUES (8,'Spare Parts','SPARE PARTS')",
+					"INSERT INTO divisions (id, name, label) VALUES (9,'Reliability','RELIABILITY')"];
 
 		if ($this->truncate()) {
 
-			foreach ($divisions as $d) {
+			foreach ($queries as $query) {
 
-				$d = nullIt(sanitize($d));
-
-				$query = "INSERT INTO divisions (id,name) 
-						  VALUES (".$d['Id'].",".$d['Type'].")";
-				
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
 				}
@@ -918,19 +916,16 @@ class Priorities extends BaseClass {
 
 	public function importSelf() {
 
-		$query = mssql_query('SELECT * FROM Priority');
-
-		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
-
 		if ($this->truncate()) {
-	
-			foreach ($table as $r) {
 
-				$r = nullIt(sanitize($r));
-				
-				$query = "INSERT INTO priorities (id,name) 
-						  VALUES (".$r['Id'].",".$r['Priority'].")";
-				
+			$queries = ["INSERT INTO priorities (id,weight,name,label) VALUES (1,1,'System Stop High','Stop')",
+						"INSERT INTO priorities (id,weight,name,label) VALUES (2,1,'Very Crytical Issue High','High')",
+						"INSERT INTO priorities (id,weight,name,label) VALUES (3,2,'Critical Issue Medium','Medium')",
+						"INSERT INTO priorities (id,weight,name,label) VALUES (4,3,'Non Critical Issue','Low')",
+						"INSERT INTO priorities (id,weight,name,label) VALUES (5,3,'Information Request','Info')"];
+
+			foreach ($queries as $query) {			
+	
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
 				}
@@ -955,19 +950,18 @@ class Statuses extends BaseClass {
 
 	public function importSelf() {
 
-		$query = mssql_query('SELECT * FROM Ticket_Status');
-
-		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
-
 		if ($this->truncate()) {
-	
-			foreach ($table as $r) {
-
-				$r = nullIt(sanitize($r));
-				
-				$query = "INSERT INTO statuses (id,name) 
-					  	VALUES (".$r['Id'].",".$r['Status'].")";
-				
+					
+			$queries = ["INSERT INTO statuses (id, name, label) VALUES (1,'New','New')",
+						"INSERT INTO statuses (id, name, label) VALUES (2,'In Progress','Progress')",
+						"INSERT INTO statuses (id, name, label) VALUES (3,'Waiting Customer Feedback','WCF')",
+						"INSERT INTO statuses (id, name, label) VALUES (4,'Waiting For Parts','WFP')",
+						"INSERT INTO statuses (id, name, label) VALUES (5,'Customer Support Request','Request')",
+						"INSERT INTO statuses (id, name, label) VALUES (6,'Solved','Solved')",
+						"INSERT INTO statuses (id, name, label) VALUES (7,'Closed','Closed')",
+						"INSERT INTO statuses (id, name, label) VALUES (8,'Draft','Draft')"];
+			
+			foreach ($queries as $query) {							
 				
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
@@ -977,18 +971,6 @@ class Statuses extends BaseClass {
 					if ($this->debug) {
 						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
 					}
-				}
-			}
-
-			$queries = ["INSERT INTO statuses (id,name) VALUES (8,'Draft')"];
-
-			foreach ($queries as $query) {							
-			
-				if (mysqli_query($this->manager->conn, $query) === TRUE) {
-					$this->successes++;
-				}
-				else {
-					$this->errors++;
 				}
 			}
 
