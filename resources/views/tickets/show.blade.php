@@ -39,19 +39,7 @@
 		</div>
 	@endif
 
-	<div class="ticket_attachments">
-		
-		<div class="row">
-			@foreach ($ticket->attachments as $attachment)
-				<div class="col-xs-3 col-ms-2 col-sm-2 col-md-1 col-lg-1">
-					<a href="{{ $attachment->path() }}" class="thumbnail">
-						<img src="{{ $attachment->thumbnail() }}" alt="...">
-					</a>
-				</div>
-			@endforeach
-
-		</div>
-	</div>
+	@include('files.attachments',['attachments' => $ticket->attachments])
 
 	@if (count($ticket->tags))
 

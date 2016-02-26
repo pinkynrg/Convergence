@@ -40,11 +40,11 @@ hr {
   position: fixed; 
 }
 
-.post_attachments > img {
+.attachments > img {
   width: 100%;
 }
 
-.post_attachments > .row > div {
+.attachments > .row > div {
   margin-bottom: 10px;
 }
 
