@@ -12,7 +12,7 @@ use Request;
 use Form; 
 use Auth;
 
-class PostsController extends Controller {
+class PostsController extends BaseController {
 
 	public function store(CreatePostRequest $request) 
 	{

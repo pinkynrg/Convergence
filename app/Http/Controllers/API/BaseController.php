@@ -51,10 +51,6 @@ class BaseController extends Controller {
         return $model;
     }
 
-    public static function read($params) {
-        throw new \Exception('Read API method not implemented');
-    }
-
     private static function sanitize($params) {
 
         $params['order'] = isset($params['order']) && is_array($params['order']) ? $params['order'] : array();

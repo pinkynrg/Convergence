@@ -2,9 +2,4 @@
 
 use App\Models\Hotel;
 
-class HotelsController extends BaseController {
-	
-	public function index() {
-		return parent::index();
-	}
-}
+class HotelsController extends BaseController {}

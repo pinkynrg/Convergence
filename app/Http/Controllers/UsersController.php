@@ -14,18 +14,13 @@ class UsersController extends BaseController {
 	
 	public function index() {
 		if (Auth::user()->can('read-all-user')) {
-			return parent::index();
+	    	$data['users'] = self::API()->all(Request::input());
+			$data['menu_actions'] = [Form::addItem(route('users.create'), 'Add user')];
+			$data['active_search'] = implode(",",['users.username','people.first_name','people.last_name']);
+			$data['title'] = "Users";
+			return Request::ajax() ? view('users/users',$data) : view('users/index',$data);
         }
         else return redirect()->back()->withErrors(['Access denied to users index page']);		
-	}
-
-	protected function main() {
-		$params = Request::input() != [] ? Request::input() : ['order' => ['people.last_name|ASC']];
-    	$data['users'] = self::api($params);
-		$data['menu_actions'] = [Form::addItem(route('users.create'), 'Add user')];
-		$data['active_search'] = implode(",",['users.username','people.first_name','people.last_name']);
-		$data['title'] = "Users";
-		return view('users/index',$data);
 	}
 
 	public function create($id=null) {

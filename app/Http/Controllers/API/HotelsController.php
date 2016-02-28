@@ -1,13 +1,13 @@
 <?php namespace App\Http\Controllers\API;
 
 use App\Models\Hotel;
-use DB;
 
 class HotelsController extends BaseController {
 
-    public static function api($params)
+    public static function all($params)
     {
-    	
+    	$params['order'] = isset($params['order']) ? $params['order'] : ['hotels.rating|ASC'];
+
         $users = Hotel::select("hotels.*");
         $users->leftJoin('companies','companies.id','=','hotels.company_id');
         

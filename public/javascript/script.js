@@ -202,8 +202,6 @@ var getUrl = function(params, $target) {
 	var url = $target.attr('ajax-route');
 
 	var url_parts = [];
-
-	url_parts.push("type=html");
 	
 	if ( params['order'].length != 0 ) {
 		for (var key in params['order']) {
@@ -325,7 +323,7 @@ var savePostDraft = function(callback) {
 
 var updateContacts = function(company_id, callback) {
 	var target = $('select#fake_contact_id')
-	$.get('/contacts?type=json&where[]=companies.id|=|'+company_id+'&order[0]=people.last_name|ASC&order[1]=people.first_name|ASC&paginate=false', function (data) {
+	$.get('/API/contacts?&where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
 		target.html('');
 		target.append('<option value="NULL">-</option>');
 		for (var i = 0; i<data.length; i++)
@@ -336,7 +334,7 @@ var updateContacts = function(company_id, callback) {
 
 var updateEquipment = function(company_id, callback) {
 	var target = $('select#fake_equipment_id');
-	$.get('/equipment?type=json&where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
+	$.get('/API/equipment?where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
 		target.html('');
 		target.append('<option value="NULL">-</option>');
 		for (var i = 0; i<data.length; i++)
@@ -347,7 +345,7 @@ var updateEquipment = function(company_id, callback) {
 
 var updateLinkableTickets = function(company_id, callback) {
 	var target = $('select#fake_linked_tickets_id');
-	$.get('/tickets?type=json&where[]=companies.id|=|'+company_id+'&where[]=tickets.id|!=|'+url.target_id+'&order[0]=tickets.id|DESC&paginate=false', function (data) {
+	$.get('/API/tickets?where[]=companies.id|=|'+company_id+'&where[]=tickets.id|!=|'+url.target_id+'&paginate=false', function (data) {
 		target.html('');
 		for (var i = 0; i<data.length; i++)
 			target.append('<option value="'+data[i].id+'">#'+data[i].id+" - "+data[i].title+'</option>');
@@ -631,7 +629,7 @@ if ((url.target == "companies" || url.target == "contacts") && url.target_action
 	// autocomplete for first and last name
 	$("#person_fn, #person_ln").devbridgeAutocomplete({
 	    serviceUrl: function (query) {
-	    	return "/people?type=json&paginate=false&where[]=first_name:last_name|LIKE|*"+query+"*";
+	    	return "/API/people/all?paginate=false&where[]=first_name:last_name|LIKE|*"+query+"*";
 	    },
 	    onSelect: function (suggestion) {
 	    	console.log(suggestion);

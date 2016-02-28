@@ -1,12 +1,13 @@
 <?php namespace App\Http\Controllers\API;
 
 use App\Models\GroupType;
-use DB;
 
 class GroupTypesController extends BaseController {
 
-    public static function api($params)
+    public static function all($params)
     {
+    	$params['order'] = isset($params['order']) ? $params['order'] : ['display_name|ASC'];
+    	
         $group_types = GroupType::select("group_types.*");
     	$group_types = parent::execute($group_types, $params);
         return $group_types;

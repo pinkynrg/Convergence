@@ -16,13 +16,6 @@ use Form;
 
 class PeopleController extends BaseController {
 
-	public function index() {
-		if (Auth::user()->can('read-all-person')) {
-			return parent::index();
-		}
-		else return redirect()->back()->withErrors(['Access denied to people index page']);
-	}
-
 	public function show($id) {
 		$data['person'] = Person::find($id);
 		if (Auth::user()->can('read-person')) {

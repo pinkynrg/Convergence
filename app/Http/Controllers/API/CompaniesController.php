@@ -4,8 +4,10 @@ use App\Models\Company;
 
 class CompaniesController extends BaseController {
 
-    public static function api($params)
+    public static function all($params)
     { 
+        $params['order'] = isset($params['order']) ? $params['order'] : ['name|ASC'];
+
         $companies = Company::select("companies.*");
         $companies->leftJoin("company_main_contacts","companies.id","=","company_main_contacts.company_id");
         $companies->leftJoin("company_person","company_person.id","=","company_main_contacts.main_contact_id");

@@ -14,17 +14,13 @@ class EquipmentController extends BaseController {
 	
 	public function index() {
 		if (Auth::user()->can('read-all-equipment')) {
-        	return parent::index();
+	    	$data['equipment'] = self::API()->all(Request::input());
+			$data['title'] = "Equipment";
+			$data['active_search'] = implode(",",['cc_number','equipment.name','serial_number','equipment_types.name','companies.name']);
+            return Request::ajax() ? view('equipment/equipment',$data) : view('equipment/index',$data);
+
 		}
 		else return redirect()->back()->withErrors(['Access denied to equipment index page']);		
-	}
-
-	protected function main() {
-		$params = Request::input() != [] ? Request::input() : ['order' => ['equipment.cc_number|DESC']];
-    	$data['equipment'] = self::api($params);
-		$data['title'] = "Equipment";
-		$data['active_search'] = implode(",",['cc_number','equipment.name','serial_number','equipment_types.name','companies.name']);
-		return view('equipment/index',$data);
 	}
 
 	public function show($id) {
@@ -67,9 +63,5 @@ class EquipmentController extends BaseController {
         $equipment->warranty_expiration = Carbon::createFromFormat('m/d/Y', $request->get('warranty_expiration'));
         $equipment->save();
         return redirect()->route('companies.show',$equipment->company_id)->with('successes',['equipment updated successfully']);
-	}
-
-	public function destroy() {
-		return "equipment destroy method hasn't been created yet";
 	}
 }

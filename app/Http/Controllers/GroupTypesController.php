@@ -12,20 +12,15 @@ class GroupTypesController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-group-type')) {
-			return parent::index();
+	        $data['group_types'] = self::API()->all(Request::input());
+			$data['title'] = "Group Types";
+			$data['active_search'] = implode(",",['display_name','name','description']);
+			$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type')];
+            return Request::ajax() ? view('group_types/group_types',$data) : view('group_types/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to group types index page']);
 	}
-
-	protected function main() {
-		$params = Request::input() != [] ? Request::input() : ['order' => ['group_types.display_name|ASC']];
-        $data['group_types'] = self::api($params);
-		$data['title'] = "Group Types";
-		$data['active_search'] = implode(",",['display_name','name','description']);
-		$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type')];
-		return view('group_types/index',$data);
-	}
-
+	
 	public function show($id) {
 		if (Auth::user()->can('read-all-group-type')) {
 			$data['group_type'] = GroupType::find($id);

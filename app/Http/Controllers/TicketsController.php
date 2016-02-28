@@ -32,22 +32,90 @@ class TicketsController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-company')) {
-			return parent::index();
+			
+	    	// data for view
+	    	$data['tickets'] = self::API()->all(Request::input());
+			$data['companies'] = Company::orderBy('name','asc')->get();
+			
+			$data['employees'] = CompanyPersonController::API()->all([
+				'where' => ['company_person.company_id|=|1'], 
+				'order' => ['people.last_name|ASC','people.first_name|ASC'], 
+				'paginate' => 'false']
+			);
+
+			$data['divisions'] = Division::orderBy('name','asc')->get();
+			$data['statuses'] = Status::orderBy('id','asc')->get();
+
+			// title, actions menu, and search definition
+			$data['active_search'] = implode(",",['tickets.id','tickets.title','tickets.post']);
+			$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
+	    	$data['title'] = "Tickets";
+			
+			return Request::ajax() ? view('tickets/tickets',$data) : view('tickets/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to tickets index page']);      
 	}
 
-	protected function main() {
-		$params = Request::input() != [] ? Request::input() : ['order' => ['tickets.id|DESC']];
-    	$data['tickets'] = self::api($params);
-    	$data['title'] = "Tickets";
-		$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
-		$data['active_search'] = implode(",",['tickets.id','tickets.title','tickets.post']);
-		$data['companies'] = Company::orderBy('name','asc')->get();
-		$data['employees'] = CompanyPersonController::api(['where' => ['company_person.company_id|=|1'], 'order' => ['people.last_name|ASC','people.first_name|ASC'], 'paginate' => 'false']);
-		$data['divisions'] = Division::orderBy('name','asc')->get();
-		$data['statuses'] = Status::orderBy('id','asc')->get();
-		return view('tickets/index',$data);
+	public function show($id)
+	{
+		if (Auth::user()->can('read-ticket')) {
+			
+			if (Request::ajax()) {
+				return Ticket::find($id);
+			}
+			else {
+
+				$data['menu_actions'] = [
+					Form::editItem( route('tickets.edit', $id),"Edit this ticket")
+				];
+										 
+				$data['ticket'] = Ticket::find($id);
+				$data['ticket']['posts'] = Post::where('ticket_id',$id)->where('status_id','!=',POST_DRAFT_STATUS_ID)->get();
+				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
+				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
+				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
+				$data['important_post'] = Post::where('ticket_id',$id)->whereIn('ticket_status_id',[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])->where('ticket_status_id',$data['ticket']->status_id)->orderBy('created_at','desc')->first();
+
+				$links = [];
+				$temp = TicketLink::where("ticket_id","=",$id)->get();
+				foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
+				$data['ticket']['links'] = self::API()->all(['where' => ['tickets.id|IN|'.implode(":",$links)]]);
+
+				$linked_to = [];
+				$temp = TicketLink::where("linked_ticket_id","=",$id)->get();
+				foreach ($temp as $elem) $linked_to[] = $elem->ticket_id;
+				$data['ticket']['linked_to'] = self::API()->all(['where' => ['tickets.id|IN|'.implode(":",$linked_to)]]);
+
+				if (isset($data['draft_post']->post)) {
+					$data['draft_post']->post = $data['draft_post']->post != "[undefined]" ? $data['draft_post']->post : "";
+				}
+
+				switch ($data['ticket']->status_id) {
+					case TICKET_NEW_STATUS_ID 			: $data['status_class'] = 'ticket_status_new'; break;
+					case TICKET_IN_PROGRESS_STATUS_ID 	: $data['status_class'] = 'ticket_status_new'; break;
+					case TICKET_WFF_STATUS_ID 			: $data['status_class'] = 'ticket_status_on_hold'; 
+														  if (isset($data['important_post'])) { 
+														  	$data['important_post']->alert_type = "danger"; 
+														  }
+														  break;
+					case TICKET_WFP_STATUS_ID 			: $data['status_class'] = 'ticket_status_on_hold'; break;
+					case TICKET_REQUESTING_STATUS_ID 	: $data['status_class'] = 'ticket_status_on_hold'; break;
+					case TICKET_SOLVED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
+														  if (isset($data['important_post'])) {
+														  	$data['important_post']->alert_type = "success";
+														  }
+														  break;
+					case TICKET_CLOSED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
+														  break;
+					case TICKET_DRAFT_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; break;
+				};
+
+			    $data['title'] = "Ticket #".$id;
+
+				return view('tickets/show',$data);
+			}
+		}
+		else return redirect()->back()->withErrors(['Access denied to tickets show page']);	
 	}
 
 	public function create(Request $request) {
@@ -63,7 +131,7 @@ class TicketsController extends BaseController {
 			$data['companies'] = Company::all();
 			$data['priorities'] = Priority::all();
 			
-			$data['assignees'] = CompanyPersonController::api(
+			$data['assignees'] = CompanyPersonController::API()->all(
 				["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
 			);
 
@@ -111,72 +179,7 @@ class TicketsController extends BaseController {
         return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
 	}
 
-	public function show($id)
-	{
-		if (Auth::user()->can('read-ticket')) {
-			
-			if (Request::ajax()) {
-				return Ticket::find($id);
-			}
-			else {
-
-				$data['menu_actions'] = [
-					Form::editItem( route('tickets.edit', $id),"Edit this ticket")
-				];
-										 
-				$data['ticket'] = Ticket::find($id);
-				$data['ticket']['posts'] = Post::where('ticket_id',$id)->where('status_id','!=',POST_DRAFT_STATUS_ID)->get();
-				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
-				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
-				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
-				$data['important_post'] = Post::where('ticket_id',$id)->whereIn('ticket_status_id',[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])->where('ticket_status_id',$data['ticket']->status_id)->orderBy('created_at','desc')->first();
-
-				$links = [];
-				$temp = TicketLink::where("ticket_id","=",$id)->get();
-				foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
-				$data['ticket']['links'] = self::api(['where' => ['tickets.id|IN|'.implode(":",$links)]]);
-
-				$linked_to = [];
-				$temp = TicketLink::where("linked_ticket_id","=",$id)->get();
-				foreach ($temp as $elem) $linked_to[] = $elem->ticket_id;
-				$data['ticket']['linked_to'] = self::api(['where' => ['tickets.id|IN|'.implode(":",$linked_to)]]);
-
-				if (isset($data['draft_post']->post)) {
-					$data['draft_post']->post = $data['draft_post']->post != "[undefined]" ? $data['draft_post']->post : "";
-				}
-
-				switch ($data['ticket']->status_id) {
-					case TICKET_NEW_STATUS_ID 			: $data['status_class'] = 'ticket_status_new'; 
-														  break;
-					case TICKET_IN_PROGRESS_STATUS_ID 	: $data['status_class'] = 'ticket_status_new'; 
-														  break;
-					case TICKET_WFF_STATUS_ID 			: $data['status_class'] = 'ticket_status_on_hold'; 
-														  if (isset($data['important_post'])) { 
-														  	$data['important_post']->alert_type = "danger"; 
-														  }
-														  break;
-					case TICKET_WFP_STATUS_ID 			: $data['status_class'] = 'ticket_status_on_hold'; 
-														  break;
-					case TICKET_REQUESTING_STATUS_ID 	: $data['status_class'] = 'ticket_status_on_hold'; 
-														  break;
-					case TICKET_SOLVED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
-														  if (isset($data['important_post'])) {
-														  	$data['important_post']->alert_type = "success";
-														  }
-														  break;
-					case TICKET_CLOSED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
-														  break;
-					case TICKET_DRAFT_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
-														  break;
-				};
-
-			    $data['title'] = "Ticket #".$id;
-
-				return view('tickets/show',$data);
-			}
-		}
-		else return redirect()->back()->withErrors(['Access denied to tickets show page']);	
-	}
+	
 
 	public function edit($id)
 	{
@@ -192,7 +195,7 @@ class TicketsController extends BaseController {
 		$data['job_types'] = JobType::all();
 		$data['priorities'] = Priority::all();
 		
-		$data['assignees'] = CompanyPersonController::api(
+		$data['assignees'] = CompanyPersonController::API()->all(
 			["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
 		);
 

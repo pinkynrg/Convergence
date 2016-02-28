@@ -1,12 +1,13 @@
 <?php namespace App\Http\Controllers\API;
 
 use App\Models\Permission;
-use DB;
 
 class PermissionsController extends BaseController {
 
-    public static function api($params)
+    public static function all($params)
     {
+    	$params['order'] = isset($params['order']) ? $params['order'] : ['display_name|ASC'];
+    	
         $permissions = Permission::select("permissions.*");
     	$permissions = parent::execute($permissions, $params);
         return $permissions;

@@ -17,15 +17,10 @@ use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 class ServicesController extends BaseController {
 
     public function index() {
-        return parent::index();
-    }
-
-    protected function main() {
-        $params = Request::input() != [] ? Request::input() : ['order' => ['services.id|DESC']];
-        $data['services'] = self::api($params);
+        $data['services'] = self::API()->all(Request::input());
         $data['title'] = "Services";
         $data['active_search'] = implode(",",['services.id']);
-        return view('services/index',$data);
+        return Request::ajax() ? view('services/services',$data) : view('services/index',$data);
     }
 
     public function show($id) {

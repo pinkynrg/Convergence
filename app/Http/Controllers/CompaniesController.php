@@ -29,18 +29,15 @@ class CompaniesController extends BaseController {
 
     public function index() {
         if (Auth::user()->can('read-all-company')) {
-            return parent::index();
+
+            $data['companies'] = self::API()->all(Request::input());
+            $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
+            $data['active_search'] = implode(",",['companies.name']);
+            $data['title'] = "Companies";
+            
+            return Request::ajax() ? view('companies/companies',$data) : view('companies/index',$data);
         }
         else return redirect()->back()->withErrors(['Access denied to companies index page']);      
-    }
-
-    protected function main() {
-        $params = Request::input() != [] ? Request::input() : ['order' => ['companies.name|ASC']];
-        $data['companies'] = self::api($params);
-        $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
-        $data['active_search'] = implode(",",['companies.name']);
-        $data['title'] = "Companies";
-        return view('companies/index', $data);
     }
 
 	public function create() {
@@ -103,11 +100,11 @@ class CompaniesController extends BaseController {
             ];
 
             $data['company'] = Company::find($id);
-            $data['company']->contacts = CompanyPersonController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['people.last_name|ASC']]);
-            $data['company']->tickets = TicketsController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['tickets.id|DESC']]);
-            $data['company']->equipment = EquipmentController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['equipment.id|DESC']]);
-            $data['company']->hotels = HotelsController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['hotels.rating|DESC']]);
-            $data['company']->services = ServicesController::api(['where' => ['companies.id|=|'.$id], 'paginate' => 10, 'order' => ['services.id|DESC']]);
+            $data['company']->contacts = CompanyPersonController::API()->all(['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+            $data['company']->tickets = TicketsController::API()->all(['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+            $data['company']->equipment = EquipmentController::API()->all(['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+            $data['company']->hotels = HotelsController::API()->all(['where' => ['companies.id|=|'.$id], 'paginate' => 10, ]);
+            $data['company']->services = ServicesController::API()->all(['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
             $data['company']->escalations = EscalationProfile::all();
 
             $data['title'] = $data['company']->name;
@@ -173,41 +170,32 @@ class CompaniesController extends BaseController {
 	}
 
     public function contacts($id) {
-        // by merging array i let override the order by the requested values but I do not let override paginate and company id
-        $params = array_merge(['order' => ['people.last_name|ASC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
-        $data['contacts'] = CompanyPersonController::api($params);
+        $params = array_merge(Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['contacts'] = CompanyPersonController::API()->all($params);
         return view('company_person/contacts',$data);
     }
 
     public function tickets($id) {
-        // by merging array i let override the order by the requested values but I do not let override paginate and company id
-        $params = array_merge(['order' => ['tickets.id|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
-        $data['tickets'] = TicketsController::api($params);
+        $params = array_merge(Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['tickets'] = TicketsController::API()->all($params);
         return view('tickets/tickets',$data);
     }
 
     public function equipment($id) {
-        // by merging array i let override the order by the requested values but I do not let override paginate and company id
-        $params = array_merge(['order' => ['equipment.id|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
-        $data['equipment'] = EquipmentController::api($params);
+        $params = array_merge(Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['equipment'] = EquipmentController::API()->all($params);
         return view('equipment/equipment',$data);
     }
 
     public function hotels($id) {
-        // by merging array i let override the order by the requested values but I do not let override paginate and company id
-        $params = array_merge(['order' => ['hotels.rating|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
-        $data['hotels'] = HotelsController::api($params);
+        $params = array_merge(Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['hotels'] = HotelsController::API()->all($params);
         return view('hotels/hotels',$data);
     }
 
     public function services($id) {
-        // by merging array i let override the order by the requested values but I do not let override paginate and company id
-        $params = array_merge(['order' => ['services.id|DESC']], Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
-        $data['services'] = ServicesController::api($params);
+        $params = array_merge(Request::input(), ['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
+        $data['services'] = ServicesController::API()->all($params);
         return view('services/services',$data);
     }
-
-	public function destroy($id) {
-        echo "company destroy method to be implement";
-	}
 }

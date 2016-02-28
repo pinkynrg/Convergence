@@ -18,18 +18,14 @@ class EscalationProfilesController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-escalation-profiles')) {
-			return parent::index();
+	    	$data['escalation_profiles'] = self::API()->all(Request::input());
+			$data['title'] = "Escalation Profiles";
+			$data['active_search'] = implode(",",['name']);
+			$data['menu_actions'] = [Form::editItem( route('escalation_profiles.create'),"Add new Escalation Profile")];
+            return Request::ajax() ? view('escalation_profiles/escalation_profiles',$data) : view('escalation_profiles/index',$data);
+			
 		}
 		else return redirect()->back()->withErrors(['Access denied to esclation profiles index page']);
-	}
-
-	protected function main() {
-		$params = Request::input() != [] ? Request::input() : ['order' => ['escalation_profiles.name|ASC']];
-    	$data['escalation_profiles'] = self::api($params);
-		$data['title'] = "Escalation Profiles";
-		$data['active_search'] = implode(",",['name']);
-		$data['menu_actions'] = [Form::editItem( route('escalation_profiles.create'),"Add new Escalation Profile")];
-		return view('escalation_profiles/index',$data);
 	}
 
 	public function show($id,$num = 3) {

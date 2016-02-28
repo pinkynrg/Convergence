@@ -19,24 +19,13 @@ class CompanyPersonController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-contact')) {
-        	return parent::index();
+    		$data['contacts'] = self::API()->all(Request::input());
+			$data['title'] = "Contacts";
+	    	$data['menu_actions'] = [Form::addItem(route('company_person.create'), 'Add contact')];
+			$data['active_search'] = implode(",",['people.first_name','people.last_name','companies.name','email']);
+            return Request::ajax() ? view('company_person/contacts',$data) : view('company_person/index',$data);
         }
-        else return redirect()->back()->withErrors(['Access denied to contacts index page']);		
-	}
-
-	protected function main() {
-		$params = Request::input() != [] ? Request::input() : ['order' => ['people.last_name|ASC']];
-    	$data['contacts'] = self::api($params);
-		$data['title'] = "Contacts";
-	    $data['menu_actions'] = [Form::addItem(route('company_person.create'), 'Add contact')];
-		$data['active_search'] = implode(",",['people.first_name','people.last_name','companies.name','email']);
-		return view('company_person/index',$data);
-	}
-
-	protected function html() {
-		$params = Request::input();
-		$data['contacts'] = self::api($params);
-		return view('company_person/contacts',$data);
+        else return redirect()->back()->withErrors(['Access denied to contacts index page']);
 	}
 
 	public function show($id) {
@@ -116,29 +105,6 @@ class CompanyPersonController extends BaseController {
         $contact->save();
 
 		return redirect()->route('company_person.show',$id)->with('successes',['Contact updated successfully']);
-	}
-
-	public function destroy($id) {
-		echo 'company person method to be implmented';
-	}
-
-	public function ajaxPeopleRequest() {
-
-		$query = Input::get('query');
-
-		$people = Person::select(DB::raw('people.first_name as value'), 'people.id', 'people.first_name', 'people.last_name', 'companies.name as company_name')
-						->leftJoin('company_person','company_person.person_id','=','people.id')
-						->leftJoin('companies','companies.id','=','company_person.company_id')
-						->where('people.first_name','LIKE','%'.$query.'%')
-						->orWhere('people.last_name','LIKE','%'.$query.'%')
-						->get();
-
-		$result['query'] = "Unit";
-		$result['suggestions'] = $people;
-
-		$result = (object) $result;
-
-		return json_encode($result);
 	}
 }
 

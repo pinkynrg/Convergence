@@ -15,18 +15,13 @@ class GroupsController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-group')) {
-			return parent::index();
+	        $data['groups'] = self::API()->all(Request::input());
+			$data['title'] = "Groups";
+			$data['active_search'] = implode(",",['display_name','name','description']);
+			$data['menu_actions'] = [Form::addItem(route('groups.create'), 'Create new group')];
+            return Request::ajax() ? view('groups/groups',$data) : view('groups/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to groups index page']);
-	}
-
-	protected function main() {
-		$params = Request::input() != [] ? Request::input() : ['order' => ['groups.display_name|ASC']];
-        $data['groups'] = self::api($params);
-		$data['title'] = "Groups";
-		$data['active_search'] = implode(",",['display_name','name','description']);
-		$data['menu_actions'] = [Form::addItem(route('groups.create'), 'Create new group')];
-		return view('groups/index',$data);
 	}
 
 	public function show($id) {

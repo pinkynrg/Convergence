@@ -1,12 +1,13 @@
 <?php namespace App\Http\Controllers\API;
 
 use App\Models\Service;
-use DB;
 
 class ServicesController extends BaseController {
 
-    public static function api($params)
+    public static function all($params)
     {
+        $params['order'] = isset($params['order']) ? $params['order'] : ['services.id|DESC'];
+
     	$services = Service::select("services.*");
         $services->leftJoin("companies","companies.id","=","services.company_id");
         $services->leftJoin("company_person as internal_contact","internal_contact.id","=","services.internal_contact_id");

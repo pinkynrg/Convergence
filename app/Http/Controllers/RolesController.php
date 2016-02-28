@@ -14,18 +14,13 @@ class RolesController extends BaseController {
 
 	public function index() {
 		if (Auth::user()->can('read-all-role')) {
-			return parent::index();
+			$data['roles'] = self::API()->all(Request::input());
+			$data['active_search'] = implode(",",['display_name','name','description']);
+			$data['title'] = "Roles";
+			$data['menu_actions'] = [Form::addItem(route('roles.create'), 'Create new role')];
+			return Request::ajax() ? view('roles/roles',$data) : view('roles/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to roles index page']);
-	}
-
-	protected function main() {
-        $params = Request::input() != [] ? Request::input() : ['order' => ['roles.display_name|ASC']];
-        $data['roles'] = self::api($params);
-		$data['active_search'] = implode(",",['display_name','name','description']);
-		$data['title'] = "Roles";
-		$data['menu_actions'] = [Form::addItem(route('roles.create'), 'Create new role')];
-		return view('roles/index',$data);
 	}
 
 	public function show($id) {
