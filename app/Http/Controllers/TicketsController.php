@@ -20,6 +20,7 @@ use App\Models\TagTicket;
 use App\Models\Tag;
 use App\Models\Post;
 use Html2Text\Html2Text;
+use Session;
 use Request;
 use Response;
 use Input;
@@ -118,13 +119,22 @@ class TicketsController extends BaseController {
 		else return redirect()->back()->withErrors(['Access denied to tickets show page']);	
 	}
 
-	public function create(Request $request) {
+	public function create() {
 
 		$ticket = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
 		
 		if ($ticket) {
 			// if there is a started draft redirect to that
-			return redirect()->route('tickets.edit',$ticket->id)->with('infos',['This is a draft ticket lastly updated the '.date('m/d/Y H:i:s',strtotime($ticket->updated_at))]);
+			$redirect = redirect()->route('tickets.edit',$ticket->id);
+			
+			if (Session::get('errors')) {
+				$redirect = $redirect->withErrors(Session::get('errors')->all());
+			}
+			else {
+				$redirect = $redirect->with('infos',['This is a draft ticket lastly updated the '.date('m/d/Y H:i:s',strtotime($ticket->updated_at))]);
+			}
+
+			return $redirect;
 		}
 		else {
 			// otherwise redirect to empty form

@@ -18,4 +18,3 @@
 		<div> <i class="fa fa-info-circle"></i> {{ Session::get('infos')[0] }} </div>
 	</div>
 @endif
-
