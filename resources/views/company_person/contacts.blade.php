@@ -9,7 +9,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="people.last_name" type="asc">Name</th>
+				<th column="people.last_name" weight="0" type="asc">Name</th>
 				
 				@if (Route::currentRouteName() == "company_person.index")
 					<th column="companies.name">Company</th>

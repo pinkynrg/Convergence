@@ -7,7 +7,7 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="permissions.display_name">Display Name</th>
+				<th column="permissions.display_name" weight="0" type="asc">Display Name</th>
 				<th column="permissions.name">Name</th>
 				<th column="permissions.description" class="hidden-xs hidden-ms">Description</th>
 				<th column="permissions.created_at" class="hidden-xs hidden-ms">Created</th>

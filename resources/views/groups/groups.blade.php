@@ -7,7 +7,7 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="groups.display_name" type="asc">Display Name</th>
+				<th column="groups.display_name" weight="0" type="asc">Display Name</th>
 				<th column="groups.name" class="hidden-xs hidden-ms">Name</th>
 				<th column="group_types.display_name">Group Type</th>
 				<th column="groups.description" class="hidden-xs hidden-ms">Description</th>

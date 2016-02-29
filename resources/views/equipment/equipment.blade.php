@@ -9,7 +9,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="cc_number" type="desc">CC</th>
+				<th column="cc_number" weight="0" type="desc">CC</th>
 				<th column="equipment.name" class="hidden-xs hidden-ms">Name</th>
 				<th column="serial_number">Serial Number</th>
 				<th column="equipment_types.name" class="hidden-xs hidden-ms">Equipment Type</th>

@@ -530,15 +530,6 @@ $(".ajax_pagination li").live('click',function (e) {
 	}
 });
 
-// preset column order
-$("tr.orderable th").each(function () {
-	if ($(this).is("[type]")) {
-		var icon = $(this).attr("type") == "asc" ? asc_icon : desc_icon; 
-		$(this).attr("weight",0);
-		$(this).html(icon+"&nbsp;"+$(this).html());
-	}
-});
-
 // apply a loading overlay so when ajax request is in progress no new requests can be submitted
 $('#loading').hide().ajaxStart(function() {
 	if (url.target_action == "index") {

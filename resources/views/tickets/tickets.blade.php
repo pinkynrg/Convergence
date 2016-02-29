@@ -10,7 +10,7 @@
 		<thead>
 			<tr class="orderable">
 				<th column="statuses.name" class="visible-xs"> </th>
-				<th column="tickets.id" type="desc">Ticket</th>
+				<th column="tickets.id" weight="0" type="desc">Ticket</th>
 				<th column="tickets.title">Title</th>
 				<th column="statuses.name" class="hidden-xs hidden-ms">Status</th>
 				<th column="priorities.id" class="hidden-xs hidden-ms">Priority</th>

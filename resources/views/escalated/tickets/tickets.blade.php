@@ -28,8 +28,8 @@ function durationFormat($ss) {
 				<th column="companies.name" class="hidden-xs hidden-ms">Company</th>
 				<th column="divisions.name" class="hidden-xs hidden-ms">Division</th>
 				<th column="last_operation_date" class="hidden-xs">Updated</th>
-				<th column="levels.name" type="desc" class="hidden-xs hidden-ms">Level</th>
-				<th column="last_escalation" type="desc" class="hidden-xs hidden-ms">Last Escalation</th>
+				<th column="levels.name" weight="0" type="desc" class="hidden-xs hidden-ms">Level</th>
+				<th column="last_escalation" weight="1" type="desc" class="hidden-xs hidden-ms">Last Escalation</th>
 			</tr>
 		</thead>
 		<tbody>

@@ -9,7 +9,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="services.id" type="desc">Service #</th>
+				<th column="services.id" weight="0" type="desc">Service #</th>
 				
 				@if (Route::currentRouteName() == "services.index")
 					<th column="companies.name">Company</th>

@@ -7,7 +7,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="people.last_name" type="asc">Person Name</th>
+				<th column="people.last_name" weight="0" type="asc">Person Name</th>
 				<th column="users.username">Username</th>
 				<th column="users.password" class="hidden-xs hidden-ms">Hashed Password</th>
 				<th column="users.created_at" class="hidden-xs hidden-ms">Created</th>
