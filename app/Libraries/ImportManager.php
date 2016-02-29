@@ -1050,7 +1050,7 @@ class Titles extends BaseClass {
 class Companies extends BaseClass {
 
 	public $table_name = 'companies';
-	public $dependency_names = ['dummies','connection_types','support_types'];
+	public $dependency_names = ['dummies','connection_types','support_types','escalation_profiles'];
 
 	public function importSelf() {
 
@@ -1067,9 +1067,9 @@ class Companies extends BaseClass {
 				$r['Connect_Option'] = $r['Connect_Option'] == "'A'" ? "'1'" : "'2'";
 				$r['Id_Support_Type'] = $r['Id_Support_Type'] == '"0"' ? 'NULL' : $r['Id_Support_Type'];
 				
-				$query = "INSERT INTO companies (id, name, address, country, city, state, zip_code, connection_type_id, support_type_id, created_at,updated_at) 
+				$query = "INSERT INTO companies (id, name, address, country, city, state, zip_code, connection_type_id, support_type_id, escalation_profile_id, created_at,updated_at) 
 						VALUES (".$r['Id'].",".$r['Customer'].",".$r['Address'].",".$r['Country'].",".$r['City'].",".$r['State'].",
-						".$r['ZipCode'].",".$r['Connect_Option'].",".$r['Id_Support_Type'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+						".$r['ZipCode'].",".$r['Connect_Option'].",".$r['Id_Support_Type'].",".DEFAULT_ESCALATION_PROFILE_ID.",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
 				
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;

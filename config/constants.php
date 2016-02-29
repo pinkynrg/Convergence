@@ -48,6 +48,7 @@ define("TICKET_DRAFT_STATUS_ID",8);
 define("POST_DRAFT_STATUS_ID",1);
 define("POST_PRIVATE_STATUS_ID",2);
 define("POST_PUBLIC_STATUS_ID",3);
+define("DEFAULT_ESCALATION_PROFILE_ID",1);
 
 // ICONS
 define("MISSING_ICON", "fa fa-question-circle");
