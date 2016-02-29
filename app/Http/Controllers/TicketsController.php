@@ -38,7 +38,7 @@ class TicketsController extends BaseController {
 			$data['companies'] = Company::orderBy('name','asc')->get();
 			
 			$data['employees'] = CompanyPersonController::API()->all([
-				'where' => ['company_person.company_id|=|1'], 
+				'where' => ['company_person.company_id|=|'.ELETTRIC80_COMPANY_ID], 
 				'order' => ['people.last_name|ASC','people.first_name|ASC'], 
 				'paginate' => 'false']
 			);

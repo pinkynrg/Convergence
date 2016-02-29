@@ -4,7 +4,7 @@ use App\Models\Company;
 
 class CompaniesController extends BaseController {
 
-    public static function all($params)
+    public function all($params)
     { 
         $params['order'] = isset($params['order']) ? $params['order'] : ['name|ASC'];
 

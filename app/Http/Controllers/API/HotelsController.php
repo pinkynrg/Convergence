@@ -4,7 +4,7 @@ use App\Models\Hotel;
 
 class HotelsController extends BaseController {
 
-    public static function all($params)
+    public function all($params)
     {
     	$params['order'] = isset($params['order']) ? $params['order'] : ['hotels.rating|ASC'];
 

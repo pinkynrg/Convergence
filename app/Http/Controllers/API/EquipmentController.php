@@ -4,7 +4,7 @@ use App\Models\Equipment;
 
 class EquipmentController extends BaseController {
 
-    public static function all($params)
+    public function all($params)
     {
     	$params['order'] = isset($params['order']) ? $params['order'] : ['equipment.cc_number|DESC'];
     	

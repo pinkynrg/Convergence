@@ -296,21 +296,21 @@ class EscalationProfileEvents extends BaseClass {
 		
 		if ($this->truncate()) {
 			$queries = [
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,1,7200)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,1,7200)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,1,7200)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,2,7200)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,2,7200)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,2,7200)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,3,28800)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,3,28800)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,3,28800)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,4,604800)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,4,604800)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,4,604800)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,1,5,604800)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,2,5,604800)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,4,5,604800)"
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,'1,2,4',1,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,'1,2,4',2,7200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,'1,2,4',3,28800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,'1,2,4',4,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,1,'1,2,4',5,604800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',1,86400)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',2,86400)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',3,345600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',4,2419200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',5,2419200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',1,1209600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',2,1209600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',3,4838400)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',4,7257600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',5,7257600)"
 			];
 
 			foreach ($queries as $query) {							
@@ -483,10 +483,10 @@ class PermissionRole extends BaseClass {
 					
 					if ($role) {
 						if ($role_type == 'viewer') {
-							$query = "SELECT * FROM permissions WHERE `name` LIKE '%$target' AND (`name` LIKE '%read%' OR `name` LIKE '%read-all%')";
+							$query = "SELECT * FROM permissions WHERE name LIKE '%$target' AND (name LIKE '%read%' OR name LIKE '%read-all%')";
 						}
 						elseif ($role_type == 'manager') {
-							$query = "SELECT * FROM permissions WHERE `name` LIKE '%$target'";
+							$query = "SELECT * FROM permissions WHERE name LIKE '%$target'";
 						}
 						
 						$result = mysqli_query($this->manager->conn, $query);

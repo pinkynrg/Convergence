@@ -4,7 +4,7 @@ use App\Models\Permission;
 
 class PermissionsController extends BaseController {
 
-    public static function all($params)
+    public function all($params)
     {
     	$params['order'] = isset($params['order']) ? $params['order'] : ['display_name|ASC'];
     	

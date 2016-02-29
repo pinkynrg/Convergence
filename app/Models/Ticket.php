@@ -40,6 +40,11 @@ class Ticket extends CustomModel {
 		return $this->belongsTo('App\Models\Priority');		
 	}
 
+	public function level()
+	{
+		return $this->belongsTo('App\Models\Level');
+	}
+
 	public function job_type()
 	{
 		return $this->belongsTo('App\Models\JobType');		

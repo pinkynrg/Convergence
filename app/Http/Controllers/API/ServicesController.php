@@ -4,7 +4,7 @@ use App\Models\Service;
 
 class ServicesController extends BaseController {
 
-    public static function all($params)
+    public function all($params)
     {
         $params['order'] = isset($params['order']) ? $params['order'] : ['services.id|DESC'];
 

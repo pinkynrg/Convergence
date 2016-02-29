@@ -4,7 +4,7 @@ use App\Models\Person;
 
 class PeopleController extends BaseController {
 
-    public static function all($params)
+    public function all($params)
     {
         $params['order'] = isset($params['order']) ? $params['order'] : ['last_name|ASC','first_name|ASC'];
         

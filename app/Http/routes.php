@@ -33,8 +33,9 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('API/services/{method}',['uses' => 'ServicesController@apiCall', 'as' => 'services.api']);
 	Route::get('API/people/{method}',['uses' => 'PeopleController@apiCall', 'as' => 'people.api']);
 	Route::get('API/users/{method}',['uses' => 'UsersController@apiCall', 'as' => 'users.api']);
-	Route::get('API/contacts/{method}',['uses' => 'ContactsController@apiCall', 'as' => 'contacts.api']);
+	Route::get('API/contacts/{method}',['uses' => 'CompanyPersonController@apiCall', 'as' => 'contacts.api']);
 	Route::get('API/hotels/{method}',['uses' => 'HotelsController@apiCall', 'as' => 'hotels.api']);
+	Route::get('API/escalated/{method}',['uses' => 'EscalatedController@apiCall', 'as' => 'escalated.api']);
 
 	// group_types routes 
 	Route::get('group-types',['uses' => 'GroupTypesController@index', 'as' => 'group_types.index']);
@@ -74,6 +75,8 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('escalation-profiles/{id}', ['uses' => 'EscalationProfilesController@destroy', 'as' => 'escalation_profiles.destroy']);
 	Route::patch('escalation-profiles/{id}', ['uses' => 'EscalationProfilesController@update', 'as' => 'escalation_profiles.update']);	
 	Route::post('escalation-profiles/{id}/events', ['uses' => 'EscalationProfilesController@updateProfileEvents', 'as' => 'escalation_profiles.update_events']);
+
+	Route::get('escalated/tickets',['uses' => 'EscalatedController@tickets', 'as' => 'escalated.tickets']);
 
 	// permissions routes 
 	Route::get('permissions',['uses' => 'PermissionsController@index', 'as' => 'permissions.index']);

@@ -18,28 +18,28 @@
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("tickets.assignee_id", $employees, 
-				["title" => "assignees", "selected_text" => "Assignees Active", "class" => "multifilter", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!last_name"," ","!first_name"]]);
+				["title" => "assignees", "selected_text" => "Assignees Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!last_name"," ","!first_name"]]);
 			!!}
 		</div>
 
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("tickets.creator_id", $employees, 
-				["title" => "creators", "selected_text" => "Creators Active", "class" => "multifilter", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!last_name"," ","!first_name"]]) 
+				["title" => "creators", "selected_text" => "Creators Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => ["!last_name"," ","!first_name"]]) 
 			!!}
 		</div>
 
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("tickets.division_id", $divisions, 
-				["title" => "divisions", "selected_text" => "Divisions Active", "class" => "multifilter", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]) 
+				["title" => "divisions", "selected_text" => "Divisions Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]) 
 			!!}
 		</div>
 
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("tickets.status_id", $statuses, 
-				["title" => "statuses", "selected_text" => "Statuses Active", "class" => "multifilter", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]) 
+				["title" => "statuses", "selected_text" => "Statuses Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]) 
 			!!}
 		</div>
 
@@ -51,6 +51,6 @@
 
 	<hr>
 
-	@include('tickets/tickets', array('tickets' => $tickets))
+	@include('escalated/tickets/tickets', array('tickets' => $tickets))
 	
 @endsection

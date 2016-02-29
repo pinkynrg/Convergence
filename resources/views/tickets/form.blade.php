@@ -67,8 +67,8 @@
 			{!! Form::BSHidden('linked_tickets_id',null,['id' => 'linked_tickets_id']) !!}
 
 			{!! 
-				Form::BSMultiSelect("link_tickets", [], 
-				["id" => "fake_linked_tickets_id", "search" => "true"]) 
+				Form::BSMultiSelect("fake_linked_tickets_id", [], 
+				["title" => "link_tickets", "search" => "true"]) 
 			!!}
 
 		{!! Form::BSEndGroup() !!}

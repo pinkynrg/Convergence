@@ -43,7 +43,7 @@ class EscalationProfilesController extends BaseController {
 			if (count($escalation_profile_events) > 0) {
 				foreach ($escalation_profile_events as $key => $escalation_profile_event) {
 					$data['escalation_profile_events']['delay_time'][$key] = $escalation_profile_event->delay_time;
-					$data['escalation_profile_events']['event_id'][$key] = $escalation_profile_event->event_id;
+					$data['escalation_profile_events']['event_id'][$key] = explode(",",$escalation_profile_event->event_id);
 					$data['escalation_profile_events']['level_id'][$key] = $escalation_profile_event->level_id;
 					$data['escalation_profile_events']['priority_id'][$key] = $escalation_profile_event->priority_id;
 				}
@@ -100,8 +100,8 @@ class EscalationProfilesController extends BaseController {
         return redirect()->route('escalation_profiles.index')->with('successes',['Esclation Profile created successfully']);;
 	}
 
-	public function updateProfileEvents($id, UpdateEscalationProfileEventsRequest $request) {
-	
+	public function updateProfileEvents($id,UpdateEscalationProfileEventsRequest $request) {
+
 		DB::table('escalation_profile_event')->where('profile_id',$id)->delete();
 
 		for ($k=0; $k<$request->get("num"); $k++) {
@@ -109,7 +109,7 @@ class EscalationProfilesController extends BaseController {
 			$data[] = [ 'profile_id' => $id,
 						'level_id' => $request->get("level_id")[$k],
 						'delay_time' => $request->get("delay_time")[$k], 
-					   	'event_id'=> $request->get("event_id")[$k],
+					   	'event_id' => implode(",",$request->get("event_id")[$k]),
 				   		'priority_id' => $request->get("priority_id")[$k]];
 		}
 

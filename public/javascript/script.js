@@ -323,7 +323,7 @@ var savePostDraft = function(callback) {
 
 var updateContacts = function(company_id, callback) {
 	var target = $('select#fake_contact_id')
-	$.get('/API/contacts?&where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
+	$.get('/API/contacts/all?where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
 		target.html('');
 		target.append('<option value="NULL">-</option>');
 		for (var i = 0; i<data.length; i++)
@@ -334,7 +334,7 @@ var updateContacts = function(company_id, callback) {
 
 var updateEquipment = function(company_id, callback) {
 	var target = $('select#fake_equipment_id');
-	$.get('/API/equipment?where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
+	$.get('/API/equipment/all?where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
 		target.html('');
 		target.append('<option value="NULL">-</option>');
 		for (var i = 0; i<data.length; i++)
@@ -345,7 +345,7 @@ var updateEquipment = function(company_id, callback) {
 
 var updateLinkableTickets = function(company_id, callback) {
 	var target = $('select#fake_linked_tickets_id');
-	$.get('/API/tickets?where[]=companies.id|=|'+company_id+'&where[]=tickets.id|!=|'+url.target_id+'&paginate=false', function (data) {
+	$.get('/API/tickets/all?where[]=companies.id|=|'+company_id+'&where[]=tickets.id|!=|'+url.target_id+'&paginate=false', function (data) {
 		target.html('');
 		for (var i = 0; i<data.length; i++)
 			target.append('<option value="'+data[i].id+'">#'+data[i].id+" - "+data[i].title+'</option>');
@@ -428,9 +428,12 @@ var  updateRowLevel = function() {
 		// update label row
 		$(this).find(".escalation_level").html("Event #"+parseInt(counter+1));
 		// update form fields ids
-		$(this).find("select.delay_time").attr("name", "delay_time["+counter+"]");
-		$(this).find("select.event_id").attr("name", "event_id["+counter+"]");
-		$(this).find("select.fallback_contact_id").attr("name", "fallback_contact_id["+counter+"]");
+		
+		$(this).find(".level_id").attr("name", "level_id["+counter+"]");
+		$(this).find(".delay_time").attr("name", "delay_time["+counter+"]");
+		$(this).find(".event_id").attr("name", "event_id["+counter+"][]");
+		$(this).find(".priority_id").attr("name", "priority_id["+counter+"]");
+
 		// update record number holder
 		$("#num").val(counter+1);
 		counter++;
@@ -559,26 +562,13 @@ $('.panel-heading[data-toggle="collapse"]').click(function () {
 $(".pagination").rPage();
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@/{any} AND @/companies/{id}
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-if ((url.target_action == "index") || (url.target == "companies" && url.target_action == "show")) {
-	// trigger ajax request when ordering
-	$("tr.orderable th").on("click", function () {
-		var $target = $(this).closest("div[ajax-route]");
-		toggleOrder($(this));
-		ajaxUpdate($target);
-	});
-}
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @/{any}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-if (url.target_action == "index") {
+if (true) {
 
 	//reset values of filters 
-	$('.selectpicker').selectpicker('deselectAll');
+	$('.multifilter').selectpicker('deselectAll');
 
 	//reset values of search field
 	$("input[type='text'].search").val("");
@@ -604,6 +594,12 @@ if (url.target_action == "index") {
 	$("#expand_filters").click(function() {
 		$("#filters").style("display","block","important");
 		$(this).remove();
+	});
+
+	$("tr.orderable th").on("click", function () {
+		var $target = $(this).closest("div[ajax-route]");
+		toggleOrder($(this));
+		ajaxUpdate($target);
 	});
 }
 
@@ -919,13 +915,16 @@ if (url.target == "services" && url.target_action == "create") {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") {
+
 	updateRowLevel();
 
 	$("#add_escalation_event").on("click", function() {
 		consoleLog("added escalation event");
 		var form = $(".escalation_event_form").first().clone();
-		form.find("option").prop("selected", false);
 		$(".escalation_event_form").last().after(form);
+		form.find('.bootstrap-select .dropdown-toggle').remove();
+		form.find("option").prop("selected", false);
+        form.find('select').selectpicker();
 		updateRowLevel();
 	});
 

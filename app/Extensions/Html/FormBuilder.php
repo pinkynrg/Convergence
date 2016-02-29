@@ -82,8 +82,8 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 	}
 
 	public function BSMultiSelect($name, $list = array(), $options = array()) {
-		$options['id'] = isset($options['id']) ? $options['id'] : '';
 		$options['title'] = isset($options['title']) ? ucfirst($options['title']) : ucwords(str_replace("_"," ",$name));
+		$options['class'] = isset($options['class']) ? $options['class'] : "";
 		$options['multiple'] = isset($options['multiple']) && $options['multiple'] == false ? "" : "multiple";
 		$options['selected'] = isset($options['selected']) && is_array($options['selected']) ? $options['selected'] : [];
 		$options['selected_text'] = isset($options['selected_text']) ? $options['selected_text'] : false;
@@ -91,8 +91,9 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$options['search'] = isset($options['search']) ? $options['search'] == true ? "true" : "false" : "true";
 		$options['value'] = isset($options['value']) ? $options['value'] : '';
 		$options['label'] = isset($options['label']) ? $options['label'] : '';
+		$options['selected'] = isset($options['selected']) ? $options['selected'] : array();
 
-		$multi = "<select id='".$options['id']."' class='selectpicker multifilter' ".$options['multiple']." title='".$options['title']."'";
+		$multi = "<select id='".$name."' name='".$name."' class='selectpicker ".$options['class']."' ".$options['multiple']." title='".$options['title']."'";
 		
 		if ($options['selected_text']) {
 			$multi .= "data-count-selected-text='".$options['selected_text']."' width='100px' data-size='".$options['data-size']."' data-selected-text-format='count>0'";
@@ -102,7 +103,13 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 		foreach ($list as $item) {
 			$label = "";
-			$multi .= "<option value=".$item->{$options['value']}.">";
+
+			if (in_array($item->{$options['value']},$options['selected'])) {
+				$multi .= "<option selected value=".$item->{$options['value']}.">";
+			}
+			else {
+				$multi .= "<option value=".$item->{$options['value']}.">";
+			}
 
 			if (is_array($options['label'])) {
 				foreach ($options['label'] as $part) {

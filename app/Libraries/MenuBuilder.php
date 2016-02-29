@@ -26,10 +26,9 @@ class MenuBuilder {
 				['type'=>'item','label'=>'Groups','icon'=>USERS_ICON,'link'=>route('groups.index'),'show'=>Auth::user()->can('read-all-group')],
 				['type'=>'item','label'=>'Groups Types','icon'=>GROUP_TYPES_ICON,'link'=>route('group_types.index'),'show'=>Auth::user()->can('read-all-group-type')]
 			]],
-			// ['type'=>'group','label'=>'Info','icon'=>INFO_ICON,'menu'=>[	
-			// 	['type'=>'item','label'=>'Dashboard','icon'=>DASHBOARD_ICON,'link'=>route('dashboard.logged'), 'show'=>true],
-			// 	['type'=>'item','label'=>'Statistics','icon'=>STATISTICS_ICON,'link'=>route('statistics.index'), 'show'=>true]
-			// ]],
+			['type'=>'group','label'=>'Information','icon'=>INFO_ICON,'menu'=>[	
+				['type'=>'item','label'=>'Escalating Tickets','icon'=>ESCALATIONS_ICON,'link'=>route('escalated.tickets'), 'show'=>true]
+			]],
 			['type'=>'group','label'=>'Statistics','icon'=>STATISTICS_ICON,'menu'=>[	
 				['type'=>'item','label'=>'General Statistics','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
 				['type'=>'item','label'=>'Tickets Status','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],

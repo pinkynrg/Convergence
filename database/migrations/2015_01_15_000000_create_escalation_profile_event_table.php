@@ -17,7 +17,7 @@ class CreateEscalationProfileEventTable extends Migration {
 			$table->increments('id');
 			$table->integer('level_id')->unsigned();
 			$table->integer('profile_id')->unsigned();
-			$table->integer('event_id')->unsigned();
+			$table->string('event_id');
 			$table->integer('priority_id')->unsigned();
 			$table->integer('delay_time')->unsigned();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -28,8 +28,8 @@ class CreateEscalationProfileEventTable extends Migration {
 		Schema::table('escalation_profile_event',function(Blueprint $table) {
 			$table->foreign('level_id')->references('id')->on('levels');
 			$table->foreign('profile_id')->references('id')->on('escalation_profiles');
-			$table->foreign('event_id')->references('id')->on('escalation_events');
 			$table->foreign('priority_id')->references('id')->on('priorities');
+			$table->unique( array('profile_id','level_id','priority_id') );
 			
 		});
 	}
