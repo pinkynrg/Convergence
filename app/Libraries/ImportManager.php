@@ -919,7 +919,7 @@ class Priorities extends BaseClass {
 		if ($this->truncate()) {
 
 			$queries = ["INSERT INTO priorities (id,weight,name,label) VALUES (1,1,'System Stop High','Stop')",
-						"INSERT INTO priorities (id,weight,name,label) VALUES (2,1,'Very Crytical Issue High','High')",
+						"INSERT INTO priorities (id,weight,name,label) VALUES (2,1,'Very Critical Issue High','High')",
 						"INSERT INTO priorities (id,weight,name,label) VALUES (3,2,'Critical Issue Medium','Medium')",
 						"INSERT INTO priorities (id,weight,name,label) VALUES (4,3,'Non Critical Issue','Low')",
 						"INSERT INTO priorities (id,weight,name,label) VALUES (5,3,'Information Request','Info')"];
@@ -956,7 +956,7 @@ class Statuses extends BaseClass {
 						"INSERT INTO statuses (id, name, label) VALUES (2,'In Progress','Progress')",
 						"INSERT INTO statuses (id, name, label) VALUES (3,'Waiting Customer Feedback','WCF')",
 						"INSERT INTO statuses (id, name, label) VALUES (4,'Waiting For Parts','WFP')",
-						"INSERT INTO statuses (id, name, label) VALUES (5,'Customer Support Request','Request')",
+						"INSERT INTO statuses (id, name, label) VALUES (5,'Ticket Request','Request')",
 						"INSERT INTO statuses (id, name, label) VALUES (6,'Solved','Solved')",
 						"INSERT INTO statuses (id, name, label) VALUES (7,'Closed','Closed')",
 						"INSERT INTO statuses (id, name, label) VALUES (8,'Draft','Draft')"];
@@ -1636,6 +1636,7 @@ class Tickets extends BaseClass {
 				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
 				$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
 				$t['Deleted_At'] = $t['Deleted_Ticket'] == '1' ? $t['Date_Update'] : '';
+				$t['Status'] = $t['Status'] != '4' ? $t['Status'] : '3';
 
 				$t = nullIt($t);
 
