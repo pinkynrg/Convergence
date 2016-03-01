@@ -23,6 +23,7 @@
 <script src="/javascript/responsive-paginate.js"></script>
 <script src="/javascript/jquery.style.js"></script>
 <script src="/javascript/bootstrap-slider.js"></script>
+<script src="/javascript/jquery.cookie.js"></script>
 <script src="/javascript/script.js"></script>
 
 <!-- Stylesheets -->

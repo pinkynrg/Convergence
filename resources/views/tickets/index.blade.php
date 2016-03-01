@@ -11,7 +11,7 @@
 		<div class="col-xs-12 col-ms-4 col-md-2">
 			{!! 
 				Form::BSMultiSelect("tickets.company_id", $companies, 
-				["title" => "companies", "selected_text" => "Companies Active", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]);
+				["title" => "companies", "selected_text" => "Companies Active", "class" => "multifilter", "search" => "true", "data-size" => "5", "value" => "id", "label" => "!name"]);
 			!!}
 		</div>
 

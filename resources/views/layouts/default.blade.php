@@ -10,7 +10,11 @@
 
 <div id="loading"></div>
 
-<div class="container wrapper" ajax-route= {{ "http://$_SERVER[HTTP_HOST]"."$_SERVER[REQUEST_URI]" }} >
+@if (Route::currentRouteName() != "companies.show")
+	<div class="container wrapper" ajax-route= {{ "http://$_SERVER[HTTP_HOST]"."$_SERVER[REQUEST_URI]" }} >
+@else
+	<div class="container wrapper">
+@endif
 	
 	<div class="horizontal_menu hidden-lg">	
 		@include('includes.horizontal-menu')
@@ -31,7 +35,7 @@
 			@if (isset($active_search))
 				<div class="col-lg-3 col-sm-2 col-ms-1 col-xs-0"></div>
 				<div class="col-lg-3 col-sm-4 col-ms-5 col-xs-12 form-group">
-					<input type="text" columns="{{$active_search}}" class="form-control search" placeholder="search">
+					<input id="search_field" type="text" columns="{{$active_search}}" class="form-control search" placeholder="search">
 				</div>
 			@endif
 

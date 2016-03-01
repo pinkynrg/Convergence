@@ -29,6 +29,15 @@ var consoleLog = function(string) {
 	}
 };
 
+var readCookie = function() {
+	consoleLog("List of alla available cookies:");
+	var cookies = $.cookie();
+
+	for(var cookie in cookies) {
+    consoleLog(cookie+"="+cookies[cookie]);
+}
+}
+
 var scrollUp = function(ms) {
 	$("html, body").animate({
         scrollTop: 0
@@ -39,9 +48,6 @@ var getUrlParameter = function (sPageURL, sParam) {
     var sURLVariables = sPageURL.replace("?","&").split('&'),
         sParameterName,
         i;
-
-    consoleLog("Parameters in href clicked page: ");
-    consoleLog(sURLVariables);
 
     for (i = 0; i < sURLVariables.length; i++) {
         sParameterName = sURLVariables[i].split('=');
@@ -55,6 +61,9 @@ var getUrlParameter = function (sPageURL, sParam) {
 var resetFilter = function($this) {
 	var $target = $this.closest("div[ajax-route]");
 	$target.find('.selectpicker').selectpicker('deselectAll');
+	$target.find('#search_field').val("");
+	// reset page
+	// reset ordering 
 	ajaxUpdate($target);
 };
 
@@ -143,6 +152,104 @@ var splitSearch = function(search) {
 
 	return list;
 };
+
+var setupFilters = function () {
+
+	$("div[ajax-route]").each(function() {
+
+		var cookie_name,
+			cookie_content,
+			filters,
+			ajax_route,
+			$target = $(this);
+
+		ajax_route = $target.attr('ajax-route');
+
+		cookie_name = url.target+"|"+url.target_action+"|"+ajax_route+"#"+"filters";
+	
+		if (typeof $.cookie(cookie_name) != "undefined") {
+
+			filters = JSON.parse($.cookie(cookie_name));
+			
+			$target.find("#search_field").val(filters['search_field']);
+
+			$target.find(".multifilter").each(function () {
+				$(this).val(filters['multifilter'][$(this).attr('id')]);
+			});
+
+			if (filters['order'] != {}) {
+				$target.find("tr.orderable th").each(function () {
+					$(this).removeAttr('type');
+					$(this).removeAttr('weight');
+					var order = filters['order'][$(this).attr('column')];
+					if (order != null) {
+						var icon = $(this).attr("type") == "asc" ? asc_icon : desc_icon;
+						$(this).attr('type',order['type']);
+						$(this).attr('weight',order['weight']);
+						$(this).html(icon+"&nbsp;"+$(this).html());
+					}
+				});
+			}
+
+			first_ordering = false;
+
+			$target.find(".ajax_pagination li").each(function () {
+				var href = $(this).find("a").attr("href");
+				if (typeof href != "undefined") {
+					if (getUrlParameter(href,"page") == filters['page']) {
+						$(this).attr("selected","selected");
+					}
+				}
+			});
+
+			// $target.find(".content table tbody").html("");
+			ajaxUpdate($target);
+
+		}
+		else {
+
+			$target.find("tr.orderable th").each(function () {
+				if ($(this).is("[type]")) {
+					var icon = $(this).attr("type") == "asc" ? asc_icon : desc_icon;
+					$(this).html(icon+"&nbsp;"+$(this).html());
+				}
+			});
+		}
+	});
+}
+
+var saveFiltersSetup = function ($target) {
+
+	var filters = new Object(),
+		cookie_name,
+		ajax_route = $target.attr('ajax-route'),
+		href = $target.find(".ajax_pagination").find("li[selected] a").attr("href");
+
+	cookie_name = url.target+"|"+url.target_action+"|"+ajax_route+"#"+"filters";
+
+	filters['page'] = 1;
+	filters['search_field'] = "";
+	filters['order'] = new Object();
+	filters['multifilter'] = new Object();
+	
+	if (typeof href != "undefined") {
+		filters['page'] = getUrlParameter(href,"page");
+	}
+
+	filters['search_field'] = $target.find("#search_field").val();
+
+	$target.find("tr.orderable th[type]:visible").each(function () {
+		filters['order'][$(this).attr('column')] = new Object();
+		filters['order'][$(this).attr('column')]['type'] = $(this).attr('type');
+		filters['order'][$(this).attr('column')]['weight'] = $(this).attr('weight');
+	});
+
+	$target.find("select.selectpicker.multifilter").each(function () {
+		filters['multifilter'][$(this).attr('id')] = $(this).val();
+	});
+
+	$.cookie(cookie_name,filters);
+}
 
 var getParams = function($target) {
 	var params = {};
@@ -241,6 +348,8 @@ var getUrl = function(params, $target) {
 
 var ajaxRequest = function(url,$target) {
 
+	saveFiltersSetup($target);
+
 	$.ajax({
 		type: 'GET',
 		url: url,
@@ -250,7 +359,7 @@ var ajaxRequest = function(url,$target) {
 			$target.find(".ajax_pagination[scrollup='false']").html($(data).find(".ajax_pagination[scrollup='false']").html());
 		},
 		error: function (data) {
-			console.log(data);
+			consoleLog(data);
 		}
 	});
 
@@ -553,15 +662,16 @@ function setupPrioritySlider() {
 // url id, action, target
 consoleLog(url);
 
+// list all available cookies
+readCookie();
+
+// if cookie with save filters available retrive them
+setupFilters();
+
+$.cookie.json = true;
+
 $(window).scroll(function(){
 	updateMenuPosition();
-});
-
-$("tr.orderable th").each(function () {
-	if ($(this).is("[type]")) {
-		var icon = $(this).attr("type") == "asc" ? asc_icon : desc_icon;
-		$(this).html(icon+"&nbsp;"+$(this).html());
-	}
 });
 
 // set scrolling select list default phone browser
@@ -629,12 +739,6 @@ $(".pagination").rPage();
 
 if (true) {
 
-	//reset values of filters 
-	$('.multifilter').selectpicker('deselectAll');
-
-	//reset values of search field
-	$("input[type='text'].search").val("");
-
 	// trigger ajax request when searching
 	$("input[type='text'].search").on("keyup", function () {
 		var $target = $(this).closest("div[ajax-route]");
@@ -690,7 +794,6 @@ if ((url.target == "companies" || url.target == "contacts") && url.target_action
 	    	return "/API/people/all?paginate=false&where[]=first_name:last_name|LIKE|*"+query+"*";
 	    },
 	    onSelect: function (suggestion) {
-	    	console.log(suggestion);
 	    	$("#person_id").prop("disabled",false);
 			$("#person_fn, #person_ln").prop("readonly",true);
 	    	$("#person_id").val(suggestion.data.id);
