@@ -557,6 +557,13 @@ $(window).scroll(function(){
 	updateMenuPosition();
 });
 
+$("tr.orderable th").each(function () {
+	if ($(this).is("[type]")) {
+		var icon = $(this).attr("type") == "asc" ? asc_icon : desc_icon;
+		$(this).html(icon+"&nbsp;"+$(this).html());
+	}
+});
+
 // set scrolling select list default phone browser
 $('.selectpicker').selectpicker('mobile');
 
