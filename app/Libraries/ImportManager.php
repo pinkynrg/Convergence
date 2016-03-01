@@ -1636,7 +1636,7 @@ class Tickets extends BaseClass {
 				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
 				$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
 				$t['Deleted_At'] = $t['Deleted_Ticket'] == '1' ? $t['Date_Update'] : '';
-				$t['Status'] = $t['Status'] != '4' ? $t['Status'] : '3';
+				$t['Status'] = $t['Status'] != '5' ? $t['Status'] : '3';
 
 				$t = nullIt($t);
 
