@@ -447,16 +447,23 @@ a:visited, a:link, a:active, a:visited {
 
 #ticket_wrapper {
   background-color: #FFFCE9;
-  border: 1px solid #DCD8C5;
+  border: 3px double #DCD8C5;
   padding: 15px;
   margin: 20px 0px;
   width: 100%;
-  border-radius: 4px;
+  border-radius: 10px;
+}
+
+#posts_container {
+  margin-top: 15px;
 }
 
 .post {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+    border: 3px double #ddd;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    width: 100%;
 }
 
 .post_private {

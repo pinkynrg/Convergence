@@ -108,8 +108,6 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::delete('tickets/{id}', ['uses' => 'TicketsController@destroy', 'as' => 'tickets.destroy']);
 	Route::patch('tickets/{id}', ['uses' => 'TicketsController@update', 'as' => 'tickets.update']);	
 	Route::get('tickets/{id}/edit', ['uses' => 'TicketsController@edit', 'as' => 'tickets.edit']);
-	Route::get('tickets/API/{method}',['uses' => 'TicketsController@apiCall', 'as' => 'tickets.api']);
-
 
 	// posts routes
 	Route::post('posts',['uses' => 'PostsController@store', 'as' => 'posts.store']);

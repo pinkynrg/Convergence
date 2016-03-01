@@ -35,6 +35,8 @@ class TicketsController extends BaseController {
 	public function index() {
 		if (Auth::user()->can('read-all-company')) {
 			
+        	Session::set('tickets.url',Request::input());
+
 	    	// data for view
 	    	$data['tickets'] = self::API()->all(Request::input());
 			$data['companies'] = Company::orderBy('name','asc')->get();
