@@ -1860,6 +1860,7 @@ class TicketsHistroy extends BaseClass {
 
 	public $table_name = 'tickets_history';
 	public $dependency_names = ['tickets'];
+	private $deleted = 0;
 
 	public function importSelf() {
 
@@ -1921,7 +1922,43 @@ class TicketsHistroy extends BaseClass {
 				}
 			}
 
+			$query = "SELECT id, changer_id, title, post, creator_id, assignee_id, 
+						 status_id, priority_id, division_id, equipment_id, company_id, 
+						 emails, contact_id, job_type_id, level_id
+						 FROM tickets_history ORDER BY ticket_id, created_at";
+
+			$result = mysqli_query($this->manager->conn,$query);
+			$records = mysqli_fetch_all($result,MYSQLI_ASSOC);
+
+			for($i = 0; $i < count($records)-1; $i++) {
+				
+				$duplicate = true;
+				
+				foreach ($records[$i] as $key => $value) {
+					if ($key != "id" && $duplicate == true) {
+						if ($records[$i][$key] != $records[$i+1][$key]) {
+							$duplicate = false;
+						}
+					}
+				}
+
+				if ($duplicate) {
+					$query = "DELETE FROM tickets_history WHERE id = ".$records[$i]['id'];
+
+					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$this->deleted++;
+					}
+					else {
+						$this->errors++;
+						if ($this->debug) {
+							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						}
+					}
+				}
+			}
+
 			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Deleted: ".$this->deleted,'deletes');
 			logMessage("Errors: ".$this->errors,'errors');
 		}
 	}
