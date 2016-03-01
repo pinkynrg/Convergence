@@ -37,7 +37,8 @@ class CreateTicketRequest extends Request {
 			'post' => 'required|string',
 			'division_id' => 'required|numeric',  
 			'job_type_id' => 'required|numeric',
-			'priority_id' => 'required|numeric'
+			'priority_id' => 'required|numeric',
+			'level_id' => 'required|numeric'
 		];
 	}
 

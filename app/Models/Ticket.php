@@ -6,7 +6,7 @@ class Ticket extends CustomModel {
 
 	protected $table = 'tickets';
 
-	protected $fillable = ['title','post','creator_id','assignee_id','status_id','priority_id','division_id','equiment_id','company_id','contact_id','job_type_id','emails'];
+	protected $fillable = ['title','post','creator_id','assignee_id','status_id','priority_id','division_id','equiment_id','company_id','contact_id','job_type_id','emails','level_id'];
 
 	public function status()
 	{
@@ -112,5 +112,16 @@ class Ticket extends CustomModel {
 	public function last_operation_company_person() 
 	{
 		return $this->belongsTo('App\Models\CompanyPerson');
+	}
+
+	public function active_work() {
+		$m = floor(($this->active_work%3600)/60);
+		$h = floor(($this->active_work%86400)/3600);
+		$d = floor($this->active_work/86400);
+		return "{$d}d {$h}h {$m}m";
+	}
+
+	public function E80_working() {
+		return in_array($this->status_id, [TICKET_NEW_STATUS_ID,TICKET_IN_PROGRESS_STATUS_ID,TICKET_REQUESTING_STATUS_ID]);
 	}
 }

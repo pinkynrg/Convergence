@@ -1900,6 +1900,8 @@ class TicketsHistroy extends BaseClass {
 					$assignee_id = isset($assignee) ? $assignee['id'] : $ti['assignee_id'];
 
 					$t['Id_Division'] = $t['Id_Division'] == 4 ? $ti['division_id'] : $t['Id_Division'];
+					$t['Id_Status'] = $t['Id_Status'] != '5' ? $t['Id_Status'] : '3';
+
 
 					$t = nullIt($t);
 					$ti = nullIt($ti);
@@ -1922,7 +1924,7 @@ class TicketsHistroy extends BaseClass {
 				}
 			}
 
-			$query = "SELECT id, changer_id, title, post, creator_id, assignee_id, 
+			$query = "SELECT id, title, post, creator_id, assignee_id, 
 						 status_id, priority_id, division_id, equipment_id, company_id, 
 						 emails, contact_id, job_type_id, level_id
 						 FROM tickets_history ORDER BY ticket_id, created_at";

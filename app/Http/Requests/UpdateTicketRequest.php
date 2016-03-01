@@ -36,6 +36,7 @@ class UpdateTicketRequest extends Request {
 			'post' => 'required|string',
 			'division_id' => 'required|integer',  
 			'job_type_id' => 'required|integer',
+			'level_id' => 'required|integer'
 		];
 	}
 

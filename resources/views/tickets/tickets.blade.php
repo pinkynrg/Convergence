@@ -22,6 +22,8 @@
 
 				<th column="divisions.name" class="hidden-xs hidden-ms">Division</th>
 				<th column="last_operation_date" class="hidden-xs">Updated</th>
+				<th column="levels.name" class="hidden-xs hidden-ms">Level</th>
+				<th column="active_work" class="hidden-xs hidden-ms">Work</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -58,6 +60,21 @@
 								{{ $ticket->last_operation_company_person->person->name() }} 
 							</a> 
 						</div>
+					</td>
+					<td class="hidden-xs hidden-ms nowrap">
+						{{ $ticket->level->name }}
+					</td>
+					<td class="hidden-xs hidden-ms nowrap">
+						@if ($ticket->timeout == 1 && $ticket->E80_working())
+							<div style="color:red">
+								<b>{{ $ticket->active_work() }}</b>
+								<div class="ticket_foot_details"> 
+									To Escalate
+								</div>
+							</div>
+						@else
+							<div style="color:black"><b>{{ $ticket->active_work() }}</b></div>
+						@endif
 					</td>
 				</tr>
 

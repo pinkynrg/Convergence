@@ -18,6 +18,7 @@ use App\Models\Priority;
 use App\Models\JobType;
 use App\Models\TagTicket;
 use App\Models\Tag;
+use App\Models\Level;
 use App\Models\Post;
 use Html2Text\Html2Text;
 use Session;
@@ -147,6 +148,7 @@ class TicketsController extends BaseController {
 
 			$data['divisions'] = Division::all();
 			$data['job_types'] = JobType::all();
+			$data['levels'] = Level::all();
 
 	        $data['title'] = "Create Ticket";
 
@@ -172,6 +174,7 @@ class TicketsController extends BaseController {
 		$ticket->company_id = $request->get('company_id');
 		$ticket->contact_id = $request->get('contact_id') != 0 ? $request->get('contact_id') : NULL;
 		$ticket->job_type_id = $request->get('job_type_id');
+		$ticket->level_id = $request->get('level_id');
 		$ticket->emails = $request->get('emails');
 
 		$ticket->save();
@@ -204,6 +207,7 @@ class TicketsController extends BaseController {
 		$data['statuses'] = Status::all();
 		$data['job_types'] = JobType::all();
 		$data['priorities'] = Priority::all();
+		$data['levels'] = Level::all();
 		
 		$data['assignees'] = CompanyPersonController::API()->all(
 			["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
@@ -239,6 +243,7 @@ class TicketsController extends BaseController {
 		$ticket->equipment_id = $request->get('equipment_id');
 		$ticket->contact_id = $request->get('contact_id') != 0 ? $request->get('contact_id') : NULL;
 		$ticket->job_type_id = $request->get('job_type_id');
+		$ticket->level_id = $request->get('level_id');
 		$ticket->emails = $request->get('emails');
 
 		$ticket->save();
