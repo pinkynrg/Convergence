@@ -483,7 +483,7 @@ var updateMenuPosition = function () {
 };
 
 function setupStatusSlider() {
-	$.get('/API/statuses/all?where[]=statuses.id|IN|2:3:4:5:6:7&paginate=false', function (data) {
+	$.get('/API/statuses/all?where[]=statuses.id|IN|2:3:4:6:7&paginate=false', function (data) {
 
 		var item = [];
 	
@@ -500,7 +500,8 @@ function setupStatusSlider() {
 			    value: status_id,
 			    ticks_labels: item['labels'],
 			    ticks_snap_bounds: 30,
-			    tooltip: 'hide'
+			    tooltip: 'hide',
+			    ticks_positions: [0,25,50,75,100]
 			});
 
 			slider.on('slideStop',function() {

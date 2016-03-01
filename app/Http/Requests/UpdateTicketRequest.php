@@ -28,7 +28,6 @@ class UpdateTicketRequest extends Request {
 	public function rules()
 	{
 		return [
-			'status_id' => 'required|integer',  
 			'company_id' => 'required|integer',
 			'contact_id' => 'integer',
 			'equipment_id' => 'integer',  
@@ -37,7 +36,6 @@ class UpdateTicketRequest extends Request {
 			'post' => 'required|string',
 			'division_id' => 'required|integer',  
 			'job_type_id' => 'required|integer',
-			'priority_id' => 'required|integer'
 		];
 	}
 

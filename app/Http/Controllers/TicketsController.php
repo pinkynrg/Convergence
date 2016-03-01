@@ -235,8 +235,6 @@ class TicketsController extends BaseController {
 		$ticket->post = $request->get('post');
 		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
 		$ticket->assignee_id = $request->get('assignee_id');
-		$ticket->status_id = $request->get('status_id');
-		$ticket->priority_id = $request->get('priority_id');
 		$ticket->division_id = $request->get('division_id');
 		$ticket->equipment_id = $request->get('equipment_id');
 		$ticket->contact_id = $request->get('contact_id') != 0 ? $request->get('contact_id') : NULL;
