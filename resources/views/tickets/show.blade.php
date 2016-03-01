@@ -223,6 +223,16 @@
 			<input id="priority_id" name="priority_id" type="text"/>
 		</div>
 
+		
+		<div class="col-xs-12 col-sm-6">
+
+			<h5> Post visibility: </h5>
+
+			<div class="is_public"> 
+				<label> <input type="checkbox" id="is_public" value="true" name="is_public" class="switch"> Public </label> 
+			</div>
+
+		</div>
 
 		<div class="col-xs-12 col-sm-6">
 
@@ -267,16 +277,6 @@
 					<div>Additional emails:</div>
 					<div>{{ (!isset($ticket->emails) || $ticket->emails == '') ? "Not Available" : $ticket->emails }} </div>
 				</div>
-			</div>
-
-		</div>
-
-		<div class="col-xs-12 col-sm-6">
-
-			<h5> Post visibility: </h5>
-
-			<div class="is_public"> 
-				<label> <input type="checkbox" id="is_public" value="true" name="is_public" class="switch"> Public </label> 
 			</div>
 
 		</div>
