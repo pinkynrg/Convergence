@@ -47,6 +47,7 @@ class TicketsController extends BaseController {
     	$tickets->leftJoin('people as assignees','assignee_contacts.person_id','=','assignees.id');
     	$tickets->leftJoin('people as creators','creator_contacts.person_id','=','creators.id');
         $tickets->leftJoin('statuses','tickets.status_id','=','statuses.id');
+        $tickets->leftJoin('levels','tickets.level_id','=','levels.id');
     	$tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
     	$tickets->leftJoin('companies','tickets.company_id','=','companies.id');
     	$tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
