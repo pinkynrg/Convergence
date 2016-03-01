@@ -710,6 +710,24 @@ legend {
 
 /*responsive*/
 
+@media (max-width: 600px) {
+    .slider-tick-label {
+      -webkit-transform: rotate(30deg);
+      -moz-transform: rotate(30deg);
+      -ms-transform: rotate(30deg);
+      -o-transform: rotate(30deg);
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+      margin-top: 10px;
+    }
+
+    .status_slider_container, .priority_slider_container {
+      margin: auto; 
+      text-align: center;
+      margin-bottom: 60px!important;
+    }
+
+}
+
 @media (max-width: 700px) {
   .logo-hidden img {
     display: none;
@@ -757,6 +775,20 @@ legend {
     }
 
     .navbar-nav .icon { display: inline-block; width: 25px; }
+}
+
+#dZUpload {
+  margin-bottom: 30px;
+}
+
+.status_slider_container, .priority_slider_container {
+  margin: auto; 
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.slider.slider-horizontal {
+  width: 90%;
 }
 
 /*menu section*/

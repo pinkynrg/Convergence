@@ -35,7 +35,7 @@
 	@if (isset($important_post))
 		<div class="alert alert-{{ $important_post->alert_type }}" role="{{ $important_post->alert_type }}"> 
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<div> <i class="fa fa-info-circle"></i> TICKET IS {{ strtoupper($ticket->status->name) }}: <br> {{ $important_post->post_plain_text }} </div>
+			<div> <i class="fa fa-info-circle"></i> <b>TICKET IS {{ strtoupper($ticket->status->name) }}</b>: <br> {{ $important_post->post_plain_text }} </div>
 		</div>
 	@endif
 
@@ -215,25 +215,14 @@
 
 		@include('posts.form',array('post' => $draft_post))
 
-		<div class="col-xs-12 col-sm-6">
-
-			<h5> Post visibility: </h5>
-
-			<div class="is_public"> 
-				<label> <input type="checkbox" id="is_public" value="true" name="is_public" class="switch"> Public </label> 
-			</div>
-
-			<h5> Change ticket status: </h5>
-
-			<div class="status_checkbox"> 
-				<label> <input type="radio" radioAllOff="true" id="set_waiting_for_feedback" value="{{TICKET_WFF_STATUS_ID}}" name="status_id" class="switch"> Waiting for feedback </label> 
-			</div>
-
-			<div class="status_checkbox"> 
-				<label> <input type="radio" radioAllOff="true" id="set_solved" value="{{TICKET_SOLVED_STATUS_ID}}" name="status_id" class="switch"> Solved </label> 
-			</div>
-
+		<div class="status_slider_container col-xs-12">
+			<input id="status_id" name="status_id" type="text"/>
 		</div>
+
+		<div class="priority_slider_container col-xs-12">
+			<input id="priority_id" name="priority_id" type="text"/>
+		</div>
+
 
 		<div class="col-xs-12 col-sm-6">
 
@@ -278,6 +267,16 @@
 					<div>Additional emails:</div>
 					<div>{{ (!isset($ticket->emails) || $ticket->emails == '') ? "Not Available" : $ticket->emails }} </div>
 				</div>
+			</div>
+
+		</div>
+
+		<div class="col-xs-12 col-sm-6">
+
+			<h5> Post visibility: </h5>
+
+			<div class="is_public"> 
+				<label> <input type="checkbox" id="is_public" value="true" name="is_public" class="switch"> Public </label> 
 			</div>
 
 		</div>

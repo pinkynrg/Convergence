@@ -22,6 +22,7 @@
 <script src="/javascript/bootstrap-datepicker.js"></script>
 <script src="/javascript/responsive-paginate.js"></script>
 <script src="/javascript/jquery.style.js"></script>
+<script src="/javascript/bootstrap-slider.js"></script>
 <script src="/javascript/script.js"></script>
 
 <!-- Stylesheets -->
@@ -39,6 +40,7 @@
 <link rel="stylesheet" href="/css/dropzone.css">
 <link rel="stylesheet" href="/css/bootstrap-switch.min.css">
 <link rel="stylesheet" href="/css/bootstrap-grid-ms.css">
+<link rel="stylesheet" href="/css/bootstrap-slider.css">
 <link rel="stylesheet" href="/css/style.css">
 
 <link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">

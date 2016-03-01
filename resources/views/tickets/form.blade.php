@@ -20,6 +20,21 @@
 			{!! Form::BSSelect("fake_equipment_id", array(), null, ['key' => 'id', 'value' => 'name', 'id' => 'fake_equipment_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
+		@if (Route::currentRouteName() == "tickets.create" || $ticket->status_id == TICKET_DRAFT_STATUS_ID)
+
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel('priority_id','Priority') !!}
+				{!! Form::BSSelect("priority_id", $priorities, null, ['key' => 'id', 'value' => 'name']) !!}
+			{!! Form::BSEndGroup() !!}
+
+		@endif
+
+		{!! Form::BSGroup() !!}
+			{!! Form::BSLabel('title','Ticket Title') !!}
+			{!! Form::BSText('title') !!}
+		{!! Form::BSEndGroup() !!}
+
+
 	</div>
 	<div class="col-xs-6">
 
@@ -39,11 +54,6 @@
 
 <div class="row">
 	<div class="col-xs-12">
-
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('title','Ticket Title') !!}
-			{!! Form::BSText('title') !!}
-		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
@@ -89,20 +99,8 @@
 			{!! Form::BSSelect("job_type_id", $job_types, null, ['key' => 'id', 'value' => 'name']) !!}
 		{!! Form::BSEndGroup() !!}
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('priority_id','Priority') !!}
-			{!! Form::BSSelect("priority_id", $priorities, null, ['key' => 'id', 'value' => 'name']) !!}
-		{!! Form::BSEndGroup() !!}
-
 	</div>
 	<div class="col-xs-6">
-
-		@if (Route::currentRouteName() == "tickets.edit" && $ticket['status_id'] != TICKET_DRAFT_STATUS_ID)
-			{!! Form::BSGroup() !!}
-				{!! Form::BSLabel('status_id','Status') !!}
-				{!! Form::BSSelect("status_id", $statuses, null, ['key' => 'id', 'value' => 'name']) !!}
-			{!! Form::BSEndGroup() !!}
-		@endif
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('emails','Additional Emails') !!}

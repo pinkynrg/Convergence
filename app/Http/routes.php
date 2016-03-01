@@ -28,6 +28,8 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('API/permissions/{method}',['uses' => 'PermissionsController@apiCall', 'as' => 'permissions.api']);
 	Route::get('API/companies/{method}',['uses' => 'CompaniesController@apiCall', 'as' => 'companies.api']);
 	Route::get('API/tickets/{method}',['uses' => 'TicketsController@apiCall', 'as' => 'tickets.api']);
+	Route::get('API/statuses/{method}',['uses' => 'StatusesController@apiCall', 'as' => 'statuses.api']);
+	Route::get('API/priorities/{method}',['uses' => 'PrioritiesController@apiCall', 'as' => 'priorities.api']);
 	Route::get('API/posts/{method}',['uses' => 'PostsController@apiCall', 'as' => 'posts.api']);
 	Route::get('API/equipment/{method}',['uses' => 'EquipmentController@apiCall', 'as' => 'equipment.api']);
 	Route::get('API/services/{method}',['uses' => 'ServicesController@apiCall', 'as' => 'services.api']);

@@ -27,7 +27,7 @@ class PostsController extends BaseController {
 		$post->post_plain_text = Html2Text::convert($request->get('post'));
 		$post->author_id = Auth::user()->active_contact->id;
 		$post->status_id = !$draft ? $request->get('is_public') == true ? 3 : 2 : POST_DRAFT_STATUS_ID;
-		$post->ticket_status_id = $request->get('status_id') !== null ? $request->get('status_id') : $post->ticket->status_id;
+		$post->ticket_status_id = $request->get('status_id');
 
 		$post->save();
 
@@ -68,11 +68,13 @@ class PostsController extends BaseController {
 
 		$ticket = Ticket::find($request->get('ticket_id'));
 
-		$status_id = $request->get('status_id') === null ? $ticket->status_id == TICKET_NEW_STATUS_ID ? TICKET_IN_PROGRESS_STATUS_ID : null : $request->get('status_id');
+		$status_id = $request->get('status_id');
+		$priority_id = $request->get('priority_id');
 
-		if (isset($status_id)) {
+		if ($priority_id != $ticket->priority_id || $status_id != $ticket->status_id) {
 			
 			$ticket->status_id = $status_id;
+			$ticket->priority_id = $priority_id;
 			$ticket->save();
 
 			$history = new TicketHistory();

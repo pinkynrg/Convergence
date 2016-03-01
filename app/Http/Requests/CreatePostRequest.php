@@ -29,7 +29,9 @@ class CreatePostRequest extends Request {
 	public function rules()
 	{
 		return [
-			'post' => 'required|string'
+			'post' => 'required|string',
+			'status_id' => 'required|integer',
+			'priority_id' => 'required|integer'
 		];
 	}
 
