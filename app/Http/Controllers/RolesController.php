@@ -17,7 +17,7 @@ class RolesController extends BaseController {
 			$data['roles'] = self::API()->all(Request::input());
 			$data['active_search'] = implode(",",['display_name','name','description']);
 			$data['title'] = "Roles";
-			$data['menu_actions'] = [Form::addItem(route('roles.create'), 'Create new role')];
+			$data['menu_actions'] = [Form::addItem(route('roles.create'),'Create new role',Auth::user()->can('create-role'))];
 			return Request::ajax() ? view('roles/roles',$data) : view('roles/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to roles index page']);
@@ -28,7 +28,7 @@ class RolesController extends BaseController {
 
 			$data['role'] = Role::find($id);
 			$data['title'] = "Role \"".$data['role']->display_name."\"";
-			$data['menu_actions'] = [Form::editItem(route('roles.edit',$id), 'Edit this role')];
+			$data['menu_actions'] = [Form::editItem(route('roles.edit',$id),'Edit This Role',Auth::user()->can('update-role'))];
 			
 			$permissions = Permission::get();
 	    	

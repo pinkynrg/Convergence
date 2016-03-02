@@ -25,7 +25,7 @@ class EquipmentController extends BaseController {
 
 	public function show($id) {
 		if (Auth::user()->can('read-equipment')) {
-			$data['menu_actions'] = [Form::editItem(route('equipment.edit', $id),"Edit this equipment")];
+			$data['menu_actions'] = [Form::editItem(route('equipment.edit', $id),"Edit This Equipment",Auth::user()->can('update-equipment'))];
 			$data['equipment'] = Equipment::find($id);
 			$data['title'] = $data['equipment']->company->name." - Equipment ".$data['equipment']->name;
 			return view('equipment/show',$data);

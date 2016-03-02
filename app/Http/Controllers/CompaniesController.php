@@ -31,7 +31,7 @@ class CompaniesController extends BaseController {
         if (Auth::user()->can('read-all-company')) {
 
             $data['companies'] = self::API()->all(Request::input());
-            $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Add Company')];
+            $data['menu_actions'] = [Form::addItem(route('companies.create'), 'Create Company',Auth::user()->can('create-company'))];
             $data['active_search'] = implode(",",['companies.name']);
             $data['title'] = "Companies";
             
@@ -93,10 +93,10 @@ class CompaniesController extends BaseController {
         if (Auth::user()->can('read-company')) {
             
             $data['menu_actions'] = [
-                Form::editItem(route('companies.edit',$id), 'Edit this company'),
-                Form::addItem(route('company_person.create',$id), 'Add Contact'),
-                Form::addItem(route('equipment.create',$id),'Add new Equipment'),
-                Form::addItem(route('services.create',$id),'Add new Service')
+                Form::editItem(route('companies.edit',$id),'Edit This Company',Auth::user()->can('update-company')),
+                Form::addItem(route('company_person.create',$id),'Create Contact',Auth::user()->can('create-contact')),
+                Form::addItem(route('equipment.create',$id),'Create Equipment',Auth::user()->can('create-equipment')),
+                Form::addItem(route('services.create',$id),'Create Service',Auth::user()->can('create-service'))
             ];
 
             $data['company'] = Company::find($id);

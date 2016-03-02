@@ -14,7 +14,7 @@ class PermissionsController extends BaseController {
 	        $data['permissions'] = self::API()->all(Request::input());
 			$data['active_search'] = implode(",",['display_name','name','description']);
 			$data['title'] = "Permissions";
-			$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission')];
+			$data['menu_actions'] = [Form::addItem(route('permissions.create'), 'Create new permission',Auth::user()->can('create-permission'))];
 			return Request::ajax() ? view('permissions/permissions',$data) : view('permissions/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to permissions index page']);
@@ -24,7 +24,7 @@ class PermissionsController extends BaseController {
 		if (Auth::user()->can('read-permission')) {
 			$data['permission'] = Permission::find($id);
 			$data['title'] = "Permission \"".$data['permission']->display_name."\"";
-			$data['menu_actions'] = [Form::editItem(route('permissions.edit',$id), 'Edit this permission')];
+			$data['menu_actions'] = [Form::editItem(route('permissions.edit',$id), 'Edit This Permission',Auth::user()->can('update-permission'))];
 			return view('permissions/show',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to permissions show page']);

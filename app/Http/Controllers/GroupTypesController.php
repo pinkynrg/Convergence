@@ -15,7 +15,7 @@ class GroupTypesController extends BaseController {
 	        $data['group_types'] = self::API()->all(Request::input());
 			$data['title'] = "Group Types";
 			$data['active_search'] = implode(",",['display_name','name','description']);
-			$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type')];
+			$data['menu_actions'] = [Form::addItem(route('group_types.create'), 'Create new group type',Auth::user()->can('create-group-type'))];
             return Request::ajax() ? view('group_types/group_types',$data) : view('group_types/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to group types index page']);
@@ -25,7 +25,7 @@ class GroupTypesController extends BaseController {
 		if (Auth::user()->can('read-all-group-type')) {
 			$data['group_type'] = GroupType::find($id);
 			$data['title'] = "Group Type \"".$data['group_type']->display_name."\"";
-			$data['menu_actions'] = [Form::editItem(route('group_types.edit',$id), 'Edit this group type')];
+			$data['menu_actions'] = [Form::editItem(route('group_types.edit',$id),'Edit This Group Type',Auth::user()->can('update-group-type'))];
 			return view('group_types/show',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to group types show page']);

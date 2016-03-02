@@ -15,7 +15,7 @@ class UsersController extends BaseController {
 	public function index() {
 		if (Auth::user()->can('read-all-user')) {
 	    	$data['users'] = self::API()->all(Request::input());
-			$data['menu_actions'] = [Form::addItem(route('users.create'), 'Add user')];
+			$data['menu_actions'] = [Form::addItem(route('users.create'), 'Create user',Auth::user()->can('create-user'))];
 			$data['active_search'] = implode(",",['users.username','people.first_name','people.last_name']);
 			$data['title'] = "Users";
 			return Request::ajax() ? view('users/users',$data) : view('users/index',$data);

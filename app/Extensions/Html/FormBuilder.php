@@ -203,19 +203,21 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		return $button;
 	}
 
-	public function addItem($route, $label = null) {
+	public function addItem($route, $label = null, $show = false) {
+		// $add = new stdClass();
 		$add['label'] = is_null($label) ? "Add" : $label;
 		$add['link'] = $route;
 		$add['icon'] = "<i class='fa fa-plus'></i>";
-
+		$add['show'] = $show;
 		return $add;
 
 	}
 
-	public function editItem($route, $label = null) {
+	public function editItem($route, $label = null, $show = false) {
 		$edit['label'] = is_null($label) ? "Edit" : $label;
 		$edit['link'] = $route;
 		$edit['icon'] = "<i class='fa fa-pencil-square-o'></i>";
+		$edit['show'] = $show;
 		return $edit;
 	}
 

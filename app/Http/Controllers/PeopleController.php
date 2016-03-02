@@ -21,14 +21,14 @@ class PeopleController extends BaseController {
 		if (Auth::user()->can('read-person')) {
 	        
 	        $data['menu_actions'] = [
-	        	Form::editItem(route('people.edit',$id), 'Edit this person')
+	        	Form::editItem(route('people.edit',$id),'Edit This Person',Auth::user()->can('update-person'))
 	        ];
 
 	     	if (isset($data['person']->user->id)) {
-	        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['person']->user->id), 'Edit associated user');
+	        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['person']->user->id),'Edit Associated User',Auth::user()->can('update-user'));
 	     	}
 	     	else {
-	        	$data['menu_actions'][] = Form::editItem(route('users.create',$data['person']->id), 'Create user');
+	        	$data['menu_actions'][] = Form::addItem(route('users.create',$data['person']->id),'Create user',Auth::user()->can('create-user'));
 	     	}
 			
 			$data['title'] = $data['person']->name() . " - Details";

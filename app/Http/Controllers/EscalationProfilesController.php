@@ -21,7 +21,9 @@ class EscalationProfilesController extends BaseController {
 	    	$data['escalation_profiles'] = self::API()->all(Request::input());
 			$data['title'] = "Escalation Profiles";
 			$data['active_search'] = implode(",",['name']);
-			$data['menu_actions'] = [Form::editItem( route('escalation_profiles.create'),"Add new Escalation Profile")];
+			$data['menu_actions'] = [
+				Form::editItem(route('escalation_profiles.create'),"Create Escalation Profile",Auth::user()->can('create-escalation-profiles'))
+			];
             return Request::ajax() ? view('escalation_profiles/escalation_profiles',$data) : view('escalation_profiles/index',$data);
 			
 		}
@@ -35,7 +37,7 @@ class EscalationProfilesController extends BaseController {
 			$data['title'] = "Escalation Profile";
 			
 			$data['menu_actions'] = [
-				Form::editItem(route('escalation_profiles.edit', $id),"Edit this Escalation Profile")
+				Form::editItem(route('escalation_profiles.edit', $id),"Edit This Escalation Profile",Auth::user()->can('update-escalation-profiles'))
 			];
 				
 			$escalation_profile_events = DB::table('escalation_profile_event')->where('profile_id',$id)->get();

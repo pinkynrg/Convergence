@@ -25,7 +25,7 @@ class ServicesController extends BaseController {
 
     public function show($id) {
         if (Auth::user()->can('read-service')) {
-            $data['menu_actions'] = [Form::editItem(route('services.generate_pdf', $id),"Generate Service PDF")];
+            $data['menu_actions'] = [Form::addItem(route('services.generate_pdf', $id),"Generate Service PDF",true)];
             $data['title'] = "Service";
             $data['service'] = Service::find($id);
             return view('services/show',$data);
@@ -119,11 +119,8 @@ class ServicesController extends BaseController {
     }
 
     public function generatePdf($id) {
-        $data['menu_actions'] = [Form::editItem(route('services.pdf', $id),"Generate Service PDF")];
-        $data['title'] = "Service";
         $data['service'] = Service::find($id);
         $pdf = PDF::loadView('services/pdf', $data);
-        // return $pdf->download('service_request_#'.$id.'.pdf');
         return $pdf->stream();
     }
 }

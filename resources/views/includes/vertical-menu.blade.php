@@ -1,6 +1,6 @@
 <div class="panel-group">
 
-@if (isset($menu_actions) && count($menu_actions))
+@if (isset($menu_actions) && count($menu_actions) && Menu::showActions($menu_actions))
 
 	<div class="panel panel-default">
     	<div class="panel-heading" href="#actions">
@@ -15,12 +15,16 @@
 			<div class="panel-body">
 
 				@foreach ($menu_actions as $menu_action)
-				
-					<a href="{!! $menu_action['link'] !!}">
-						<div class="menu-item"> 
-							<span class="icon"> {!! $menu_action['icon'] !!} </span> {{ $menu_action['label'] }}
-	        			</div>
-	        		</a>
+					
+					@if ($menu_action['show'])
+
+						<a href="{!! $menu_action['link'] !!}">
+							<div class="menu-item"> 
+								<span class="icon"> {!! $menu_action['icon'] !!} </span> {{ $menu_action['label'] }}
+		        			</div>
+		        		</a>
+
+		        	@endif
 
 				@endforeach
 

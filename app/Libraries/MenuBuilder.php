@@ -101,5 +101,18 @@ class MenuBuilder {
 	{
 		return strpos(Request::url(), $elem->link) !== false;
 	}
+
+	public static function showActions($actions) 
+	{
+		$show = false;
+		
+		foreach($actions as $action) {
+			if ($action['show'] == true) {
+				$show = true;
+			}
+		}
+
+		return $show;
+	}
 }
 ?>

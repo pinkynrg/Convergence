@@ -64,7 +64,7 @@
 
 			</ul>
 
-			@if (isset($menu_actions) && count($menu_actions))
+			@if (isset($menu_actions) && count($menu_actions) && Menu::showActions($menu_actions))
 
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
@@ -74,7 +74,11 @@
 
 							@foreach ($menu_actions as $menu_action)
 
-				  				<li><a href="{{ $menu_action['link'] }}">{!! $menu_action['icon'] !!} {{ $menu_action['label'] }}</a></li>
+								@if ($menu_action['show'])
+
+				  					<li><a href="{{ $menu_action['link'] }}">{!! $menu_action['icon'] !!} {{ $menu_action['label'] }}</a></li>
+
+								@endif
 
 							@endforeach
 

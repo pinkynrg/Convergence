@@ -18,7 +18,7 @@ class GroupsController extends BaseController {
 	        $data['groups'] = self::API()->all(Request::input());
 			$data['title'] = "Groups";
 			$data['active_search'] = implode(",",['display_name','name','description']);
-			$data['menu_actions'] = [Form::addItem(route('groups.create'), 'Create new group')];
+			$data['menu_actions'] = [Form::addItem(route('groups.create'), 'Create new group',Auth::user()->can('create-group'))];
             return Request::ajax() ? view('groups/groups',$data) : view('groups/index',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to groups index page']);
@@ -53,7 +53,7 @@ class GroupsController extends BaseController {
 				$counter++;
 			}
 
-			$data['menu_actions'] = [Form::editItem(route('groups.edit',$id), 'Edit this group')];
+			$data['menu_actions'] = [Form::editItem(route('groups.edit',$id),'Edit This Group',Auth::user()->can('update-group'))];
 			return view('groups/show',$data);
 		}
 		else return redirect()->back()->withErrors(['Access denied to groups show page']);

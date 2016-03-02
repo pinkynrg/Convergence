@@ -21,7 +21,7 @@ class CompanyPersonController extends BaseController {
 		if (Auth::user()->can('read-all-contact')) {
     		$data['contacts'] = self::API()->all(Request::input());
 			$data['title'] = "Contacts";
-	    	$data['menu_actions'] = [Form::addItem(route('company_person.create'), 'Add contact')];
+	    	$data['menu_actions'] = [Form::addItem(route('company_person.create'),'Create contact',Auth::user()->can('create-contact'))];
 			$data['active_search'] = implode(",",['people.first_name','people.last_name','companies.name','email']);
             return Request::ajax() ? view('company_person/contacts',$data) : view('company_person/index',$data);
         }
@@ -30,9 +30,7 @@ class CompanyPersonController extends BaseController {
 
 	public function show($id) {
 		if (Auth::user()->can('read-contact')) {
-			$data['menu_actions'] = [
-	        	Form::editItem(route('company_person.edit',$id), 'Edit this contact'),
-	        ];
+			$data['menu_actions'] = [Form::editItem(route('company_person.edit',$id), 'Edit This Contact',Auth::user()->can('update-contact'))];
 			$data['company_person'] = CompanyPerson::find($id);
 
 	        $data['title'] = $data['company_person']->person->name() . " @ " . $data['company_person']->company->name;

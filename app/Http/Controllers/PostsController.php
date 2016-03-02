@@ -43,7 +43,7 @@ class PostsController extends BaseController {
 
 	public function show($id) {
 		if (Auth::user()->can('read-post')) {
-			$data['menu_actions'] = [Form::editItem( route('posts.edit', $id),"Edit this post")];
+			$data['menu_actions'] = [Form::editItem( route('posts.edit', $id),"Edit This Post",Auth::user()->can('update-post'))];
 			$data['post'] = Post::find($id);
 			$data['title'] = "Post";
 			return view('posts/show',$data);

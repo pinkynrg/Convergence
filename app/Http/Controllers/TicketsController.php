@@ -52,7 +52,7 @@ class TicketsController extends BaseController {
 
 			// title, actions menu, and search definition
 			$data['active_search'] = implode(",",['tickets.id','tickets.title','tickets.post']);
-			$data['menu_actions'] = [Form::editItem( route('tickets.create'),"Add new Ticket")];
+			$data['menu_actions'] = [Form::addItem(route('tickets.create'),"Create Ticket",Auth::user()->can('create-ticket'))];
 	    	$data['title'] = "Tickets";
 			
 			return Request::ajax() ? view('tickets/tickets',$data) : view('tickets/index',$data);
@@ -69,9 +69,7 @@ class TicketsController extends BaseController {
 			}
 			else {
 
-				$data['menu_actions'] = [
-					Form::editItem( route('tickets.edit', $id),"Edit this ticket")
-				];
+				$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit This Ticket",Auth::user()->can('update-ticket'))];
 										 
 				$data['ticket'] = Ticket::find($id);
 				$data['ticket']['posts'] = Post::where('ticket_id',$id)->where('status_id','!=',POST_DRAFT_STATUS_ID)->get();
