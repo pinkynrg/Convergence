@@ -982,7 +982,7 @@ class Statuses extends BaseClass {
 
 class Levels extends BaseClass {
 	public $table_name = 'levels';
-	public $dependency_names = [];
+	public $dependency_names = ['dummies'];
 
 	public function importSelf() {
 
@@ -2358,9 +2358,12 @@ class Dummies extends BaseClass {
 			"DELETE FROM support_types WHERE id = 0",
 			"DELETE FROM connection_types WHERE id = 0",
 			"DELETE FROM people WHERE id = 0",
+			"DELETE FROM levels WHERE id = 0",
+
 
 			"SET foreign_key_checks = 1",
 
+			"INSERT INTO levels (id,name, deleted_at) VALUES ('0','[undefined]','".date("Y-m-d H:i:s")."')",
 			"INSERT INTO people (id,first_name,last_name, deleted_at) VALUES ('0','[undefined]','[undefined]','".date("Y-m-d H:i:s")."')",
 			"INSERT INTO connection_types (id,name,description, deleted_at) VALUES (0,'[undefined]','[undefined]','".date("Y-m-d H:i:s")."')",
 			"INSERT INTO support_types (id,name, deleted_at) VALUES (0,'[undefined]','".date("Y-m-d H:i:s")."')",

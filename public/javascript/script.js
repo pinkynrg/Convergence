@@ -380,6 +380,7 @@ var activateTicketDraftMode = function() {
 			'post' 				: CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '[undefined]',
 			'tagit' 			: $("input#tagit").val() ? $("input#tagit").val() : '',
 			'division_id' 		: $("select#division_id").val() ? $("select#division_id").val() : dummy_id,
+			'level_id' 			: $("select#level_id").val() ? $("select#level_id").val() : dummy_id,
 			'additional_emails' : $("input#additional_emails").val() ? $("input#additional_emails").val() : '[undefined]',
 			'job_type_id' 		: $("select#job_type_id").val() ? $("select#job_type_id").val() : dummy_id,
 			'priority_id' 		: $("select#priority_id").val() ? $("select#priority_id").val() : dummy_id,
