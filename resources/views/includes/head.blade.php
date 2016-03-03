@@ -1,5 +1,23 @@
 <meta name="viewport" content="width=320, initial-scale=1">
 
+<!-- Stylesheets -->
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="/css/jquery.autocomplete.css">
+<link rel="stylesheet" href="/css/jquery-ui.css">
+<link rel="stylesheet" href="/css/bootstrap-tagsinput.css">
+<link rel="stylesheet" href="/css/bootstrap-multiEmail.css">
+<link rel="stylesheet" href="/css/bootstrap-duallistbox.css">
+<link rel="stylesheet" href="/css/datepicker.css">
+<link rel="stylesheet" href="/css/blueimp-gallery.min.css">
+<link rel="stylesheet" href="/css/bootstrap-image-gallery.css">
+<link rel="stylesheet" href="/css/dropzone.css">
+<link rel="stylesheet" href="/css/bootstrap-switch.min.css">
+<link rel="stylesheet" href="/css/bootstrap-grid-ms.css">
+<link rel="stylesheet" href="/css/bootstrap-slider.css">
+<link rel="stylesheet" href="/css/style.css">
+
 <!-- Scripts -->
 <!-- <script src="/javascript/jquery-1.12.min.js"></script> -->
 <script src="/javascript/jquery-1.11.3.min.js"></script>
@@ -25,24 +43,6 @@
 <script src="/javascript/bootstrap-slider.js"></script>
 <script src="/javascript/jquery.cookie.js"></script>
 <script src="/javascript/script.js"></script>
-
-<!-- Stylesheets -->
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-<link rel="stylesheet" href="/css/font-awesome.min.css">
-<link rel="stylesheet" href="/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="/css/jquery.autocomplete.css">
-<link rel="stylesheet" href="/css/jquery-ui.css">
-<link rel="stylesheet" href="/css/bootstrap-tagsinput.css">
-<link rel="stylesheet" href="/css/bootstrap-multiEmail.css">
-<link rel="stylesheet" href="/css/bootstrap-duallistbox.css">
-<link rel="stylesheet" href="/css/datepicker.css">
-<link rel="stylesheet" href="/css/blueimp-gallery.min.css">
-<link rel="stylesheet" href="/css/bootstrap-image-gallery.css">
-<link rel="stylesheet" href="/css/dropzone.css">
-<link rel="stylesheet" href="/css/bootstrap-switch.min.css">
-<link rel="stylesheet" href="/css/bootstrap-grid-ms.css">
-<link rel="stylesheet" href="/css/bootstrap-slider.css">
-<link rel="stylesheet" href="/css/style.css">
 
 <link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">
 
