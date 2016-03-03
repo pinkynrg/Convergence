@@ -1,31 +1,5 @@
 <meta name="viewport" content="width=320, initial-scale=1">
 
-<!-- Scripts -->
-<!-- <script src="/javascript/jquery-1.12.min.js"></script> -->
-<script src="/javascript/jquery-1.11.3.min.js"></script>
-<script src="/javascript/jquery-migrate-1.2.1.min.js"></script>
-<script src="/ckeditor/ckeditor.js"></script>
-<script src="/javascript/jquery.blueimp-gallery.min.js"></script>
-<script src="/javascript/bootstrap-image-gallery.js"></script>
-<script src="/javascript/bootstrap.min.js"></script>
-<script src="/javascript/bootstrap-switch.min.js"></script>
-<script src="/javascript/jquery.autocomplete.js"></script>
-<script src="/javascript/bootstrap-select.js"></script>
-<script src="/javascript/bootstrap3-typeahead.min.js"></script>
-<script src="/javascript/bootstrap-tagsinput.min.js"></script>
-<script src="/javascript/bootstrap-multiEmail.js"></script>
-<script src="/javascript/dropzone.js"></script>
-<script src="/javascript/jquery-prevent-double-submit.js"></script>
-<script src="/javascript/jquery.bootstrap-duallistbox.js"></script>
-<script src="/javascript/highstocks.js"></script>
-<script src="/javascript/highcharts.3d.js"></script>
-<script src="/javascript/bootstrap-datepicker.js"></script>
-<script src="/javascript/responsive-paginate.js"></script>
-<script src="/javascript/jquery.style.js"></script>
-<script src="/javascript/bootstrap-slider.js"></script>
-<script src="/javascript/jquery.cookie.js"></script>
-<script src="/javascript/script.js"></script>
-
 <!-- Stylesheets -->
 <link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/font-awesome.min.css">
@@ -43,6 +17,32 @@
 <link rel="stylesheet" href="/css/bootstrap-grid-ms.css">
 <link rel="stylesheet" href="/css/bootstrap-slider.css">
 <link rel="stylesheet" href="/css/style.css">
+
+<!-- Scripts -->
+<!-- <script src="/javascript/jquery-1.12.min.js"></script> -->
+<script src="/javascript/jquery-1.11.3.min.js"></script>
+<script src="/javascript/jquery-migrate-1.2.1.min.js"></script>
+<script src="/ckeditor/ckeditor.js"></script>
+<script src="/javascript/jquery.blueimp-gallery.min.js"></script>
+<script src="/javascript/bootstrap-image-gallery.js"></script>
+<script src="/javascript/bootstrap.min.js"></script>
+<script src="/javascript/jquery.autocomplete.js"></script>
+<script src="/javascript/bootstrap-select.js"></script>
+<script src="/javascript/bootstrap3-typeahead.min.js"></script>
+<script src="/javascript/bootstrap-tagsinput.min.js"></script>
+<script src="/javascript/bootstrap-multiEmail.js"></script>
+<script src="/javascript/dropzone.js"></script>
+<script src="/javascript/jquery-prevent-double-submit.js"></script>
+<script src="/javascript/jquery.bootstrap-duallistbox.js"></script>
+<script src="/javascript/highstocks.js"></script>
+<script src="/javascript/highcharts.3d.js"></script>
+<script src="/javascript/bootstrap-datepicker.js"></script>
+<script src="/javascript/responsive-paginate.js"></script>
+<script src="/javascript/jquery.style.js"></script>
+<script src="/javascript/bootstrap-slider.js"></script>
+<script src="/javascript/jquery.cookie.js"></script>
+<script src="/javascript/bootstrap-switch.min.js"></script>
+<script src="/javascript/script.js"></script>
 
 <link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">
 

@@ -202,7 +202,7 @@ var setupFilters = function () {
 				}
 			});
 
-			// $target.find(".content table tbody").html("");
+			$target.find(".content table tbody").html("");
 			ajaxUpdate($target);
 
 		}
@@ -412,9 +412,14 @@ var savePostDraft = function(callback) {
 	}
 	
 	timer = setTimeout(function () {
+
+		var dummy_id = 0;
+
 		var data = {
 			'ticket_id' : url.target_id,
 			'post' : CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '[undefined]',
+			'status_id' : dummy_id,
+			'priority_id' : dummy_id
 		}
 
 		$.ajax({
@@ -593,54 +598,100 @@ var updateMenuPosition = function () {
 };
 
 function setupStatusSlider() {
-	$.get('/API/statuses/all?where[]=statuses.id|IN|2:3:4:6:7&paginate=false', function (data) {
+	if ($("#status_id").length) {
 
-		if ($("#status_id").length) {
+		$.get('/API/tickets/find?id='+url.target_id, function (data) {
+		
+			var status_id = data.status_id,
+				allowed_statuses = [2,3,4,6],
+				allowed_ticks = [1,2,3,4],
+				positions = [],
+				current_tick;
 
-			var item = [];
-		
-			item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
-			item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
+			if (status_id == 6) {
+				allowed_ticks.push(5);
+				allowed_statuses.push(7);
+				positions = [0,25,50,75,100];
+			}
+			else {
+				positions = [0,33,66,100];
+			}
 
-			$.get('/API/tickets/find?id='+url.target_id, function (data) {
-		
-				var status_id = data.status_id;
-		
-				var slider = $("#status_id").slider({
+			switch (status_id) {
+	    		case 2: current_tick = 1; break;
+	    		case 3: current_tick = 2; break;
+	    		case 4: current_tick = 3; break;
+	    		case 6: current_tick = 4; break;
+	    		case 7: current_tick = 5; break;
+	    	}
+
+			var ids = allowed_statuses.join(":");
+
+			$.get('/API/statuses/all?where[]=statuses.id|IN|'+ids+'&paginate=false', function (data) {
+
+				var item = [];
+			
+				item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
+
+				var slider = $("#fake_status_id").slider({
 					id: 'status_id',
-				    ticks: item['ids'],
-				    value: status_id,
+				    ticks: allowed_ticks,
+				    value: current_tick,
+				    selection: 'none',
 				    ticks_labels: item['labels'],
 				    ticks_snap_bounds: 30,
 				    tooltip: 'hide',
-				    ticks_positions: [0,25,50,75,100]
+				    ticks_positions: positions
 				});
 
 				slider.on('slideStop',function() {
-					var status_id = slider.slider('getValue');
+					var selected_status_id = slider.slider('getValue'),
+						real_value;
 
-					if (status_id == 3 || status_id == 6) {
+					switch (selected_status_id) {
+			    		case 1: real_value = 2; break;
+			    		case 2: real_value = 3; break;
+			    		case 3: real_value = 4; break;
+			    		case 4: real_value = 6; break;
+			    		case 5: real_value = 7; break;
+			    	}
+
+			    	$("#status_id").val(real_value);
+
+					if (real_value == 3 || real_value == 6 || real_value == 7) {
+
 						$("#is_public").bootstrapSwitch('state', true);						// set public true
 						$("#email_company_contact").bootstrapSwitch('state', true);			// send to contacts if toggle public 
+
+						if (status_id != real_value) {
+							$("#is_public").bootstrapSwitch('disabled',true);
+						}
 					}
+					else {
+						$("#is_public").bootstrapSwitch('disabled',false);
+					}
+
 				});
 			});
-		}
-	});
+		});
+	}
 }
 
 function setupPrioritySlider() {
-	$.get('/API/priorities/all?paginate=false', function (data) {
 
-		if ($("#priority_id").length) {
+	if ($("#priority_id").length) {
+
+		$.get('/API/priorities/all?paginate=false', function (data) {
 
 			var item = [];
-		
+			
 			item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
 			item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
 
+			var priority_id = data.priority_id;
+
 			$.get('/API/tickets/find?id='+url.target_id, function (data) {
-		
+
 				var priority_id = data.priority_id;
 		
 				var slider = $("#priority_id").slider({
@@ -657,8 +708,8 @@ function setupPrioritySlider() {
 					var priority_id = slider.slider('getValue');
 				});
 			});
-		}
-	});
+		});
+	}
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -904,12 +955,15 @@ if (url.target == "tickets" && url.target_action == "show") {
 
 	$("#is_public").on('switchChange.bootstrapSwitch',function() {						// if toggle public
 		var current = $(this).bootstrapSwitch('state');
-		if (current) {
-			$("#email_company_contact").bootstrapSwitch('state', true, current);		// send to contacts if toggle public 
-		}
+		$("#email_company_contact").bootstrapSwitch('state', current);					// send to contacts if toggle public 
 	});
 
-
+	$("#email_company_contact, email_company_group_email").on('switchChange.bootstrapSwitch',function() {	// if toggle public
+		var current = $(this).bootstrapSwitch('state');
+		if (current) {
+			$("#is_public").bootstrapSwitch('state', current);							// send to contacts if toggle public 
+		}
+	});
 
 	setupStatusSlider();
 
