@@ -202,7 +202,7 @@ var setupFilters = function () {
 				}
 			});
 
-			// $target.find(".content table tbody").html("");
+			$target.find(".content table tbody").html("");
 			ajaxUpdate($target);
 
 		}
@@ -412,9 +412,14 @@ var savePostDraft = function(callback) {
 	}
 	
 	timer = setTimeout(function () {
+
+		var dummy_id = 0;
+
 		var data = {
 			'ticket_id' : url.target_id,
 			'post' : CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '[undefined]',
+			'status_id' : dummy_id,
+			'priority_id' : dummy_id
 		}
 
 		$.ajax({
