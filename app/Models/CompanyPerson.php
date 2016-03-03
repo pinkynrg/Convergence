@@ -57,5 +57,8 @@ class CompanyPerson extends CustomModel {
 		return $this->belongsTo('App\Models\GroupType');
 	}
 
-
+	public function isE80() {
+		$result = $this->company_id == ELETTRIC80_COMPANY_ID;
+		return $result;
+	}
 }

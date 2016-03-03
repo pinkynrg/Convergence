@@ -29,7 +29,6 @@ class UpdateCompanyPersonRequest extends Request {
 	public function rules()
 	{
 		return [
-			'company_id' => 'numeric',
 			'person_id' => 'numeric',
 			'department_id' => 'required|numeric', 
 			'title_id' => 'required|numeric',

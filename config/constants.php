@@ -6,6 +6,7 @@ define("PROTOCOL","http://");
 define("SITE_URL",PROTOCOL.DOMAIN);
 define("PAGINATION",50);
 define("MAX_PAGINATION",200);
+define("DEBUG",TRUE);
 
 // IMPORT CONFIGURATION FROM Convergence 1.0
 define("CONVERGENCE_HOST", "198.154.99.22:1088");
@@ -33,9 +34,13 @@ define("SET_YELLOW","\e[0;33m");
 define("SET_PURPLE","\e[0;35m");
 
 // RELEVANT IDs 
+define("ADMIN_PERSON_ID",173);
 define("ELETTRIC80_COMPANY_ID",1);
+define("TEST_COMPANY_ID",178);
 define("EMPLOYEE_GROUP_TYPE_ID",1);
 define("CUSTOMER_GROUP_TYPE_ID",2);
+define("HOST_EMPLOYEE_GROUP_ID",4);
+define("HOST_CUSTOMER_GROUP_ID",5);
 define("TICKET_UNDEFINED_STATUS_ID",0);
 define("TICKET_NEW_STATUS_ID",1);
 define("TICKET_IN_PROGRESS_STATUS_ID",2);

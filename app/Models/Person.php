@@ -23,11 +23,6 @@ class Person extends CustomModel {
 		return $this->last_name." ".$this->first_name;
 	}
 
-	public function isE80() {
-		$result = CompanyPerson::where('company_id','=',1)->where('person_id','=',$this->id)->get();
-		return count($result) ? true : false;
-	}
-
 	public function image() {
 		return $this->image ? '/images/profile_pictures/'.$this->image : '/images/profile_pictures/default.png';
 	}

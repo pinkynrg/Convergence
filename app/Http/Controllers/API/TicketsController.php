@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\API;
 
 use App\Models\Ticket;
+use Auth;
 use DB;
 
 class TicketsController extends BaseController {
@@ -63,9 +64,23 @@ class TicketsController extends BaseController {
         });
 
         $tickets->where("tickets.status_id","!=",TICKET_DRAFT_STATUS_ID);
+
+        if (!Auth::user()->active_contact->isE80()) {
+            $tickets->where("tickets.company_id","=",Auth::user()->active_contact->company_id);            
+        }
         
     	$tickets = parent::execute($tickets, $params);
 
         return $tickets;
     }
+
+    public function find($params) {
+        $ticket = Ticket::where("id",$params['id']);
+        if (!Auth::user()->active_contact->isE80()) {
+            $ticket->where("company_id",Auth::user()->active_contact->company_id);
+        }
+        $ticket = count($ticket->get()) ? $ticket->get()[0] : [];
+        return $ticket;
+    }
+
 }

@@ -69,5 +69,4 @@ class User extends CustomModel implements AuthenticatableContract, CanResetPassw
 
 		return $result ? true : false;
 	}
-
 }

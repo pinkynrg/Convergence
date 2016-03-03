@@ -41,11 +41,13 @@ class CompanyPersonController extends BaseController {
 
 	}
 
-	public function create() {
-		$data['titles'] = Title::all();
-		$data['departments'] = Department::all();
-		$data['companies'] = Company::all();
-		$data['group_types'] = GroupType::all();
+	public function create($id = null) {
+        $data['contact'] = [];
+        $data['contact']['company_id'] = $id;
+		$data['titles'] = Title::orderBy("name")->get();
+		$data['departments'] = Department::orderBy("name")->get();
+		$data['companies'] = Company::orderBy("name")->get();
+		$data['group_types'] = GroupType::orderBy("name")->get();
 
 		$data['title'] = "Create Contact";
 
@@ -71,6 +73,7 @@ class CompanyPersonController extends BaseController {
         $contact->cellphone = Input::get('cellphone');
         $contact->email = Input::get('email');
         $contact->group_type_id = Input::get('company_id') == ELETTRIC80_COMPANY_ID ? EMPLOYEE_GROUP_TYPE_ID : CUSTOMER_GROUP_TYPE_ID;
+        $contact->group_id = Input::get('company_id') == ELETTRIC80_COMPANY_ID ? HOST_EMPLOYEE_GROUP_ID : HOST_CUSTOMER_GROUP_ID;
         $contact->save();
 
 		return redirect()->route('company_person.index')->with('successes',['Contact created successfully']);

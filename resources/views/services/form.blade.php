@@ -3,6 +3,7 @@
 	<div class="col-xs-6">
 		
 		{!! Form::BSGroup() !!}
+			<!-- we need an hidden field becuase the select is disabled so the data won't be submitted -->
 			{!! Form::BSHidden("company_id", $company_id) !!}
 			{!! Form::BSLabel("company_id", "Company") !!}
 			{!! Form::BSSelect("company_id", $companies, $company_id, ['key' => 'id', 'value' => 'name', 'disabled']) !!}

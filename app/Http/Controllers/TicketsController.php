@@ -4,6 +4,7 @@ use App\Libraries\SlackController;
 use App\Libraries\EmailsManager;
 use App\Http\Requests\CreateTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Http\Requests\UpdateTicketDraftRequest;
 use App\Http\Controllers\CompanyPersonController;
 use App\Models\Ticket;
 use App\Models\TicketLink;
@@ -32,12 +33,12 @@ use DB;
 
 class TicketsController extends BaseController {
 
-	public function index() {
-		if (Auth::user()->can('read-all-company')) {
-			
+	public function index() 
+	{
+		if (Auth::user()->can('read-all-ticket')) 
+		{
         	Session::set('tickets.url',Request::input());
 
-	    	// data for view
 	    	$data['tickets'] = self::API()->all(Request::input());
 			$data['companies'] = Company::orderBy('name','asc')->get();
 			
@@ -50,7 +51,6 @@ class TicketsController extends BaseController {
 			$data['divisions'] = Division::orderBy('name','asc')->get();
 			$data['statuses'] = Status::orderBy('id','asc')->get();
 
-			// title, actions menu, and search definition
 			$data['active_search'] = implode(",",['tickets.id','tickets.title','tickets.post']);
 			$data['menu_actions'] = [Form::addItem(route('tickets.create'),"Create Ticket",Auth::user()->can('create-ticket'))];
 	    	$data['title'] = "Tickets";
@@ -64,15 +64,13 @@ class TicketsController extends BaseController {
 	{
 		if (Auth::user()->can('read-ticket')) {
 			
-			if (Request::ajax()) {
-				return Ticket::find($id);
-			}
-			else {
+			$data['ticket'] = self::API()->find(['id'=>$id]);
 
+			if ($data['ticket']) {
+
+			    $data['title'] = "Ticket #".$data['ticket']->id;
 				$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit This Ticket",Auth::user()->can('update-ticket'))];
-										 
-				$data['ticket'] = Ticket::find($id);
-				$data['ticket']['posts'] = Post::where('ticket_id',$id)->where('status_id','!=',POST_DRAFT_STATUS_ID)->get();
+				$data['ticket']['posts'] = PostsController::API()->all(['where' => ['ticket_id|=|'.$id,'status_id','!=',POST_DRAFT_STATUS_ID]]);
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
 				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
@@ -110,11 +108,12 @@ class TicketsController extends BaseController {
 					case TICKET_CLOSED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
 														  break;
 					case TICKET_DRAFT_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; break;
-				};
-
-			    $data['title'] = "Ticket #".$id;
+				}
 
 				return view('tickets/show',$data);
+			}
+			else {
+				return redirect()->back()->withErrors(['404 The following Ticket coudn\'t be found']);	
 			}
 		}
 		else return redirect()->back()->withErrors(['Access denied to tickets show page']);	
@@ -124,31 +123,29 @@ class TicketsController extends BaseController {
 
 		$ticket = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
 		
+		// if there is a started draft redirect to that
 		if ($ticket) {
-			// if there is a started draft redirect to that
 			$redirect = redirect()->route('tickets.edit',$ticket->id);
-			
 			if (Session::get('errors')) {
 				$redirect = $redirect->withErrors(Session::get('errors')->all());
 			}
 			else {
 				$redirect = $redirect->with('infos',['This is a draft ticket lastly updated the '.date('m/d/Y H:i:s',strtotime($ticket->updated_at))]);
 			}
-
 			return $redirect;
 		}
 		else {
 			// otherwise redirect to empty form
 			$data['companies'] = Company::all();
 			$data['priorities'] = Priority::all();
-			
-			$data['assignees'] = CompanyPersonController::API()->all(
-				["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
-			);
-
 			$data['divisions'] = Division::all();
 			$data['job_types'] = JobType::all();
 			$data['levels'] = Level::all();
+			
+			$data['assignees'] = CompanyPersonController::API()->all([
+				"where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], 
+				"order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"
+			]);
 
 	        $data['title'] = "Create Ticket";
 
@@ -156,18 +153,17 @@ class TicketsController extends BaseController {
 		}
 	}
 
-	public function store(CreateTicketRequest $request)
+	public function draft(UpdateTicketDraftRequest $request) 
 	{
 		$draft = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
-
 		$ticket = $draft ? $draft : new Ticket();
 
 		$ticket->title = $request->get('title');
 		$ticket->post = $request->get('post');
 		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
 		$ticket->creator_id = Auth::user()->active_contact->id;
+		$ticket->status_id = TICKET_DRAFT_STATUS_ID;
 		$ticket->assignee_id = $request->get('assignee_id');
-		$ticket->status_id = $request->get('status_id');
 		$ticket->priority_id = $request->get('priority_id');
 		$ticket->division_id = $request->get('division_id');
 		$ticket->equipment_id = $request->get('equipment_id');
@@ -176,27 +172,72 @@ class TicketsController extends BaseController {
 		$ticket->job_type_id = $request->get('job_type_id');
 		$ticket->level_id = $request->get('level_id');
 		$ticket->emails = $request->get('emails');
-
 		$ticket->save();
 
        	$this->updateTags($ticket);
        	$this->updateLinks($ticket);
 
-       	if ($ticket->status_id != TICKET_DRAFT_STATUS_ID) { 
-       		$this->updateHistory($ticket); 
-       		EmailsManager::sendTicket($ticket->id);
-			// SlackManager::sendTicket($ticket);
-       	}
+       	return 'success';
+	}
 
-        return (Request::ajax()) ? 'success' : redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
+	public function store(CreateTicketRequest $request)
+	{
+
+		$ticket = new Ticket();
+
+		$ticket->title = $request->get('title');
+		$ticket->post = $request->get('post');
+		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
+		$ticket->creator_id = Auth::user()->active_contact->id;
+		$ticket->status_id = TICKET_NEW_STATUS_ID;
+		$ticket->assignee_id = $request->get('assignee_id');
+		$ticket->priority_id = $request->get('priority_id');
+		$ticket->division_id = $request->get('division_id');
+		$ticket->equipment_id = $request->get('equipment_id');
+		$ticket->company_id = $request->get('company_id');
+		$ticket->contact_id = $request->get('contact_id');
+		$ticket->job_type_id = $request->get('job_type_id');
+		$ticket->level_id = $request->get('level_id');
+		$ticket->emails = $request->get('emails');
+		$ticket->save();
+
+       	$this->updateTags($ticket);
+       	$this->updateLinks($ticket);
+   		$this->updateHistory($ticket); 
+   		EmailsManager::sendTicket($ticket->id);
+		// SlackManager::sendTicket($ticket);
+
         return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
 	}
 
-	
+	public function update($id, UpdateTicketRequest $request)
+	{
+		$ticket = self::API()->find(['id'=>$id]);
+
+		$ticket->company_id = $request->get('company_id');
+		$ticket->title = $request->get('title');
+		$ticket->post = $request->get('post');
+		$ticket->status_id = $ticket->status_id == TICKET_DRAFT_STATUS_ID ? TICKET_NEW_STATUS_ID : $ticket->status_id;
+		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
+		$ticket->assignee_id = $request->get('assignee_id');
+		$ticket->division_id = $request->get('division_id');
+		$ticket->equipment_id = $request->get('equipment_id');
+		$ticket->contact_id = $request->get('contact_id');
+		$ticket->job_type_id = $request->get('job_type_id');
+		$ticket->level_id = $request->get('level_id');
+		$ticket->emails = $request->get('emails');
+		$ticket->save();
+
+       	$this->updateTags($ticket);
+       	$this->updateHistory($ticket);
+       	$this->updateLinks($ticket);
+
+        return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
+	}
 
 	public function edit($id)
 	{
-		$data['ticket'] = Ticket::find($id);
+		$data['ticket'] = self::API()->find(['id'=>$id]);
 
 		$temp = DB::table("ticket_links")->where("ticket_id","=",$id)->get();
 		foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
@@ -204,7 +245,6 @@ class TicketsController extends BaseController {
 
 		$data['companies'] = Company::all();
 		$data['divisions'] = Division::all();
-		$data['statuses'] = Status::all();
 		$data['job_types'] = JobType::all();
 		$data['priorities'] = Priority::all();
 		$data['levels'] = Level::all();
@@ -228,32 +268,6 @@ class TicketsController extends BaseController {
         $data['title'] .= $is_draft ? " ~ Draft" : "";
 
 		return view('tickets/edit',$data);
-	}
-
-	public function update($id, UpdateTicketRequest $request)
-	{
-		$ticket = Ticket::find($id);
-
-		$ticket->company_id = $request->get('company_id');
-		$ticket->title = $request->get('title');
-		$ticket->post = $request->get('post');
-		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
-		$ticket->assignee_id = $request->get('assignee_id');
-		$ticket->division_id = $request->get('division_id');
-		$ticket->equipment_id = $request->get('equipment_id');
-		$ticket->contact_id = $request->get('contact_id') != 0 ? $request->get('contact_id') : NULL;
-		$ticket->job_type_id = $request->get('job_type_id');
-		$ticket->level_id = $request->get('level_id');
-		$ticket->emails = $request->get('emails');
-
-		$ticket->save();
-
-       	$this->updateTags($ticket);
-       	$this->updateHistory($ticket);
-       	$this->updateLinks($ticket);
-
-
-        return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
 	}
 
 	private function updateTags($ticket) {
@@ -321,10 +335,5 @@ class TicketsController extends BaseController {
 		$history->emails = $ticket->emails;
 	
 		$history->save();
-	}
-
-	public function destroy($id)
-	{
-		echo 'ticket destroy method to be created';
 	}
 }

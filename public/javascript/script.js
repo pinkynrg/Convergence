@@ -390,7 +390,7 @@ var activateTicketDraftMode = function() {
 		$.ajax({
 			'headers': { "X-CSRF-Token": $('[name=_token]').val() },
 			'type': 'POST',
-			'url': '/tickets',
+			'url': '/tickets/draft',
 			'data' : data,
 			'success' : function(data) {
 				consoleLog('success ticket draft:');
@@ -595,64 +595,69 @@ var updateMenuPosition = function () {
 function setupStatusSlider() {
 	$.get('/API/statuses/all?where[]=statuses.id|IN|2:3:4:6:7&paginate=false', function (data) {
 
-		var item = [];
-	
-		item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
-		item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
+		if ($("#status_id").length) {
 
-		$.get('/API/tickets/all?where[]=tickets.id|=|'+url.target_id+'&paginate=false', function (data) {
-	
-			var status_id = data[0].status_id;
-	
-			var slider = $("#status_id").slider({
-				id: 'status_id',
-			    ticks: item['ids'],
-			    value: status_id,
-			    ticks_labels: item['labels'],
-			    ticks_snap_bounds: 30,
-			    tooltip: 'hide',
-			    ticks_positions: [0,25,50,75,100]
+			var item = [];
+		
+			item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
+			item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
+
+			$.get('/API/tickets/find?id='+url.target_id, function (data) {
+		
+				var status_id = data.status_id;
+		
+				var slider = $("#status_id").slider({
+					id: 'status_id',
+				    ticks: item['ids'],
+				    value: status_id,
+				    ticks_labels: item['labels'],
+				    ticks_snap_bounds: 30,
+				    tooltip: 'hide',
+				    ticks_positions: [0,25,50,75,100]
+				});
+
+				slider.on('slideStop',function() {
+					var status_id = slider.slider('getValue');
+
+					if (status_id == 3 || status_id == 6) {
+						$("#is_public").bootstrapSwitch('state', true);						// set public true
+						$("#email_company_contact").bootstrapSwitch('state', true);			// send to contacts if toggle public 
+					}
+				});
 			});
-
-			slider.on('slideStop',function() {
-				var status_id = slider.slider('getValue');
-
-				if (status_id == 3 || status_id == 6) {
-					$("#is_public").bootstrapSwitch('state', true);						// set public true
-					$("#email_company_contact").bootstrapSwitch('state', true);			// send to contacts if toggle public 
-				}
-
-			});
-		});
+		}
 	});
 }
 
 function setupPrioritySlider() {
 	$.get('/API/priorities/all?paginate=false', function (data) {
 
-		var item = [];
-	
-		item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
-		item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
+		if ($("#priority_id").length) {
 
-		$.get('/API/tickets/all?where[]=tickets.id|=|'+url.target_id+'&paginate=false', function (data) {
-	
-			var priority_id = data[0].priority_id;
-	
-			var slider = $("#priority_id").slider({
-				id: 'status_id',
-			    ticks: item['ids'],
-			    value: priority_id,
-			    ticks_labels: item['labels'],
-			    ticks_snap_bounds: 30,
-			    tooltip: 'hide',
-			    reversed: true
-			});
+			var item = [];
+		
+			item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
+			item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
 
-			slider.on('slideStop',function() {
-				var priority_id = slider.slider('getValue');
+			$.get('/API/tickets/find?id='+url.target_id, function (data) {
+		
+				var priority_id = data.priority_id;
+		
+				var slider = $("#priority_id").slider({
+					id: 'status_id',
+				    ticks: item['ids'],
+				    value: priority_id,
+				    ticks_labels: item['labels'],
+				    ticks_snap_bounds: 30,
+				    tooltip: 'hide',
+				    reversed: true
+				});
+
+				slider.on('slideStop',function() {
+					var priority_id = slider.slider('getValue');
+				});
 			});
-		});
+		}
 	});
 }
 
@@ -768,6 +773,11 @@ if (true) {
 		toggleOrder($(this));
 		ajaxUpdate($target);
 	});
+
+	$("#switch_company_person_id").change(function() {
+		console.log("ciao");
+		$("#switch_company_person_form").submit();
+	});
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -870,7 +880,7 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 		activateTicketDraftMode();
 	}
 	else if (url.target == "tickets" && url.target_action == "edit") {
-		$.get('/tickets/'+url.target_id, function (data) {
+		$.get('/API/tickets/find?id='+url.target_id, function (data) {
 			var status_id = data.status_id;
 			if (status_id == draft_ticket_id) {
 				activateTicketDraftMode();

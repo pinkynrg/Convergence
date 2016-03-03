@@ -59,4 +59,23 @@ class UsersController extends BaseController {
         $user->save();
 		return redirect()->route('people.show',$user->owner->id)->with('successes',['User updated successfully']);
 	}
+
+	public function switchCompanyPerson($id) {
+		
+		$valid_company_person = false;
+		$company_person_id = Input::get('switch_company_person_id');
+		$user = User::find($id);
+
+		foreach ($user->owner->company_person as $company_person) {
+			if ($company_person_id == $company_person->id) {
+				$valid_company_person = true;
+			}
+		}
+
+		if ($valid_company_person) {
+			$user->active_contact_id = $company_person_id;
+			$user->save();
+		}
+		return redirect()->route('root');	
+	}
 }

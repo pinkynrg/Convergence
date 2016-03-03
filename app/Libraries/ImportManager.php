@@ -438,7 +438,7 @@ class Roles extends BaseClass {
 			$counter = 1;
 
 			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
-			$actions = ['viewer','manager'];
+			$actions = ['viewer','manager','operator'];
 
 			foreach ($targets as $target) {
 				foreach ($actions as $action) {
@@ -470,7 +470,7 @@ class PermissionRole extends BaseClass {
 	public function importSelf() {
 
 		$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
-		$role_types = ['viewer','manager'];
+		$role_types = ['viewer','manager','operator'];
 
 		if ($this->truncate()) {
 		
@@ -487,6 +487,9 @@ class PermissionRole extends BaseClass {
 						}
 						elseif ($role_type == 'manager') {
 							$query = "SELECT * FROM permissions WHERE name LIKE '%$target'";
+						}
+						elseif ($role_type == 'operator') {
+							$query = "SELECT * FROM permissions WHERE name LIKE '%$target' AND name NOT LIKE '%update%' AND name NOT LIKE '%delete%'";
 						}
 						
 						$result = mysqli_query($this->manager->conn, $query);
@@ -511,9 +514,9 @@ class PermissionRole extends BaseClass {
 
 			// extra permission_role
 			$queries = [
-				"INSERT INTO permission_role (permission_id, role_id) VALUES (100,4)",
-				"INSERT INTO permission_role (permission_id, role_id) VALUES (101,6)",
-				"INSERT INTO permission_role (permission_id, role_id) VALUES (110,26)"
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (100,5)", 	//role=role-manager
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (101,8)",  //role=group-manager
+				"INSERT INTO permission_role (permission_id, role_id) VALUES (110,38)"  //role=escalation_profile_manager
 			];
 
 			foreach ($queries as $query) {							
@@ -573,9 +576,14 @@ class Groups extends BaseClass {
 
 		if ($this->truncate()) {
 
-			$queries = ["INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (1,1,'convergence-adminstrator','Convergence Administrator', 'The Administrator of Convergence')",
-						"INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (2,1,'help-desk-user','Help Desk User', 'The Basic Help Desk User')",
-						"INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (3,2,'customer-administrator','Customer Administrator', 'Basic Customer Aministrator')"];
+			$queries = 
+
+["INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (1,1,'convergence-administrator','Convergence Administrator', 'Manager of everything')",
+ "INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (2,1,'basic-employee','Basic Employee', 'Basic Employee')",
+ "INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (3,1,'host-employee','Employee Host', 'This group can only view tickets')",
+ 
+ "INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (10,2,'basic-customer','Basic Customer', 'Basic Customer')",
+ "INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (11,2,'host-customer','Customer Host', 'This group can only view tickets')"];
 
 			foreach ($queries as $query) {							
 			
@@ -606,9 +614,11 @@ class GroupRole extends BaseClass {
 		if ($this->truncate()) {
 
 			$group_roles = [
-				1 => array(2,4,6,8,10,12,14,16,18,20,22,24,26),
-				2 => array(10,11,12,13,16,18,20),
-				3 => array(10,11,13,15,17,20),
+				1 => array(2,5,8,11,14,17,20,23,26,29,32,35,38), 		// all managers roles
+				2 => array(15,18,21,24,27,30),							// ticket operator, post operator, contact operator, user operator, equipment operator, company operator, post operator
+				3 => array(13,28), 										// can only view tickets and posts
+				10 => array(15,30),										// is only ticket, post operator
+				11 => array(13,28),										// can only view tickets and posts
 			];
 
 			foreach ($group_roles as $group_id => $roles) {
@@ -1405,12 +1415,38 @@ class CompanyPerson extends BaseClass {
 					  	"UPDATE company_person SET group_id = 1 WHERE email = 'melzi.a@elettric80.it'",
 					  	"UPDATE company_person SET group_id = 1 WHERE email = 'passarini.r@elettric80.it'",
 					  	"UPDATE company_person SET group_id = 1 WHERE email = 'kotsakos.t@elettric80.it'",
-					  	"UPDATE company_person SET group_id = 3 WHERE group_type_id = 2"];
-
+					  	"UPDATE company_person SET group_id = 10 WHERE group_type_id = 2"];
 
 			foreach ($queries as $query) {
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->updated++;
+					$this->successes++;
+				}
+				else {
+					$errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			$query = "SELECT * FROM groups WHERE id NOT IN (0,1)";
+			$result = mysqli_query($this->manager->conn,$query);
+			$groups = mysqli_fetch_all($result,MYSQLI_ASSOC);
+
+			$queries = [];
+			$random_company_ids = [177,132,186,133,134,173,187,142,188,135,130,179,136];
+			$counter = 0;
+
+			foreach ($groups as $group) {
+				$company_id = $random_company_ids[$counter];
+				$queries[] = "INSERT INTO company_person (person_id,company_id,department_id,title_id,phone,extension,cellphone,email,group_type_id, group_id) 
+						  VALUES (".ADMIN_PERSON_ID.",".$company_id.",NULL,NULL,NULL,NULL,NULL,NULL,".$group['group_type_id'].",".$group['id'].")";
+				$counter++;
+			}
+
+			foreach ($queries as $query) {
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
 				}
 				else {

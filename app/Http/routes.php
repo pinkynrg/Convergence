@@ -21,7 +21,7 @@ Route::group(array('middleware' => 'auth'), function() {
 		return redirect()->route('tickets.index');
 	}]);
 
-	Route::get('API/group-types{method}',['uses' => 'GroupTypesController@apiCall', 'as' => 'group_types.api']);
+	Route::get('API/group-types/{method}',['uses' => 'GroupTypesController@apiCall', 'as' => 'group_types.api']);
 	Route::get('API/groups/{method}',['uses' => 'GroupsController@apiCall', 'as' => 'groups.api']);	
 	Route::get('API/roles/{method}',['uses' => 'RolesController@apiCall', 'as' => 'roles.api']);	
 	Route::get('API/escalation-profiles/{method}',['uses' => 'EscalationProfilesController@apiCall', 'as' => 'escalation_profiles.api']);	
@@ -105,6 +105,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('tickets/create',['uses' => 'TicketsController@create', 'as' => 'tickets.create']);
 	Route::get('tickets/{id}',['uses' => 'TicketsController@show', 'as' => 'tickets.show']);
 	Route::post('tickets', ['uses' => 'TicketsController@store', 'as' => 'tickets.store']);
+	Route::post('tickets/draft', ['uses' => 'TicketsController@draft', 'as' => 'tickets.draft']);
 	Route::delete('tickets/{id}', ['uses' => 'TicketsController@destroy', 'as' => 'tickets.destroy']);
 	Route::patch('tickets/{id}', ['uses' => 'TicketsController@update', 'as' => 'tickets.update']);	
 	Route::get('tickets/{id}/edit', ['uses' => 'TicketsController@edit', 'as' => 'tickets.edit']);
@@ -142,6 +143,7 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('people/{id}/edit', ['uses' => 'PeopleController@edit', 'as' => 'people.edit']);
 
 	// users routes
+	Route::post('users/{id}/switch-contact',['uses' => 'UsersController@switchCompanyPerson', 'as' => 'users.switch_contact']);
 	Route::get('users',['uses' => 'UsersController@index', 'as' => 'users.index']);
 	Route::get('users/create/{id?}', ['uses' => 'UsersController@create', 'as' => 'users.create']);
 	Route::post('users', ['uses' => 'UsersController@store', 'as' => 'users.store']);
@@ -151,7 +153,7 @@ Route::group(array('middleware' => 'auth'), function() {
 
 	// company_person
 	Route::get('contacts',['uses' => 'CompanyPersonController@index', 'as' => 'company_person.index']);
-	Route::get('contacts/create', ['uses' => 'CompanyPersonController@create', 'as' => 'company_person.create']);
+	Route::get('contacts/create/{company_id?}', ['uses' => 'CompanyPersonController@create', 'as' => 'company_person.create']);
 	Route::post('people', ['uses' => 'CompanyPersonController@store', 'as' => 'company_person.store']);
 	Route::get('contacts/{company_person_id}',['uses' => 'CompanyPersonController@show', 'as' => 'company_person.show']);
 	Route::get('contacts/{company_person_id}/edit', ['uses' => 'CompanyPersonController@edit', 'as' => 'company_person.edit']);

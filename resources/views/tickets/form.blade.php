@@ -7,8 +7,6 @@
 			{!! Form::hidden("creator_id", Auth::user()->active_contact_id, array('id' => 'creator_id') ) !!}
 		@endif
 
-		{!! Form::hidden("status_id", 1, array('id' => 'status_id') ) !!}
-
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('company_id','Company') !!}
 			{!! Form::BSSelect("company_id", $companies, null, ['key' => 'id', 'value' => 'name', 'class' => 'ajax_trigger']) !!}
