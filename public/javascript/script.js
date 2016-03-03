@@ -598,17 +598,30 @@ var updateMenuPosition = function () {
 };
 
 function setupStatusSlider() {
-	$.get('/API/statuses/all?where[]=statuses.id|IN|2:3:4:6:7&paginate=false', function (data) {
 
-		var item = [];
+	$.get('/API/tickets/all?where[]=tickets.id|=|'+url.target_id+'&paginate=false', function (data) {
 	
-		item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
-		item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
+		var status_id = data[0].status_id,
+			allowed_status_ids = [2,3,4,6],
+			positions = [];
 
-		$.get('/API/tickets/all?where[]=tickets.id|=|'+url.target_id+'&paginate=false', function (data) {
-	
-			var status_id = data[0].status_id;
-	
+		if (status_id == 6) {
+			allowed_status_ids.push(7);
+			positions = [0,25,50,75,100];
+		}
+		else {
+			positions = [0,33,66,100];
+		}
+
+		var ids = allowed_status_ids.join(":");
+
+		$.get('/API/statuses/all?where[]=statuses.id|IN|'+ids+'&paginate=false', function (data) {
+
+			var item = [];
+		
+			item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
+			item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
+
 			var slider = $("#status_id").slider({
 				id: 'status_id',
 			    ticks: item['ids'],
@@ -616,7 +629,7 @@ function setupStatusSlider() {
 			    ticks_labels: item['labels'],
 			    ticks_snap_bounds: 30,
 			    tooltip: 'hide',
-			    ticks_positions: [0,25,50,75,100]
+			    ticks_positions: positions
 			});
 
 			slider.on('slideStop',function() {
@@ -630,6 +643,8 @@ function setupStatusSlider() {
 			});
 		});
 	});
+
+	
 }
 
 function setupPrioritySlider() {
