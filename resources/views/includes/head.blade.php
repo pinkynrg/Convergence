@@ -26,7 +26,6 @@
 <script src="/javascript/jquery.blueimp-gallery.min.js"></script>
 <script src="/javascript/bootstrap-image-gallery.js"></script>
 <script src="/javascript/bootstrap.min.js"></script>
-<script src="/javascript/bootstrap-switch.min.js"></script>
 <script src="/javascript/jquery.autocomplete.js"></script>
 <script src="/javascript/bootstrap-select.js"></script>
 <script src="/javascript/bootstrap3-typeahead.min.js"></script>
@@ -42,6 +41,7 @@
 <script src="/javascript/jquery.style.js"></script>
 <script src="/javascript/bootstrap-slider.js"></script>
 <script src="/javascript/jquery.cookie.js"></script>
+<script src="/javascript/bootstrap-switch.min.js"></script>
 <script src="/javascript/script.js"></script>
 
 <link rel="shortcut icon" href="{{ asset('/images/style/favicon.ico') }}">
