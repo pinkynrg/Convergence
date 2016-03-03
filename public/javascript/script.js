@@ -598,6 +598,7 @@ var updateMenuPosition = function () {
 };
 
 function setupStatusSlider() {
+	
 	if ($("#status_id").length) {
 
 		$.get('/API/tickets/find?id='+url.target_id, function (data) {
@@ -616,6 +617,8 @@ function setupStatusSlider() {
 			else {
 				positions = [0,33,66,100];
 			}
+
+			$("#status_id").val(status_id);
 
 			switch (status_id) {
 	    		case 2: current_tick = 1; break;
@@ -698,6 +701,7 @@ function setupPrioritySlider() {
 					id: 'status_id',
 				    ticks: item['ids'],
 				    value: priority_id,
+				    selection: 'none',
 				    ticks_labels: item['labels'],
 				    ticks_snap_bounds: 30,
 				    tooltip: 'hide',

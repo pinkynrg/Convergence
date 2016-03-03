@@ -21,7 +21,9 @@ class EmailsManager {
 
 		$post = Post::find($id);
 		self::setSubject("New Post to Ticket #".$post->ticket->id);
-       	self::add("to",Auth::user()->active_contact->email);
+		if (Auth::user()->active_contact->email) {
+       		self::add("to",Auth::user()->active_contact->email);
+       	}
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
 		self::send();	
@@ -31,7 +33,9 @@ class EmailsManager {
 
 		$ticket = Ticket::find($id);
 		self::setSubject("New Ticket #".$ticket->id);
-       	self::add("to",Auth::user()->active_contact->email);
+		if (Auth::user()->active_contact->email) {
+	       	self::add("to",Auth::user()->active_contact->email);
+	    }
 		self::$view = "emails/ticket";
 		self::$data['ticket'] = $ticket;
 		self::send();	
