@@ -626,6 +626,7 @@ function setupStatusSlider() {
 				id: 'status_id',
 			    ticks: item['ids'],
 			    value: status_id,
+			    selection: 'none',
 			    ticks_labels: item['labels'],
 			    ticks_snap_bounds: 30,
 			    tooltip: 'hide',
@@ -633,11 +634,19 @@ function setupStatusSlider() {
 			});
 
 			slider.on('slideStop',function() {
-				var status_id = slider.slider('getValue');
+				var selected_status_id = slider.slider('getValue');
 
-				if (status_id == 3 || status_id == 6) {
+				if (selected_status_id == 3 || selected_status_id == 6 || selected_status_id == 7) {
+
 					$("#is_public").bootstrapSwitch('state', true);						// set public true
 					$("#email_company_contact").bootstrapSwitch('state', true);			// send to contacts if toggle public 
+
+					if (status_id != selected_status_id) {
+						$("#is_public").bootstrapSwitch('disabled',true);
+					}
+				}
+				else {
+					$("#is_public").bootstrapSwitch('disabled',false);
 				}
 
 			});
@@ -663,6 +672,7 @@ function setupPrioritySlider() {
 				id: 'status_id',
 			    ticks: item['ids'],
 			    value: priority_id,
+			    selection: 'none',
 			    ticks_labels: item['labels'],
 			    ticks_snap_bounds: 30,
 			    tooltip: 'hide',
@@ -914,12 +924,15 @@ if (url.target == "tickets" && url.target_action == "show") {
 
 	$("#is_public").on('switchChange.bootstrapSwitch',function() {						// if toggle public
 		var current = $(this).bootstrapSwitch('state');
-		if (current) {
-			$("#email_company_contact").bootstrapSwitch('state', true, current);		// send to contacts if toggle public 
-		}
+		$("#email_company_contact").bootstrapSwitch('state', current);					// send to contacts if toggle public 
 	});
 
-
+	$("#email_company_contact, email_company_group_email").on('switchChange.bootstrapSwitch',function() {	// if toggle public
+		var current = $(this).bootstrapSwitch('state');
+		if (current) {
+			$("#is_public").bootstrapSwitch('state', current);							// send to contacts if toggle public 
+		}
+	});
 
 	setupStatusSlider();
 
