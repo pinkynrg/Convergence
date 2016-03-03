@@ -602,30 +602,40 @@ function setupStatusSlider() {
 	$.get('/API/tickets/all?where[]=tickets.id|=|'+url.target_id+'&paginate=false', function (data) {
 	
 		var status_id = data[0].status_id,
-			allowed_status_ids = [2,3,4,6],
-			positions = [];
+			allowed_statuses = [2,3,4,6],
+			allowed_ticks = [1,2,3,4],
+			positions = [],
+			current_tick;
 
 		if (status_id == 6) {
-			allowed_status_ids.push(7);
+			allowed_ticks.push(5);
+			allowed_statuses.push(7);
 			positions = [0,25,50,75,100];
 		}
 		else {
 			positions = [0,33,66,100];
 		}
 
-		var ids = allowed_status_ids.join(":");
+		switch (status_id) {
+    		case 2: current_tick = 1; break;
+    		case 3: current_tick = 2; break;
+    		case 4: current_tick = 3; break;
+    		case 6: current_tick = 4; break;
+    		case 7: current_tick = 5; break;
+    	}
+
+		var ids = allowed_statuses.join(":");
 
 		$.get('/API/statuses/all?where[]=statuses.id|IN|'+ids+'&paginate=false', function (data) {
 
 			var item = [];
 		
 			item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
-			item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
 
-			var slider = $("#status_id").slider({
+			var slider = $("#fake_status_id").slider({
 				id: 'status_id',
-			    ticks: item['ids'],
-			    value: status_id,
+			    ticks: allowed_ticks,
+			    value: current_tick,
 			    selection: 'none',
 			    ticks_labels: item['labels'],
 			    ticks_snap_bounds: 30,
@@ -634,14 +644,25 @@ function setupStatusSlider() {
 			});
 
 			slider.on('slideStop',function() {
-				var selected_status_id = slider.slider('getValue');
+				var selected_status_id = slider.slider('getValue'),
+					real_value;
 
-				if (selected_status_id == 3 || selected_status_id == 6 || selected_status_id == 7) {
+				switch (selected_status_id) {
+		    		case 1: real_value = 2; break;
+		    		case 2: real_value = 3; break;
+		    		case 3: real_value = 4; break;
+		    		case 4: real_value = 6; break;
+		    		case 5: real_value = 7; break;
+		    	}
+
+		    	$("#status_id").val(real_value);
+
+				if (real_value == 3 || real_value == 6 || real_value == 7) {
 
 					$("#is_public").bootstrapSwitch('state', true);						// set public true
 					$("#email_company_contact").bootstrapSwitch('state', true);			// send to contacts if toggle public 
 
-					if (status_id != selected_status_id) {
+					if (status_id != real_value) {
 						$("#is_public").bootstrapSwitch('disabled',true);
 					}
 				}

@@ -216,7 +216,8 @@
 		@include('posts.form',array('post' => $draft_post))
 
 		<div class="status_slider_container col-xs-12">
-			<input id="status_id" name="status_id" type="text"/>
+			{!! Form::hidden("status_id",null,["id" => "status_id"]) !!}
+			<input id="fake_status_id" type="text"/>
 		</div>
 
 		<div class="priority_slider_container col-xs-12">
