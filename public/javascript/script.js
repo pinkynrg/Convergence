@@ -12,7 +12,9 @@ var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	path = window.location.pathname,
 	rxres = regex.exec(path),
 	first_ordering = true,
-	draft_ticket_id = 8;
+	draft_ticket_id = 8,
+	ticket_draft_routine,
+	post_draft_routine;
 
 var url = (function () {
 	return {
@@ -34,8 +36,8 @@ var readCookie = function() {
 	var cookies = $.cookie();
 
 	for(var cookie in cookies) {
-    consoleLog(cookie+"="+cookies[cookie]);
-}
+	    consoleLog(cookie+"="+cookies[cookie]);
+	}
 }
 
 var scrollUp = function(ms) {
@@ -62,21 +64,13 @@ var resetFilter = function($this) {
 	var $target = $this.closest("div[ajax-route]");
 	$target.find('.selectpicker').selectpicker('deselectAll');
 	$target.find('#search_field').val("");
-	// reset page
-	// reset ordering 
 	ajaxUpdate($target);
 };
 
 var ajaxUpdate = function($target) {
-	if (timer) {
-		clearTimeout(timer);
-		timer = null;
-	}
-	timer = setTimeout(function () {
-		var params = getParams($target);
-		var url = getUrl(params,$target);
-		ajaxRequest(url,$target);
-	}, 500);
+	var params = getParams($target);
+	var url = getUrl(params,$target);
+	ajaxRequest(url,$target);
 };
 
 var toggleOrder = function($elem) {
@@ -248,7 +242,7 @@ var saveFiltersSetup = function ($target) {
 		filters['multifilter'][$(this).attr('id')] = $(this).val();
 	});
 
-	$.cookie(cookie_name,filters);
+	$.cookie(cookie_name,JSON.stringify(filters));
 }
 
 var getParams = function($target) {
@@ -366,7 +360,7 @@ var ajaxRequest = function(url,$target) {
 };
 
 var activateTicketDraftMode = function() {
-	setInterval(function(){ 
+	ticket_draft_routine = setInterval(function(){ 
 		
 		var dummy_id = 0;
 
@@ -393,12 +387,10 @@ var activateTicketDraftMode = function() {
 			'url': '/tickets/draft',
 			'data' : data,
 			'success' : function(data) {
-				consoleLog('success ticket draft:');
-				consoleLog(data);
+				consoleLog('status ticket draft: '+data);
 			},
 			'error' : function (data){
-				consoleLog('error ticket draft:');
-				consoleLog(data.responseText);
+				consoleLog('status ticket draft: '+data.responseText);
 			}
 		});
 
@@ -406,12 +398,8 @@ var activateTicketDraftMode = function() {
 };
 
 var savePostDraft = function(callback) {
-	if (timer) {
-		clearTimeout(timer);
-		timer = null;
-	}
 	
-	timer = setTimeout(function () {
+	post_draft_routine = setTimeout(function () {
 
 		var dummy_id = 0;
 
@@ -425,12 +413,16 @@ var savePostDraft = function(callback) {
 		$.ajax({
 			'headers': { "X-CSRF-Token": $('[name=_token]').val() },
 			'type': 'POST',
-			'url': '/posts',
+			'url': '/posts/draft',
 			'data' : data,
-			'success' : function () {
+			'success' : function(data) {
 				if (typeof callback == "function") {
 					callback();
-				}	
+				}
+				consoleLog('status post draft: '+data);
+			},
+			'error' : function (data){
+				consoleLog('status post draft: :'+data.responseText);
 			}
 		});
 	}, 1000);
@@ -599,7 +591,7 @@ var updateMenuPosition = function () {
 
 function setupStatusSlider() {
 	
-	if ($("#status_id").length) {
+	if ($("#fake_status_id:visible").length) {
 
 		$.get('/API/tickets/find?id='+url.target_id, function (data) {
 		
@@ -663,15 +655,15 @@ function setupStatusSlider() {
 
 					if (real_value == 3 || real_value == 6 || real_value == 7) {
 
-						$("#is_public").bootstrapSwitch('state', true);						// set public true
+						$("#fake_is_public").bootstrapSwitch('state', true);						// set public true
 						$("#email_company_contact").bootstrapSwitch('state', true);			// send to contacts if toggle public 
 
 						if (status_id != real_value) {
-							$("#is_public").bootstrapSwitch('disabled',true);
+							$("#fake_is_public").bootstrapSwitch('disabled',true);
 						}
 					}
 					else {
-						$("#is_public").bootstrapSwitch('disabled',false);
+						$("#fake_is_public").bootstrapSwitch('disabled',false);
 					}
 
 				});
@@ -682,7 +674,7 @@ function setupStatusSlider() {
 
 function setupPrioritySlider() {
 
-	if ($("#priority_id").length) {
+	if ($("#priority_id:visible").length) {
 
 		$.get('/API/priorities/all?paginate=false', function (data) {
 
@@ -728,8 +720,6 @@ readCookie();
 
 // if cookie with save filters available retrive them
 setupFilters();
-
-$.cookie.json = true;
 
 $(window).scroll(function(){
 	updateMenuPosition();
@@ -894,6 +884,10 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 
 	fillSelectFields();
 
+	$("#ticket_form").submit(function() {
+		clearInterval(ticket_draft_routine);
+	});
+
 	$("#fake_equipment_id").on("change",function () {
 		var equipment_id = $(this).val() == "NULL" ? "" : $(this).val();
 		$("#equipment_id").val(equipment_id);
@@ -949,7 +943,12 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 if (url.target == "tickets" && url.target_action == "show") {
-	if (typeof CKEDITOR.instances['post'] != 'undefined') {								// if it is supported
+
+	$("#post_form").submit(function() {
+		clearInterval(post_draft_routine);
+	});
+
+	if (typeof CKEDITOR.instances['post'] != 'undefined') {													// if it is supported
 		CKEDITOR.instances['post'].on('change',function () {
 			if (url.target == "tickets" && url.target_action == "show") {			
 				savePostDraft();
@@ -957,16 +956,15 @@ if (url.target == "tickets" && url.target_action == "show") {
 		});
 	}
 
-	$("#is_public").on('switchChange.bootstrapSwitch',function() {						// if toggle public
+	$("#fake_is_public").on('switchChange.bootstrapSwitch',function() {										// if toggle public
 		var current = $(this).bootstrapSwitch('state');
-		$("#email_company_contact").bootstrapSwitch('state', current);					// send to contacts if toggle public 
+		$("#is_public").val(current);
+		$("#email_company_contact").bootstrapSwitch('state', current);										// send to contacts if toggle public 
 	});
 
 	$("#email_company_contact, email_company_group_email").on('switchChange.bootstrapSwitch',function() {	// if toggle public
 		var current = $(this).bootstrapSwitch('state');
-		if (current) {
-			$("#is_public").bootstrapSwitch('state', current);							// send to contacts if toggle public 
-		}
+		$("#fake_is_public").bootstrapSwitch('state', current);												// send to contacts if toggle public 
 	});
 
 	setupStatusSlider();
@@ -1010,7 +1008,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 
 			that.on("addedfile", function (){
 				if (that.options.target == "posts" && that.options.target_action == "create") {
-	    			consoleLog("Ticket draft created triggered by attachment upload");
+	    			consoleLog("Post draft created triggered by attachment upload");
 	    			savePostDraft(function () {
 	    				that.processQueue();
 	    			});

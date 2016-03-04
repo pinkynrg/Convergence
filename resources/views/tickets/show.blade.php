@@ -195,7 +195,7 @@
 
 		@if (Auth::user()->can('create-post'))
 
-			{!! Form::model($draft_post, array('method' => 'POST', 'route' => 'posts.store') ) !!}
+			{!! Form::model($draft_post, array('method' => 'POST', 'route' => 'posts.store', 'id' => 'post_form') ) !!}
 
 				<div>
 					<h3 id="write_post"> Write a post </h3>
@@ -213,72 +213,88 @@
 
 				@include('posts.form',array('post' => $draft_post))
 
-				<div class="status_slider_container col-xs-12">
-					{!! Form::hidden("status_id",null,["id" => "status_id"]) !!}
-					<input id="fake_status_id" type="text"/>
-				</div>
+				@if (Auth::user()->active_contact->isE80()) 
 
-				<div class="priority_slider_container col-xs-12">
-					<input id="priority_id" name="priority_id" type="text"/>
-				</div>
-
-				
-				<div class="col-xs-12 col-sm-6">
-
-					<h5> Post visibility: </h5>
-
-					<div class="is_public"> 
-						<label> <input type="checkbox" id="is_public" value="true" name="is_public" class="switch"> Public </label> 
+					<div class="status_slider_container col-xs-12">
+						{!! Form::hidden("status_id",null,["id" => "status_id"]) !!}
+						<input id="fake_status_id" type="text"/>
 					</div>
 
-				</div>
+					<div class="priority_slider_container col-xs-12">
+						<input id="priority_id" name="priority_id" type="text"/>
+					</div>
 
-				<div class="col-xs-12 col-sm-6">
-
-					<h5> Send email to: </h5>
 					
-					<div class="email_checkbox">
-						<div class="email_checkbox_input"> 
-							<input type="checkbox" id="email_account_manager" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->account_manager)) disabled @endif> 
+					<div class="col-xs-12 col-sm-6">
+
+						<h5> Post visibility: </h5>
+
+						<div class="is_public"> 
+							{!! Form::hidden("is_public",null,["id" => "is_public"]) !!}
+							<label> <input type="checkbox" id="fake_is_public" value="true" class="switch"> Public </label> 
+						</div>
+
+					</div>
+
+					<div class="col-xs-12 col-sm-6">
+
+						<h5> Send email to: </h5>
+						
+						<div class="email_checkbox">
+							<div class="email_checkbox_input"> 
+								<input type="checkbox" id="email_account_manager" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->account_manager)) disabled @endif> 
+							</div>
+							
+							<div class="email_checkbox_label" @if (!isset($ticket->company->account_manager)) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif >
+								<div>Account manager:</div>
+								<div>{{ (!isset($ticket->company->account_manager)) ? "Not Available" : $ticket->company->account_manager->company_person->email }}</div>
+							</div>
 						</div>
 						
-						<div class="email_checkbox_label" @if (!isset($ticket->company->account_manager)) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif >
-							<div>Account manager:</div>
-							<div>{{ (!isset($ticket->company->account_manager)) ? "Not Available" : $ticket->company->account_manager->company_person->email }}</div>
+						<div class="email_checkbox">
+							<div class="email_checkbox_input"> 
+								<input type="checkbox" id="email_company_group_email" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->group_email)) disabled @endif>  
+							</div>
+							<div class="email_checkbox_label" @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif > 
+								<div>Company group email:</div>
+								<div>{{ (!isset($ticket->company->group_email)) ? "Not Available" : $ticket->company->group_email }} </div>
+							</div>
 						</div>
-					</div>
-					
-					<div class="email_checkbox">
-						<div class="email_checkbox_input"> 
-							<input type="checkbox" id="email_company_group_email" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->group_email)) disabled @endif>  
+
+						<div class="email_checkbox">
+							<div class="email_checkbox_input"> 
+								<input type="checkbox"  id="email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
+							</div>
+							<div class="email_checkbox_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
+								<div>Contact reference:</div>
+								<div>{{ (!isset($ticket->contact->email)) ? "Not Available" : $ticket->contact->email }} </div>
+							</div>
 						</div>
-						<div class="email_checkbox_label" @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif > 
-							<div>Company group email:</div>
-							<div>{{ (!isset($ticket->company->group_email)) ? "Not Available" : $ticket->company->group_email }} </div>
+
+						<div class="email_checkbox">
+							<div class="email_checkbox_input"> 
+								<input type="checkbox" id="email_ticket_emails" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
+							</div>
+							<div class="email_checkbox_label" @if (!isset($ticket->emails) || $ticket->emails == '') data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif >
+								<div>Additional emails:</div>
+								<div>{{ (!isset($ticket->emails) || $ticket->emails == '') ? "Not Available" : $ticket->emails }} </div>
+							</div>
 						</div>
+
 					</div>
 
-					<div class="email_checkbox">
-						<div class="email_checkbox_input"> 
-							<input type="checkbox"  id="email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
-						</div>
-						<div class="email_checkbox_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
-							<div>Contact reference:</div>
-							<div>{{ (!isset($ticket->contact->email)) ? "Not Available" : $ticket->contact->email }} </div>
-						</div>
-					</div>
+				@else
 
-					<div class="email_checkbox">
-						<div class="email_checkbox_input"> 
-							<input type="checkbox" id="email_ticket_emails" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
-						</div>
-						<div class="email_checkbox_label" @if (!isset($ticket->emails) || $ticket->emails == '') data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif >
-							<div>Additional emails:</div>
-							<div>{{ (!isset($ticket->emails) || $ticket->emails == '') ? "Not Available" : $ticket->emails }} </div>
-						</div>
-					</div>
+					{!! Form::hidden("is_public","true",["id" => "is_public"]) !!}
+					{!! Form::hidden("priority_id",$ticket->priority_id,["id" => "priority_id"]) !!}
 
-				</div>
+					@if ($ticket->status_id == TICKET_WFF_STATUS_ID)
+						{!! Form::hidden("status_id",TICKET_IN_PROGRESS_STATUS_ID,["id" => "status_id"]) !!}
+					@else 
+						{!! Form::hidden("status_id",$ticket->status_id,["id" => "status_id"]) !!}
+					@endif
+
+				@endif
 
 				{!! Form::BSGroup() !!}
 					{!! Form::BSSubmit("Submit") !!}
@@ -286,7 +302,7 @@
 
 			{!! Form::close() !!}
 
-		@endif
+		@endif		
 
 	@endif
 

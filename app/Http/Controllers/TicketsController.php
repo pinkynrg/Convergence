@@ -70,7 +70,7 @@ class TicketsController extends BaseController {
 
 			    $data['title'] = "Ticket #".$data['ticket']->id;
 				$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit This Ticket",Auth::user()->can('update-ticket'))];
-				$data['ticket']['posts'] = PostsController::API()->all(['where' => ['ticket_id|=|'.$id,'status_id','!=',POST_DRAFT_STATUS_ID]]);
+				$data['ticket']['posts'] = PostsController::API()->all(['where' => ['ticket_id|=|'.$id], "order" => ['posts.id|ASC']]);
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
 				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
@@ -153,6 +153,41 @@ class TicketsController extends BaseController {
 		}
 	}
 
+	public function edit($id)
+	{
+		$data['ticket'] = self::API()->find(['id'=>$id]);
+
+		$temp = DB::table("ticket_links")->where("ticket_id","=",$id)->get();
+		foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
+		$data['ticket']['linked_tickets_id'] = isset($links) ? implode(",",$links) : '';
+
+		$data['companies'] = Company::all();
+		$data['divisions'] = Division::all();
+		$data['job_types'] = JobType::all();
+		$data['priorities'] = Priority::all();
+		$data['levels'] = Level::all();
+		
+		$data['assignees'] = CompanyPersonController::API()->all(
+			["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
+		);
+
+		$data['tags'] = "";
+
+		foreach ($data['ticket']->tags as $tag) {
+			$data['tags'] .= $tag->name.",";
+		}
+
+		$is_draft = $data['ticket']->status_id == TICKET_DRAFT_STATUS_ID ? true : false;
+
+		$data['ticket']->title = ($is_draft && $data['ticket']->title == '[undefined]') ? '' : $data['ticket']->title;
+		$data['ticket']->post = ($is_draft && $data['ticket']->post_plain_text == '[undefined]') ? '' : $data['ticket']->post;
+
+        $data['title'] = "Edit Ticket #".$id;
+        $data['title'] .= $is_draft ? " ~ Draft" : "";
+
+		return view('tickets/edit',$data);
+	}
+
 	public function draft(UpdateTicketDraftRequest $request) 
 	{
 		$draft = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
@@ -182,8 +217,8 @@ class TicketsController extends BaseController {
 
 	public function store(CreateTicketRequest $request)
 	{
-
-		$ticket = new Ticket();
+		$draft = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
+		$ticket = $draft ? $draft : new Ticket();
 
 		$ticket->title = $request->get('title');
 		$ticket->post = $request->get('post');
@@ -233,41 +268,6 @@ class TicketsController extends BaseController {
        	$this->updateLinks($ticket);
 
         return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
-	}
-
-	public function edit($id)
-	{
-		$data['ticket'] = self::API()->find(['id'=>$id]);
-
-		$temp = DB::table("ticket_links")->where("ticket_id","=",$id)->get();
-		foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
-		$data['ticket']['linked_tickets_id'] = isset($links) ? implode(",",$links) : '';
-
-		$data['companies'] = Company::all();
-		$data['divisions'] = Division::all();
-		$data['job_types'] = JobType::all();
-		$data['priorities'] = Priority::all();
-		$data['levels'] = Level::all();
-		
-		$data['assignees'] = CompanyPersonController::API()->all(
-			["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
-		);
-
-		$data['tags'] = "";
-
-		foreach ($data['ticket']->tags as $tag) {
-			$data['tags'] .= $tag->name.",";
-		}
-
-		$is_draft = $data['ticket']->status_id == TICKET_DRAFT_STATUS_ID ? true : false;
-
-		$data['ticket']->title = ($is_draft && $data['ticket']->title == '[undefined]') ? '' : $data['ticket']->title;
-		$data['ticket']->post = ($is_draft && $data['ticket']->post_plain_text == '[undefined]') ? '' : $data['ticket']->post;
-
-        $data['title'] = "Edit Ticket #".$id;
-        $data['title'] .= $is_draft ? " ~ Draft" : "";
-
-		return view('tickets/edit',$data);
 	}
 
 	private function updateTags($ticket) {

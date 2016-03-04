@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 
-	{!! Form::model($ticket, array('method' => 'PATCH', 'route' => array('tickets.update',$ticket->id) )) !!}
+	{!! Form::model($ticket, array('method' => 'PATCH', 'route' => array('tickets.update',$ticket->id), 'id' => 'ticket_form')) !!}
 	
 		@include('tickets.form')
 

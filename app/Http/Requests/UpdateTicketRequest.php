@@ -29,8 +29,8 @@ class UpdateTicketRequest extends Request {
 	{
 		return [
 			'company_id' => 'required|integer',
-			'contact_id' => 'integer',
-			'equipment_id' => 'integer',  
+			'contact_id' => 'required|integer',
+			'equipment_id' => 'required|integer',  
 			'assignee_id' => 'required|integer',  
 			'title' => 'required|string',
 			'post' => 'required|string',

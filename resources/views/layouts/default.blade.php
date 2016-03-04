@@ -6,8 +6,6 @@
 </head>
 <body>
 
-@include('includes.debug')
-
 @include('includes.header')
 
 <div id="loading"></div>

@@ -29,8 +29,8 @@ class CreateTicketRequest extends Request {
 	{
 		return [
 			'company_id' => 'required|numeric',  
-			'contact_id' => 'numeric',  
-			'equipment_id' => 'numeric',  
+			'contact_id' => 'required|numeric',
+			'equipment_id' => 'required|numeric',  
 			'assignee_id' => 'required|numeric',  
 			'title' => 'required|string',
 			'post' => 'required|string',
@@ -40,5 +40,4 @@ class CreateTicketRequest extends Request {
 			'level_id' => 'required|numeric'
 		];
 	}
-
 }

@@ -3,7 +3,7 @@
 use App\Http\Requests\Request;
 use Auth;
 
-class CreatePostRequest extends Request {
+class UpdatePostDraftRequest extends Request {
 
 	/**
 	 * Determine if the user is authorized to make this request.

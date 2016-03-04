@@ -1,13 +1,10 @@
 @extends('layouts.default')
 @section('content')
 
-	{!! Form::open( array('route' => 'tickets.store') ) !!}		
+	{!! Form::open(array('route' => 'tickets.store', 'id' => 'ticket_form')) !!}
 
-		<!-- <fieldset> -->
-			<!-- <legend> Ticket </legend> -->
-			@include('tickets.form')
-			{!! Form::BSSubmit("Submit") !!}
-		<!-- </fieldset> -->
+		@include('tickets.form')
+		{!! Form::BSSubmit("Submit") !!}
 			
 	{!! Form::close() !!}
 

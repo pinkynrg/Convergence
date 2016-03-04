@@ -112,6 +112,7 @@ Route::group(array('middleware' => 'auth'), function() {
 
 	// posts routes
 	Route::post('posts',['uses' => 'PostsController@store', 'as' => 'posts.store']);
+	Route::post('posts/draft',['uses' => 'PostsController@draft', 'as' => 'posts.draft']);
 	Route::get('posts/{id}',['uses' => 'PostsController@show', 'as' => 'posts.show']);
 	Route::patch('posts/{id}',['uses' => 'PostsController@update', 'as' => 'posts.update']);
 	Route::get('posts/{id}/edit', ['uses' => 'PostsController@edit', 'as' => 'posts.edit']);

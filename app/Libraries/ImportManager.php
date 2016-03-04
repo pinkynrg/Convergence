@@ -1430,33 +1430,6 @@ class CompanyPerson extends BaseClass {
 				}
 			}
 
-			$query = "SELECT * FROM groups WHERE id NOT IN (0,1)";
-			$result = mysqli_query($this->manager->conn,$query);
-			$groups = mysqli_fetch_all($result,MYSQLI_ASSOC);
-
-			$queries = [];
-			$random_company_ids = [177,132,186,133,134,173,187,142,188,135,130,179,136];
-			$counter = 0;
-
-			foreach ($groups as $group) {
-				$company_id = $random_company_ids[$counter];
-				$queries[] = "INSERT INTO company_person (person_id,company_id,department_id,title_id,phone,extension,cellphone,email,group_type_id, group_id) 
-						  VALUES (".ADMIN_PERSON_ID.",".$company_id.",NULL,NULL,NULL,NULL,NULL,NULL,".$group['group_type_id'].",".$group['id'].")";
-				$counter++;
-			}
-
-			foreach ($queries as $query) {
-				if (mysqli_query($this->manager->conn,$query) === TRUE) {
-					$this->successes++;
-				}
-				else {
-					$errors++;
-					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
-					}
-				}
-			}
-
 			$query = "SELECT p.id FROM people p
 				  LEFT JOIN company_person cp ON (p.id = cp.person_id)
 				  WHERE cp.id IS NULL";
