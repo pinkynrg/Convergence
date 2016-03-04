@@ -82,11 +82,11 @@ class CompanyPersonController extends BaseController {
 	public function edit($id) {
 		$data['title'] = "Edit Contact";
 		$company_person = CompanyPerson::find($id);
-		$data['titles'] = Title::all();
-		$data['departments'] = Department::all();
-		$data['companies'] = Company::all();		
+		$data['titles'] = Title::orderBy("name")->get();
+		$data['departments'] = Department::orderBy("name")->get();
+		$data['companies'] = Company::orderBy("name")->get();
 		$data['contact'] = CompanyPerson::find($id);
-		$data['groups'] = Group::where('group_type_id','=',$company_person->group_type_id)->get();
+		$data['groups'] = Group::where("group_type_id","=",$company_person->group_type_id)->orderBy("name")->get();
 
 		return view('company_person/edit', $data);	
 	}	

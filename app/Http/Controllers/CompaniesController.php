@@ -41,12 +41,16 @@ class CompaniesController extends BaseController {
     }
 
 	public function create() {
-        $data['titles'] = Title::all();
-        $data['departments'] = Department::all();
-		$data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
-        $data['support_types'] = SupportType::all();
-        $data['group_types'] = GroupType::all();
-        $data['escalation_profiles'] = EscalationProfile::all();
+        $data['titles'] = Title::orderBy("name")->get();
+        $data['departments'] = Department::orderBy("name")->get();
+        $data['support_types'] = SupportType::orderBy("name")->get();
+        $data['group_types'] = GroupType::orderBy("name")->get();
+        $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
+        $data['account_managers'] = CompanyPersonController::API()->all([
+            "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|7"], 
+            "order" => ["people.last_name|ASC","people.first_name|ASC"], 
+            "paginate" => "false"
+        ]);
 
         $data['title'] = "Create Company";
 
@@ -123,10 +127,15 @@ class CompaniesController extends BaseController {
         $selected_main_contact = CompanyMainContact::where('company_id','=',$id)->first();
         $data['company']->main_contact_id = isset($selected_main_contact) ? $selected_main_contact->main_contact_id : null;
 
-        $data['account_managers'] = CompanyPerson::where('company_person.company_id','=','1')->where('title_id','=',7)->get();
+        $data['account_managers'] = CompanyPersonController::API()->all([
+            "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|7"], 
+            "order" => ["people.last_name|ASC","people.first_name|ASC"], 
+            "paginate" => "false"
+        ]);
+        
         $data['main_contacts'] = CompanyPerson::where('company_person.company_id','=',$id)->get();
-        $data['support_types'] = SupportType::all();
-        $data['escalation_profiles'] = EscalationProfile::all();
+        $data['support_types'] = SupportType::orderBy("name")->get();
+        $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
 
         $data['title'] = "Edit " . $data['company']->name;
 

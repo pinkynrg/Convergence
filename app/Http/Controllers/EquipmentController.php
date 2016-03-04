@@ -35,7 +35,7 @@ class EquipmentController extends BaseController {
 
 	public function create($id) {
         $data['title'] = "Create Equipment";
-        $data['equipment_types'] = EquipmentType::all();
+        $data['equipment_types'] = EquipmentType::orderBy("name")->get();
         $data['company'] = Company::find($id);
 		$data['company']->company_id = $data['company']->id;
 		return view('equipment/create', $data);	
@@ -51,7 +51,7 @@ class EquipmentController extends BaseController {
 	public function edit($id) {
 		$data['equipment'] = Equipment::find($id);
 		$data['title'] = $data['equipment']->company->name." - Equipment ".$data['equipment']->name;
-        $data['equipment_types'] = EquipmentType::all();
+        $data['equipment_types'] = EquipmentType::orderBy("name")->get();
         $data['company'] = Company::find($data['equipment']->company_id);
 		$data['company']->company_id = $data['company']->id;
 		return view('equipment/edit',$data);

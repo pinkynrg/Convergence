@@ -61,7 +61,7 @@ class GroupsController extends BaseController {
 
 	public function edit($id) {
 		$data['group'] = Group::find($id);
-		$data['group_types'] = GroupType::all();
+		$data['group_types'] = GroupType::orderBy("name")->get();
 		$data['title'] = "Update Group \"".$data['group']->display_name."\"";
 		return view('groups/edit',$data);
 	}
@@ -74,7 +74,7 @@ class GroupsController extends BaseController {
 
 	public function create() {
 		$data['title'] = "Create Group";
-		$data['group_types'] = GroupType::all();
+		$data['group_types'] = GroupType::orderBy("name")->get();
 		return view('groups/create',$data);
 	}
 
