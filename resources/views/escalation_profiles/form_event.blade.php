@@ -3,7 +3,7 @@
 	</td>
 	<td>
 		{!! Form::BSLabel("level_id[".$counter."]", " ", ['class' => 'delay_time']) !!}
-		{!! Form::BSSelect("level_id[".$counter."]", $levels, null, ['key' => 'id', 'value' => 'name', 'bclass' => 'col-xs-12', 'class' => 'level_id']) !!}
+		{!! Form::BSSelect("level_id[".$counter."]", $levels, null, ['key' => 'id', 'value' => '!name', 'bclass' => 'col-xs-12', 'class' => 'level_id']) !!}
 	</td>
 	<td>
 		{!! Form::BSLabel("delay_time[".$counter."]", "After", ['bclass' => 'col-xs-2 visible-lg', 'class' => 'delay_time']) !!}
@@ -11,7 +11,7 @@
 	</td>
 	<td>
 		{!! Form::BSLabel("priority_id[".$counter."]", "When", ['bclass' => 'col-xs-2 visible-lg', 'class' => 'priority_id']) !!}
-		{!! Form::BSSelect("priority_id[".$counter."]", $priorities, null, ['key' => 'id', 'value' => 'name', 'bclass' => 'col-xs-10', 'class' => 'priority_id']) !!}
+		{!! Form::BSSelect("priority_id[".$counter."]", $priorities, null, ['key' => 'id', 'value' => '!name', 'bclass' => 'col-xs-10', 'class' => 'priority_id']) !!}
 	</td>
 	<td>
 		{!! Form::BSLabel("event_id[".$counter."][]", "Remind", ['bclass' => 'col-xs-2 visible-lg', 'class' => 'event_id']) !!}

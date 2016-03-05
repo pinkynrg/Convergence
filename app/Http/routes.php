@@ -21,6 +21,20 @@ Route::group(array('middleware' => 'auth'), function() {
 		return redirect()->route('tickets.index');
 	}]);
 
+	Route::get('/debug/enable', function () {
+		if (Auth::user()->owner->id == ADMIN_PERSON_ID) {
+			Session::set("debug",true); 
+		}
+		return redirect()->route('root');
+	});
+
+	Route::get('/debug/disable', function () {
+		if (Auth::user()->owner->id == ADMIN_PERSON_ID) {
+			Session::set("debug",false);
+		}
+		return redirect()->route('root');
+	});
+
 	Route::get('API/group-types/{method}',['uses' => 'GroupTypesController@apiCall', 'as' => 'group_types.api']);
 	Route::get('API/groups/{method}',['uses' => 'GroupsController@apiCall', 'as' => 'groups.api']);	
 	Route::get('API/roles/{method}',['uses' => 'RolesController@apiCall', 'as' => 'roles.api']);	

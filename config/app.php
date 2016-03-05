@@ -145,6 +145,7 @@ return [
 		'Barryvdh\Snappy\ServiceProvider',
 		'Mews\Purifier\PurifierServiceProvider',
 		'Spatie\Activitylog\ActivitylogServiceProvider',
+		'Barryvdh\Debugbar\ServiceProvider',
 		
 		/*
 		 * Application Service Providers...
@@ -213,6 +214,7 @@ return [
 		'Purifier' 	=> 'Mews\Purifier\Facades\Purifier',
 		'Activity'  => 'Spatie\Activitylog\ActivitylogFacade',
 		'Menu' 		=> 'App\Libraries\MenuBuilder',
+		'Debugbar'	=> 'Barryvdh\Debugbar\Facade',
 	],
 
 ];

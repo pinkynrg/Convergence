@@ -1,3 +1,5 @@
+<?php use App\Http\Controllers\CompanyPersonController; ?>
+
 @include('includes.image-gallery')
 
 <div id="header" class="row">
@@ -18,9 +20,23 @@
 			<div id="loginfo">			
 				<div> {{ Auth::user()->owner->name() }} </div>
 				<div> 
-					{!! Form::open(array('route' => array('users.switch_contact',Auth::user()->id),'id' => 'switch_company_person_form')) !!}
-						{!! Form::BSSelect("switch_company_person_id", Auth::user()->owner->company_person, Auth::user()->active_contact->id, ["key" => "id", "value" => "company.name", "id" => "switch_company_person_id"]) !!}
-					{!! Form::close() !!}
+					@if (Auth::user()->owner->id == ADMIN_PERSON_ID)
+						
+						<?php 
+							$contacts = CompanyPersonController::API()->all([
+								"order" => ["people.last_name","people.first_name"],
+								"paginate" => "false"
+							]) 
+						?>
+
+						{!! Form::open(array('route' => array('users.switch_contact',Auth::user()->id),'id' => 'switch_company_person_form')) !!}
+						{!! Form::BSSelect("switch_company_person_id", $contacts, Auth::user()->active_contact->id, ["key" => "id", "value" => ["!person.last_name"," ","!person.first_name"," @ ","!company.name"], "id" => "switch_company_person_id"]) !!}
+						{!! Form::close() !!}
+					@else
+						{!! Form::open(array('route' => array('users.switch_contact',Auth::user()->id),'id' => 'switch_company_person_form')) !!}
+						{!! Form::BSSelect("switch_company_person_id", Auth::user()->owner->company_person, Auth::user()->active_contact->id, ["key" => "id", "value" => "!company.name", "id" => "switch_company_person_id"]) !!}
+						{!! Form::close() !!}
+					@endif
 				</div>
 				<div> <a href="/logout"> Logout </a> </div>
 			</div>

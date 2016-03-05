@@ -129,58 +129,46 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		return $multi;
 	}
 
-	public function BSSelect($name, $list = array(), $selected = null, $options = array()) {
+	public function BSSelect($name, $collection = array(), $selected = null, $options = array()) {
 		$bootstrap_class = "form-control";
 		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
 
-		if (isset($options['key']) && isset($options['value'])) {
-			$temp = $list;
-			$list = array('' => '-');
-			$key_path = explode('.',$options['key']);
-			$value_path = explode('.',$options['value']);
-			foreach ($temp as $elem) {
+		$list = array('' => '-');
+		
+		if (isset($options['key']) && $options['value']) {
+			foreach ($collection as $item) {
 
-				$key = $elem;
-				$value = $elem;
+				$key = $item->{$options['key']};
+				$label = "";
 
-				for ($i = 0; $i < count($key_path); $i++)  {
-					$subkey = $key_path[$i];
-					if (isset($key->{$subkey})) {
-						$key = $key[$subkey];
-					}
-					elseif (method_exists($key,$subkey) && ($i == count($key_path)-1)) {
-						$key = $key->{$subkey}();
-					}
-					elseif (is_object($key[$subkey])) {
-						$key = $key->{$subkey};
+				if (!is_array($options['value'])) $options['value'] = [$options['value']];
+
+				foreach ($options['value'] as $part) {
+					if ($part[0] == "!") {
+						$temp = substr($part,1);
+						$exploded = explode(".",$temp);
+						for ($i=0; $i<count($exploded); $i++) {
+							$value = $i == 0 ? $item->{$exploded[$i]} : $value->{$exploded[$i]};
+						}
 					}
 					else {
-						$key = null;
+						$value = $part;
 					}
+
+					$label .= $value;
 				}
 
-				for ($i = 0; $i < count($value_path); $i++)  {
-					$subvalue = $value_path[$i];
-					if (isset($value->{$subvalue})) {
-						$value = $value->{$subvalue};
-					}
-					elseif (method_exists($value,$subvalue) && ($i == count($value_path)-1)) {
-						$value = $value->{$subvalue}();
-					}
-					elseif (is_object($value->{$subvalue})) {
-						$value = $value->{$subvalue};
-					}
-					else {
-						$value = null;
-					}
-				}
-
-				if (!is_null($key) && !is_null($value))
-					$list[$key] = $value;
-
+				$list[$key] = $label;
 			}
+
+			unset($options['key']);
+			unset($options['value']);
 		}
+		else {
+			$list = $list+$collection;
+		}
+
 
 		$select = "<div class='".$options['bclass']."'>";
 		$select .= $this->select($name, $list, $selected, $options);
@@ -204,7 +192,6 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 	}
 
 	public function addItem($route, $label = null, $show = false) {
-		// $add = new stdClass();
 		$add['label'] = is_null($label) ? "Add" : $label;
 		$add['link'] = $route;
 		$add['icon'] = "<i class='fa fa-plus'></i>";

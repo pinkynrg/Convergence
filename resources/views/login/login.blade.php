@@ -7,6 +7,8 @@
 
 	<div id="login_wrapper">
 
+		@include('includes.debug')
+
 		@include('includes.header')
 		
 		<div id="form_wrapper">

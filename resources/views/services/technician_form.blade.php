@@ -6,13 +6,13 @@
 	<div class="col-xs-6">
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("technician_id[".$tech_num."]", "Technician Name") !!}
-			{!! Form::BSSelect("technician_id[".$tech_num."]", $technicians, null, ['key' => 'id', 'value' => 'person.name']) !!}
+			{!! Form::BSSelect("technician_id[".$tech_num."]", $technicians, null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name']]) !!}
 		{!! Form::BSEndGroup() !!}
 	</div>
 	<div class="col-xs-6">
 		{!! Form::BSGroup() !!}		
 			{!! Form::BSLabel("tech_division_id[".$tech_num."]", "Division") !!}
-			{!! Form::BSSelect("tech_division_id[".$tech_num."]", $divisions, null, ['key' => 'id', 'value' => 'name']) !!}
+			{!! Form::BSSelect("tech_division_id[".$tech_num."]", $divisions, null, ['key' => 'id', 'value' => '!name']) !!}
 		{!! Form::BSEndGroup() !!}
 	</div>
 </div>

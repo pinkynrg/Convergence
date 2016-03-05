@@ -9,18 +9,18 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('company_id','Company') !!}
-			{!! Form::BSSelect("company_id", $companies, null, ['key' => 'id', 'value' => 'name', 'class' => 'ajax_trigger']) !!}
+			{!! Form::BSSelect("company_id", $companies, null, ['key' => 'id', 'value' => '!name', 'class' => 'ajax_trigger']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('equipment_id','Equipment') !!}
 			{!! Form::BSHidden('equipment_id',null,['id' => 'equipment_id']) !!}
-			{!! Form::BSSelect("fake_equipment_id", array(), null, ['key' => 'id', 'value' => 'name', 'id' => 'fake_equipment_id']) !!}
+			{!! Form::BSSelect("fake_equipment_id", array(), null, ['key' => 'id', 'value' => '!name', 'id' => 'fake_equipment_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('level_id','Level') !!}
-			{!! Form::BSSelect("level_id", $levels, null, ['key' => 'id', 'value' => 'name']) !!}
+			{!! Form::BSSelect("level_id", $levels, null, ['key' => 'id', 'value' => '!name']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
@@ -35,19 +35,19 @@
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('contact_id','Company Contact') !!}
 			{!! Form::BSHidden('contact_id',null,['id' => 'contact_id']) !!}
-			{!! Form::BSSelect("fake_contact_id", array(), null, ['key' => 'id', 'value' => 'person.name', 'id' => 'fake_contact_id']) !!}
+			{!! Form::BSSelect("fake_contact_id", array(), null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name'], 'id' => 'fake_contact_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('assignee_id','Assignee') !!}
-			{!! Form::BSSelect("assignee_id", $assignees, null, ['key' => 'id', 'value' => 'person.name']) !!}
+			{!! Form::BSSelect("assignee_id", $assignees, null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name']]) !!}
 		{!! Form::BSEndGroup() !!}
 
 		@if (Route::currentRouteName() == "tickets.create" || $ticket->status_id == TICKET_DRAFT_STATUS_ID)
 
 			{!! Form::BSGroup() !!}
 				{!! Form::BSLabel('priority_id','Priority') !!}
-				{!! Form::BSSelect("priority_id", $priorities, null, ['key' => 'id', 'value' => 'name']) !!}
+				{!! Form::BSSelect("priority_id", $priorities, null, ['key' => 'id', 'value' => '!name']) !!}
 			{!! Form::BSEndGroup() !!}
 
 		@endif
@@ -94,12 +94,12 @@
 		
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('division_id','Division') !!}
-			{!! Form::BSSelect("division_id", $divisions, null, ['key' => 'id', 'value' => 'name']) !!}
+			{!! Form::BSSelect("division_id", $divisions, null, ['key' => 'id', 'value' => '!name']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('job_type_id','Job Type') !!}
-			{!! Form::BSSelect("job_type_id", $job_types, null, ['key' => 'id', 'value' => 'name']) !!}
+			{!! Form::BSSelect("job_type_id", $job_types, null, ['key' => 'id', 'value' => '!name']) !!}
 		{!! Form::BSEndGroup() !!}
 
 	</div>

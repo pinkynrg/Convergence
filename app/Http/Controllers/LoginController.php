@@ -3,6 +3,7 @@
 use Input;
 use Auth;
 use Hash;
+use Session;
 use Activity;
 use App\Models\User;
 use App\Models\CompanyPerson;
@@ -65,6 +66,7 @@ class LoginController extends Controller {
 
 		if (Auth::check()) {
 			Activity::log('User Logout');
+			Session::forget('debug');
 			Auth::logout();
 		}
 		

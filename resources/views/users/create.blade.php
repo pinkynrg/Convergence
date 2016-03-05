@@ -8,7 +8,7 @@
 				
 				{!! Form::BSGroup() !!}
 					{!! Form::BSLabel("person_id", "Person") !!}
-					{!! Form::BSSelect("person_id", $people, null, ["key" => "id", "value" => "name"]) !!}
+					{!! Form::BSSelect("person_id", $people, null, ["key" => "id", "value" => ["!last_name"," ","!first_name"]]) !!}
 				{!! Form::BSEndGroup() !!}
 				
 				{!! Form::BSGroup() !!}

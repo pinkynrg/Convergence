@@ -28,7 +28,7 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("equipment_type_id", "Equipment Type") !!}
-			{!! Form::BSSelect("equipment_type_id", $equipment_types, null, ['key' => 'id', 'value' => 'name']) !!}
+			{!! Form::BSSelect("equipment_type_id", $equipment_types, null, ['key' => 'id', 'value' => '!name']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}

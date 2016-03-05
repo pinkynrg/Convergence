@@ -599,12 +599,16 @@ function setupStatusSlider() {
 				allowed_statuses = [2,3,4,6],
 				allowed_ticks = [1,2,3,4],
 				positions = [],
-				current_tick;
+				current_tick,
+				disabled = false;
 
-			if (status_id == 6) {
+			if (status_id == 6 || status_id == 7) {
 				allowed_ticks.push(5);
 				allowed_statuses.push(7);
 				positions = [0,25,50,75,100];
+				if (status_id == 7) {
+					disabled = true;
+				}
 			}
 			else {
 				positions = [0,33,66,100];
@@ -613,6 +617,7 @@ function setupStatusSlider() {
 			$("#status_id").val(status_id);
 
 			switch (status_id) {
+	    		case 1: current_tick = 1; break;
 	    		case 2: current_tick = 1; break;
 	    		case 3: current_tick = 2; break;
 	    		case 4: current_tick = 3; break;

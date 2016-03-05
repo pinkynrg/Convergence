@@ -23,13 +23,13 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("account_manager", "Account Manager") !!}
-			{!! Form::BSSelect("account_manager_id", $account_managers, null, ["key" => "id", "value" => "person.name"]) !!}
+			{!! Form::BSSelect("account_manager_id", $account_managers, null, ["key" => "id", "value" => ["!person.last_name"," ","!person.first_name"]]) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("escalation_profile_id", "Escalation Profile") !!}
 			{!! Form::BSSelect("escalation_profile_id", $escalation_profiles, isset($company->escalation_profile_id) ? 
-			$company->escalation_profile_id : null, ["key" => "id", "value" => "name"]) !!}
+			$company->escalation_profile_id : null, ["key" => "id", "value" => "!name"]) !!}
 		{!! Form::BSEndGroup() !!}
 
 	</div>
@@ -53,13 +53,13 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("support_type_id", "Support Type") !!}
-			{!! Form::BSSelect("support_type_id", $support_types, null, ["key" => "id", "value" => "name"]) !!}
+			{!! Form::BSSelect("support_type_id", $support_types, null, ["key" => "id", "value" => "!name"]) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			@if (Route::currentRouteName() == "companies.edit")
 				{!! Form::BSLabel("main_contact", "Main Contact") !!}
-				{!! Form::BSSelect("main_contact_id", $main_contacts, null, ["key" => "id", "value" => "person.name"]) !!}
+				{!! Form::BSSelect("main_contact_id", $main_contacts, null, ["key" => "id", "value" => ["!person.last_name"," ","!person.first_name"]]) !!}
 			@endif
 		{!! Form::BSEndGroup() !!}
 

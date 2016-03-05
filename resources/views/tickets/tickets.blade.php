@@ -14,7 +14,7 @@
 				<th column="tickets.title">Title</th>
 				<th column="statuses.name" class="hidden-xs hidden-ms">Status</th>
 				<th column="priorities.id" class="hidden-xs hidden-ms">Priority</th>
-				<th column="assignees.last_name" class="hidden-xs hidden-ms">Asignee</th>
+				<th column="assignees.last_name" class="hidden-xs hidden-ms">Assignee</th>
 				
 				@if (Route::currentRouteName() == "tickets.index")
 					<th column="companies.name" class="hidden-xs hidden-ms">Company</th>

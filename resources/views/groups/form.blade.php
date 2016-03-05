@@ -3,7 +3,7 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("group_type_id", "Group Type") !!}
-			{!! Form::BSSelect("group_type_id", $group_types, null, ['key' => 'id', 'value' => 'display_name']) !!}
+			{!! Form::BSSelect("group_type_id", $group_types, null, ['key' => 'id', 'value' => '!display_name']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}

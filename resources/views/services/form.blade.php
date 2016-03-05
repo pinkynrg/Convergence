@@ -6,12 +6,12 @@
 			<!-- we need an hidden field becuase the select is disabled so the data won't be submitted -->
 			{!! Form::BSHidden("company_id", $company_id) !!}
 			{!! Form::BSLabel("company_id", "Company") !!}
-			{!! Form::BSSelect("company_id", $companies, $company_id, ['key' => 'id', 'value' => 'name', 'disabled']) !!}
+			{!! Form::BSSelect("company_id", $companies, $company_id, ['key' => 'id', 'value' => '!name', 'disabled']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("external_contact_id", "Contact") !!}
-			{!! Form::BSSelect("external_contact_id", $contacts, null, ['key' => 'id', 'value' => 'person.name']) !!}
+			{!! Form::BSSelect("external_contact_id", $contacts, null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name']]) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
@@ -35,12 +35,12 @@
 
 		{!! Form::BSGroup() !!}		
 			{!! Form::BSLabel("hotel_id", "Hotel") !!}
-			{!! Form::BSSelect("hotel_id", $hotels, null, ['key' => 'id', 'value' => 'name_address']) !!}
+			{!! Form::BSSelect("hotel_id", $hotels, null, ['key' => 'id', 'value' => '!name_address']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("internal_contact_id", "Internal Contact") !!}
-			{!! Form::BSSelect("internal_contact_id", $technicians, null, ['key' => 'id', 'value' => 'person.name']) !!}
+			{!! Form::BSSelect("internal_contact_id", $technicians, null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name']]) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}

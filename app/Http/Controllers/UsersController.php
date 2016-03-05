@@ -72,7 +72,7 @@ class UsersController extends BaseController {
 			}
 		}
 
-		if ($valid_company_person) {
+		if ($valid_company_person || Auth::user()->owner->id == ADMIN_PERSON_ID) {
 			$user->active_contact_id = $company_person_id;
 			$user->save();
 		}

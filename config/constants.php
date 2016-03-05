@@ -6,7 +6,6 @@ define("PROTOCOL","http://");
 define("SITE_URL",PROTOCOL.DOMAIN);
 define("PAGINATION",50);
 define("MAX_PAGINATION",200);
-define("DEBUG",TRUE);
 
 // IMPORT CONFIGURATION FROM Convergence 1.0
 define("CONVERGENCE_HOST", "198.154.99.22:1088");

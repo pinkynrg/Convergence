@@ -578,10 +578,9 @@ class Groups extends BaseClass {
 
 			$queries = 
 
-["INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (1,1,'convergence-administrator','Convergence Administrator', 'Manager of everything')",
+["INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (1,1,'convergence-administrator','Convergence Administrator', 'Manage everything')",
  "INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (2,1,'basic-employee','Basic Employee', 'Basic Employee')",
  "INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (3,1,'host-employee','Employee Host', 'This group can only view tickets')",
- 
  "INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (10,2,'basic-customer','Basic Customer', 'Basic Customer')",
  "INSERT INTO groups (id, group_type_id, name, display_name, description) VALUES (11,2,'host-customer','Customer Host', 'This group can only view tickets')"];
 
