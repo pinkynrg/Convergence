@@ -135,7 +135,7 @@ class TicketsController extends BaseController {
 		else {
 			// otherwise redirect to empty form
 			$data['companies'] = Company::where('id','!=',ELETTRIC80_COMPANY_ID)->orderBy('name')->get();
-			$data['priorities'] = Priority::orderBy('name')->get();
+			$data['priorities'] = Priority::orderBy('id','desc')->get();
 			$data['divisions'] = Division::orderBy('name')->get();
 			$data['job_types'] = JobType::orderBy('name')->get();
 			$data['levels'] = Level::orderBy('name')->get();
