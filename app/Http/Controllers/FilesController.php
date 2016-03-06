@@ -54,37 +54,43 @@ class FilesController extends Controller {
     
     public function upload()
     {
+    	$uploader_id = Auth::user()->active_contact->id;
+
     	if (Input::file('file')->isValid()) {
 
-    		$id = Input::get('target_id');
-
 		    if (Input::get('target') == "posts") {
-
 		    	if (Input::get('target_action') == "create") {
-		    		$post = Post::where('author_id',Auth::user()->active_contact->id)->where("status_id","=",POST_DRAFT_STATUS_ID)->where("ticket_id",Input::get('target_id'))->first(); 
+		    		$target = Post::where('author_id',$uploader_id)
+		    			->where("status_id","=",POST_DRAFT_STATUS_ID)
+		    			->where("ticket_id",Input::get('target_id'))
+		    			->first(); 
 		    	}
-
 		    	elseif (Input::get('target_action') == "edit") {
-		    		$post = Post::where("id",Input::get('target_id'))->first(); 
+		    		$target = Post::where("id",Input::get('target_id'))
+		    			->first(); 
 		    	}
-
-	    		$id = $post->id;  
-
 		    }
 		    elseif (Input::get('target') == "tickets") {
 		    	if (Input::get('target_action') == "create") {
-		        	$model = ucfirst(str_singular($request['target']));
-	        		$model = "App\\Models\\".$model;
-	        		$draft = $model::where('status_id',TICKET_DRAFT_STATUS_ID)->where('creator_id',$request['uploader_id'])->first();
-	        		$request['target_id'] = $draft->id;
-	        	}
-		    }
+		    		$target = Ticket::where('status_id',TICKET_DRAFT_STATUS_ID)
+		    			->where('creator_id',$uploader_id)
+		    			->first();
+		    	}
+		    	elseif (Input::get('target_action') == "edit") {
+		    		$target = Ticket::where('creator_id',$uploader_id)
+		    			->where("id",Input::get('target_id'))
+		    			->first();
+		    	}
+ 		    }
+
+		    $id = $target->id;
+	
+	        $request['target_id'] = $id;
+	        $request['uploader_id'] = $uploader_id;
 
 	    	$request['file'] = Input::file('file');
 	        $request['target'] = Input::get('target');
-	        $request['target_id'] = $id;
 	        $request['target_action'] = Input::get('target_action');
-	        $request['uploader_id'] = Auth::user()->active_contact->id;
 
 	        $response = $this->repo->upload($request);
 
