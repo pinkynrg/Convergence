@@ -33,7 +33,6 @@ class CreateEquipmentRequest extends Request {
 			'serial_number' => 'required',  
 			'equipment_type_id' => 'integer|required',  
 			'company_id' => 'required|integer',  
-			'notes' => 'required',  
 			'warranty_expiration' => 'date|required'
 		];
 	}

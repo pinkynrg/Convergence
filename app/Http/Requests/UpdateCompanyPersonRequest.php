@@ -30,12 +30,12 @@ class UpdateCompanyPersonRequest extends Request {
 	{
 		return [
 			'person_id' => 'numeric',
-			'department_id' => 'required|numeric', 
-			'title_id' => 'required|numeric',
+			'department_id' => 'numeric', 
+			'title_id' => 'numeric',
 			'phone' => 'numeric',
 			'cellphone' => 'numeric',
 			'extension' => 'numeric',
-			'email' => 'email',
+			'email' => 'required|email',
 			'group_id' => 'required|numeric'
 		];
 	}

@@ -32,7 +32,6 @@ class UpdateEquipmentRequest extends Request {
 			'cc_number' => 'required|integer',  
 			'serial_number' => 'required',  
 			'equipment_type_id' => 'integer|required',  
-			'notes' => 'required',  
 			'warranty_expiration' => 'date|required'
 		];
 	}

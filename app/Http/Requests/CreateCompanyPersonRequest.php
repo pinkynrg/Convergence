@@ -33,9 +33,9 @@ class CreateCompanyPersonRequest extends Request {
 			'phone' => 'numeric',
 			'extension' => 'numeric',
 			'cellphone' => 'numeric',
-			'email' => 'email',
-			'department_id' => 'required|numeric', 
-			'title_id' => 'required|numeric',
+			'email' => 'required|email',
+			'department_id' => 'numeric', 
+			'title_id' => 'numeric',
 			'company_id' => 'required|numeric',
 			'person_id' => 'numeric'
 		];
