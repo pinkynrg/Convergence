@@ -658,19 +658,18 @@ function setupStatusSlider() {
 
 			    	$("#status_id").val(real_value);
 
-					if (real_value == 3 || real_value == 6 || real_value == 7) {
-
-						$("#fake_is_public").bootstrapSwitch('state', true);						// set public true
-						$("#email_company_contact").bootstrapSwitch('state', true);			// send to contacts if toggle public 
-
-						if (status_id != real_value) {
-							$("#fake_is_public").bootstrapSwitch('disabled',true);
-						}
+					if ((real_value == 3 || real_value == 6 || real_value == 7) && status_id != real_value) {
+						$("#fake_is_public").bootstrapSwitch('state', true);					// set public true
+						$("#fake_is_public").bootstrapSwitch('disabled',true);					// disable: post has to be public
+						$("#fake_email_company_contact").bootstrapSwitch('state', true);				// send to contacts if toggle public 
+						$("#fake_email_company_contact").bootstrapSwitch('disabled', true);			// disable: email has to be sent
 					}
 					else {
-						$("#fake_is_public").bootstrapSwitch('disabled',false);
+						$("#fake_is_public").bootstrapSwitch('state', false);					// set public true
+						$("#fake_is_public").bootstrapSwitch('disabled',false);					// disable: post has to be public
+						$("#fake_email_company_contact").bootstrapSwitch('state', false);			// send to contacts if toggle public 
+						$("#fake_email_company_contact").bootstrapSwitch('disabled', false);			// disable: email has to be sent
 					}
-
 				});
 			});
 		});
@@ -953,7 +952,7 @@ if (url.target == "tickets" && url.target_action == "show") {
 		clearInterval(post_draft_routine);
 	});
 
-	if (typeof CKEDITOR.instances['post'] != 'undefined') {													// if it is supported
+	if (typeof CKEDITOR.instances['post'] != 'undefined') {														// if it is supported
 		CKEDITOR.instances['post'].on('change',function () {
 			if (url.target == "tickets" && url.target_action == "show") {			
 				savePostDraft();
@@ -961,15 +960,16 @@ if (url.target == "tickets" && url.target_action == "show") {
 		});
 	}
 
-	$("#fake_is_public").on('switchChange.bootstrapSwitch',function() {										// if toggle public
+	$("#fake_is_public").on('switchChange.bootstrapSwitch',function() {											// if toggle public
 		var current = $(this).bootstrapSwitch('state');
 		$("#is_public").val(current);
-		$("#email_company_contact").bootstrapSwitch('state', current);										// send to contacts if toggle public 
+		$("#fake_email_company_contact").bootstrapSwitch('state', current);										// send to contacts if toggle public 
 	});
 
-	$("#email_company_contact, email_company_group_email").on('switchChange.bootstrapSwitch',function() {	// if toggle public
+	$("#fake_email_company_contact, email_company_group_email").on('switchChange.bootstrapSwitch',function() {	// if toggle public
 		var current = $(this).bootstrapSwitch('state');
-		$("#fake_is_public").bootstrapSwitch('state', current);												// send to contacts if toggle public 
+		$("#email_company_contact").val(current);
+		$("#fake_is_public").bootstrapSwitch('state', current);													// send to contacts if toggle public 
 	});
 
 	setupStatusSlider();

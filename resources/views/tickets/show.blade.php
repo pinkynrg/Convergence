@@ -263,7 +263,8 @@
 
 						<div class="email_checkbox">
 							<div class="email_checkbox_input"> 
-								<input type="checkbox"  id="email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
+								{!! Form::hidden("email_company_contact",null,["id" => "email_company_contact"]) !!}
+								<input type="checkbox"  id="fake_email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
 							</div>
 							<div class="email_checkbox_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
 								<div>Contact reference:</div>
