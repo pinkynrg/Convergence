@@ -134,7 +134,7 @@ class TicketsController extends BaseController {
 		}
 		else {
 			// otherwise redirect to empty form
-			$data['companies'] = Company::where('id','!=','ELETTRIC80_COMPANY_ID')->orderBy('name')->get();
+			$data['companies'] = Company::where('id','!=',ELETTRIC80_COMPANY_ID)->orderBy('name')->get();
 			$data['priorities'] = Priority::orderBy('name')->get();
 			$data['divisions'] = Division::orderBy('name')->get();
 			$data['job_types'] = JobType::orderBy('name')->get();
@@ -159,7 +159,7 @@ class TicketsController extends BaseController {
 		foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
 		$data['ticket']['linked_tickets_id'] = isset($links) ? implode(",",$links) : '';
 
-		$data['companies'] = Company::where('id','!=','ELETTRIC80_COMPANY_ID')->orderBy('name')->get();
+		$data['companies'] = Company::where('id','!=',ELETTRIC80_COMPANY_ID)->orderBy('name')->get();
 		$data['companies'] = Company::orderBy('name')->get();
 		$data['priorities'] = Priority::orderBy('id','desc')->get();
 		$data['divisions'] = Division::orderBy('name')->get();
