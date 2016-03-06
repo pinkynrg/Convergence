@@ -4,6 +4,7 @@ use App\Models\User;
 use App\Models\Person;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Session;
 use Request;
 use Form;
 use Auth;
@@ -72,7 +73,7 @@ class UsersController extends BaseController {
 			}
 		}
 
-		if ($valid_company_person || Auth::user()->owner->id == ADMIN_PERSON_ID) {
+		if ($valid_company_person || Session::get('debug') == true) {
 			$user->active_contact_id = $company_person_id;
 			$user->save();
 		}

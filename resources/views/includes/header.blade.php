@@ -20,7 +20,7 @@
 			<div id="loginfo">			
 				<div> {{ Auth::user()->owner->name() }} </div>
 				<div> 
-					@if (Auth::user()->owner->id == ADMIN_PERSON_ID)
+					@if (Session::get('debug') == true)
 						
 						<?php 
 							$contacts = CompanyPersonController::API()->all([
