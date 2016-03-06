@@ -37,6 +37,7 @@ class CreateCompanyRequest extends Request {
             'group_email' => 'email',
             'account_manager_id' => 'required|numeric',
             'support_type_id' => 'required|numeric',
+            'connection_type_id' => 'required|numeric',
             'escalation_profile_id' => 'required|numeric',
             'person_fn' => 'required',
 			'person_ln' => 'required',

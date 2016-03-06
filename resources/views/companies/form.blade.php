@@ -57,6 +57,11 @@
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
+			{!! Form::BSLabel("connection_type_id", "Connection Type") !!}
+			{!! Form::BSSelect("connection_type_id", $connection_types, null, ["key" => "id", "value" => ["!name"," - ","!description"]]) !!}
+		{!! Form::BSEndGroup() !!}
+
+		{!! Form::BSGroup() !!}
 			@if (Route::currentRouteName() == "companies.edit")
 				{!! Form::BSLabel("main_contact", "Main Contact") !!}
 				{!! Form::BSSelect("main_contact_id", $main_contacts, null, ["key" => "id", "value" => ["!person.last_name"," ","!person.first_name"]]) !!}

@@ -11,6 +11,7 @@ use App\Models\Equipment;
 use App\Models\GroupType;
 use App\Models\Department;
 use App\Models\SupportType;
+use App\Models\ConnectionType;
 use App\Models\CompanyPerson;
 use App\Models\EscalationProfile;
 use App\Models\CompanyMainContact;
@@ -44,6 +45,7 @@ class CompaniesController extends BaseController {
         $data['titles'] = Title::orderBy("name")->get();
         $data['departments'] = Department::orderBy("name")->get();
         $data['support_types'] = SupportType::orderBy("name")->get();
+        $data['connection_types'] = ConnectionType::orderBy("name")->get();
         $data['group_types'] = GroupType::orderBy("name")->get();
         $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
         $data['account_managers'] = CompanyPersonController::API()->all([
@@ -135,6 +137,7 @@ class CompaniesController extends BaseController {
         
         $data['main_contacts'] = CompanyPerson::where('company_person.company_id','=',$id)->get();
         $data['support_types'] = SupportType::orderBy("name")->get();
+        $data['connection_types'] = ConnectionType::orderBy("name")->get();
         $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
 
         $data['title'] = "Edit " . $data['company']->name;
