@@ -40,7 +40,7 @@ class PostsController extends BaseController {
 		$post = $draft ? $draft : new Post();
 		$post->ticket_id = $request->get('ticket_id');
 		$post->post = $request->get('post');
-		$post->post_plain_text = Html2Text::convert($request->get('post'));
+		$post->post_plain_text = $request->get('post') == "" ? "<p></p>" : Html2Text::convert($request->get('post'));
 		$post->author_id = Auth::user()->active_contact->id;
 		$post->status_id = POST_DRAFT_STATUS_ID;
 		$post->ticket_status_id = $request->get('status_id');
@@ -65,7 +65,7 @@ class PostsController extends BaseController {
 		$post->save();
 
 		$this->updateTicket($request);
-		EmailsManager::sendPost($post->id);
+		// EmailsManager::sendPost($post->id);
 		// SlackManager::sendPost($post);
 
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);

@@ -28,9 +28,9 @@ class UpdatePostDraftRequest extends Request {
 	public function rules()
 	{
 		return [
-			'post' => 'required|string',
-			'status_id' => 'required|integer',
-			'priority_id' => 'required|integer'
+			// 'post' => 'required|string',
+			// 'status_id' => 'required|integer',
+			// 'priority_id' => 'required|integer'
 		];
 	}
 

@@ -18,10 +18,16 @@
 			{!! Form::BSSelect("fake_equipment_id", array(), null, ['key' => 'id', 'value' => '!name', 'id' => 'fake_equipment_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('level_id','Level') !!}
-			{!! Form::BSSelect("level_id", $levels, null, ['key' => 'id', 'value' => '!name']) !!}
-		{!! Form::BSEndGroup() !!}
+		@if (Auth::user()->active_contact->isE80())
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel('level_id','Level') !!}
+				{!! Form::BSSelect("level_id", $levels, null, ['key' => 'id', 'value' => '!name']) !!}
+			{!! Form::BSEndGroup() !!}
+		@else
+			{!! Form::BSGroup() !!}
+				{!! Form::hidden("level_id", 0) !!}
+			{!! Form::BSEndGroup() !!}
+		@endif
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('title','Ticket Title') !!}
@@ -38,10 +44,16 @@
 			{!! Form::BSSelect("fake_contact_id", array(), null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name'], 'id' => 'fake_contact_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('assignee_id','Assignee') !!}
-			{!! Form::BSSelect("assignee_id", $assignees, null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name']]) !!}
-		{!! Form::BSEndGroup() !!}
+		@if (Auth::user()->active_contact->isE80())
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel('assignee_id','Assignee') !!}
+				{!! Form::BSSelect("assignee_id", $assignees, null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name']]) !!}
+			{!! Form::BSEndGroup() !!}
+		@else
+			{!! Form::BSGroup() !!}
+				{!! Form::hidden("assignee_id", 0) !!}
+			{!! Form::BSEndGroup() !!}
+		@endif
 
 		@if (Route::currentRouteName() == "tickets.create" || $ticket->status_id == TICKET_DRAFT_STATUS_ID)
 
@@ -64,27 +76,30 @@
 
 		{!! Form::dropZone() !!}		
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('tagit','Tag it!') !!}
-			
-			@if (isset($tags))
-				{!! Form::BSText('tagit',$tags) !!}
-			@else 
-				{!! Form::BSText('tagit') !!}
-			@endif
-		{!! Form::BSEndGroup() !!}
+		@if (Auth::user()->active_contact->isE80())
 
-		{!! Form::BSGroup() !!}
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel('tagit','Tag it!') !!}
+				@if (isset($tags))
+					{!! Form::BSText('tagit',$tags) !!}
+				@else 
+					{!! Form::BSText('tagit') !!}
+				@endif
+			{!! Form::BSEndGroup() !!}
 
-			{!! Form::BSLabel('linked_tickets_id','Linked Tickets') !!}
-			{!! Form::BSHidden('linked_tickets_id',null,['id' => 'linked_tickets_id']) !!}
+			{!! Form::BSGroup() !!}
 
-			{!! 
-				Form::BSMultiSelect("fake_linked_tickets_id", [], 
-				["title" => "link_tickets", "search" => "true"]) 
-			!!}
+				{!! Form::BSLabel('linked_tickets_id','Linked Tickets') !!}
+				{!! Form::BSHidden('linked_tickets_id',null,['id' => 'linked_tickets_id']) !!}
 
-		{!! Form::BSEndGroup() !!}
+				{!! 
+					Form::BSMultiSelect("fake_linked_tickets_id", [], 
+					["title" => "link_tickets", "search" => "true"]) 
+				!!}
+
+			{!! Form::BSEndGroup() !!}
+
+		@endif
 
 	</div>
 </div>
@@ -92,28 +107,44 @@
 <div class="row">
 	<div class="col-xs-6">
 		
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('division_id','Division') !!}
-			{!! Form::BSSelect("division_id", $divisions, null, ['key' => 'id', 'value' => '!name']) !!}
-		{!! Form::BSEndGroup() !!}
+		@if (Auth::user()->active_contact->isE80())
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel('division_id','Division') !!}
+				{!! Form::BSSelect("division_id", $divisions, null, ['key' => 'id', 'value' => '!name']) !!}
+			{!! Form::BSEndGroup() !!}
+		@else
+			{!! Form::BSGroup() !!}
+				{!! Form::hidden("division_id", 0) !!}
+			{!! Form::BSEndGroup() !!}
+		@endif
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('job_type_id','Job Type') !!}
-			{!! Form::BSSelect("job_type_id", $job_types, null, ['key' => 'id', 'value' => '!name']) !!}
-		{!! Form::BSEndGroup() !!}
+		@if (Auth::user()->active_contact->isE80())
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel('job_type_id','Job Type') !!}
+				{!! Form::BSSelect("job_type_id", $job_types, null, ['key' => 'id', 'value' => '!name']) !!}
+			{!! Form::BSEndGroup() !!}
+		@else
+			{!! Form::BSGroup() !!}
+				{!! Form::hidden("job_type_id", 0) !!}
+			{!! Form::BSEndGroup() !!}
+		@endif
 
 	</div>
-	<div class="col-xs-6">
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel('emails','Additional Emails') !!}
-			@if (isset($emails))
-				{!! Form::BSText('emails',$emails, ['data-role' => 'multiemail']) !!}
-			@else
-				{!! Form::BSText('emails',null, ['data-role' => 'multiemail']) !!}
-			@endif
-		{!! Form::BSEndGroup() !!}
+	@if (Auth::user()->active_contact->isE80())
 
+		<div class="col-xs-6">
 
-	</div>
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel('emails','Additional Emails') !!}
+				@if (isset($emails))
+					{!! Form::BSText('emails',$emails, ['data-role' => 'multiemail']) !!}
+				@else
+					{!! Form::BSText('emails',null, ['data-role' => 'multiemail']) !!}
+				@endif
+			{!! Form::BSEndGroup() !!}
+
+		</div>
+
+	@endif
 </div>

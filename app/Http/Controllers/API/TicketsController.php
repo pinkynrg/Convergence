@@ -78,6 +78,7 @@ class TicketsController extends BaseController {
         $ticket = Ticket::where("id",$params['id']);
         if (!Auth::user()->active_contact->isE80()) {
             $ticket->where("company_id",Auth::user()->active_contact->company_id);
+            $ticket->orWhere("company_id","=",0);
         }
         $ticket = count($ticket->get()) ? $ticket->get()[0] : [];
         return $ticket;

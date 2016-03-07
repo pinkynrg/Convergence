@@ -369,13 +369,13 @@ var activateTicketDraftMode = function() {
 			'contact_id' 		: $("input#contact_id").val() ? $("input#contact_id").val() : dummy_id,
 			'equipment_id' 		: $("input#equipment_id").val() ? $("input#equipment_id").val() : dummy_id,
 			'linked_tickets_id' : $("input#linked_tickets_id").val() ? $("input#linked_tickets_id").val() : '',
-			'title' 			: $("input#title").val() ? $("input#title").val() : '[undefined]',
+			'title' 			: $("input#title").val() ? $("input#title").val() : '',
 			'assignee_id' 		: $("select#assignee_id").val() ? $("select#assignee_id").val() : dummy_id,
-			'post' 				: CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '[undefined]',
+			'post' 				: CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '',
 			'tagit' 			: $("input#tagit").val() ? $("input#tagit").val() : '',
 			'division_id' 		: $("select#division_id").val() ? $("select#division_id").val() : dummy_id,
 			'level_id' 			: $("select#level_id").val() ? $("select#level_id").val() : dummy_id,
-			'additional_emails' : $("input#additional_emails").val() ? $("input#additional_emails").val() : '[undefined]',
+			'additional_emails' : $("input#additional_emails").val() ? $("input#additional_emails").val() : '',
 			'job_type_id' 		: $("select#job_type_id").val() ? $("select#job_type_id").val() : dummy_id,
 			'priority_id' 		: $("select#priority_id").val() ? $("select#priority_id").val() : dummy_id,
 			'status_id' 		: draft_ticket_id,
@@ -405,7 +405,7 @@ var savePostDraft = function(callback) {
 
 		var data = {
 			'ticket_id' : url.target_id,
-			'post' : CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '[undefined]',
+			'post' : CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '',
 			'status_id' : dummy_id,
 			'priority_id' : dummy_id
 		}
@@ -479,7 +479,7 @@ var fillSelectFields = function(callback) {
 var setSelected = function() {
 	var fake_equipment = $("#equipment_id").val() == 0 || $("#equipment_id").val() == '' ? "NULL" : $("#equipment_id").val();
 	var fake_contact = $("#contact_id").val() == 0 || $("#contact_id").val() == '' ? "NULL" : $("#contact_id").val();
-	var fake_linked_tickets = $("#linked_tickets_id").val() == 0 || $("#linked_tickets_id").val() == '' ? "" : $("#linked_tickets_id").val();
+	var fake_linked_tickets = $("#linked_tickets_id").length == 0 || $("#linked_tickets_id").val() == '' ? "" : $("#linked_tickets_id").val();
 	$("#fake_equipment_id").val(fake_equipment);
 	$("#fake_contact_id").val(fake_contact);
 	$("#fake_linked_tickets_id").selectpicker('val',fake_linked_tickets.split(","));
@@ -620,6 +620,7 @@ function setupStatusSlider() {
 	    		case 1: current_tick = 1; break;
 	    		case 2: current_tick = 1; break;
 	    		case 3: current_tick = 2; break;
+	    		case 5: current_tick = 1; break;
 	    		case 4: current_tick = 3; break;
 	    		case 6: current_tick = 4; break;
 	    		case 7: current_tick = 5; break;
@@ -1002,7 +1003,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 			if (url.target == "tickets" && (url.target_action == "create" || url.target_action == "edit")) {
 				that.options.target = url.target;
 				that.options.target_id = url.target_id;
-				that.options.target_action = url.target_action == "edit" ? "edit" : "create";
+				that.options.target_action = url.target_action;
 			}
 			// dropzone for posts
 			if ((url.target == "posts" && url.target_action == "edit") || (url.target == "tickets" && url.target_action == "show")) {
@@ -1025,6 +1026,8 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 	    		}
 			});
 
+			console.log("here: /ajax/files/"+that.options.target+"/"+that.options.target_action+"/"+that.options.target_id);
+
 			$.ajax({
 				type: 'GET',
 				url: "/ajax/files/"+that.options.target+"/"+that.options.target_action+"/"+that.options.target_id,
@@ -1042,6 +1045,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
             		}
 				},
 				error: function (data) {
+					console.log("1");
 					consoleLog(data.responseText);
 				}
 			});

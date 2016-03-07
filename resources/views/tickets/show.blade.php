@@ -96,11 +96,11 @@
 
 					<tr>
 						<td> {{ isset($history->changer_id) ? $history->changer->person->name() : '' }} </td>
-						<td class="hidden-xs hidden-ms"> {{ $history->assignee->person->name() }} </td>
+						<td class="hidden-xs hidden-ms"> {{ count($history->assignee) ? $history->assignee->person->name() : "" }} </td>
 						<td class="hidden-xs hidden-ms"> {{ $history->status->name }} </td>
 						<td class="hidden-xs hidden-ms"> {{ $history->priority->name }} </td>
-						<td class="hidden-xs hidden-ms"> {{ $history->division->name }} </td>
-						<td class="hidden-xs hidden-ms"> - </td>
+						<td class="hidden-xs hidden-ms"> {{ count($history->division) ? $history->division->name : "" }} </td>
+						<td class="hidden-xs hidden-ms"> {{ $history->equipment->name }} </td>
 						<td> {{ $history->date("created_at") }} </td>
 					</tr>
 
@@ -177,7 +177,7 @@
 							</tr>
 							<tr>
 								<th>Ticket Division: </th>
-								<td>{{ isset($ticket->division_id) ? $ticket->division->name : '' }}</td>
+								<td>{{ isset($ticket->division_id) && count($ticket->division) ? $ticket->division->name : '' }}</td>
 							</tr>
 							<tr>
 								<th>Account Manager:</th>

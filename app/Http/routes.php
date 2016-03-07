@@ -174,6 +174,10 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('contacts/{company_person_id}/edit', ['uses' => 'CompanyPersonController@edit', 'as' => 'company_person.edit']);
 	Route::patch('contacts/{company_person_id}', ['uses' => 'CompanyPersonController@update', 'as' => 'company_person.update']);
 	Route::delete('contacts/{company_person_id}', ['uses' => 'CompanyPersonController@destroy', 'as' => 'company_person.destroy']);
+	Route::get('contacts/{id}/assigneeTickets', ['uses' => 'CompanyPersonController@assigneeTickets', 'as' => 'company_person.assignee_tickets']);
+	Route::get('contacts/{id}/divisionTickets', ['uses' => 'CompanyPersonController@divisionTickets', 'as' => 'company_person.division_tickets']);
+	Route::get('contacts/{id}/contactTickets', ['uses' => 'CompanyPersonController@contactTickets', 'as' => 'company_person.contact_tickets']);
+	Route::get('contacts/{id}/companyTickets', ['uses' => 'CompanyPersonController@companyTickets', 'as' => 'company_person.company_tickets']);
 
 	//charts
 	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);

@@ -84,10 +84,6 @@ class TicketsController extends BaseController {
 				foreach ($temp as $elem) $linked_to[] = $elem->ticket_id;
 				$data['ticket']['linked_to'] = self::API()->all(['where' => ['tickets.id|IN|'.implode(":",$linked_to)]]);
 
-				if (isset($data['draft_post']->post)) {
-					$data['draft_post']->post = $data['draft_post']->post != "[undefined]" ? $data['draft_post']->post : "";
-				}
-
 				switch ($data['ticket']->status_id) {
 					case TICKET_NEW_STATUS_ID 			: $data['status_class'] = 'ticket_status_new'; break;
 					case TICKET_IN_PROGRESS_STATUS_ID 	: $data['status_class'] = 'ticket_status_new'; break;
@@ -119,36 +115,27 @@ class TicketsController extends BaseController {
 
 	public function create() {
 
-		$ticket = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
+		$data['ticket'] = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
+		$data['priorities'] = Priority::orderBy('id','desc')->get();
+		$data['divisions'] = Division::orderBy('name')->get();
+		$data['job_types'] = JobType::orderBy('name')->get();
+		$data['levels'] = Level::orderBy('name')->get();
 		
-		// if there is a started draft redirect to that
-		if ($ticket) {
-			$redirect = redirect()->route('tickets.edit',$ticket->id);
-			if (Session::get('errors')) {
-				$redirect = $redirect->withErrors(Session::get('errors')->all());
-			}
-			else {
-				$redirect = $redirect->with('infos',['This is a draft ticket lastly updated the '.date('m/d/Y H:i:s',strtotime($ticket->updated_at))]);
-			}
-			return $redirect;
-		}
-		else {
-			// otherwise redirect to empty form
-			$data['companies'] = Company::where('id','!=',ELETTRIC80_COMPANY_ID)->orderBy('name')->get();
-			$data['priorities'] = Priority::orderBy('id','desc')->get();
-			$data['divisions'] = Division::orderBy('name')->get();
-			$data['job_types'] = JobType::orderBy('name')->get();
-			$data['levels'] = Level::orderBy('name')->get();
-			
-			$data['assignees'] = CompanyPersonController::API()->all([
-				"where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], 
-				"order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"
-			]);
+		$data['assignees'] = CompanyPersonController::API()->all([
+			"where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], 
+			"order" => ["people.last_name|ASC","people.first_name|ASC"], 
+			"paginate" => 'false'
+		]);
 
-	        $data['title'] = "Create Ticket";
+		$data['companies'] = CompaniesController::API()->all([
+			'where' => ['companies.id|!=|'.ELETTRIC80_COMPANY_ID],
+			'order' => ['companies.name|ASC'],
+			'paginate' => 'false'
+		]);
 
-			return view('tickets/create', $data);
-		}
+        $data['title'] = "Create Ticket";
+
+		return view('tickets/create', $data);
 	}
 
 	public function edit($id)
@@ -160,15 +147,23 @@ class TicketsController extends BaseController {
 		$data['ticket']['linked_tickets_id'] = isset($links) ? implode(",",$links) : '';
 
 		$data['companies'] = Company::where('id','!=',ELETTRIC80_COMPANY_ID)->orderBy('name')->get();
-		$data['companies'] = Company::orderBy('name')->get();
 		$data['priorities'] = Priority::orderBy('id','desc')->get();
 		$data['divisions'] = Division::orderBy('name')->get();
 		$data['job_types'] = JobType::orderBy('name')->get();
 		$data['levels'] = Level::orderBy('name')->get();
 		
 		$data['assignees'] = CompanyPersonController::API()->all(
-			["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], "order" => ["people.last_name|ASC","people.first_name|ASC"], "paginate" => "false"]
-		);
+			["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], 
+			"order" => ["people.last_name|ASC","people.first_name|ASC"], 
+			"paginate" => "false"
+		]);
+
+		$data['companies'] = CompaniesController::API()->all([
+			'where' => ['companies.id|!=|'.ELETTRIC80_COMPANY_ID],
+			'order' => ['companies.name|ASC'],
+			'paginate' => 'false'
+		]);
+
 
 		$data['tags'] = "";
 
@@ -178,11 +173,7 @@ class TicketsController extends BaseController {
 
 		$is_draft = $data['ticket']->status_id == TICKET_DRAFT_STATUS_ID ? true : false;
 
-		$data['ticket']->title = ($is_draft && $data['ticket']->title == '[undefined]') ? '' : $data['ticket']->title;
-		$data['ticket']->post = ($is_draft && $data['ticket']->post_plain_text == '[undefined]') ? '' : $data['ticket']->post;
-
         $data['title'] = "Edit Ticket #".$id;
-        $data['title'] .= $is_draft ? " ~ Draft" : "";
 
 		return view('tickets/edit',$data);
 	}
@@ -194,7 +185,7 @@ class TicketsController extends BaseController {
 
 		$ticket->title = $request->get('title');
 		$ticket->post = $request->get('post');
-		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
+		$ticket->post_plain_text = $request->get('post') == "" ? "<p></p>" : Html2Text::convert($request->get('post'));
 		$ticket->creator_id = Auth::user()->active_contact->id;
 		$ticket->status_id = TICKET_DRAFT_STATUS_ID;
 		$ticket->assignee_id = $request->get('assignee_id');
@@ -223,7 +214,7 @@ class TicketsController extends BaseController {
 		$ticket->post = $request->get('post');
 		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
 		$ticket->creator_id = Auth::user()->active_contact->id;
-		$ticket->status_id = TICKET_NEW_STATUS_ID;
+		$ticket->status_id = Auth::user()->active_contact->isE80() ? TICKET_NEW_STATUS_ID : TICKET_REQUESTING_STATUS_ID;
 		$ticket->assignee_id = $request->get('assignee_id');
 		$ticket->priority_id = $request->get('priority_id');
 		$ticket->division_id = $request->get('division_id');
@@ -238,7 +229,7 @@ class TicketsController extends BaseController {
        	$this->updateTags($ticket);
        	$this->updateLinks($ticket);
    		$this->updateHistory($ticket); 
-   		EmailsManager::sendTicket($ticket->id);
+   		// EmailsManager::sendTicket($ticket->id);
 		// SlackManager::sendTicket($ticket);
 
         return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
@@ -251,7 +242,6 @@ class TicketsController extends BaseController {
 		$ticket->company_id = $request->get('company_id');
 		$ticket->title = $request->get('title');
 		$ticket->post = $request->get('post');
-		$ticket->status_id = $ticket->status_id == TICKET_DRAFT_STATUS_ID ? TICKET_NEW_STATUS_ID : $ticket->status_id;
 		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
 		$ticket->assignee_id = $request->get('assignee_id');
 		$ticket->division_id = $request->get('division_id');
@@ -260,6 +250,12 @@ class TicketsController extends BaseController {
 		$ticket->job_type_id = $request->get('job_type_id');
 		$ticket->level_id = $request->get('level_id');
 		$ticket->emails = $request->get('emails');
+
+		switch ($ticket->status_id) {
+			case TICKET_DRAFT_STATUS_ID: $ticket->status_id = TICKET_NEW_STATUS_ID; break;
+			case TICKET_REQUESTING_STATUS_ID: $ticket->status_id = TICKET_NEW_STATUS_ID; break;
+		}
+
 		$ticket->save();
 
        	$this->updateTags($ticket);

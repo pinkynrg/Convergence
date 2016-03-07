@@ -6,7 +6,7 @@ class CompanyPerson extends CustomModel {
 
 	protected $table = 'company_person';
 
-	protected $fillable = ['company_id', 'person_id', 'title_id', 'department_id', 'phone', 'extension', 'cellphone','email','group_id'];
+	protected $fillable = ['company_id', 'person_id', 'title_id', 'department_id', 'phone', 'extension', 'cellphone','email','group_id','division_ids'];
 
 	public function company() {
 		return $this->belongsTo('App\Models\Company');

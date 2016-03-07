@@ -35,4 +35,70 @@
 		</tr>
 	</table>
 
+
+	@if ($company_person->isE80())
+		<div ajax-route="{{ route('company_person.assignee_tickets',$company_person->id) }}">
+			<div id="tickets" class="small-header"> 
+				<div class="title"><i class="{{ TICKETS_ICON }}"></i> {{ $company_person->person->name() }}'s Active Tickets </div>
+			</div>
+			<div>
+
+				@if ($company_person->assignee_tickets->count())
+					@include('tickets.tickets', array('tickets' => $company_person->assignee_tickets))
+				@else
+					@include('includes.no-contents')
+				@endif
+
+			</div>
+		</div>
+
+		<div ajax-route="{{ route('company_person.division_tickets',$company_person->division_ids) }}">
+			<div id="tickets" class="small-header"> 
+				<div class="title"><i class="{{ TICKETS_ICON }}"></i> Divisions Active Tickets </div>
+			</div>
+			<div>
+
+				@if ($company_person->assignee_tickets->count())
+					@include('tickets.tickets', array('tickets' => $company_person->division_tickets))
+				@else
+					@include('includes.no-contents')
+				@endif
+
+			</div>
+		</div>
+
+	@else
+
+		<div ajax-route="{{ route('company_person.contact_tickets',$company_person->id) }}">
+			<div id="tickets" class="small-header"> 
+				<div class="title"><i class="{{ TICKETS_ICON }}"></i> {{ $company_person->person->name()}}'s Tickets </div>
+			</div>
+			<div>
+
+				@if ($company_person->contact_tickets->count())
+					@include('tickets.tickets', array('tickets' => $company_person->contact_tickets))
+				@else
+					@include('includes.no-contents')
+				@endif
+
+			</div>
+		</div>
+		
+		<div ajax-route="{{ route('company_person.company_tickets',$company_person->company->id) }}">
+			<div id="tickets" class="small-header"> 
+				<div class="title"><i class="{{ TICKETS_ICON }}"></i> {{ $company_person->company->name }}'s Tickets </div>
+			</div>
+			<div>
+
+				@if ($company_person->company_tickets->count())
+					@include('tickets.tickets', array('tickets' => $company_person->company_tickets))
+				@else
+					@include('includes.no-contents')
+				@endif
+
+			</div>
+		</div>
+
+	@endif
+
 @endsection

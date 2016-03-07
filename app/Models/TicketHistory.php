@@ -67,5 +67,9 @@ class TicketHistory extends CustomModel {
 	{
 		return $this->belongsToMany('App\Models\Tag');
 	}
+	public function equipment()
+	{
+		return $this->belongsTo('App\Models\Equipment');		
+	}
 
 }

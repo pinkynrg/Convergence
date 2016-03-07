@@ -46,13 +46,22 @@
 					</td>
 					<td class="hidden-xs hidden-ms nowrap"> {{ $ticket->status->label }} </td>
 					<td class="hidden-xs hidden-ms nowrap"> {{ $ticket->priority->label }} ({{ $ticket->priority->weight }}) </td>
-					<td class="hidden-xs hidden-ms"> <a href="{{ route('people.show', $ticket->assignee->person->id) }}"> {{ $ticket->assignee->person->name() }} </a> </td>
+					<td class="hidden-xs hidden-ms"> 
+						@if (count($ticket->assignee)) 
+							<a href="{{ route('people.show', $ticket->assignee->person->id) }}"> {{ $ticket->assignee->person->name() }} </a> 
+						@else
+							TBA
+						@endif
+					</td>
 					
 					@if (Route::currentRouteName() == "tickets.index")
 						<td class="hidden-xs hidden-ms"> <a href="{{ route('companies.show', $ticket->company->id) }}"> {{ $ticket->company->name }} </a> </td>
 					@endif
 
-					<td class="hidden-xs hidden-ms"> {{ $ticket->division->label }} </td>
+					<td class="hidden-xs hidden-ms"> 
+						@if (count($ticket->division)) {{ $ticket->division->label }} @else TBA @endif
+					</td>
+
 					<td class="hidden-xs"> 
 						{{ date("m/d/Y",strtotime($ticket->last_operation_date )) }}
 						<div class="ticket_foot_details nowrap"> by 
@@ -62,7 +71,7 @@
 						</div>
 					</td>
 					<td class="hidden-xs hidden-ms nowrap">
-						{{ $ticket->level->name }}
+						@if (count($ticket->level)) {{ $ticket->level->name }} @else TBA @endif
 					</td>
 					<td class="hidden-xs hidden-ms nowrap">
 						@if ($ticket->timeout == 1 && $ticket->E80_working())
@@ -90,9 +99,7 @@
 		<div class="ajax_pagination" scrollup="true">
 			{!! $tickets->render() !!}
 		</div>
-	@endif 
-
-	@if (Route::currentRouteName() == "companies.tickets" || Route::currentRouteName() == "companies.show")
+	@else
 		<div class="ajax_pagination" scrollup="false">
 			{!! $tickets->render() !!}
 		</div>

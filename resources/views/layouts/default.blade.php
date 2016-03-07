@@ -12,7 +12,7 @@
 
 <div id="loading"></div>
 
-@if (Route::currentRouteName() != "companies.show")
+@if (Route::currentRouteName() != "companies.show" && Route::currentRouteName() != "company_person.show")
 	<div class="container wrapper" ajax-route= {{ "http://$_SERVER[HTTP_HOST]"."$_SERVER[REQUEST_URI]" }} >
 @else
 	<div class="container wrapper">

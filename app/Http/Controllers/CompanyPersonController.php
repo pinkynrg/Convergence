@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Title;
 use App\Models\Group;
 use App\Models\GroupType;
+use App\Models\Division;
 use App\Models\Company;
 use App\Http\Requests\CreateCompanyPersonRequest;
 use App\Http\Requests\UpdateCompanyPersonRequest;
@@ -32,6 +33,33 @@ class CompanyPersonController extends BaseController {
 		if (Auth::user()->can('read-contact')) {
 			$data['menu_actions'] = [Form::editItem(route('company_person.edit',$id), 'Edit This Contact',Auth::user()->can('update-contact'))];
 			$data['company_person'] = CompanyPerson::find($id);
+			
+			$data['company_person']->assignee_tickets = TicketsController::API()->all([
+				"where" => [
+					"assignee_contacts.id|=|".$id,"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS],
+				"order" => ["tickets.id|DESC"],
+				"paginate" => 10
+			]);
+			$data['company_person']->contact_tickets = TicketsController::API()->all([
+				"where" => ["creator_contacts.id|=|".$id],
+				"order" => ["tickets.id|DESC"],
+				"paginate" => 10
+			]);
+			$data['company_person']->company_tickets = TicketsController::API()->all([
+				"where" => ["companies.id|=|".$data['company_person']->company->id],
+				"order" => ["tickets.id|DESC"],
+				"paginate" => 10
+			]);
+
+ 			$data['company_person']->division_tickets = TicketsController::API()->all([
+				"where" => [
+					"divisions.id|=|".str_replace(",",":",$data['company_person']->division_ids),
+					"divisions.id|!=|0",
+					"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS
+				],
+				"order" => ["tickets.id|DESC"],
+				"paginate" => 10
+			]);
 
 	        $data['title'] = $data['company_person']->person->name() . " @ " . $data['company_person']->company->name;
 
@@ -48,6 +76,7 @@ class CompanyPersonController extends BaseController {
 		$data['departments'] = Department::orderBy("name")->get();
 		$data['companies'] = Company::orderBy("name")->get();
 		$data['group_types'] = GroupType::orderBy("name")->get();
+		$data['divisions'] = Division::orderBy("name")->get();
 
 		$data['title'] = "Create Contact";
 
@@ -67,6 +96,7 @@ class CompanyPersonController extends BaseController {
         $contact->company_id = Input::get('company_id');
         $contact->person_id = Input::get('person_id') ? Input::get('person_id') : $person->id;
         $contact->department_id = Input::get('department_id');
+        $contact->division_ids = implode(",",Input::get('division_ids'));
         $contact->title_id = Input::get('title_id');
         $contact->phone = Input::get('phone');
         $contact->extension = Input::get('extension');
@@ -86,6 +116,7 @@ class CompanyPersonController extends BaseController {
 		$data['departments'] = Department::orderBy("name")->get();
 		$data['companies'] = Company::orderBy("name")->get();
 		$data['contact'] = CompanyPerson::find($id);
+		$data['divisions'] = Division::orderBy("name")->get();
 		$data['groups'] = Group::where("group_type_id","=",$company_person->group_type_id)->orderBy("name")->get();
 
 		return view('company_person/edit', $data);	
@@ -100,6 +131,7 @@ class CompanyPersonController extends BaseController {
         $contact->phone = Input::get('phone');
         $contact->extension = Input::get('extension');
         $contact->cellphone = Input::get('cellphone');
+        $contact->division_ids = Input::get('division_ids') ? implode(",",Input::get('division_ids')) : "";
         $contact->email = Input::get('email');
         $contact->group_id = Input::get('group_id');
 
@@ -107,6 +139,46 @@ class CompanyPersonController extends BaseController {
 
 		return redirect()->route('company_person.show',$id)->with('successes',['Contact updated successfully']);
 	}
+
+	public function assigneeTickets($id) {
+        $params = array_merge(Request::input(), [
+        	'where' => ['assignee_contacts.id|=|'.$id,"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS], 
+        	'paginate' => 10
+        ]);
+
+        $data['tickets'] = TicketsController::API()->all($params);
+        return view('tickets/tickets',$data);
+    }
+
+    public function divisionTickets($id) {
+    	$params = array_merge(Request::input(), [
+        	'where' => ['divisions.id|=|'.str_replace(":",",",$id),"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS], 
+        	'paginate' => 10
+        ]);
+
+        $data['tickets'] = TicketsController::API()->all($params);
+        return view('tickets/tickets',$data);
+    }
+
+    public function contactTickets($id) {
+    	$params = array_merge(Request::input(), [
+    		'where' => ['creator_contacts.id|=|'.$id], 
+        	'paginate' => 10
+        ]);
+
+        $data['tickets'] = TicketsController::API()->all($params);
+        return view('tickets/tickets',$data);
+    }
+
+    public function companyTickets($id) {
+    	$params = array_merge(Request::input(), 
+    		['where' => ['companies.id|=|'.$id], 
+        	'paginate' => 10
+        ]);
+
+        $data['tickets'] = TicketsController::API()->all($params);
+        return view('tickets/tickets',$data);
+    }
 }
 
 ?>
