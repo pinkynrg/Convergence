@@ -110,7 +110,7 @@ class ImportManager {
 
 		$this->uuid = uniqid();
 
-		$content = file_get_contents(LOCATION_THIS);
+		$content = file_get_contents(IMPORTER_LOCATION);
 		$pattern = '/class ([a-zA-Z]+) extends/i';
 		preg_match_all($pattern, $content, $matches);
 		$this->classes = $matches[1];
