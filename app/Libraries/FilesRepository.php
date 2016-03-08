@@ -49,6 +49,7 @@ class FilesRepository
             $thumbnail = $this->createThumbnail($file);
 
             if (!$thumbnail) {
+                $thumbnail_id = null;
                 $message = "Thumbnail can't be copied";
             }
             else {
@@ -83,6 +84,7 @@ class FilesRepository
             'id' => $file_id,
             'error' => $error,
             'message' => $message,
+            'thumbnail_id' => $thumbnail_id,
             'code'  => $code
         ], 200);
 

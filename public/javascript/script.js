@@ -1059,6 +1059,9 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 		success: function (file, response) {
 			consoleLog(response)
 			file.previewElement.classList.add("dz-success");
+           	if (response.thumbnail_id != null) {
+				file.previewElement.querySelector("img").src = "/files/"+response.thumbnail_id;
+			}
 			file.id = response.id;
 		},
 		error: function (file, response) {
