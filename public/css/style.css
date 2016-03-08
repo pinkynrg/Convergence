@@ -73,6 +73,7 @@ input[disabled], textarea[disabled], select[disabled] {
 }
 
 .nav-tabs {
+  margin-top: 10px;
   margin-bottom: 5px;
 }
 

@@ -31,7 +31,7 @@
 			@foreach ($contacts as $contact) 	
 
 			<tr>
-				<td> <a href="{{ route('people.show', $contact->person->id) }}"> {{ $contact->person->name() }} </a> </td>
+				<td> <a href="{{ route('company_person.show', $contact->id) }}"> {{ $contact->person->name() }} </a> </td>
 				
 				@if (Route::currentRouteName() == "company_person.index")
 					<td> <a href="{{ route('companies.show', $contact->company->id) }}"> {{ $contact->company->name }} </a> </td>

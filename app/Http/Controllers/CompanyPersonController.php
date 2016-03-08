@@ -31,9 +31,22 @@ class CompanyPersonController extends BaseController {
 
 	public function show($id) {
 		if (Auth::user()->can('read-contact')) {
-			$data['menu_actions'] = [Form::editItem(route('company_person.edit',$id), 'Edit This Contact',Auth::user()->can('update-contact'))];
-			$data['company_person'] = CompanyPerson::find($id);
 			
+			$data['company_person'] = CompanyPerson::find($id);
+	        $data['title'] = $data['company_person']->person->name();
+
+			$data['menu_actions'] = [
+	        	Form::editItem(route('people.edit',$data['company_person']->person->id),'Edit This Person',Auth::user()->can('update-person')),
+	        	Form::editItem(route('company_person.edit',$id), 'Edit This Contact',Auth::user()->can('update-contact'))
+	        ];
+
+	     	if (isset($data['company_person']->person->user->id)) {
+	        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['company_person']->person->user->id),'Edit Associated User',Auth::user()->can('update-user'));
+	     	}
+	     	else {
+	        	$data['menu_actions'][] = Form::addItem(route('users.create',$data['company_person']->person->id),'Create user',Auth::user()->can('create-user'));
+	     	}			
+
 			$data['company_person']->assignee_tickets = TicketsController::API()->all([
 				"where" => [
 					"assignee_contacts.id|=|".$id,"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS],
@@ -60,8 +73,6 @@ class CompanyPersonController extends BaseController {
 				"order" => ["tickets.id|DESC"],
 				"paginate" => 10
 			]);
-
-	        $data['title'] = $data['company_person']->person->name() . " @ " . $data['company_person']->company->name;
 
 			return view('company_person/show', $data);
 		}

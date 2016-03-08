@@ -17,22 +17,10 @@ use Form;
 class PeopleController extends BaseController {
 
 	public function show($id) {
-		$data['person'] = Person::find($id);
 		if (Auth::user()->can('read-person')) {
-	        
-	        $data['menu_actions'] = [
-	        	Form::editItem(route('people.edit',$id),'Edit This Person',Auth::user()->can('update-person'))
-	        ];
-
-	     	if (isset($data['person']->user->id)) {
-	        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['person']->user->id),'Edit Associated User',Auth::user()->can('update-user'));
-	     	}
-	     	else {
-	        	$data['menu_actions'][] = Form::addItem(route('users.create',$data['person']->id),'Create user',Auth::user()->can('create-user'));
-	     	}
-			
-			$data['title'] = $data['person']->name() . " - Details";
-			return view('people/show', $data);
+			$person = Person::find($id);
+			$id = Auth::user()->owner->id == $id ? Auth::user()->active_contact : $person->company_person[0]->id;
+			return redirect()->route('company_person.show',$id);
 		}
 		else return redirect()->back()->withErrors(['Access denied to people show page']);
 	}
