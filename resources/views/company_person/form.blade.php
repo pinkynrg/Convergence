@@ -54,7 +54,7 @@
 			{!! Form::BSEndGroup() !!}
 		@endif
 
-	</div>
+	</div>	
 
 	<div class="col-xs-6">
 
@@ -73,11 +73,14 @@
 			{!! Form::BSText("email") !!}
 		{!! Form::BSEndGroup() !!}
 
-		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel("divisions", "Divisions") !!}
-			{!! Form::BSMultiSelect("division_ids[]", $divisions, 
-				["title" => "divisions", "selected_text" => "Division Active", "value" => "id", "label" => "!name", "selected" => explode(",",$contact->division_ids)]) !!}
-		{!! Form::BSEndGroup() !!}
+		@if (Route::currentRouteName() == "company_person.edit" && $contact->isE80())
 
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel("divisions", "Divisions") !!}
+				{!! Form::BSMultiSelect("division_ids[]", $divisions, 
+					["title" => "divisions", "selected_text" => "Division Active", "value" => "id", "label" => "!name", "selected" => $contact->division_ids]) !!}
+			{!! Form::BSEndGroup() !!}
+
+		@endif
 	</div>
 </div>
