@@ -1035,7 +1035,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 				success: function (data) {
 		        	consoleLog(data);
 					for (var c=0; c<data.length; c++) {
-						var mockFile = { name: data[c].file_name, id: data[c].id };
+						var mockFile = { name: data[c].file_name, id: data[c].id, size: data[c].size};
             			that.options.addedfile.call(that, mockFile);
             			if (data[c].thumbnail_id != null) {
             				that.options.thumbnail.call(that, mockFile, "/files/"+data[c].thumbnail_id);

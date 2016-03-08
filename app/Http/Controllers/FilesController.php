@@ -42,7 +42,13 @@ class FilesController extends Controller {
 	    	$id = $ticket->id;
 		}
 
-    	return is_null($id) ? [] : File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
+		$files = is_null($id) ? [] : File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
+
+		foreach ($files as $file) {
+			$file->size = filesize(ATTACHMENTS.DS.$file->file_name);
+		}
+
+		return $files;
     }
 
 	public function show($id) {
