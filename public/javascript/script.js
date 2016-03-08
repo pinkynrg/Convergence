@@ -1042,10 +1042,10 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
             			}
             			mockFile.previewElement.classList.add('dz-success');
    						mockFile.previewElement.classList.add('dz-complete');
+   						that.files.push(mockFile); // increment counter of number of images in the dropzone container
             		}
 				},
 				error: function (data) {
-					console.log("1");
 					consoleLog(data.responseText);
 				}
 			});
@@ -1078,11 +1078,7 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 		        success: function (data) {
 		        	consoleLog(data);
 		        	var _ref;
-			        if (file.previewElement) {
-			          if ((_ref = file.previewElement) != null) {
-			            _ref.parentNode.removeChild(file.previewElement);
-			          }
-			        }
+		        	return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
 		        },
 		        error: function (data) {
 		        	consoleLog(data);
