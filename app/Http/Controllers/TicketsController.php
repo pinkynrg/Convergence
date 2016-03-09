@@ -71,8 +71,16 @@ class TicketsController extends BaseController {
 				$data['ticket']['posts'] = PostsController::API()->all(['where' => ['ticket_id|=|'.$id], "order" => ['posts.id|ASC']]);
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
-				$data['draft_post'] = Post::where("ticket_id",$id)->where("status_id",1)->where("author_id",Auth::user()->active_contact->id)->first();
-				$data['important_post'] = Post::where('ticket_id',$id)->whereIn('ticket_status_id',[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])->where('ticket_status_id',$data['ticket']->status_id)->where('status_id',3)->orderBy('created_at','desc')->first();
+				
+				$data['draft_post'] = Post::where("ticket_id",$id)
+					->where("status_id",POST_DRAFT_STATUS_ID)
+					->where("author_id",Auth::user()
+					->active_contact->id)->first();
+
+				$data['important_post'] = Post::where('ticket_id',$id)
+					->whereIn('ticket_status_id',[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])
+					->where('ticket_status_id',$data['ticket']->status_id)
+					->where('status_id',POST_PUBLIC_STATUS_ID)->orderBy('created_at','desc')->first();
 
 				$links = [];
 				$temp = TicketLink::where("ticket_id","=",$id)->get();
@@ -115,7 +123,7 @@ class TicketsController extends BaseController {
 
 	public function create() {
 
-		$data['ticket'] = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
+		$data['ticket'] = self::API()->getDraft();
 		$data['priorities'] = Priority::orderBy('id','desc')->get();
 		$data['divisions'] = Division::orderBy('name')->get();
 		$data['job_types'] = JobType::orderBy('name')->get();
@@ -180,7 +188,7 @@ class TicketsController extends BaseController {
 
 	public function draft(UpdateTicketDraftRequest $request) 
 	{
-		$draft = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
+		$draft = self::API()->getDraft();
 		$ticket = $draft ? $draft : new Ticket();
 
 		$ticket->title = $request->get('title');
@@ -207,7 +215,7 @@ class TicketsController extends BaseController {
 
 	public function store(CreateTicketRequest $request)
 	{
-		$draft = Ticket::where('creator_id',Auth::user()->active_contact->id)->where("status_id",TICKET_DRAFT_STATUS_ID)->first();
+		$draft = self::API()->getDraft();
 		$ticket = $draft ? $draft : new Ticket();
 
 		$ticket->title = $request->get('title');

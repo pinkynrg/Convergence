@@ -78,7 +78,7 @@
 							<div style="color:red">
 								<b>{{ $ticket->active_work() }}</b>
 								<div class="ticket_foot_details"> 
-									To Escalate
+									Escalate
 								</div>
 							</div>
 						@else

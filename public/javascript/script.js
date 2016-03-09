@@ -62,7 +62,7 @@ var getUrlParameter = function (sPageURL, sParam) {
 
 var resetFilter = function($this) {
 	var $target = $this.closest("div[ajax-route]");
-	$target.find('.selectpicker').selectpicker('deselectAll');
+	$target.find('.multifilter').selectpicker('deselectAll').selectpicker('setStyle', 'btn-info','remove');
 	$target.find('#search_field').val("");
 	ajaxUpdate($target);
 };
@@ -169,6 +169,9 @@ var setupFilters = function () {
 
 			$target.find(".multifilter").each(function () {
 				$(this).val(filters['multifilter'][$(this).attr('id')]);
+				if ($(this).selectpicker('val') != null) {
+					$(this).selectpicker('setStyle', 'btn-info','add');
+				}
 			});
 
 			if (filters['order'] != {}) {
@@ -731,7 +734,14 @@ $(window).scroll(function(){
 });
 
 // set scrolling select list default phone browser
-$('.selectpicker').selectpicker('mobile');
+$('.multifilter').on('change',function () {
+	if ($(this).selectpicker('val') != null) {
+		$(this).selectpicker('setStyle', 'btn-info','add');
+	}
+	else {
+		$(this).selectpicker('setStyle', 'btn-info','remove');
+	}
+});
 
 // date picker
 $('.datepicker').datepicker({ autoclose: true });

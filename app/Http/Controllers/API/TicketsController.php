@@ -76,12 +76,19 @@ class TicketsController extends BaseController {
 
     public function find($params) {
         $ticket = Ticket::where("id",$params['id']);
+        
         if (!Auth::user()->active_contact->isE80()) {
             $ticket->where("company_id",Auth::user()->active_contact->company_id);
-            $ticket->orWhere("company_id","=",0);
         }
+
         $ticket = count($ticket->get()) ? $ticket->get()[0] : [];
         return $ticket;
+    }
+
+    public function getDraft() {
+        return Ticket::where('creator_id',Auth::user()->active_contact->id)
+            ->where("status_id",TICKET_DRAFT_STATUS_ID)
+            ->first();
     }
 
 }

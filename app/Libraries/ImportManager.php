@@ -699,9 +699,9 @@ class Divisions extends BaseClass {
 
 	public function importSelf() {
 			
-		$queries = ["INSERT INTO divisions (id, name, label) VALUES (1,'Lgv','LGV')",
-					"INSERT INTO divisions (id, name, label) VALUES (2,'Plc','PLC')",
-					"INSERT INTO divisions (id, name, label) VALUES (3,'Pc','PC')",
+		$queries = ["INSERT INTO divisions (id, name, label) VALUES (1,'LGV','LGV')",
+					"INSERT INTO divisions (id, name, label) VALUES (2,'PLC','PLC')",
+					"INSERT INTO divisions (id, name, label) VALUES (3,'PC','PC')",
 					"INSERT INTO divisions (id, name, label) VALUES (5,'Bema','BEMA')",
 					"INSERT INTO divisions (id, name, label) VALUES (6,'Field','FIELD')",
 					"INSERT INTO divisions (id, name, label) VALUES (7,'Other','OTHER')",
