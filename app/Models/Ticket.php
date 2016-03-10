@@ -114,14 +114,16 @@ class Ticket extends CustomModel {
 		return $this->belongsTo('App\Models\CompanyPerson');
 	}
 
-	public function active_work() {
-		$m = floor(($this->active_work%3600)/60);
-		$h = floor(($this->active_work%86400)/3600);
-		$d = floor($this->active_work/86400);
-		return "{$d}d {$h}h {$m}m";
+	public function deadline() {
+		$is_negative = $this->deadline < 0 ? true : false;
+		$this->deadline = abs($this->deadline);
+		$m = floor(($this->deadline%3600)/60);
+		$h = floor(($this->deadline%86400)/3600);
+		$d = floor($this->deadline/86400);
+		return $is_negative ? "- "."{$d}d {$h}h {$m}m" : "{$d}d {$h}h {$m}m";;
 	}
 
 	public function E80_working() {
-		return in_array($this->status_id, [TICKET_NEW_STATUS_ID,TICKET_IN_PROGRESS_STATUS_ID,TICKET_REQUESTING_STATUS_ID]);
+		return in_array($this->status_id, explode(":",TICKETS_ACTIVE_STATUS_IDS));
 	}
 }

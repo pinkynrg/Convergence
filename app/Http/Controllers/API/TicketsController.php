@@ -62,7 +62,10 @@ class TicketsController extends BaseController {
                             GROUP BY d3.ticket_id
                             ) as time");
 
-        $raw5 = DB::raw("CASE WHEN time.active_work > escalation_profile_event.delay_time THEN 1 ELSE 0 END as timeout");
+        $raw5 = DB::raw("CASE WHEN tickets.status_id IN (".str_replace(":",",",TICKETS_ACTIVE_STATUS_IDS).")
+                        THEN escalation_profile_event.delay_time - time.active_work 
+                        ELSE NULL
+                        END as deadline");
 
         $tickets = Ticket::select("tickets.*",$raw1,$raw2,'statuses.allowed_statuses','time.active_work',$raw5);
         $tickets->leftJoin('company_person as creator_contacts','tickets.creator_id','=','creator_contacts.id');

@@ -23,7 +23,10 @@
 				<th column="divisions.name" class="hidden-xs hidden-ms">Division</th>
 				<th column="last_operation_date" class="hidden-xs">Updated</th>
 				<th column="levels.name" class="hidden-xs hidden-ms">Level</th>
-				<th column="active_work" class="hidden-xs hidden-ms">Work</th>
+				
+				@if (Auth::user()->active_contact->isE80())
+					<th column="deadline" class="hidden-xs hidden-ms">Deadline</th>
+				@endif
 			</tr>
 		</thead>
 		<tbody>
@@ -79,23 +82,31 @@
 					<td class="hidden-xs hidden-ms nowrap">
 						@if (count($ticket->level)) {{ $ticket->level->name }} @else TBA @endif
 					</td>
-					<td class="hidden-xs hidden-ms nowrap">
-						@if ($ticket->timeout == 1 && $ticket->E80_working())
-							<div style="color:red">
-								<b>{{ $ticket->active_work() }}</b>
-								<div class="ticket_foot_details"> 
-									Escalate
-								</div>
-							</div>
-						@else
-							<div style="color:black"><b>{{ $ticket->active_work() }}</b></div>
+						@if (Auth::user()->active_contact->isE80())
+							<td class="hidden-xs hidden-ms nowrap">
+								@if ($ticket->deadline)
+									@if ($ticket->deadline < 0 && $ticket->E80_working())
+										<div style="color:red">
+											<b>{{ $ticket->deadline() }}</b>
+											<div class="ticket_foot_details"> 
+												Escalate
+											</div>
+										</div>
+									@else
+										<div style="color:black"><b>{{ $ticket->deadline() }}</b></div>
+									@endif
+								@endif
+							</td>
 						@endif
-					</td>
 				</tr>
 
 				@endforeach
 			@else 
-				<tr><td colspan="10">@include('includes.no-contents')</td></tr>
+				@if (Auth::user()->active_contact->isE80())
+					<tr><td colspan="10">@include('includes.no-contents')</td></tr>
+				@else
+					<tr><td colspan="9">@include('includes.no-contents')</td></tr>
+				@endif
 			@endif
 
 		</tbody>
