@@ -9,7 +9,29 @@ class TicketsController extends BaseController {
     public function all($params)
     {
         $params['order'] = isset($params['order']) ? $params['order'] : ['tickets.id|DESC'];
-        
+        $tickets = $this->query();
+        $tickets->where("tickets.status_id","!=",TICKET_DRAFT_STATUS_ID);
+    	$tickets = parent::execute($tickets, $params);
+        return $tickets;
+    }
+
+    public function find($params) {
+
+        $tickets = $this->query();
+        $tickets = $tickets->where("tickets.id",$params['id']);
+        $ticket = $tickets->get()->first() ? $tickets->get()->first() : [];
+        return $ticket;
+    }
+
+    public function getDraft() {
+
+        $tickets = Ticket::where('tickets.creator_id',Auth::user()->active_contact->id);
+        $tickets = $tickets->where("tickets.status_id",TICKET_DRAFT_STATUS_ID);
+        return $tickets->get()->first() ? $tickets->get()->first() : [];
+    }
+
+    private function query() {
+
         $raw1 = DB::raw("CASE 
                             WHEN tickets.created_at > posts.created_at OR posts.created_at IS NULL 
                             THEN tickets.created_at 
@@ -42,16 +64,16 @@ class TicketsController extends BaseController {
 
         $raw5 = DB::raw("CASE WHEN time.active_work > escalation_profile_event.delay_time THEN 1 ELSE 0 END as timeout");
 
-    	$tickets = Ticket::select("tickets.*",$raw1,$raw2,'time.active_work',$raw5);
-    	$tickets->leftJoin('company_person as creator_contacts','tickets.creator_id','=','creator_contacts.id');
-    	$tickets->leftJoin('company_person as assignee_contacts','tickets.assignee_id','=','assignee_contacts.id');
-    	$tickets->leftJoin('people as assignees','assignee_contacts.person_id','=','assignees.id');
-    	$tickets->leftJoin('people as creators','creator_contacts.person_id','=','creators.id');
+        $tickets = Ticket::select("tickets.*",$raw1,$raw2,'statuses.allowed_statuses','time.active_work',$raw5);
+        $tickets->leftJoin('company_person as creator_contacts','tickets.creator_id','=','creator_contacts.id');
+        $tickets->leftJoin('company_person as assignee_contacts','tickets.assignee_id','=','assignee_contacts.id');
+        $tickets->leftJoin('people as assignees','assignee_contacts.person_id','=','assignees.id');
+        $tickets->leftJoin('people as creators','creator_contacts.person_id','=','creators.id');
         $tickets->leftJoin('statuses','tickets.status_id','=','statuses.id');
         $tickets->leftJoin('levels','tickets.level_id','=','levels.id');
-    	$tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
-    	$tickets->leftJoin('companies','tickets.company_id','=','companies.id');
-    	$tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
+        $tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
+        $tickets->leftJoin('companies','tickets.company_id','=','companies.id');
+        $tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
         $tickets->leftJoin($raw3,'d1.ticket_id','=','tickets.id');
         $tickets->leftJoin('posts','d1.post_id','=','posts.id');
         $tickets->leftJoin($raw4,'time.ticket_id','=','tickets.id');
@@ -63,32 +85,11 @@ class TicketsController extends BaseController {
             $query->on('escalation_profile_event.priority_id','=','tickets.priority_id');
         });
 
-        $tickets->where("tickets.status_id","!=",TICKET_DRAFT_STATUS_ID);
-
         if (!Auth::user()->active_contact->isE80()) {
             $tickets->where("tickets.company_id","=",Auth::user()->active_contact->company_id);            
         }
-        
-    	$tickets = parent::execute($tickets, $params);
 
         return $tickets;
-    }
-
-    public function find($params) {
-        $ticket = Ticket::where("id",$params['id']);
-        
-        if (!Auth::user()->active_contact->isE80()) {
-            $ticket->where("company_id",Auth::user()->active_contact->company_id);
-        }
-
-        $ticket = count($ticket->get()) ? $ticket->get()[0] : [];
-        return $ticket;
-    }
-
-    public function getDraft() {
-        return Ticket::where('creator_id',Auth::user()->active_contact->id)
-            ->where("status_id",TICKET_DRAFT_STATUS_ID)
-            ->first();
     }
 
 }

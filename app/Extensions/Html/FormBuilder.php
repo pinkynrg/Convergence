@@ -76,7 +76,7 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
 		$options['class'] = isset($options['class']) ? $options['class']." ".$bootstrap_class : $bootstrap_class;
 		$textarea = "<div class='".$options['bclass']."'>";
-		$textarea .= $this->textarea($name, $value = null, $options);
+		$textarea .= $this->textarea($name, $value, $options);
 		$textarea .= "</div>";
 		return $textarea;
 	}

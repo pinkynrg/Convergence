@@ -22,7 +22,7 @@
 					</div> 
 
 					<div id="priority">
-						{{ isset($ticket->priority_id) ? $ticket->priority->name : '' }}
+						{{ count($ticket->priority) ? $ticket->priority->name : 'TBA' }}
 					</div>
 
 					<div> {{ $ticket->date("created_at") }} </div>
@@ -95,12 +95,12 @@
 					@foreach ($ticket->history as $history)
 
 					<tr>
-						<td> {{ isset($history->changer_id) ? $history->changer->person->name() : '' }} </td>
-						<td class="hidden-xs hidden-ms"> {{ count($history->assignee) ? $history->assignee->person->name() : "" }} </td>
+						<td> {{ isset($history->changer_id) ? $history->changer->person->name() : "" }} </td>
+						<td class="hidden-xs hidden-ms"> {{ count($history->assignee) ? $history->assignee->person->name() : "TBA" }} </td>
 						<td class="hidden-xs hidden-ms"> {{ $history->status->name }} </td>
-						<td class="hidden-xs hidden-ms"> {{ $history->priority->name }} </td>
-						<td class="hidden-xs hidden-ms"> {{ count($history->division) ? $history->division->name : "" }} </td>
-						<td class="hidden-xs hidden-ms"> {{ $history->equipment->name }} </td>
+						<td class="hidden-xs hidden-ms"> {{ count($history->priority) ? $history->priority->name : "TBA" }} </td>
+						<td class="hidden-xs hidden-ms"> {{ count($history->division) ? $history->division->name : "TBA" }} </td>
+						<td class="hidden-xs hidden-ms"> {{ count($history->equipment) ? $history->equipment->name : "TBA" }} </td>
 						<td> {{ $history->date("created_at") }} </td>
 					</tr>
 
@@ -195,113 +195,131 @@
 
 		@if (Auth::user()->can('create-post'))
 
-			{!! Form::model($draft_post, array('method' => 'POST', 'route' => 'posts.store', 'id' => 'post_form') ) !!}
+			@if ($ticket->status_id == TICKET_REQUESTING_STATUS_ID)
 
-				<div>
-					<h3 id="write_post"> Write a post </h3>
+				<div class="alert alert-info" role="alert"> 
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<div> <i class="fa fa-info-circle"></i> This ticket request has to be moderated before being able to write posts. </div>
 				</div>
 
-				@if(isset($draft_post->id))
-					<div class="alert alert-info" role="alert"> 
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<div> <i class="fa fa-info-circle"></i> This is a draft post lastly updated the {{ $draft_post->date("updated_at") }} </div>
-					</div>
-				@endif
-				
-				{!! Form::hidden("ticket_id", $ticket->id) !!}
-				{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
+			@elseif ($ticket->status_id == TICKET_CLOSED_STATUS_ID)
 
-				@include('posts.form',array('post' => $draft_post))
+				<div class="alert alert-danger" role="alert"> 
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<div> <i class="fa fa-info-circle"></i> This ticket is closed. </div>
+				</div>
 
-				@if (Auth::user()->active_contact->isE80()) 
+			@else 
 
-					<div class="status_slider_container col-xs-12">
-						{!! Form::hidden("status_id",null,["id" => "status_id"]) !!}
-						<input id="fake_status_id" type="text"/>
+				{!! Form::model($draft_post, array('method' => 'POST', 'route' => 'posts.store', 'id' => 'post_form') ) !!}
+
+					<div>
+						<h3 id="write_post"> Write a post </h3>
 					</div>
 
-					<div class="priority_slider_container col-xs-12">
-						<input id="priority_id" name="priority_id" type="text"/>
-					</div>
-
+					@if(isset($draft_post->id))
+						<div class="alert alert-info" role="alert"> 
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<div> <i class="fa fa-info-circle"></i> This is a draft post lastly updated the {{ $draft_post->date("updated_at") }} </div>
+						</div>
+					@endif
 					
-					<div class="col-xs-12 col-sm-6">
+					{!! Form::hidden("ticket_id", $ticket->id) !!}
+					{!! Form::hidden("author_id", Auth::user()->active_contact_id) !!}
 
-						<h5> Post visibility: </h5>
+					@include('posts.form',array('post' => $draft_post))
 
-						<div class="is_public"> 
-							{!! Form::hidden("is_public",null,["id" => "is_public"]) !!}
-							<label> <input type="checkbox" id="fake_is_public" value="true" class="switch"> Public </label> 
+					@if (Auth::user()->active_contact->isE80()) 
+
+						<div class="status_slider_container col-xs-12">
+							{!! Form::hidden("status_id",null,["id" => "status_id"]) !!}
+							<input id="fake_status_id" type="text"/>
 						</div>
 
-					</div>
+						<div class="priority_slider_container col-xs-12">
+							<input id="priority_id" name="priority_id" type="text"/>
+						</div>
 
-					<div class="col-xs-12 col-sm-6">
-
-						<h5> Send email to: </h5>
 						
-						<div class="email_checkbox">
-							<div class="email_checkbox_input"> 
-								<input type="checkbox" id="email_account_manager" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->account_manager)) disabled @endif> 
+						<div class="col-xs-12 col-sm-6">
+
+							<h5> Post visibility: </h5>
+
+							<div class="is_public"> 
+								{!! Form::hidden("is_public",null,["id" => "is_public"]) !!}
+								<label> <input type="checkbox" id="fake_is_public" value="true" class="switch"> Public </label> 
+							</div>
+
+						</div>
+
+						<div class="col-xs-12 col-sm-6">
+
+							<h5> Send email to: </h5>
+							
+							<div class="email_checkbox">
+								<div class="email_checkbox_input"> 
+									<input type="checkbox" id="email_account_manager" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->account_manager)) disabled @endif> 
+								</div>
+								
+								<div class="email_checkbox_label" @if (!isset($ticket->company->account_manager)) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif >
+									<div>Account manager:</div>
+									<div>{{ (!isset($ticket->company->account_manager)) ? "Not Available" : $ticket->company->account_manager->company_person->email }}</div>
+								</div>
 							</div>
 							
-							<div class="email_checkbox_label" @if (!isset($ticket->company->account_manager)) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif >
-								<div>Account manager:</div>
-								<div>{{ (!isset($ticket->company->account_manager)) ? "Not Available" : $ticket->company->account_manager->company_person->email }}</div>
+							<div class="email_checkbox">
+								<div class="email_checkbox_input"> 
+									<input type="checkbox" id="email_company_group_email" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->group_email)) disabled @endif>  
+								</div>
+								<div class="email_checkbox_label" @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif > 
+									<div>Company group email:</div>
+									<div>{{ (!isset($ticket->company->group_email)) ? "Not Available" : $ticket->company->group_email }} </div>
+								</div>
 							</div>
-						</div>
-						
-						<div class="email_checkbox">
-							<div class="email_checkbox_input"> 
-								<input type="checkbox" id="email_company_group_email" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->group_email)) disabled @endif>  
-							</div>
-							<div class="email_checkbox_label" @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif > 
-								<div>Company group email:</div>
-								<div>{{ (!isset($ticket->company->group_email)) ? "Not Available" : $ticket->company->group_email }} </div>
-							</div>
-						</div>
 
-						<div class="email_checkbox">
-							<div class="email_checkbox_input"> 
-								{!! Form::hidden("email_company_contact",null,["id" => "email_company_contact"]) !!}
-								<input type="checkbox"  id="fake_email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
+							<div class="email_checkbox">
+								<div class="email_checkbox_input"> 
+									{!! Form::hidden("email_company_contact",null,["id" => "email_company_contact"]) !!}
+									<input type="checkbox"  id="fake_email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
+								</div>
+								<div class="email_checkbox_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
+									<div>Contact reference:</div>
+									<div>{{ (!isset($ticket->contact->email)) ? "Not Available" : $ticket->contact->email }} </div>
+								</div>
 							</div>
-							<div class="email_checkbox_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
-								<div>Contact reference:</div>
-								<div>{{ (!isset($ticket->contact->email)) ? "Not Available" : $ticket->contact->email }} </div>
-							</div>
-						</div>
 
-						<div class="email_checkbox">
-							<div class="email_checkbox_input"> 
-								<input type="checkbox" id="email_ticket_emails" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
+							<div class="email_checkbox">
+								<div class="email_checkbox_input"> 
+									<input type="checkbox" id="email_ticket_emails" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
+								</div>
+								<div class="email_checkbox_label" @if (!isset($ticket->emails) || $ticket->emails == '') data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif >
+									<div>Additional emails:</div>
+									<div>{{ (!isset($ticket->emails) || $ticket->emails == '') ? "Not Available" : $ticket->emails }} </div>
+								</div>
 							</div>
-							<div class="email_checkbox_label" @if (!isset($ticket->emails) || $ticket->emails == '') data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif >
-								<div>Additional emails:</div>
-								<div>{{ (!isset($ticket->emails) || $ticket->emails == '') ? "Not Available" : $ticket->emails }} </div>
-							</div>
+
 						</div>
 
-					</div>
+					@else
 
-				@else
+						{!! Form::hidden("is_public","true",["id" => "is_public"]) !!}
+						{!! Form::hidden("priority_id",$ticket->priority_id,["id" => "priority_id"]) !!}
 
-					{!! Form::hidden("is_public","true",["id" => "is_public"]) !!}
-					{!! Form::hidden("priority_id",$ticket->priority_id,["id" => "priority_id"]) !!}
+						@if ($ticket->status_id == TICKET_WFF_STATUS_ID)
+							{!! Form::hidden("status_id",TICKET_IN_PROGRESS_STATUS_ID,["id" => "status_id"]) !!}
+						@else 
+							{!! Form::hidden("status_id",$ticket->status_id,["id" => "status_id"]) !!}
+						@endif
 
-					@if ($ticket->status_id == TICKET_WFF_STATUS_ID)
-						{!! Form::hidden("status_id",TICKET_IN_PROGRESS_STATUS_ID,["id" => "status_id"]) !!}
-					@else 
-						{!! Form::hidden("status_id",$ticket->status_id,["id" => "status_id"]) !!}
 					@endif
 
-				@endif
+					{!! Form::BSGroup() !!}
+						{!! Form::BSSubmit("Submit") !!}
+					{!! Form::BSEndGroup() !!}
 
-				{!! Form::BSGroup() !!}
-					{!! Form::BSSubmit("Submit") !!}
-				{!! Form::BSEndGroup() !!}
+				{!! Form::close() !!}
 
-			{!! Form::close() !!}
+			@endif
 
 		@endif		
 

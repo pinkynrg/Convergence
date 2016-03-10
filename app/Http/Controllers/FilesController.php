@@ -38,6 +38,9 @@ class FilesController extends Controller {
 		    		->where('creator_id',$uploader_id)
 		    		->first();
 		    }
+		    else {
+	    		$ticket = Ticket::where("id",$target_id)->first();
+		    }
 
 	    	$id = $ticket->id;
 		}

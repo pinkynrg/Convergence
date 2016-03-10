@@ -27,7 +27,7 @@ class UpdateTicketRequest extends Request {
 	 */
 	public function rules()
 	{
-		return [
+		$rules = [
 			'company_id' => 'required|integer',
 			'contact_id' => 'required|integer',
 			'equipment_id' => 'required|integer',  
@@ -36,8 +36,11 @@ class UpdateTicketRequest extends Request {
 			'post' => 'required|string',
 			'division_id' => 'required|integer',  
 			'job_type_id' => 'required|integer',
-			'level_id' => 'required|integer'
+			'level_id' => 'required|integer',
+			'priority_id' => 'required|integer'
 		];
+
+		return $rules;
 	}
 
 }

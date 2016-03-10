@@ -33,6 +33,8 @@ use DB;
 
 class TicketsController extends BaseController {
 
+
+
 	public function index() 
 	{
 		if (Auth::user()->can('read-all-ticket')) 
@@ -50,7 +52,12 @@ class TicketsController extends BaseController {
 			$data['statuses'] = Status::orderBy('id','asc')->get();
 
 			$data['active_search'] = implode(",",['tickets.id','tickets.title','tickets.post']);
-			$data['menu_actions'] = [Form::addItem(route('tickets.create'),"Create Ticket",Auth::user()->can('create-ticket'))];
+
+			if (Auth::user()->active_contact->isE80())
+				$data['menu_actions'] = [Form::addItem(route('tickets.create'),"Create Ticket",Auth::user()->can('create-ticket'))];
+			else {
+				$data['menu_actions'] = [Form::addItem(route('ticket_requests.create'),"Request Ticket",Auth::user()->can('create-ticket'))];
+			}
 	    	$data['title'] = "Tickets";
 			
 			return Request::ajax() ? view('tickets/tickets',$data) : view('tickets/index',$data);
@@ -222,7 +229,7 @@ class TicketsController extends BaseController {
 		$ticket->post = $request->get('post');
 		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
 		$ticket->creator_id = Auth::user()->active_contact->id;
-		$ticket->status_id = Auth::user()->active_contact->isE80() ? TICKET_NEW_STATUS_ID : TICKET_REQUESTING_STATUS_ID;
+		$ticket->status_id = TICKET_NEW_STATUS_ID;
 		$ticket->assignee_id = $request->get('assignee_id');
 		$ticket->priority_id = $request->get('priority_id');
 		$ticket->division_id = $request->get('division_id');
@@ -258,10 +265,10 @@ class TicketsController extends BaseController {
 		$ticket->job_type_id = $request->get('job_type_id');
 		$ticket->level_id = $request->get('level_id');
 		$ticket->emails = $request->get('emails');
+		$ticket->priority_id =  $request->get('priority_id');	
 
-		switch ($ticket->status_id) {
-			case TICKET_DRAFT_STATUS_ID: $ticket->status_id = TICKET_NEW_STATUS_ID; break;
-			case TICKET_REQUESTING_STATUS_ID: $ticket->status_id = TICKET_NEW_STATUS_ID; break;
+		if ($ticket->status_id == TICKET_REQUESTING_STATUS_ID) {
+			$ticket->status_id = TICKET_NEW_STATUS_ID;
 		}
 
 		$ticket->save();

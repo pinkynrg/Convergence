@@ -114,8 +114,14 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('companies/{id}/hotels', ['uses' => 'CompaniesController@hotels', 'as' => 'companies.hotels']);
 	Route::get('companies/{id}/services', ['uses' => 'CompaniesController@services', 'as' => 'companies.services']);
 
+	// tickets request route
+	Route::get('ticket-requests/create',['uses' => 'TicketRequestsController@create', 'as' => 'ticket_requests.create']);
+	Route::post('ticket-requests/draft',['uses' => 'TicketRequestsController@draft', 'as' => 'ticket_requests.draft']);
+	Route::post('tickets-requests', ['uses' => 'TicketRequestsController@store', 'as' => 'tickets-requests.store']);
+
 	// tickets routes 
 	Route::get('tickets',['uses' => 'TicketsController@index', 'as' => 'tickets.index']);
+	Route::get('tickets/request',['uses' => 'TicketsController@create', 'as' => 'tickets.request']);
 	Route::get('tickets/create',['uses' => 'TicketsController@create', 'as' => 'tickets.create']);
 	Route::get('tickets/{id}',['uses' => 'TicketsController@show', 'as' => 'tickets.show']);
 	Route::post('tickets', ['uses' => 'TicketsController@store', 'as' => 'tickets.store']);

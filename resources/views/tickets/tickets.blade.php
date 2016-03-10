@@ -45,7 +45,13 @@
 						</div>
 					</td>
 					<td class="hidden-xs hidden-ms nowrap"> {{ $ticket->status->label }} </td>
-					<td class="hidden-xs hidden-ms nowrap"> {{ $ticket->priority->label }} ({{ $ticket->priority->weight }}) </td>
+					<td class="hidden-xs hidden-ms nowrap"> 
+						@if (count($ticket->priority)) 
+							{{ $ticket->priority->label }} ({{ $ticket->priority->weight }}) 
+						@else
+							TBA
+						@endif
+					</td>
 					<td class="hidden-xs hidden-ms"> 
 						@if (count($ticket->assignee)) 
 							<a href="{{ route('people.show', $ticket->assignee->person->id) }}"> {{ $ticket->assignee->person->name() }} </a> 

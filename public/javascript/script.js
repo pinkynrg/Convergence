@@ -14,6 +14,7 @@ var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	first_ordering = true,
 	draft_ticket_id = 8,
 	ticket_draft_routine,
+	ticket_request_draft_routine,
 	post_draft_routine;
 
 var url = (function () {
@@ -362,6 +363,40 @@ var ajaxRequest = function(url,$target) {
 
 };
 
+var activateTicketRequestDraftMode = function() {
+	ticket_request_draft_routine = setInterval(function(){ 
+		
+		var dummy_id = 0,
+			post = {};
+
+		$("[id^=question]").each(function() {
+			post[$(this).attr("id")] = $(this).val();
+		});
+
+		$("#post").val(JSON.stringify(post));
+
+		var data = {
+			'title' : $("input#title").val() ? $("input#title").val() : '',
+			'post' 	: $("input#post").val() ? $("input#post").val() : ''
+		}
+
+		$.ajax({
+			'headers': { "X-CSRF-Token": $('[name=_token]').val() },
+			'type': 'POST',
+			'url': '/ticket-requests/draft',
+			'data' : data,
+			'success' : function(data) {
+				consoleLog('status ticket request draft: '+data);
+			},
+			'error' : function (data){
+				consoleLog('status ticket request draft: '+data.responseText);
+			}
+		});
+
+	}, 1000);
+};
+
+
 var activateTicketDraftMode = function() {
 	ticket_draft_routine = setInterval(function(){ 
 		
@@ -592,89 +627,98 @@ var updateMenuPosition = function () {
     }
 };
 
+function statusSliderMapper(id, to_real) {
+
+	if (to_real == true) {
+		switch (id) {
+			case 1: id = 2; break;
+			case 2: id = 3; break;
+			case 3: id = 4; break;
+			case 4: id = 6; break;
+			case 5: id = 7; break;
+		}
+	}
+	else {
+		switch (id) {
+    		case 1: id = 1; break;
+    		case 2: id = 1; break;
+    		case 3: id = 2; break;
+    		case 5: id = 1; break;
+    		case 4: id = 3; break;
+    		case 6: id = 4; break;
+    		case 7: id = 5; break;
+    	}
+	}
+
+	return id;
+}
+
 function setupStatusSlider() {
 	
 	if ($("#fake_status_id:visible").length) {
 
-		$.get('/API/tickets/find?id='+url.target_id, function (data) {
-		
-			var status_id = data.status_id,
-				allowed_statuses = [2,3,4,6],
-				allowed_ticks = [1,2,3,4],
-				positions = [],
-				current_tick,
-				disabled = false;
+		var status_id, 
+			allowed_statuses, 
+			tick,
+			ticks = [],
+			labels = [];
 
-			if (status_id == 6 || status_id == 7) {
-				allowed_ticks.push(5);
-				allowed_statuses.push(7);
-				positions = [0,25,50,75,100];
-				if (status_id == 7) {
-					disabled = true;
-				}
+		$.get('/API/tickets/find?id='+url.target_id, function (data) {
+
+			status_id = data.status_id;
+			allowed_statuses = data.allowed_statuses.split(",");
+			tick = statusSliderMapper(status_id,false);
+
+			// if current status id of the ticket can stay the way it is keep the same value, 
+			// otherwise set the status to the first valid
+			if (allowed_statuses.indexOf(status_id) != -1) {
+				$("#status_id").val(status_id);
 			}
 			else {
-				positions = [0,33,66,100];
+				$("#status_id").val(allowed_statuses[0]);
 			}
+		
+			$.get('/API/statuses/all?where[]=statuses.id|=|'+allowed_statuses.join(":")+'&paginate=false', function (data) {
 
-			$("#status_id").val(status_id);
-
-			switch (status_id) {
-	    		case 1: current_tick = 1; break;
-	    		case 2: current_tick = 1; break;
-	    		case 3: current_tick = 2; break;
-	    		case 5: current_tick = 1; break;
-	    		case 4: current_tick = 3; break;
-	    		case 6: current_tick = 4; break;
-	    		case 7: current_tick = 5; break;
-	    	}
-
-			var ids = allowed_statuses.join(":");
-
-			$.get('/API/statuses/all?where[]=statuses.id|IN|'+ids+'&paginate=false', function (data) {
-
-				var item = [];
-			
-				item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
+				for (var i=0; i<data.length; i++) {
+					labels.push(data[i]['name']);
+					ticks.push(statusSliderMapper(data[i]['id'],false));
+				}
 
 				var slider = $("#fake_status_id").slider({
-					id: 'status_id',
-				    ticks: allowed_ticks,
-				    value: current_tick,
-				    selection: 'none',
-				    ticks_labels: item['labels'],
-				    ticks_snap_bounds: 30,
-				    tooltip: 'hide',
-				    ticks_positions: positions
+					id: 'fake_status_id',
+					ticks: ticks,
+					value: tick,
+					selection: 'none',
+					ticks_labels: labels,
+					tooltip: 'hide'
 				});
 
 				slider.on('slideStop',function() {
-					var selected_status_id = slider.slider('getValue'),
-						real_value;
+					
+					var tick_position,
+						new_status_id;
 
-					switch (selected_status_id) {
-			    		case 1: real_value = 2; break;
-			    		case 2: real_value = 3; break;
-			    		case 3: real_value = 4; break;
-			    		case 4: real_value = 6; break;
-			    		case 5: real_value = 7; break;
-			    	}
+					tick_position = slider.slider('getValue'),
 
-			    	$("#status_id").val(real_value);
+					new_status_id = statusSliderMapper(tick_position,true);
 
-					if ((real_value == 3 || real_value == 6 || real_value == 7) && status_id != real_value) {
+					$("#status_id").val(new_status_id);
+
+					if ((new_status_id == 3 || new_status_id == 6 || new_status_id == 7) && status_id != new_status_id) {
 						$("#fake_is_public").bootstrapSwitch('state', true);					// set public true
 						$("#fake_is_public").bootstrapSwitch('disabled',true);					// disable: post has to be public
-						$("#fake_email_company_contact").bootstrapSwitch('state', true);				// send to contacts if toggle public 
-						$("#fake_email_company_contact").bootstrapSwitch('disabled', true);			// disable: email has to be sent
+						$("#fake_email_company_contact").bootstrapSwitch('state', true);		// send to contacts if toggle public 
+						$("#fake_email_company_contact").bootstrapSwitch('disabled', true);		// disable: email has to be sent
 					}
 					else {
-						$("#fake_is_public").bootstrapSwitch('state', false);					// set public true
 						$("#fake_is_public").bootstrapSwitch('disabled',false);					// disable: post has to be public
-						$("#fake_email_company_contact").bootstrapSwitch('state', false);			// send to contacts if toggle public 
-						$("#fake_email_company_contact").bootstrapSwitch('disabled', false);			// disable: email has to be sent
+						$("#fake_is_public").bootstrapSwitch('state', false);					// set public true
+						$("#fake_email_company_contact").bootstrapSwitch('disabled', false);	// disable: email has to be sent
+						$("#fake_email_company_contact").bootstrapSwitch('state', false);		// send to contacts if toggle public 
 					}
 				});
+
 			});
 		});
 	}
@@ -835,7 +879,6 @@ if (true) {
 	});
 
 	$("#switch_company_person_id").change(function() {
-		console.log("ciao");
 		$("#switch_company_person_form").submit();
 	});
 }
@@ -989,10 +1032,32 @@ if (url.target == "tickets" && url.target_action == "show") {
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@/tickets/request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+if (url.target == "ticket-requests" && url.target_action == "create") {
+
+	var post,
+		questions;
+
+	activateTicketRequestDraftMode();
+
+	if ($("#post").val()) {
+		post = $("#post").val(),
+		questions = JSON.parse(post);
+
+		for (var key in questions) {
+			$("#"+key).val(questions[key]);
+		}
+	}
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @/tickets/create AND @/tickets/{id}/edit AND @/posts/{id}/edit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 if ((url.target == "tickets" && (url.target_action == "show" || url.target_action == "create" || url.target_action == "edit")) ||
+	(url.target == "ticket-requests" && url.target_action == "create") ||
 	(url.target == "posts" && url.target_action == "edit")) {
 
 	$("#dZUpload").dropzone({
@@ -1015,6 +1080,13 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 				that.options.target_id = url.target_id;
 				that.options.target_action = url.target_action;
 			}
+
+			if (url.target == "ticket-requests" && url.target_action == "create") {
+				that.options.target = 'tickets';
+				that.options.target_id = url.target_id;
+				that.options.target_action = url.target_action;
+			}
+
 			// dropzone for posts
 			if ((url.target == "posts" && url.target_action == "edit") || (url.target == "tickets" && url.target_action == "show")) {
 				that.options.target = "posts";
@@ -1035,8 +1107,6 @@ if ((url.target == "tickets" && (url.target_action == "show" || url.target_actio
 	    			},500);
 	    		}
 			});
-
-			console.log("here: /ajax/files/"+that.options.target+"/"+that.options.target_action+"/"+that.options.target_id);
 
 			$.ajax({
 				type: 'GET',

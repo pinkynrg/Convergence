@@ -961,14 +961,14 @@ class Statuses extends BaseClass {
 
 		if ($this->truncate()) {
 					
-			$queries = ["INSERT INTO statuses (id, name, label) VALUES (1,'New','New')",
-						"INSERT INTO statuses (id, name, label) VALUES (2,'In Progress','Progress')",
-						"INSERT INTO statuses (id, name, label) VALUES (3,'Waiting Customer Feedback','WCF')",
-						"INSERT INTO statuses (id, name, label) VALUES (4,'Waiting For Parts','WFP')",
-						"INSERT INTO statuses (id, name, label) VALUES (5,'Ticket Request','Request')",
-						"INSERT INTO statuses (id, name, label) VALUES (6,'Solved','Solved')",
-						"INSERT INTO statuses (id, name, label) VALUES (7,'Closed','Closed')",
-						"INSERT INTO statuses (id, name, label) VALUES (8,'Draft','Draft')"];
+			$queries = ["INSERT INTO statuses (id, name, label, allowed_statuses) VALUES (1,'New','New','2,3,4,6')",
+						"INSERT INTO statuses (id, name, label, allowed_statuses) VALUES (2,'In Progress','Progress','2,3,4,6')",
+						"INSERT INTO statuses (id, name, label, allowed_statuses) VALUES (3,'Waiting Customer Feedback','WCF','2,3,4,6')",
+						"INSERT INTO statuses (id, name, label, allowed_statuses) VALUES (4,'Waiting For Parts','WFP','2,3,4,6')",
+						"INSERT INTO statuses (id, name, label, allowed_statuses) VALUES (5,'Ticket Request','Request','1')",
+						"INSERT INTO statuses (id, name, label, allowed_statuses) VALUES (6,'Solved','Solved','2,3,4,6,7')",
+						"INSERT INTO statuses (id, name, label, allowed_statuses) VALUES (7,'Closed','Closed','7')",
+						"INSERT INTO statuses (id, name, label, allowed_statuses) VALUES (8,'Draft','Draft','1')"];
 			
 			foreach ($queries as $query) {							
 				

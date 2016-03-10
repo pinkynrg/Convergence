@@ -3,7 +3,7 @@
 use App\Http\Requests\Request;
 use Auth;
 
-class CreateTicketRequest extends Request {
+class CreateTicketRequestDraftRequest extends Request {
 
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -27,20 +27,8 @@ class CreateTicketRequest extends Request {
 	 */
 	public function rules()
 	{
-		$rules = [
-			'company_id' => 'required|numeric',  
-			'contact_id' => 'required|numeric',
-			'equipment_id' => 'required|numeric',  
-			'title' => 'required|string',
-			'post' => 'required|string',
-			'assignee_id' => 'required|numeric',  
-			'division_id' => 'required|numeric',  
-			'job_type_id' => 'required|numeric',
-			'priority_id' => 'required|numeric',
-			'level_id' => 'required|numeric'
-		];
+		$rules = [];
 
 		return $rules;
-
 	}
 }
