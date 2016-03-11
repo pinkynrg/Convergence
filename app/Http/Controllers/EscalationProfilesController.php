@@ -129,7 +129,7 @@ class EscalationProfilesController extends BaseController {
 		$to_seconds['hour'] = 60*60;
 		$to_seconds['day'] = $to_seconds['hour']*24;
 		$to_seconds['week'] = $to_seconds['day']*7;
-		$to_seconds['month'] = $to_seconds['week']*4;
+		$to_seconds['month'] = $to_seconds['day']*30;
 		$to_seconds['year'] = $to_seconds['day']*365;
 
 		for ($k=0; $k<count(self::$delays); $k++) {

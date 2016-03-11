@@ -304,13 +304,13 @@ class EscalationProfileEvents extends BaseClass {
 				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',1,86400)",
 				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',2,86400)",
 				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',3,345600)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',4,2419200)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',5,2419200)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',4,2592000)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,1,'1,2,4',5,2592000)",
 				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',1,1209600)",
 				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',2,1209600)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',3,4838400)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',4,7257600)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',5,7257600)"
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',3,5184000)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',4,7776000)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',5,7776000)"
 			];
 
 			foreach ($queries as $query) {							
@@ -1869,6 +1869,7 @@ class TicketsHistroy extends BaseClass {
 	public $table_name = 'tickets_history';
 	public $dependency_names = ['tickets'];
 	private $deleted = 0;
+	private $updated = 0;
 
 	public function importSelf() {
 
@@ -1914,11 +1915,9 @@ class TicketsHistroy extends BaseClass {
 					$t = nullIt($t);
 					$ti = nullIt($ti);
 
-					$query = "INSERT INTO tickets_history (id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
-					 		  VALUES (".$counter.",".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['post_plain_text'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$ti['level_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
+					$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+					 		  VALUES (".$counter.",NULL,".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['post_plain_text'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$ti['level_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
 					 		  
-
-
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
 						$counter++;
 						$this->successes++;
@@ -1967,7 +1966,42 @@ class TicketsHistroy extends BaseClass {
 				}
 			}
 
+			// update previous id ticket history
+
+			$query = "SELECT * FROM tickets_history";
+
+			$result = mysqli_query($this->manager->conn,$query);
+			$records = mysqli_fetch_all($result,MYSQLI_ASSOC);
+
+			for($i = 0; $i < count($records)-1; $i++) {
+
+				$query = "SELECT id as previous_id 
+						  FROM tickets_history 
+						  WHERE ticket_id = '".$records[$i]['ticket_id']."'
+						  AND created_at < '".$records[$i]['created_at']."'
+						  ORDER BY created_at DESC
+						  LIMIT 1";
+
+				$result = mysqli_query($this->manager->conn,$query);
+				$record = mysqli_fetch_assoc($result);
+
+				$previous_id = is_null($record['previous_id']) ? 'NULL' : $record['previous_id'];
+
+				$query = "UPDATE tickets_history SET previous_id = ".$previous_id." WHERE id = ".$records[$i]['id'];
+
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					$this->updated++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
 			logMessage("Successes: ".$this->successes,'successes');
+			logMessage("Updates: ".$this->updated,'updates');
 			logMessage("Deleted: ".$this->deleted,'deletes');
 			logMessage("Errors: ".$this->errors,'errors');
 		}

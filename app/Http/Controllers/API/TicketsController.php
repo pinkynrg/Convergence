@@ -46,19 +46,23 @@ class TicketsController extends BaseController {
         $raw3 = DB::raw('(SELECT MAX(id) as post_id, ticket_id FROM posts GROUP BY ticket_id) as d1');
 
         $raw4 = DB::raw("(SELECT d3.ticket_id, SUM(TIMESTAMPDIFF(SECOND, d3.from, d3.to)) as 'active_work' 
+                            
                             FROM (
                                 SELECT th1.ticket_id, th1.created_at as 'from', CASE WHEN th2.created_at IS NULL THEN NOW() ELSE th2.created_at END as 'to'
                                 FROM tickets_history as th1
-                                LEFT JOIN (
-                                    SELECT d1.id as 'id', MIN(d2.created_at) as 'next'
-                                    FROM tickets_history as d1
-                                    LEFT JOIN tickets_history as d2 ON d1.ticket_id = d2.ticket_id
-                                    WHERE d1.created_at < d2.created_at
-                                    GROUP BY d1.id
-                                ) as glue ON th1.id = glue.id
-                                LEFT JOIN tickets_history th2 ON (th2.created_at = glue.next AND th2.ticket_id = th1.ticket_id)
-                                WHERE th1.status_id IN (1,2,5)
+                                LEFT JOIN tickets_history th2 ON (th1.id = th2.previous_id)
+                                WHERE th1.status_id IN (".str_replace(":",",",TICKETS_ACTIVE_STATUS_IDS).")
                             ) as d3
+                            
+                            LEFT JOIN (
+                                SELECT th1.ticket_id, MAX(th2.created_at) as 'last_important_update'
+                                FROM tickets_history as th1
+                                LEFT JOIN tickets_history th2 ON (th2.previous_id = th1.id)
+                                WHERE (th1.level_id != th2.level_id OR th1.priority_id != th2.priority_id)
+                                GROUP BY th1.ticket_id
+                            ) as d4 ON (d4.ticket_id = d3.ticket_id AND d4.last_important_update > d3.from)
+                            WHERE d4.ticket_id IS NULL
+
                             GROUP BY d3.ticket_id
                             ) as time");
 

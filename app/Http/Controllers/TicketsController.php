@@ -33,8 +33,6 @@ use DB;
 
 class TicketsController extends BaseController {
 
-
-
 	public function index() 
 	{
 		if (Auth::user()->can('read-all-ticket')) 
@@ -328,6 +326,9 @@ class TicketsController extends BaseController {
 
 		$history = new TicketHistory;
 
+		$last_history = TicketHistory::where('ticket_id',$ticket->id)->orderBy("created_at","DESC")->first();
+
+		$history->previous_id = count($last_history) ? $last_history->id : NULL;
 		$history->changer_id = Auth::user()->active_contact->id;
 		$history->ticket_id = $ticket->id;
 		$history->title = $ticket->title;
@@ -341,6 +342,7 @@ class TicketsController extends BaseController {
 		$history->equipment_id = $ticket->equipment_id;
 		$history->company_id = $ticket->company_id;
 		$history->contact_id = $ticket->contact_id;
+		$history->level_id = $ticket->level_id;
 		$history->job_type_id = $ticket->job_type_id;
 		$history->emails = $ticket->emails;
 	

@@ -16,6 +16,7 @@ class CreateTicketsHistoryTable extends Migration {
 		Schema::create('tickets_history', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->integer('previous_id')->unsigned()->nullable();
 			$table->integer('ticket_id')->unsigned();
 			$table->integer('changer_id')->unsigned()->nullable();
 			$table->string('title');
@@ -38,6 +39,7 @@ class CreateTicketsHistoryTable extends Migration {
 		});
 
 		Schema::table('tickets_history',function(Blueprint $table) {
+			$table->foreign('previous_id')->references('id')->on('tickets_history');
 			$table->foreign('ticket_id')->references('id')->on('tickets');
 			$table->foreign('changer_id')->references('id')->on('company_person');
 			$table->foreign('creator_id')->references('id')->on('company_person');
