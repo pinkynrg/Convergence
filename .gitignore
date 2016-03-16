@@ -1,11 +1,11 @@
 /vendor
 /node_modules
-/public/attachments
-/public/thumbnails
-/public/tmp
 .env
 .DS_Store
 composer.phar
+/public/images/thumbnails
+/public/images/attachments
+/public/tmp
 /public/ckfinder/userfiles
 /backups
 /bower_components
