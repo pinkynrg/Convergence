@@ -19,7 +19,7 @@
 
 					<tr>
 						<td> {!! $activity->date('created_at',true) !!} </td>
-						<td> {!! $activity->user->username !!} </td>				
+						<td> {!! count($activity->user) ? $activity->user->username : 'System' !!} </td>				
 						<td> {{ $activity->text }} </td>
 						<td> {{ $activity->ip_address }} </td>
 					</tr>
