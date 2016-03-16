@@ -76,7 +76,7 @@ class CompanyPersonController extends BaseController {
 
 			return view('company_person/show', $data);
 		}
-		else return $redirect()->back()->withErrors(['Access denied to contacts show page']);
+		else return redirect()->back()->withErrors(['Access denied to contacts show page']);
 
 	}
 

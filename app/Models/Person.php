@@ -23,7 +23,8 @@ class Person extends CustomModel {
 		return $this->last_name." ".$this->first_name;
 	}
 
-	public function image() {
-		return $this->image ? '/images/profile_pictures/'.$this->image : '/images/profile_pictures/default.png';
+	public function profile_picture() {
+		$picture = File::find($this->profile_picture_id);
+		return $picture ? $picture->path() : DS.'files'.DS.DEFAULT_PROFILE_PICTURE_ID;
 	}
 }

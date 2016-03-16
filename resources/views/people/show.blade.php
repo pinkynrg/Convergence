@@ -5,7 +5,7 @@
 	<div class="media">
 		<div class="media-left media-middle">
 			<a href="#">
-				<img class="thumbnail thumb-md" src="{{ $person->image() }}" alt=" {{ $person->image() }} ">
+				<img class="thumbnail thumb-md" src="{{ $person->profile_picture() }}" alt=" {{ $person->profile_picture() }} ">
 			</a>
 		</div>
 		

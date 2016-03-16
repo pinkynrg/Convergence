@@ -21,6 +21,8 @@
 			</div>
 		</div>
 
+		{!! Form::BSSubmit("Submit", ['bclass' => 'col-xs-offset-2']) !!}
+
 	{!! Form::close() !!}
 
 @endsection

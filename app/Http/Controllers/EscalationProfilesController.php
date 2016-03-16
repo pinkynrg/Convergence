@@ -14,7 +14,11 @@ use DB;
 
 class EscalationProfilesController extends BaseController {
 
-	static $delays = ["1 Hour","2 Hours","8 Hours","1 Day","2 Days","3 Days","4 Days","5 Days","6 Days","1 Week","2 Weeks","3 Weeks","1 Month","2 Months","3 Months"];
+	static $delays = ["1 Minute","5 Minutes","10 Minutes","30 Minutes",
+					  "1 Hour","2 Hours","8 Hours",
+					  "1 Day","2 Days","3 Days","4 Days","5 Days","6 Days",
+					  "1 Week","2 Weeks","3 Weeks",
+					  "1 Month","2 Months","3 Months"];
 
 	public function index() {
 		if (Auth::user()->can('read-all-escalation-profiles')) {
@@ -126,6 +130,7 @@ class EscalationProfilesController extends BaseController {
 
 	private function parseDelays() {
 		
+		$to_seconds['minute'] = 60;
 		$to_seconds['hour'] = 60*60;
 		$to_seconds['day'] = $to_seconds['hour']*24;
 		$to_seconds['week'] = $to_seconds['day']*7;

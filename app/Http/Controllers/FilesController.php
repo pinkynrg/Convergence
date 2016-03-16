@@ -5,6 +5,7 @@ use Input;
 use Response;
 use App\Models\File;
 use App\Models\Ticket;
+use App\Models\Person;
 use App\Models\Post;
 use File as FileManager;
 use App\Libraries\FilesRepository;
@@ -43,12 +44,18 @@ class FilesController extends Controller {
 		    }
 
 	    	$id = $ticket->id;
+
+		}
+		elseif ($target == "people") {
+			$target_id = is_null($target_id) ? Auth::user()->owner->id : $target_id;
+			$person = Person::find($target_id);
+			$id = $person->id;
 		}
 
 		$files = is_null($id) ? [] : File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
 
 		foreach ($files as $file) {
-			$file->size = filesize(ATTACHMENTS.DS.$file->file_name);
+			$file->size = filesize($file->file_path.DS.$file->file_name);
 		}
 
 		return $files;
@@ -56,15 +63,11 @@ class FilesController extends Controller {
 
 	public function show($id) {
 		$file = File::find($id);
-		
-		$real_path = $file ? $file->real_path() : STYLE_IMAGES.DS."missing_thumbnail.png";
-
+		$real_path = $file->real_path();
 		$path = FileManager::get($real_path);
     	$type = FileManager::mimeType($real_path);
-    	
     	$response = Response::make($path, 200);
     	$response->header("Content-Type", $type);
-
     	return $response;
 	}
     

@@ -43,7 +43,7 @@
 
 	<table class="table">
 		<tr>
-			<td width="50" class="thumbnail" rowspan="3"><img width="50" src="{{ SITE_URL.$post->ticket->creator->person->image() }}"/></td>
+			<td width="50" class="thumbnail" rowspan="3"><img width="50" src="{{ SITE_URL.$post->ticket->creator->person->profile_picture() }}"/></td>
 		</tr>
 		
 		<tr>
@@ -61,7 +61,7 @@
 
 	<table class="table">
 		<tr>
-			<td width="50" class="thumbnail" rowspan="3"><img width="50" src="{{ SITE_URL.$post->author->person->image() }}"/></td>
+			<td width="50" class="thumbnail" rowspan="3"><img width="50" src="{{ SITE_URL.$post->author->person->profile_picture() }}"/></td>
 		</tr>
 
 		<tr>

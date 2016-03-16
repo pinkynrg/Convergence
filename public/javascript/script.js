@@ -15,7 +15,8 @@ var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	draft_ticket_id = 8,
 	ticket_draft_routine,
 	ticket_request_draft_routine,
-	post_draft_routine;
+	post_draft_routine,
+	search_timeout;
 
 var url = (function () {
 	return {
@@ -398,6 +399,7 @@ var activateTicketRequestDraftMode = function() {
 
 
 var activateTicketDraftMode = function() {
+	
 	ticket_draft_routine = setInterval(function(){ 
 		
 		var dummy_id = 0;
@@ -852,7 +854,12 @@ if (true) {
 	// trigger ajax request when searching
 	$("input[type='text'].search").on("keyup", function () {
 		var $target = $(this).closest("div[ajax-route]");
-		ajaxUpdate($target);
+
+		clearTimeout(search_timeout);
+		
+		search_timeout = setTimeout(function () {
+			ajaxUpdate($target);
+		},1000);
 	});
 
 	// trigger ajax request when filtering
@@ -1245,6 +1252,31 @@ if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") 
 			updateRowLevel();
 		}
 	});
+}
+
+if (url.target == "start") {
+
+	$("#use_info_all_contacts_fake").on('switchChange.bootstrapSwitch',function() {
+		
+		var current = $(this).bootstrapSwitch('state');
+
+		$("#use_info_all_contacts").val(current);
+
+		if (current) {
+			$("#form_contacts").hide();
+			$("#form_all_contacts").show();
+		}
+		else {
+			$("#form_all_contacts").hide();
+			$("#form_contacts").show();
+		}
+	});
+
+	var value = $("#use_info_all_contacts").val() == "true" ? true : false;
+	
+	$("#use_info_all_contacts_fake").bootstrapSwitch('state', value);
+
+
 }
 
 });

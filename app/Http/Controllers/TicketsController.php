@@ -242,7 +242,7 @@ class TicketsController extends BaseController {
        	$this->updateTags($ticket);
        	$this->updateLinks($ticket);
    		$this->updateHistory($ticket); 
-   		// EmailsManager::sendTicket($ticket->id);
+   		EmailsManager::sendTicket($ticket->id);
 		// SlackManager::sendTicket($ticket);
 
         return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);

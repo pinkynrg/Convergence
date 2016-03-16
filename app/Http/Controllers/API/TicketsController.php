@@ -45,7 +45,15 @@ class TicketsController extends BaseController {
 
         $raw3 = DB::raw('(SELECT MAX(id) as post_id, ticket_id FROM posts GROUP BY ticket_id) as d1');
 
-        $raw4 = DB::raw("(SELECT d3.ticket_id, SUM(TIMESTAMPDIFF(SECOND, d3.from, d3.to)) as 'active_work' 
+        $raw4 = DB::raw("(SELECT time.ticket_id, time.active_work, epe.event_id,
+                            
+                            CASE WHEN t.status_id IN (".str_replace(":",",",TICKETS_ACTIVE_STATUS_IDS).")
+                                THEN epe.delay_time - time.active_work 
+                                ELSE NULL
+                            END as deadline
+
+                            FROM 
+                            (SELECT d3.ticket_id, SUM(TIMESTAMPDIFF(SECOND, d3.from, d3.to)) as 'active_work' 
                             
                             FROM (
                                 SELECT th1.ticket_id, th1.created_at as 'from', CASE WHEN th2.created_at IS NULL THEN NOW() ELSE th2.created_at END as 'to'
@@ -64,35 +72,30 @@ class TicketsController extends BaseController {
                             WHERE d4.ticket_id IS NULL
 
                             GROUP BY d3.ticket_id
-                            ) as time");
+                            ) as time
 
-        $raw5 = DB::raw("CASE WHEN tickets.status_id IN (".str_replace(":",",",TICKETS_ACTIVE_STATUS_IDS).")
-                        THEN escalation_profile_event.delay_time - time.active_work 
-                        ELSE NULL
-                        END as deadline");
+                            LEFT JOIN tickets t ON t.id = time.ticket_id
+                            LEFT JOIN companies c ON c.id = t.company_id
+                            LEFT JOIN escalation_profiles ep ON c.escalation_profile_id = ep.id
+                            LEFT JOIN escalation_profile_event epe ON (epe.priority_id = t.priority_id AND epe.level_id = t.level_id AND epe.profile_id = c.escalation_profile_id)
 
-        $tickets = Ticket::select("tickets.*",$raw1,$raw2,'statuses.allowed_statuses','time.active_work',$raw5);
+                        ) as final");
+
+        $tickets = Ticket::select("tickets.*",$raw1,$raw2,'statuses.allowed_statuses','final.active_work','final.deadline','final.event_id');
         $tickets->leftJoin('company_person as creator_contacts','tickets.creator_id','=','creator_contacts.id');
         $tickets->leftJoin('company_person as assignee_contacts','tickets.assignee_id','=','assignee_contacts.id');
         $tickets->leftJoin('people as assignees','assignee_contacts.person_id','=','assignees.id');
         $tickets->leftJoin('people as creators','creator_contacts.person_id','=','creators.id');
-        $tickets->leftJoin('statuses','tickets.status_id','=','statuses.id');
+        $tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
         $tickets->leftJoin('levels','tickets.level_id','=','levels.id');
+        $tickets->leftJoin('statuses','tickets.status_id','=','statuses.id');
         $tickets->leftJoin('priorities','tickets.priority_id','=','priorities.id');
         $tickets->leftJoin('companies','tickets.company_id','=','companies.id');
-        $tickets->leftJoin('divisions','tickets.division_id','=','divisions.id');
         $tickets->leftJoin($raw3,'d1.ticket_id','=','tickets.id');
         $tickets->leftJoin('posts','d1.post_id','=','posts.id');
-        $tickets->leftJoin($raw4,'time.ticket_id','=','tickets.id');
-        $tickets->leftJoin('escalation_profiles','escalation_profiles.id','=','companies.escalation_profile_id');
-        
-        $tickets->leftJoin('escalation_profile_event',function($query) {
-            $query->on('escalation_profile_event.profile_id','=','escalation_profiles.id');
-            $query->on('escalation_profile_event.level_id','=','tickets.level_id');
-            $query->on('escalation_profile_event.priority_id','=','tickets.priority_id');
-        });
+        $tickets->leftJoin($raw4,'final.ticket_id','=','tickets.id');
 
-        if (!Auth::user()->active_contact->isE80()) {
+        if (Auth::check() && !Auth::user()->active_contact->isE80()) {
             $tickets->where("tickets.company_id","=",Auth::user()->active_contact->company_id);            
         }
 

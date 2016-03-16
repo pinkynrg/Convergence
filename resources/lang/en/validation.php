@@ -86,6 +86,7 @@ return [
 	*/
 
 	"after_equal" => "The :attribute must be a date after or equal to :value.",
+	"password" => "The :attribute must contain a lower case character, an upper case character, at least a digit and it has to be at least 10 characters.",
 
 	/*
 	|--------------------------------------------------------------------------

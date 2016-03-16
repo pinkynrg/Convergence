@@ -5,7 +5,7 @@
 @endif
 	<div class="post_header">
 		<div class="thumbnail thumb-sm">
-			<img src="{{ $post->author->person->image() }}" alt=" {{ $post->author->person->image() }} ">
+			<img src="{{ $post->author->person->profile_picture() }}" alt=" {{ $post->author->person->profile_picture() }} ">
 		</div>
 		<div class="post_header_details">
 			<div class="post_author">

@@ -7,7 +7,7 @@
 
 			<div class="ticket_header">
 				<div class="thumbnail thumb-md">
-					<img src="{{ $ticket->creator->person->image() }}" alt=" {{ $ticket->creator->person->image() }} ">
+					<img src="{{ $ticket->creator->person->profile_picture() }}" alt=" {{ $ticket->creator->person->profile_picture() }} ">
 					<div> {!! $ticket->creator_id ? HTML::link(route('people.show', $ticket->creator->person->id), $ticket->creator->person->name()) : '' !!} </div>
 				</div>
 

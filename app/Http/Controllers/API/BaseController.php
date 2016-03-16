@@ -28,7 +28,7 @@ class BaseController extends Controller {
                         elseif ($operand == "=" || $operand == "IN") {
                             $query->orWhereIn($target,$values);                                         // TODO: check if column exists
                         }
-                        elseif ($operand == "!=") {
+                        elseif ($operand == "!=" || $operand == "<" || $operand == ">") {
                             $query->orWhere($target,$operand,$values);
                         }
                     }
@@ -78,7 +78,7 @@ class BaseController extends Controller {
                 
                 $temp = explode("|",$where);
                 $temp[1] = (isset($temp[1])) ? strtoupper($temp[1]) : null;
-                $temp[1] = (isset($temp[1]) && ($temp[1] == "LIKE" || $temp[1] == "=" || $temp[1] == "!=" || $temp[1] == "IN")) ? $temp[1] : null;
+                $temp[1] = (isset($temp[1]) && ($temp[1] == "LIKE" || $temp[1] == "=" || $temp[1] == "!=" || $temp[1] == "IN" || $temp[1] == ">" || $temp[1] == "<")) ? $temp[1] : null;
                     
                 if ((count($temp) != 3) || is_null($temp[1])) {
                     unset($params['where'][$key]);

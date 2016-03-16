@@ -1,16 +1,14 @@
-@if (Route::currentRouteName() == "company_person.edit")
-	<div class="row">
-		<div class="col-xs-6">
-			{!! Form::BSGroup() !!}
-				{!! Form::BSLabel("name", "Name") !!}
-				{!! Form::BSText("name", $contact->person->name(), ['disabled' => 'true']) !!}
-			{!! Form::BSEndGroup() !!}
-		</div>
-	</div>
-@endif
-
 <div class="row">	
 	<div class="col-xs-6">
+		
+		@if (Route::currentRouteName() == "company_person.edit")
+
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel("first_name", "First Name") !!}
+				{!! Form::BSText("first_name", $contact->person->first_name, ['disabled' => 'true']) !!}
+			{!! Form::BSEndGroup() !!}
+
+		@endif
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("department_id", "Department") !!}
@@ -57,6 +55,15 @@
 	</div>	
 
 	<div class="col-xs-6">
+
+		@if (Route::currentRouteName() == "company_person.edit")
+
+			{!! Form::BSGroup() !!}
+				{!! Form::BSLabel("last_name", "Last Name") !!}
+				{!! Form::BSText("last_name", $contact->person->last_name, ['disabled' => 'true']) !!}
+			{!! Form::BSEndGroup() !!}
+
+		@endif
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("title_id", "Title") !!}

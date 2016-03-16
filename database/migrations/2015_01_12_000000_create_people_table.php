@@ -17,10 +17,14 @@ class CreatePeopleTable extends Migration {
 			$table->increments('id');
 			$table->string('first_name');
 			$table->string('last_name')->nullable();
-			$table->string('image')->nullable();
+			$table->integer('profile_picture_id')->unsigned()->nullable();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->softDeletes();
+		});
+
+		Schema::table('people',function(Blueprint $table) {
+			$table->foreign('profile_picture_id')->references('id')->on('files');
 		});
 	}
 

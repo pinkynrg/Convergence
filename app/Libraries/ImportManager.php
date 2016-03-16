@@ -1213,11 +1213,16 @@ class People extends BaseClass {
 			while ($row = mysqli_fetch_array($result)) $people[] = $row;
 
 			foreach ($people as $person) {
-				
 
-				if (file_exists(PUBLIC_FOLDER.DS."images".DS."profile_pictures".DS.$person['id'].".gif")) {
-					$query = "UPDATE people SET image = '".$person['id'].".gif' WHERE id = '".$person['id']."'";
-					
+				$file = null;
+
+				$query = "SELECT * FROM files WHERE resource_id = ".$person['id']." AND file_path = 'profiles'";
+				$result = mysqli_query($this->manager->conn,$query);
+				while ($row = mysqli_fetch_array($result)) $file = $row;
+
+				if (isset($file)) {
+					$query = "UPDATE people SET profile_picture_id = '".$file['id']."' WHERE id = '".$person['id']."'";
+
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
 						$this->successes++;
 					}

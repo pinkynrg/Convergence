@@ -11,17 +11,17 @@ class File extends CustomModel {
 	}
 
 	public function path() {
-		return DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.$this->id;
+		return DS.'files'.DS.$this->id;
 	}
 
 	public function real_path() {
-		return base_path().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$this->file_path.DIRECTORY_SEPARATOR.$this->file_name;
+		return base_path().DS.'public'.DS.$this->file_path.DS.$this->file_name;
 	}
 
 	public function thumbnail() {
 		$file_exists = $this->thumbnail_id;
-		$thumbnail_url = DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR;
-		$thumbnail_url .= $file_exists ? $this->thumbnail_id : 'missing';
+		$thumbnail_url = DS.'files'.DS;
+		$thumbnail_url .= $file_exists ? $this->thumbnail_id : DEFAULT_MISSING_PICTURE_ID;
 		return $thumbnail_url;
 	}
 

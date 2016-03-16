@@ -1,6 +1,7 @@
 <?php namespace App\Libraries;
 
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use App\Http\Controllers\TicketsController;
 use App\Models\Ticket;
 use App\Models\Post;
 use Mail;
@@ -14,7 +15,7 @@ class EmailsManager {
 	static $content = null;
 	static $data = array();
 	static $to = array();
-	static $cc = ['biggyapple@gmail.com'];
+	static $cc = array();
 	static $bcc = array();
 
 	public static function sendPost($id) {
@@ -41,6 +42,48 @@ class EmailsManager {
 		self::send();	
 	}
 
+	public static function sendEscalation($id) {
+
+		$helpdesk_manager_email = "kotsakos.t@elettric80.it";
+		$pc_team_leader = "melzi.a@elettric80.it";
+		$plc_team_leader = "passarini.r@elettric80.it";
+		$lgv_team_leader = "armenta.a@elettric80.it";
+		$field_manager = "balla.d@elettric80.it";
+		$customer_service_manager = "racannelli.m@elettric80.it";
+		$president = "nelson.w@elettric80.it";
+
+		$ticket = TicketsController::API()->find(['id'=>$id]);
+		self::setSubject("Escalate Ticket #".$ticket->id);
+		self::$view = "emails/escalate";
+		self::$data['ticket'] = $ticket;
+
+		$events = explode(",",$ticket->event_id);
+
+		self::add("to", "meli.f@elettric80.it");
+
+		foreach ($events as $event) {
+			switch ($event) {
+				case EVENT_ASSIGNEE_ID : self::add("to", $ticket->assignee->email); break;
+				case EVENT_HELPDESK_MANAGER_ID : self::add("to", $helpdesk_manager_email); break;
+				case EVENT_ACCOUNT_MANAGER_ID : self::add("to", $ticket->company->account_manager->email); break;				
+				case EVENT_TEAM_LEADER_ID : 
+					switch ($ticket->division->id) {
+						case LGV_DIVISION_ID: self::add("to", $lgv_team_leader); break;
+						case PC_DIVISION_ID: self::add("to", $pc_team_leader); break;
+						case PLC_DIVISION_ID: self::add("to", $plc_team_leader); break;
+						default: break;
+					} 
+				break;
+				case EVENT_FIELD_MANAGER_ID : self::add("to", $field_manager); break;
+				case EVENT_CUSTOMER_SERVICE_MANAGER_ID : self::add("to", $customer_service_manager); break;
+				case EVENT_THE_PRESIDENT_ID : self::add("to", $president); break;
+				default: break;
+			}
+		}
+
+		self::send();
+	}
+
 	private static function send() {
 		
 		$html = view(self::$view,self::$data)->render();
@@ -60,8 +103,6 @@ class EmailsManager {
 		});
 
 		// echo self::$content;
-		// die();
-
 		self::clear();
 	}
 
@@ -74,7 +115,13 @@ class EmailsManager {
 	}
 
 	private static function add($type, $email) {
-		if (isset(self::$$type)) self::${$type}[] = $email;
+		if ($email) {
+			if ($email != "meli.f@elettric80.it" && $email != "passarini.r@elettric80.it") {
+				$email = "_".$email;
+			}
+			
+			if (isset(self::$$type)) self::${$type}[] = $email;
+		}
 	}
 
 	private static function setSubject($subject) {

@@ -65,7 +65,7 @@ class PostsController extends BaseController {
 		$post->save();
 
 		$this->updateTicket($request);
-		// EmailsManager::sendPost($post->id);
+		EmailsManager::sendPost($post->id);
 		// SlackManager::sendPost($post);
 
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);

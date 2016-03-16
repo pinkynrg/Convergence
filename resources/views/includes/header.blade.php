@@ -15,10 +15,10 @@
 	@if (Auth::check())
 		<div id="login_panel">
 			<div id="login_panel_thumb">				
-				<img src="{!! Auth::user()->owner->image() !!}">
+				<img src="{!! Auth::user()->owner->profile_picture() !!}">
 			</div>
 			<div id="loginfo">			
-				<div> {{ Auth::user()->owner->name() }} </div>
+				<div> <a href="{{ route('company_person.show', Auth::user()->active_contact->id) }}"> {{ Auth::user()->owner->name() }} </a> </div>
 				<div> 
 					@if (Session::get('debug') == true)
 						
