@@ -1,11 +1,7 @@
-<?php echo $_SERVER['HTTP_HOST']; 
-die();
-?>
-
 <?php 
 
 // GENERAL CONFIGURATION
-define("DOMAIN", isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'],"local") !== FALSE ? $_SERVER['HTTP_HOST'] : 'local.convergence.it');
+define("DOMAIN", $_SERVER['HTTP_HOST']);
 define("PROTOCOL","http://");
 define("SITE_URL",PROTOCOL.DOMAIN);
 define("PAGINATION",50);
