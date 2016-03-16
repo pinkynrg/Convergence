@@ -35,9 +35,7 @@ class Kernel extends ConsoleKernel {
 			$myfile = fopen(STORAGE_FOLDER.DS."logs".DS."emails.log", "a+") or die("Unable to open file!");
 
 			foreach ($tickets as $ticket) {
-				try {
-					EmailsManager::sendEscalation($ticket->id);
-				}
+				EmailsManager::sendEscalation($ticket->id);
 			}
 			
 			fclose($myfile);
