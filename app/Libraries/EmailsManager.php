@@ -4,6 +4,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use App\Http\Controllers\TicketsController;
 use App\Models\Ticket;
 use App\Models\Post;
+use Activity;
 use Mail;
 use HTML;
 use Auth;
@@ -27,7 +28,9 @@ class EmailsManager {
        	}
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
-		self::send();	
+		self::send();
+
+		Activity::log('Sent Emails for Post #'.$id);
 	}
 
 	public static function sendTicket($id) {
@@ -40,6 +43,8 @@ class EmailsManager {
 		self::$view = "emails/ticket";
 		self::$data['ticket'] = $ticket;
 		self::send();	
+
+		Activity::log('Sent Emails for Ticket #'.$id);
 	}
 
 	public static function sendEscalation($id) {
@@ -82,6 +87,8 @@ class EmailsManager {
 		}
 
 		self::send();
+
+		Activity::log('Sent Emails for Escalating Ticket #'.$id);
 	}
 
 	private static function send() {

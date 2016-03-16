@@ -37,10 +37,6 @@ class Kernel extends ConsoleKernel {
 			foreach ($tickets as $ticket) {
 				try {
 					EmailsManager::sendEscalation($ticket->id);
-					fwrite($myfile, "[".date("Y-m-d H:i:s")."] Escalation email sent for ticket #".$ticket->id."\n");
-				}
-				catch (\Exception $e) {
-					fwrite($myfile, "[".date("Y-m-d H:i:s")."] Error: Escalation email for ticket #".$ticket->id." not sent: ".$e->getMessage()."\n");
 				}
 			}
 			
