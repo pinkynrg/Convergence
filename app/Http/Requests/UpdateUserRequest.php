@@ -28,7 +28,7 @@ class UpdateUserRequest extends Request {
 	public function rules()
 	{
 		return [
-            'password' => 'required|string',
+            'password' => 'required|password|string',
             'password2' => 'required|string|same:password',
 		];
 	}

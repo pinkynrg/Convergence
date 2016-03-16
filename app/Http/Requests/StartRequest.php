@@ -38,7 +38,7 @@ class StartRequest extends Request {
 	        }
 	    }
 
-		if (!Session::get('password')) {
+		if (!Session::get('start_session.safe_enough')) {
 		    $rules['password'] = 'required|password';
 			$rules['password2'] = 'required|same:password';
 		}

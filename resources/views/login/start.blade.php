@@ -32,7 +32,7 @@
 		</div>
 
 
-		<div class="alert alert-warning info_start" role="info"> 
+		<div class="alert alert-info info_start" role="info"> 
 			<div> <i class="fa fa-info-circle"></i>
 				Please fill out necessary information for each tab below ~ OR ~ use the same informations for all you contacts by checking `Use info for all`
 			</div>
@@ -154,7 +154,7 @@
 			</div>
 		</div>
 
-		@if (!Session::get('password'))
+		@if (!Session::get('start_session.safe_enough'))
 
 			<hr>
 
