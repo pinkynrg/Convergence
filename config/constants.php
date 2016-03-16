@@ -1,3 +1,7 @@
+<?php echo $_SERVER['HTTP_HOST']; 
+die();
+?>
+
 <?php 
 
 // GENERAL CONFIGURATION
