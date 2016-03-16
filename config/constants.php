@@ -1,7 +1,7 @@
 <?php 
 
 // GENERAL CONFIGURATION
-define("DOMAIN", $_SERVER['HTTP_HOST']);
+define("DOMAIN", env('APP_URL'));
 define("PROTOCOL","http://");
 define("SITE_URL",PROTOCOL.DOMAIN);
 define("PAGINATION",50);

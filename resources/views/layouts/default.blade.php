@@ -38,6 +38,7 @@
 				<div class="col-lg-3 col-sm-2 col-ms-1 col-xs-0"></div>
 				<div class="col-lg-3 col-sm-4 col-ms-5 col-xs-12 form-group">
 					<input id="search_field" type="text" columns="{{$active_search}}" class="form-control search" placeholder="search">
+					<span id="searchclear" class="glyphicon glyphicon-remove-circle"></span>
 				</div>
 			@endif
 

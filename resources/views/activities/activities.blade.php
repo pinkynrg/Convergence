@@ -7,7 +7,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="activity_log.created_at" weight="0" type="asc">Time</th>
+				<th column="activity_log.created_at" weight="0" type="desc">Time</th>
 				<th column="users.username">User</th>
 				<th column="activity_log.text">Text</th>
 				<th column="activity_log.ip_address">IP Address</th>

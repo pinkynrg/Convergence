@@ -852,7 +852,7 @@ $(".pagination").rPage();
 if (true) {
 
 	// trigger ajax request when searching
-	$("input[type='text'].search").on("keyup", function () {
+	$("input[type='text'].search").bind("keyup change", function () {
 		var $target = $(this).closest("div[ajax-route]");
 
 		clearTimeout(search_timeout);
@@ -860,6 +860,10 @@ if (true) {
 		search_timeout = setTimeout(function () {
 			ajaxUpdate($target);
 		},1000);
+	});
+
+	$("#searchclear").click(function(){
+    	$("#search_field").val('');
 	});
 
 	// trigger ajax request when filtering

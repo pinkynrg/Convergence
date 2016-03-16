@@ -9,12 +9,12 @@
 			<tr class="orderable">
 				<th column="companies.name" weight="0" type="asc">Company</th>
 				<th column="account_managers.last_name" class="hidden-xs hidden-ms">Account Manager</th>
-				<th column="people.last_name" class="hidden-xs hidden-ms">Main Contact Name</th>
-				<th column="company_person.cellphone" class="hidden-xs hidden-ms">Main Contact Phone</th>
-				<th column="company_person.country" class="hidden-xs hidden-ms">Country</th>
-				<th column="company_person.city" class="hidden-xs hidden-ms">City</th>
-				<th column="company_person.created_at" class="hidden-xs hidden-ms">Created</th>
-				<th column="company_person.updated_at" class="hidden-xs hidden-ms">Updated</th>
+				<th column="main_contacts.last_name" class="hidden-xs hidden-ms">Main Contact Name</th>
+				<th column="company_person_main_contacts.cellphone" class="hidden-xs hidden-ms">Main Contact Phone</th>
+				<th column="companies.country" class="hidden-xs hidden-ms">Country</th>
+				<th column="companies.city" class="hidden-xs hidden-ms">City</th>
+				<th column="companies.created_at" class="hidden-xs hidden-ms">Created</th>
+				<th column="companies.updated_at" class="hidden-xs hidden-ms">Updated</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -42,7 +42,7 @@
 
 					<td class="hidden-xs hidden-ms"> {!! isset($company->main_contact->main_contact_id) ? $company->main_contact->company_person->cellphone() : '' !!} </td>
 					<td class="hidden-xs hidden-ms"> {{ $company->country }} </td>
-					<td class="hidden-xs hidden-ms"> {{ $company->zip_code }} </td>
+					<td class="hidden-xs hidden-ms"> {{ $company->city }} </td>
 					<td class="hidden-xs hidden-ms"> {{ $company->date("created_at") }} </td>
 					<td class="hidden-xs hidden-ms"> {{ $company->date("updated_at") }} </td>
 				</tr>

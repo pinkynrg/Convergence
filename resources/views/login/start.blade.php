@@ -162,7 +162,7 @@
 
 			<div class="alert alert-danger info_start" role="info"> 
 				<div> <i class="fa fa-info-circle"></i>
-					Your current password is not safe. Please make sure to pick a password that respects the new safety requirments. 
+					Your current password is not safe. The password must contain a lower case character, an upper case character, at least a digit and it has to be at least 10 characters.
 				</div>
 			</div>
 
