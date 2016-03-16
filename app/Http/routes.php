@@ -188,6 +188,9 @@ Route::group(array('middleware' => 'auth'), function() {
 	Route::get('contacts/{id}/contactTickets', ['uses' => 'CompanyPersonController@contactTickets', 'as' => 'company_person.contact_tickets']);
 	Route::get('contacts/{id}/companyTickets', ['uses' => 'CompanyPersonController@companyTickets', 'as' => 'company_person.company_tickets']);
 
+	// activities routes
+	Route::get('activities',['uses' => 'ActivitiesController@index', 'as' => 'activities.index']);
+
 	//charts
 	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);
 	Route::match(['get'], 'dashboard/{contact_id}', ['uses' => 'DashboardController@dashboardContact', 'as' => 'dashboard.show']);

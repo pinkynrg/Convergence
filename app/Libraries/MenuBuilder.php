@@ -19,7 +19,8 @@ class MenuBuilder {
 					['type'=>'item','label'=>'Users','icon'=>USERS_ICON,'link'=>route('users.index'),'show'=>Auth::user()->can('read-all-user')],
 					['type'=>'item','label'=>'Equipment','icon'=>EQUIPMENT_ICON,'link'=>route('equipment.index'),'show'=>Auth::user()->can('read-all-equipment')],
 					['type'=>'item','label'=>'Services','icon'=>SERVICES_ICON,'link'=>route('services.index'),'show'=>Auth::user()->can('read-all-service')],
-					['type'=>'item','label'=>'Escalation Profiles','icon'=>ESCALATIONS_ICON,'link'=>route('escalation_profiles.index'),'show'=>Auth::user()->can('read-all-escalation-profiles')]
+					['type'=>'item','label'=>'Escalation Profiles','icon'=>ESCALATIONS_ICON,'link'=>route('escalation_profiles.index'),'show'=>Auth::user()->can('read-all-escalation-profiles')],
+					['type'=>'item','label'=>'Activities','icon'=>ACTIVITIES_ICON,'link'=>route('activities.index'),'show'=>Auth::user()->can('read-all-activity')]
 
 				]],
 				['type'=>'group','label'=>'Access','icon'=>ACCESS_ICON,'menu'=>[

@@ -381,7 +381,7 @@ class Permissions extends BaseClass {
 
 			$counter = 1;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
+			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles','activity'];
 			$actions = ['create','read','read-all','update','delete'];
 
 			foreach ($targets as $target) {
@@ -437,7 +437,7 @@ class Roles extends BaseClass {
 
 			$counter = 1;
 
-			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
+			$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles','activity'];
 			$actions = ['viewer','manager','operator'];
 
 			foreach ($targets as $target) {
@@ -469,7 +469,7 @@ class PermissionRole extends BaseClass {
 
 	public function importSelf() {
 
-		$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles'];
+		$targets = ['permission','role','group','group-type','ticket','contact','user','equipment','company','post','person','service','escalation-profiles','activity'];
 		$role_types = ['viewer','manager','operator'];
 
 		if ($this->truncate()) {
@@ -613,7 +613,7 @@ class GroupRole extends BaseClass {
 		if ($this->truncate()) {
 
 			$group_roles = [
-				1 => array(2,5,8,11,14,17,20,23,26,29,32,35,38), 		// all managers roles
+				1 => array(2,5,8,11,14,17,20,23,26,29,32,35,38,41), 	// all managers roles
 				2 => array(15,18,21,24,27,30),							// ticket operator, post operator, contact operator, user operator, equipment operator, company operator, post operator
 				3 => array(13,28), 										// can only view tickets and posts
 				10 => array(15,30),										// is only ticket, post operator
