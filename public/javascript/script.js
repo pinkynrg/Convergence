@@ -573,7 +573,7 @@ var  updateRowLevel = function() {
 	var counter = 0;
 	$(".escalation_event_form").each(function () {
 		// update label row
-		$(this).find(".escalation_level").html("Event #"+parseInt(counter+1));
+		$(this).find(".escalation_level").html("<i class='fa fa-plus-square'></i> Event #"+parseInt(counter+1));
 		// update form fields ids
 		
 		$(this).find(".level_id").attr("name", "level_id["+counter+"]");
@@ -1243,7 +1243,7 @@ if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") 
 		consoleLog("added escalation event");
 		var form = $(".escalation_event_form").first().clone();
 		$(".escalation_event_form").last().after(form);
-		form.find('.bootstrap-select .dropdown-toggle').remove();
+		form.find('.bootstrap-select').remove();
 		form.find("option").prop("selected", false);
         form.find('select').selectpicker();
 		updateRowLevel();
@@ -1252,8 +1252,19 @@ if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") 
 	$(".delete_escalation_event").live("click", function () {
 		consoleLog("delete escalation event");
 		if ($(".escalation_event_form").length > 1) {
-			$(this).closest('tr').remove();
+			$(this).closest('tbody').remove();
 			updateRowLevel();
+		}
+	});
+
+	$(".escalation_level").live("click", function () {
+		consoleLog("expanded");
+		var $target = $(this).closest('tbody').find('.email_text');
+		if ($target.is(":visible")) {
+			$target.hide();
+		}
+		else {
+			$target.show();
 		}
 	});
 }

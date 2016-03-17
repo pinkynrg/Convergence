@@ -20,6 +20,7 @@ class CreateEscalationProfileEventTable extends Migration {
 			$table->string('event_id');
 			$table->integer('priority_id')->unsigned();
 			$table->integer('delay_time')->unsigned();
+			$table->text('email_text')->nullable();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->softDeletes();

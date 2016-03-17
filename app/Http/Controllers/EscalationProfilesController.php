@@ -52,6 +52,7 @@ class EscalationProfilesController extends BaseController {
 					$data['escalation_profile_events']['event_id'][$key] = explode(",",$escalation_profile_event->event_id);
 					$data['escalation_profile_events']['level_id'][$key] = $escalation_profile_event->level_id;
 					$data['escalation_profile_events']['priority_id'][$key] = $escalation_profile_event->priority_id;
+					$data['escalation_profile_events']['email_text'][$key] = $escalation_profile_event->email_text;
 				}
 			}
 			else {
@@ -68,7 +69,7 @@ class EscalationProfilesController extends BaseController {
 
 			$num = $num > 0 ? $num : 3;
 
-			$data['rows'] = $count > 0 ? $num < $count ? $count : $num : $num;
+			$data['rows'] = $count > 0 ? $count > $num ? $count : $num : $num;
 
 			return view('escalation_profiles/show',$data);
 		}
@@ -118,7 +119,8 @@ class EscalationProfilesController extends BaseController {
 						'level_id' => $request->get("level_id")[$k],
 						'delay_time' => $request->get("delay_time")[$k], 
 					   	'event_id' => implode(",",$request->get("event_id")[$k]),
-				   		'priority_id' => $request->get("priority_id")[$k]];
+				   		'priority_id' => $request->get("priority_id")[$k],
+				   		'email_text' => $request->get("email_text")[$k]];
 		}
 
 		DB::table('escalation_profile_event')->insert($data);

@@ -47,15 +47,17 @@
 			{!! Form::hidden("num", $rows, array('id' => "num")) !!}
 
 			<table id="escalation_events_table" class="table">
-			
-				<tr>
-					<th></th>
-					<th>Level</th>
-					<th>Time Limit</th>
-					<th>Priority</th>
-					<th>Target</th>
-					<th></th>
-				</tr>
+				
+				<thead>
+					<tr>
+						<th></th>
+						<th>Level</th>
+						<th>Time Limit</th>
+						<th>Priority</th>
+						<th>Target</th>
+						<th></th>
+					</tr>
+				</thead>
 
 				@for ($k=0; $k<$rows; $k++)
 					@include("escalation_profiles.form_event",["counter" => $k])
