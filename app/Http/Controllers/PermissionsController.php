@@ -31,9 +31,12 @@ class PermissionsController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['permission'] = Permission::find($id);
-		$data['title'] = "Update Permission \"".$data['permission']->display_name."\"";
-		return view('permissions/edit',$data);
+		if (Auth::user()->can('update-permission')) {
+			$data['permission'] = Permission::find($id);
+			$data['title'] = "Update Permission \"".$data['permission']->display_name."\"";
+			return view('permissions/edit',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to permissions edit page']);
 	}
 
 	public function update($id, UpdatePermissionRequest $request) {
@@ -43,8 +46,11 @@ class PermissionsController extends BaseController {
 	}
 
 	public function create() {
-		$data['title'] = "Create Permission";
-		return view('permissions/create',$data);
+		if (Auth::user()->can('create-permission')) {
+			$data['title'] = "Create Permission";
+			return view('permissions/create',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to permissions create page']);
 	}
 
 	public function store(CreatePermissionRequest $request) {

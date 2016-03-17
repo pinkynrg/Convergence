@@ -42,21 +42,25 @@ class CompaniesController extends BaseController {
     }
 
 	public function create() {
-        $data['titles'] = Title::orderBy("name")->get();
-        $data['departments'] = Department::orderBy("name")->get();
-        $data['support_types'] = SupportType::orderBy("name")->get();
-        $data['connection_types'] = ConnectionType::orderBy("name")->get();
-        $data['group_types'] = GroupType::orderBy("name")->get();
-        $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
-        $data['account_managers'] = CompanyPersonController::API()->all([
-            "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|7"], 
-            "order" => ["people.last_name|ASC","people.first_name|ASC"], 
-            "paginate" => "false"
-        ]);
+        if (Auth::user()->can('create-company')) {
+            
+            $data['titles'] = Title::orderBy("name")->get();
+            $data['departments'] = Department::orderBy("name")->get();
+            $data['support_types'] = SupportType::orderBy("name")->get();
+            $data['connection_types'] = ConnectionType::orderBy("name")->get();
+            $data['group_types'] = GroupType::orderBy("name")->get();
+            $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
+            $data['account_managers'] = CompanyPersonController::API()->all([
+                "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|7"], 
+                "order" => ["people.last_name|ASC","people.first_name|ASC"], 
+                "paginate" => "false"
+            ]);
 
-        $data['title'] = "Create Company";
+            $data['title'] = "Create Company";
 
-		return view('companies/create', $data);
+    		return view('companies/create', $data);
+        }
+        else return redirect()->back()->withErrors(['Access denied to companies create page']);      
 	}
 
 	public function store(CreateCompanyRequest $request) {
@@ -121,28 +125,32 @@ class CompaniesController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['company'] = Company::find($id);
-        
-        $selected_account_manager = CompanyAccountManager::where('company_id','=',$id)->first();
-        $data['company']->account_manager_id = isset($selected_account_manager) ? $selected_account_manager->account_manager_id : null;
-        
-        $selected_main_contact = CompanyMainContact::where('company_id','=',$id)->first();
-        $data['company']->main_contact_id = isset($selected_main_contact) ? $selected_main_contact->main_contact_id : null;
+        if (Auth::user()->can('update-company')) {
 
-        $data['account_managers'] = CompanyPersonController::API()->all([
-            "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|7"], 
-            "order" => ["people.last_name|ASC","people.first_name|ASC"], 
-            "paginate" => "false"
-        ]);
-        
-        $data['main_contacts'] = CompanyPerson::where('company_person.company_id','=',$id)->get();
-        $data['support_types'] = SupportType::orderBy("name")->get();
-        $data['connection_types'] = ConnectionType::orderBy("name")->get();
-        $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
+    		$data['company'] = Company::find($id);
+            
+            $selected_account_manager = CompanyAccountManager::where('company_id','=',$id)->first();
+            $data['company']->account_manager_id = isset($selected_account_manager) ? $selected_account_manager->account_manager_id : null;
+            
+            $selected_main_contact = CompanyMainContact::where('company_id','=',$id)->first();
+            $data['company']->main_contact_id = isset($selected_main_contact) ? $selected_main_contact->main_contact_id : null;
 
-        $data['title'] = "Edit " . $data['company']->name;
+            $data['account_managers'] = CompanyPersonController::API()->all([
+                "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|7"], 
+                "order" => ["people.last_name|ASC","people.first_name|ASC"], 
+                "paginate" => "false"
+            ]);
+            
+            $data['main_contacts'] = CompanyPerson::where('company_person.company_id','=',$id)->get();
+            $data['support_types'] = SupportType::orderBy("name")->get();
+            $data['connection_types'] = ConnectionType::orderBy("name")->get();
+            $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
 
-		return view('companies/edit',$data);
+            $data['title'] = "Edit " . $data['company']->name;
+
+    		return view('companies/edit',$data);
+        }
+        else return redirect()->back()->withErrors(['Access denied to companies edit page']);      
 	}
 
 	public function update($id, UpdateCompanyRequest $request) {

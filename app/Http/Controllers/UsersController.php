@@ -21,19 +21,22 @@ class UsersController extends BaseController {
 			$data['title'] = "Users";
 			return Request::ajax() ? view('users/users',$data) : view('users/index',$data);
         }
-        else return redirect()->back()->withErrors(['Access denied to users index page']);		
+        else return redirect()->back()->withErrors(['Access denied to users index page']);
 	}
 
 	public function create($id=null) {
-		$data['title'] = "Create User";
-		$data['user'] = new User();
-		$data['user']->person_id = $id;
-		$people = Person::select("people.*");
-		$people->leftJoin('users','users.person_id','=','people.id');
-		$people->whereNull('users.id');
-		$people->orderBy('people.last_name');
-		$data['people'] = $people->get();
-		return view('users/create', $data);	
+		if (Auth::user()->can('create-user')) {
+			$data['title'] = "Create User";
+			$data['user'] = new User();
+			$data['user']->person_id = $id;
+			$people = Person::select("people.*");
+			$people->leftJoin('users','users.person_id','=','people.id');
+			$people->whereNull('users.id');
+			$people->orderBy('people.last_name');
+			$data['people'] = $people->get();
+			return view('users/create', $data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to users create page']);
 	}
 
 	public function store(CreateUserRequest $request) {
@@ -48,10 +51,13 @@ class UsersController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['user'] = User::find($id);
-		$data['title'] = "Edit User of ".$data['user']->owner->name();
-		$data['user'] = User::find($id);
-		return view('users/edit', $data);	
+		if (Auth::user()->can('update-user')) {
+			$data['user'] = User::find($id);
+			$data['title'] = "Edit User of ".$data['user']->owner->name();
+			$data['user'] = User::find($id);
+			return view('users/edit', $data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to users edit page']);
 	}
 
 	public function update($id, UpdateUserRequest $request) {

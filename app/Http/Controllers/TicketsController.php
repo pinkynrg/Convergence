@@ -127,68 +127,75 @@ class TicketsController extends BaseController {
 	}
 
 	public function create() {
+		if (Auth::user()->can('create-ticket')) {
 
-		$data['ticket'] = self::API()->getDraft();
-		$data['priorities'] = Priority::orderBy('id','desc')->get();
-		$data['divisions'] = Division::orderBy('name')->get();
-		$data['job_types'] = JobType::orderBy('name')->get();
-		$data['levels'] = Level::orderBy('name')->get();
-		
-		$data['assignees'] = CompanyPersonController::API()->all([
-			"where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], 
-			"order" => ["people.last_name|ASC","people.first_name|ASC"], 
-			"paginate" => 'false'
-		]);
+			$data['ticket'] = self::API()->getDraft();
+			$data['priorities'] = Priority::orderBy('id','desc')->get();
+			$data['divisions'] = Division::orderBy('name')->get();
+			$data['job_types'] = JobType::orderBy('name')->get();
+			$data['levels'] = Level::orderBy('name')->get();
+			
+			$data['assignees'] = CompanyPersonController::API()->all([
+				"where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], 
+				"order" => ["people.last_name|ASC","people.first_name|ASC"], 
+				"paginate" => 'false'
+			]);
 
-		$data['companies'] = CompaniesController::API()->all([
-			'where' => ['companies.id|!=|'.ELETTRIC80_COMPANY_ID],
-			'order' => ['companies.name|ASC'],
-			'paginate' => 'false'
-		]);
+			$data['companies'] = CompaniesController::API()->all([
+				'where' => ['companies.id|!=|'.ELETTRIC80_COMPANY_ID],
+				'order' => ['companies.name|ASC'],
+				'paginate' => 'false'
+			]);
 
-        $data['title'] = "Create Ticket";
+	        $data['title'] = "Create Ticket";
 
-		return view('tickets/create', $data);
+			return view('tickets/create', $data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to tickets create page']);	
 	}
 
 	public function edit($id)
 	{
-		$data['ticket'] = self::API()->find(['id'=>$id]);
+		if (Auth::user()->can('update-ticket')) {
 
-		$temp = DB::table("ticket_links")->where("ticket_id","=",$id)->get();
-		foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
-		$data['ticket']['linked_tickets_id'] = isset($links) ? implode(",",$links) : '';
+			$data['ticket'] = self::API()->find(['id'=>$id]);
 
-		$data['companies'] = Company::where('id','!=',ELETTRIC80_COMPANY_ID)->orderBy('name')->get();
-		$data['priorities'] = Priority::orderBy('id','desc')->get();
-		$data['divisions'] = Division::orderBy('name')->get();
-		$data['job_types'] = JobType::orderBy('name')->get();
-		$data['levels'] = Level::orderBy('name')->get();
-		
-		$data['assignees'] = CompanyPersonController::API()->all(
-			["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], 
-			"order" => ["people.last_name|ASC","people.first_name|ASC"], 
-			"paginate" => "false"
-		]);
+			$temp = DB::table("ticket_links")->where("ticket_id","=",$id)->get();
+			foreach ($temp as $elem) $links[] = $elem->linked_ticket_id;
+			$data['ticket']['linked_tickets_id'] = isset($links) ? implode(",",$links) : '';
 
-		$data['companies'] = CompaniesController::API()->all([
-			'where' => ['companies.id|!=|'.ELETTRIC80_COMPANY_ID],
-			'order' => ['companies.name|ASC'],
-			'paginate' => 'false'
-		]);
+			$data['companies'] = Company::where('id','!=',ELETTRIC80_COMPANY_ID)->orderBy('name')->get();
+			$data['priorities'] = Priority::orderBy('id','desc')->get();
+			$data['divisions'] = Division::orderBy('name')->get();
+			$data['job_types'] = JobType::orderBy('name')->get();
+			$data['levels'] = Level::orderBy('name')->get();
+			
+			$data['assignees'] = CompanyPersonController::API()->all(
+				["where" => ["companies.id|=|".ELETTRIC80_COMPANY_ID], 
+				"order" => ["people.last_name|ASC","people.first_name|ASC"], 
+				"paginate" => "false"
+			]);
+
+			$data['companies'] = CompaniesController::API()->all([
+				'where' => ['companies.id|!=|'.ELETTRIC80_COMPANY_ID],
+				'order' => ['companies.name|ASC'],
+				'paginate' => 'false'
+			]);
 
 
-		$data['tags'] = "";
+			$data['tags'] = "";
 
-		foreach ($data['ticket']->tags as $tag) {
-			$data['tags'] .= $tag->name.",";
+			foreach ($data['ticket']->tags as $tag) {
+				$data['tags'] .= $tag->name.",";
+			}
+
+			$is_draft = $data['ticket']->status_id == TICKET_DRAFT_STATUS_ID ? true : false;
+
+	        $data['title'] = "Edit Ticket #".$id;
+
+			return view('tickets/edit',$data);
 		}
-
-		$is_draft = $data['ticket']->status_id == TICKET_DRAFT_STATUS_ID ? true : false;
-
-        $data['title'] = "Edit Ticket #".$id;
-
-		return view('tickets/edit',$data);
+		else return redirect()->back()->withErrors(['Access denied to tickets edit page']);	
 	}
 
 	public function draft(UpdateTicketDraftRequest $request) 

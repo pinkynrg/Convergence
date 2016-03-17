@@ -60,9 +60,12 @@ class RolesController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['role'] = Role::find($id);
-		$data['title'] = "Update Role \"".$data['role']->display_name."\"";
-		return view('roles/edit',$data);
+		if (Auth::user()->can('update-role')) {
+			$data['role'] = Role::find($id);
+			$data['title'] = "Update Role \"".$data['role']->display_name."\"";
+			return view('roles/edit',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to roles edit page']);
 	}
 
 	public function update($id, UpdateRoleRequest $request) {
@@ -72,8 +75,11 @@ class RolesController extends BaseController {
 	}
 
 	public function create() {
-		$data['title'] = "Create Role";
-		return view('roles/create',$data);
+		if (Auth::user()->can('create-role')) {
+			$data['title'] = "Create Role";
+			return view('roles/create',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to roles create page']);
 	}
 
 	public function store(CreateRoleRequest $request) {

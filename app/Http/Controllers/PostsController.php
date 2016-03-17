@@ -26,9 +26,12 @@ class PostsController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['post'] = Post::find($id);
-		$data['title'] = "Edit Post";
-		return view('posts/edit',$data);
+		if (Auth::user()->can('update-post')) {
+			$data['post'] = Post::find($id);
+			$data['title'] = "Edit Post";
+			return view('posts/edit',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to posts edit page']);
 	}
 
 	public function draft(UpdatePostDraftRequest $request) 

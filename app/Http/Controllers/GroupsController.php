@@ -60,10 +60,13 @@ class GroupsController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['group'] = Group::find($id);
-		$data['group_types'] = GroupType::orderBy("name")->get();
-		$data['title'] = "Update Group \"".$data['group']->display_name."\"";
-		return view('groups/edit',$data);
+		if (Auth::user()->can('update-group')) {
+			$data['group'] = Group::find($id);
+			$data['group_types'] = GroupType::orderBy("name")->get();
+			$data['title'] = "Update Group \"".$data['group']->display_name."\"";
+			return view('groups/edit',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to groups edit page']);
 	}
 
 	public function update($id, UpdateGroupRequest $request) {
@@ -73,9 +76,12 @@ class GroupsController extends BaseController {
 	}
 
 	public function create() {
-		$data['title'] = "Create Group";
-		$data['group_types'] = GroupType::orderBy("name")->get();
-		return view('groups/create',$data);
+		if (Auth::user()->can('create-group')) {
+			$data['title'] = "Create Group";
+			$data['group_types'] = GroupType::orderBy("name")->get();
+			return view('groups/create',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to groups create page']);
 	}
 
 	public function store(CreateGroupRequest $request) {

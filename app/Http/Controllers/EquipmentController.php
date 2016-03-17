@@ -34,11 +34,14 @@ class EquipmentController extends BaseController {
 	}
 
 	public function create($id) {
-        $data['title'] = "Create Equipment";
-        $data['equipment_types'] = EquipmentType::orderBy("name")->get();
-        $data['company'] = Company::find($id);
-		$data['company']->company_id = $data['company']->id;
-		return view('equipment/create', $data);	
+		if (Auth::user()->can('create-equipment')) {
+	        $data['title'] = "Create Equipment";
+	        $data['equipment_types'] = EquipmentType::orderBy("name")->get();
+	        $data['company'] = Company::find($id);
+			$data['company']->company_id = $data['company']->id;
+			return view('equipment/create', $data);	
+		}
+		else return redirect()->back()->withErrors(['Access denied to equipment create page']);
 	}
 
 	public function store(CreateEquipmentRequest $request) {
@@ -49,12 +52,15 @@ class EquipmentController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['equipment'] = Equipment::find($id);
-		$data['title'] = $data['equipment']->company->name." - Equipment ".$data['equipment']->name;
-        $data['equipment_types'] = EquipmentType::orderBy("name")->get();
-        $data['company'] = Company::find($data['equipment']->company_id);
-		$data['company']->company_id = $data['company']->id;
-		return view('equipment/edit',$data);
+		if (Auth::user()->can('update-equipment')) {
+			$data['equipment'] = Equipment::find($id);
+			$data['title'] = $data['equipment']->company->name." - Equipment ".$data['equipment']->name;
+	        $data['equipment_types'] = EquipmentType::orderBy("name")->get();
+	        $data['company'] = Company::find($data['equipment']->company_id);
+			$data['company']->company_id = $data['company']->id;
+			return view('equipment/edit',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to equipment edit page']);
 	}
 
 	public function update($id, UpdateEquipmentRequest $request) {

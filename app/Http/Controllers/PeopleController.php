@@ -26,9 +26,12 @@ class PeopleController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['person'] = Person::find($id);
-		$data['title'] = $data['person']->name() . " - Edit";
-		return view('people/edit', $data);	
+		if (Auth::user()->can('update-person')) {
+			$data['person'] = Person::find($id);
+			$data['title'] = $data['person']->name() . " - Edit";
+			return view('people/edit', $data);	
+		}
+		else return redirect()->back()->withErrors(['Access denied to people edit page']);
 	}
 
 	public function update($id, UpdatePersonRequest $request) {

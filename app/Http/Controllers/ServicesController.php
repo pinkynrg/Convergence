@@ -34,36 +34,38 @@ class ServicesController extends BaseController {
     }
 
 	public function create($id, $tech_number = 1) {
-        $data['title'] = $tech_number == 1 ? "Create Service ~ ".$tech_number." technician" : "Create Service ~ ".$tech_number." technicians";
-        $data['companies'] = Company::all();
-        $data['company_id'] = $id;
-        
-        $data['contacts'] = CompanyPersonController::API()->all([
-            "where" => ["company_person.company_id|=|".$id], 
-            "order" => ["people.last_name|ASC","people.first_name|ASC"], 
-            "paginate" => "false"
-        ]);
-        
-        $data['technicians'] = CompanyPersonController::API()->all([
-            "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID], 
-            "order" => ["people.last_name|ASC","people.first_name|ASC"], 
-            "paginate" => "false"
-        ]);
+        if (Auth::user()->can('create-service')) {
+            $data['title'] = $tech_number == 1 ? "Create Service ~ ".$tech_number." technician" : "Create Service ~ ".$tech_number." technicians";
+            $data['companies'] = Company::all();
+            $data['company_id'] = $id;
+            
+            $data['contacts'] = CompanyPersonController::API()->all([
+                "where" => ["company_person.company_id|=|".$id], 
+                "order" => ["people.last_name|ASC","people.first_name|ASC"], 
+                "paginate" => "false"
+            ]);
+            
+            $data['technicians'] = CompanyPersonController::API()->all([
+                "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID], 
+                "order" => ["people.last_name|ASC","people.first_name|ASC"], 
+                "paginate" => "false"
+            ]);
 
-        $data['divisions'] = Division::orderBy("name")->get();
-        $data['hotels'] = Hotel::where('company_id',$id)->orderBy("name")->get();
+            $data['divisions'] = Division::orderBy("name")->get();
+            $data['hotels'] = Hotel::where('company_id',$id)->orderBy("name")->get();
 
-        $tech_number = $tech_number < 1 ? 1 : $tech_number;
-        $tech_number = $tech_number > 5 ? 5 : $tech_number;
+            $tech_number = $tech_number < 1 ? 1 : $tech_number;
+            $tech_number = $tech_number > 5 ? 5 : $tech_number;
 
-        $data['technician_number'] = $tech_number;
+            $data['technician_number'] = $tech_number;
 
-        foreach ($data['hotels'] as &$hotel) {
-            $hotel['name_address'] = $hotel['name']." @ ".$hotel['address'];
+            foreach ($data['hotels'] as &$hotel) {
+                $hotel['name_address'] = $hotel['name']." @ ".$hotel['address'];
+            }
+
+            return view('services/create', $data);
         }
-
-        return view('services/create', $data);  
-
+        else return redirect()->back()->withErrors(['Access denied to service create page']);
     }
 
     public function store(CreateServiceRequest $request) {

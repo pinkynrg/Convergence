@@ -32,9 +32,12 @@ class GroupTypesController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['group_type'] = GroupType::find($id);
-		$data['title'] = "Update Group Type \"".$data['group_type']->display_name."\"";
-		return view('group_types/edit',$data);
+		if (Auth::user()->can('update-group-type')) {
+			$data['group_type'] = GroupType::find($id);
+			$data['title'] = "Update Group Type \"".$data['group_type']->display_name."\"";
+			return view('group_types/edit',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to group types edit page']);
 	}
 
 	public function update($id, UpdateGroupTypeRequest $request) {
@@ -44,8 +47,11 @@ class GroupTypesController extends BaseController {
 	}
 
 	public function create() {
-		$data['title'] = "Create Group Type";
-		return view('group_types/create',$data);
+		if (Auth::user()->can('create-group-type')) {
+			$data['title'] = "Create Group Type";
+			return view('group_types/create',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to group types create page']);
 	}
 
 	public function store(CreateGroupTypeRequest $request) {

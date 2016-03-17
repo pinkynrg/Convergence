@@ -18,10 +18,13 @@ class TicketRequestsController extends Controller {
 	];
 
 	public function create() {
-		$data['ticket'] = TicketsController::API()->getDraft();
-		$data['questions'] = $this->questions;
-	    $data['title'] = "Create Ticket Request";
-		return view('tickets/request', $data);
+		if (Auth::user()->can('create-ticket')) {
+			$data['ticket'] = TicketsController::API()->getDraft();
+			$data['questions'] = $this->questions;
+	    	$data['title'] = "Create Ticket Request";
+			return view('tickets/request', $data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to tickets request create page']);	
 	}
 
 	public function store(CreateTicketRequestRequest $request)

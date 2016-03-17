@@ -81,17 +81,22 @@ class CompanyPersonController extends BaseController {
 	}
 
 	public function create($id = null) {
-        $data['contact'] = [];
-        $data['contact']['company_id'] = $id;
-		$data['titles'] = Title::orderBy("name")->get();
-		$data['departments'] = Department::orderBy("name")->get();
-		$data['companies'] = Company::orderBy("name")->get();
-		$data['group_types'] = GroupType::orderBy("name")->get();
-		$data['divisions'] = Division::orderBy("name")->get();
+		if (Auth::user()->can('create-contact')) {
 
-		$data['title'] = "Create Contact";
+	        $data['contact'] = [];
+	        $data['contact']['company_id'] = $id;
+			$data['titles'] = Title::orderBy("name")->get();
+			$data['departments'] = Department::orderBy("name")->get();
+			$data['companies'] = Company::orderBy("name")->get();
+			$data['group_types'] = GroupType::orderBy("name")->get();
+			$data['divisions'] = Division::orderBy("name")->get();
 
-		return view('company_person/create', $data);	
+			$data['title'] = "Create Contact";
+
+			return view('company_person/create', $data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to contacts create page']);
+
 	}
 
 	public function store(CreateCompanyPersonRequest $request) {
@@ -121,16 +126,20 @@ class CompanyPersonController extends BaseController {
 	}	
 
 	public function edit($id) {
-		$data['title'] = "Edit Contact";
-		$company_person = CompanyPerson::find($id);
-		$data['titles'] = Title::orderBy("name")->get();
-		$data['departments'] = Department::orderBy("name")->get();
-		$data['companies'] = Company::orderBy("name")->get();
-		$data['contact'] = CompanyPerson::find($id);
-		$data['divisions'] = Division::orderBy("name")->get();
-		$data['groups'] = Group::where("group_type_id","=",$company_person->group_type_id)->orderBy("name")->get();
+		if (Auth::user()->can('update-contact')) {
 
-		return view('company_person/edit', $data);	
+			$data['title'] = "Edit Contact";
+			$company_person = CompanyPerson::find($id);
+			$data['titles'] = Title::orderBy("name")->get();
+			$data['departments'] = Department::orderBy("name")->get();
+			$data['companies'] = Company::orderBy("name")->get();
+			$data['contact'] = CompanyPerson::find($id);
+			$data['divisions'] = Division::orderBy("name")->get();
+			$data['groups'] = Group::where("group_type_id","=",$company_person->group_type_id)->orderBy("name")->get();
+
+			return view('company_person/edit', $data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to contacts edit page']);
 	}	
 
 	public function update($id, UpdateCompanyPersonRequest $request) {

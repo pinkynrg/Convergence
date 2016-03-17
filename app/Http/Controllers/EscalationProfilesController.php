@@ -76,9 +76,12 @@ class EscalationProfilesController extends BaseController {
 	}
 
 	public function edit($id) {
-		$data['title'] = "Update Esclation Profile";
-		$data['escalation_profile'] = EscalationProfile::find($id);
-		return view('escalation_profiles/edit',$data);
+		if (Auth::user()->can('update-escalation-profiles')) {
+			$data['title'] = "Update Esclation Profile";
+			$data['escalation_profile'] = EscalationProfile::find($id);
+			return view('escalation_profiles/edit',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to esclation profiles edit page']);
 	}
 
 	public function update($id, UpdateEscalationProfileRequest $request) {
@@ -90,12 +93,11 @@ class EscalationProfilesController extends BaseController {
 	}
 
 	public function create() {
-		$data['title'] = "Create Esclation Profile";
-		return view('escalation_profiles/create',$data);
-	}
-
-	public function destroy() {
-
+		if (Auth::user()->can('create-escalation-profiles')) {
+			$data['title'] = "Create Esclation Profile";
+			return view('escalation_profiles/create',$data);
+		}
+		else return redirect()->back()->withErrors(['Access denied to esclation profiles create page']);
 	}
 
 	public function store(CreateEscalationProfileRequest $request) {
