@@ -2751,7 +2751,7 @@ class Thumbnails extends BaseClass {
 			}
 		}
 
-		$query = "SELECT * FROM files WHERE thumbnail_id IS NULL AND resource_type NOT LIKE '%Thumbnail%'";
+		$query = "SELECT * FROM files WHERE thumbnail_id IS NULL AND file_path LIKE 'attachments'";
 		$result = mysqli_query($this->manager->conn, $query);
 		$images = mysqli_fetch_all($result,MYSQLI_BOTH);
 
@@ -2763,24 +2763,25 @@ class Thumbnails extends BaseClass {
 
 			if (!in_array($path_info['extension'],['zip','7z','rar','pam','tgz','bz2','iso','ace'])) 
 			{
-				$path = $image['file_path'].DS.$image['file_name'];
+				$path = IMAGES.DS.$image['file_path'].DS.$image['file_name'];
 			
 				if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
 				{
-					$command = "sudo timeout 120 ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DS."public".DS."tmp ".base_path().DS."public".DS.$path." > /dev/null";
+					$command = "sudo timeout 120 ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".TEMP." ".$path." > /dev/null";
 					exec($command);
-					$source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf[0]";
-					$remove_from_temp = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf";
+					$source = TEMP.DS.$path_info['filename'].".pdf[0]";
+					$remove_from_temp = TEMP.DS.$path_info['filename'].".pdf";
 				} 
 				elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
-					$command = "sudo timeout 300 ".env('FFMPEG','ffmpeg')." -i ".base_path().DS."public".DS.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png > /dev/null";
+					$command = "sudo timeout 300 ".env('FFMPEG','ffmpeg')." -i ".$path." -ss 00:00:01.000 -vframes 1 ".TEMP.DS.$path_info['filename'].".png > /dev/null";
 					exec($command);
-					$source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
-					$remove_from_temp = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
+					$source = TEMP.DS.$path_info['filename'].".png";
+					$remove_from_temp = TEMP.DS.$path_info['filename'].".png";
 				} 
 				else {
+					$command = "~";
 					$image['file_name'] .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
-					$source = base_path().DS."public".DS.$image['file_path'].DS.$image['file_name'];						
+					$source = $path;
 				}
 
 				$destination = THUMBNAILS.DS.$path_info['filename'].".png";
