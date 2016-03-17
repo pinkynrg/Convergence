@@ -20,8 +20,19 @@ class File extends CustomModel {
 
 	public function thumbnail() {
 		$file_exists = $this->thumbnail_id;
-		$thumbnail_url = DS.'files'.DS;
-		$thumbnail_url .= $file_exists ? $this->thumbnail_id : DEFAULT_MISSING_PICTURE_ID;
+		
+		if ($file_exists) {
+			$file_id = $this->thumbnail_id;
+		}
+		elseif (in_array(strtolower($this->file_extension),['rar','7z','zip'])) {
+			$file_id = COMPRESSED_FILE_PICTURE_ID;
+		}
+		else {
+			$file_id = DEFAULT_MISSING_PICTURE_ID;
+		}
+
+		$thumbnail_url = DS.'files'.DS.$file_id;
+
 		return $thumbnail_url;
 	}
 
