@@ -1906,6 +1906,8 @@ class TicketsHistroy extends BaseClass {
 					$changer = mysqli_fetch_assoc($result);
 
 					$changer_id = isset($changer) ? $changer['id'] : 'NULL';
+					$changer_id = $changer_id == 'NULL' && $t['Id_Status'] == 1 ? $ti['creator_id'] : $changer_id;
+					$changer_id = $changer_id == 'NULL' && $t['Id_Status'] != 1 ? $ti['assignee_id'] : $changer_id;
 
 					$query = "SELECT * FROM company_person WHERE email = '".trim($t['email_assignee'])."'";
 					$result = mysqli_query($this->manager->conn,$query);
@@ -1971,8 +1973,69 @@ class TicketsHistroy extends BaseClass {
 				}
 			}
 
-			// update previous id ticket history
+			// update tickets_history for tickets with no opening status = new
+			$query = "SELECT t.*
+					  FROM tickets t
+					  LEFT JOIN tickets_history th ON t.id = th.ticket_id AND th.status_id = ".TICKET_NEW_STATUS_ID."
+					  WHERE th.id IS NULL";
 
+			$result = mysqli_query($this->manager->conn,$query);
+			$records = mysqli_fetch_all($result,MYSQLI_ASSOC);
+
+			foreach ($records as $t) {
+				
+				$t = nullIt($t);
+
+				$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+						  VALUES (".$counter.",NULL,".$t['id'].",".$t['creator_id'].",".$t['title'].",".$t['post'].",".$t['post_plain_text'].",".$t['creator_id'].",".$t['assignee_id'].",".TICKET_NEW_STATUS_ID.",".$t['priority_id'].",".$t['division_id'].",".$t['equipment_id'].",".$t['company_id'].",".$t['contact_id'].",".$t['job_type_id'].",".$t['level_id'].",".$t['created_at'].",".$t['created_at'].")";
+
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					$counter++;
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			$records = [];
+
+			$query = "SELECT * FROM tickets";
+
+			$result = mysqli_query($this->manager->conn,$query);
+			$records = mysqli_fetch_all($result,MYSQLI_ASSOC);
+
+			foreach ($records as $record) {
+				$query = "SELECT (created_at  + INTERVAL 30 MINUTE) as modified_time, tickets_history.* FROM tickets_history WHERE ticket_id = ".$record['id']." ORDER BY created_at DESC LIMIT 1";
+				$result = mysqli_query($this->manager->conn,$query);
+				$th = mysqli_fetch_assoc($result);
+
+				if ($th['status_id'] != $record['status_id']) {
+					
+					$th = nullIt($th);
+
+					$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+						  VALUES (".$counter.",NULL,".$th['ticket_id'].",".$th['creator_id'].",".$th['title'].",".$th['post'].",".$th['post_plain_text'].",".$th['creator_id'].",".$th['assignee_id'].",".$record['status_id'].",".$th['priority_id'].",".$th['division_id'].",".$th['equipment_id'].",".$th['company_id'].",".$th['contact_id'].",".$th['job_type_id'].",".$th['level_id'].",".$th['modified_time'].",".$th['modified_time'].")";
+
+					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$counter++;
+						$this->successes++;
+					}
+					else {
+						$this->errors++;
+						if ($this->debug) {
+							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						}
+					}
+				}
+			}
+
+			$records = [];
+
+			// update previous id ticket history
 			$query = "SELECT * FROM tickets_history";
 
 			$result = mysqli_query($this->manager->conn,$query);
