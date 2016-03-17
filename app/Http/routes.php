@@ -15,7 +15,8 @@ Route::get('login', array('uses' => 'LoginController@showLogin', 'as' => 'login.
 Route::post('login', array('uses' => 'LoginController@doLogin', 'as' => 'login.login'));
 Route::get('logout', array('uses' => 'LoginController@doLogout', 'as' => 'login.logout'));
 Route::get('start',['uses' => 'LoginController@start', 'as' => 'login.start']);
-Route::post('start/{id}',['uses' => 'LoginController@storeInfo', 'as' => 'login.store_info']);
+Route::post('start',['uses' => 'LoginController@storeInfo', 'as' => 'login.store_info']);
+
 Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'files.show']);
 
 Route::group(array('middleware' => 'auth'), function() {

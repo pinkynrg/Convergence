@@ -32,14 +32,10 @@ class Kernel extends ConsoleKernel {
 				'paginate' => 'false'
 			]);
 
-			$myfile = fopen(STORAGE_FOLDER.DS."logs".DS."emails.log", "a+") or die("Unable to open file!");
-
 			foreach ($tickets as $ticket) {
 				EmailsManager::sendEscalation($ticket->id);
 			}
 			
-			fclose($myfile);
-
         })->everyMinute();
 	}
 }

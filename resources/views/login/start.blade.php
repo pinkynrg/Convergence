@@ -1,7 +1,7 @@
 @extends('layouts.light')
 @section('content')
 
-	{!! Form::model($profile, array('route' => array('login.store_info',$profile->id), 'files' => 'true')) !!}
+	{!! Form::model($profile, array('route' => 'login.store_info', 'files' => 'true')) !!}
 
 		<div class="alert alert-info info_start" role="info"> 
 			<div> <i class="fa fa-info-circle"></i>
