@@ -111,7 +111,7 @@ class FilesRepository
         $file = File::find($id);
         
         if (unlink($file->real_path())) {
-            $success = File::destroy($id);
+            $success = File::find($id)->forceDelete();
         }
         return $success;
     }

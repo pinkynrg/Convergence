@@ -220,7 +220,7 @@
 					@if(isset($draft_post->id))
 						<div class="alert alert-info" role="alert"> 
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<div> <i class="fa fa-info-circle"></i> This is a draft post lastly updated the {{ $draft_post->date("updated_at") }} </div>
+							<div> <i class="fa fa-info-circle"></i> This is a draft post lastly updated the {{ $draft_post->date("updated_at") }} ~ OR ~ <a class="clear_form">Clear Form</a></div>
 						</div>
 					@endif
 					

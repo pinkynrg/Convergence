@@ -134,6 +134,10 @@ input[disabled], textarea[disabled], select[disabled] {
   cursor: pointer;
 }
 
+.clear_form {
+  cursor: pointer; 
+}
+
 .email_text {
   display:none;
 }

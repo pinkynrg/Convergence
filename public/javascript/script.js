@@ -468,6 +468,27 @@ var savePostDraft = function(callback) {
 	}, 1000);
 };
 
+var clearForm = function($clicked) {
+	
+	var $form = $clicked.closest('form');
+
+	$form.find("input[type='text']").val("");
+	$form.find("select").val("");
+	$form.find("textarea").val("");
+	
+	if ($("textarea#post").length != 0) {
+		CKEDITOR.instances['post'].setData("");
+	}
+	
+	// remove attached images if any
+	var remove_links = document.getElementsByClassName("dz-remove");
+
+	for(var i = 0; i < remove_links.length; i++) {
+		remove_links.item(i).click();
+	}
+	
+}
+
 var updateContacts = function(company_id, callback) {
 	var target = $('select#fake_contact_id')
 	$.get('/API/contacts/all?where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
@@ -996,13 +1017,8 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 
 	if (url.target == "tickets" && url.target_action == "create") {
 		activateTicketDraftMode();
-	}
-	else if (url.target == "tickets" && url.target_action == "edit") {
-		$.get('/API/tickets/find?id='+url.target_id, function (data) {
-			var status_id = data.status_id;
-			if (status_id == draft_ticket_id) {
-				activateTicketDraftMode();
-			}
+		$("a.clear_form").click(function () {
+			clearForm($(this));
 		});
 	}
 }
@@ -1015,6 +1031,10 @@ if (url.target == "tickets" && url.target_action == "show") {
 
 	$("#post_form").submit(function() {
 		clearInterval(post_draft_routine);
+	});
+
+	$("a.clear_form").click(function () {
+		clearForm($(this));
 	});
 
 	if (typeof CKEDITOR.instances['post'] != 'undefined') {														// if it is supported
@@ -1052,6 +1072,14 @@ if (url.target == "ticket-requests" && url.target_action == "create") {
 		questions;
 
 	activateTicketRequestDraftMode();
+
+	$("form").submit(function() {
+		clearInterval(ticket_request_draft_routine);
+	});
+	
+	$("a.clear_form").click(function () {
+		clearForm($(this));
+	});
 
 	if ($("#post").val()) {
 		post = $("#post").val(),
