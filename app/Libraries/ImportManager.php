@@ -64,6 +64,30 @@ function htmlToText($html) {
 	return  Html2Text::convert($html);
 }
 
+function findCompanyPersonIdFromOldUserCustomerId($id,$company_id,$conn) {
+	if ($id != '0' && $id != '"0"') {
+		
+		$query = mssql_query("SELECT * FROM Customer_User_Login WHERE Customer_Id = ".$id);
+		$result = mssql_fetch_array($query, MSSQL_ASSOC);
+		
+		$username = trim($result['Customer_User']);
+		$first_name = trim($result['Customer_Name']);
+		$last_name = trim($result['Customer_Last_Name']);
+
+		$query = "SELECT cp.id FROM users u
+				  LEFT JOIN people p ON p.id = u.person_id
+				  LEFT JOIN company_person cp ON cp.person_id = p.id
+				  WHERE (username = '".$username."' OR (p.first_name = '".$first_name."' AND p.last_name = '".$last_name."')) AND
+				  cp.company_id = ".$company_id;
+
+		$result = mysqli_query($conn, $query);
+		$record = mysqli_fetch_array($result);
+
+		return $record['id'];
+	}
+
+}
+
 function findCompanyPersonId($person_id,$conn) {
 	if ($person_id != '0' && $person_id != '"0"') {
 		$query = "SELECT * FROM company_person WHERE person_id = ".$person_id;
@@ -71,6 +95,14 @@ function findCompanyPersonId($person_id,$conn) {
 		$record = mysqli_fetch_array($result);
 	}
 	return (isset($record['id']) && is_numeric($record['id'])) ? $record['id'] : 'NULL';
+}
+
+function isE80($contact_id,$conn) {
+	$query = "SELECT * FROM company_person WHERE id = ".$contact_id;
+	$result = mysqli_query($conn, $query);
+	$record = mysqli_fetch_array($result);
+
+	return $record['company_id'] == ELETTRIC80_COMPANY_ID ? true : false;
 }
 
 function findMatchingContactId($ticket) {
@@ -1624,10 +1656,19 @@ class Tickets extends BaseClass {
 		
 	public $table_name = 'tickets';
 	public $dependency_names = ['levels','company_person','statuses','priorities','divisions','equipment','companies','job_types'];
+	private $questions = [
+		"Description of the issue:",
+		"Is it the first time that you have noticed this issue? If no when did the issue start?",
+		"If it is not the first time, what frequency does the issue happen?",
+		"Was there any event that happened that triggered the issue or that happened around the time of the issue started?",
+		"What is the severity of the issue? How does it affect your operations?"
+	];
 
 	public function importSelf() {
 
-		$query = mssql_query("SELECT * FROM Tickets 
+		$query = mssql_query("SELECT Tickets.*, f.Id as fid, f.Question_01, f.Question_02, 
+							  f.Question_03, f.Question_04, f.Question_05, f.Id_Customer_User FROM Tickets 
+							  LEFT JOIN Help_Desk_Form f ON f.id = Tickets.Id_Ticket_Request
 							  WHERE Creator != 0 AND Creator IS NOT NULL
 							  AND Status != 0 AND Status IS NOT NULL
 							  AND Priority != 0 AND Priority IS NOT NULL");
@@ -1637,14 +1678,38 @@ class Tickets extends BaseClass {
 		if ($this->truncate()) {
 			foreach ($table as $t) {
 
+				$is_requesting = (!is_null($t['fid']));
+
 				$t = sanitize($t);
 
 				$t['Contact_Id'] = findMatchingContactId($t);
 				$t['Contact_Id'] = trim($t['Contact_Id']) == '' ? '' : trim($t['Contact_Id']) + CONSTANT_GAP_CONTACTS;
 				$t['Ticket_Title'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Title'])));
-				$t['Ticket_Post'] = Purifier::clean($t['Ticket_Post']);
-				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] ? htmlToText($t['Ticket_Post']) : "";
+				
+				if ($is_requesting) {
+					$ticket_post = "<p>";
+					$ticket_post .= "<b>".$this->questions[0]."</b><br>";
+					$ticket_post .= $t['Question_01']."<br><br>";
+					$ticket_post .= "<b>".$this->questions[1]."</b><br>";
+					$ticket_post .= $t['Question_02']."<br><br>";
+					$ticket_post .= "<b>".$this->questions[2]."</b><br>";
+					$ticket_post .= $t['Question_03']."<br><br>";
+					$ticket_post .= "<b>".$this->questions[3]."</b><br>";
+					$ticket_post .= $t['Question_04']."<br><br>";
+					$ticket_post .= "<b>".$this->questions[4]."</b><br>";
+					$ticket_post .= $t['Question_05']."<br><br>";
+					
+					if ($t['Ticket_Post']) {
+						$ticket_post .= "<b>Additional comment by E80:</b><br>".$t['Ticket_Post'];
+					}
 
+					$ticket_post .= "</p>";
+					$t['Ticket_Post'] = $ticket_post;
+				}
+
+				$t['Ticket_Post'] = Purifier::clean($t['Ticket_Post']);
+
+				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] ? htmlToText($t['Ticket_Post']) : "";
 				// if the post without the html tags is an empty string, use title for both rich and raw posts
 				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
 				$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
@@ -1653,7 +1718,13 @@ class Tickets extends BaseClass {
 
 				$t = nullIt($t);
 
-				$creator_id = findCompanyPersonId($t['Creator'],$this->manager->conn);
+				if ($is_requesting) {
+					$creator_id = findCompanyPersonIdFromOldUserCustomerId($t['Id_Customer_User'],$t['Id_Customer'],$this->manager->conn);
+				}
+				else {
+					$creator_id = findCompanyPersonId($t['Creator'],$this->manager->conn);
+				}
+				
 				$assignee_id = findCompanyPersonId($t['Id_Assignee'],$this->manager->conn);
 				$contact_id = findCompanyPersonId($t['Contact_Id'],$this->manager->conn);
 
@@ -1869,7 +1940,7 @@ class Posts extends BaseClass {
 	}
 }
 
-class TicketsHistroy extends BaseClass {
+class TicketsHistory extends BaseClass {
 
 	public $table_name = 'tickets_history';
 	public $dependency_names = ['tickets'];
@@ -1906,8 +1977,8 @@ class TicketsHistroy extends BaseClass {
 					$changer = mysqli_fetch_assoc($result);
 
 					$changer_id = isset($changer) ? $changer['id'] : 'NULL';
-					$changer_id = $changer_id == 'NULL' && $t['Id_Status'] == 1 ? $ti['creator_id'] : $changer_id;
-					$changer_id = $changer_id == 'NULL' && $t['Id_Status'] != 1 ? $ti['assignee_id'] : $changer_id;
+					$changer_id = $changer_id == 'NULL' && $t['Id_Status'] == TICKET_NEW_STATUS_ID ? isE80($ti['creator_id'],$this->manager->conn) ? $ti['creator_id'] : $ti['assignee_id'] : $changer_id;
+					$changer_id = $changer_id == 'NULL' && $t['Id_Status'] != TICKET_NEW_STATUS_ID ? $ti['assignee_id'] : $changer_id;
 
 					$query = "SELECT * FROM company_person WHERE email = '".trim($t['email_assignee'])."'";
 					$result = mysqli_query($this->manager->conn,$query);
@@ -1973,6 +2044,34 @@ class TicketsHistroy extends BaseClass {
 				}
 			}
 
+			$query = "SELECT (t.created_at  + INTERVAL 30 MINUTE) as modified_time, t.* FROM tickets t
+					  LEFT JOIN company_person cp ON cp.id = t.creator_id
+					  WHERE cp.company_id != 1";
+
+			$result = mysqli_query($this->manager->conn,$query);
+			$records = mysqli_fetch_all($result,MYSQLI_ASSOC);
+
+			foreach ($records as $t) {
+
+				$t = nullIt($t);
+
+				$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+						  VALUES (".$counter.",NULL,".$t['id'].",".$t['creator_id'].",".$t['title'].",".$t['post'].",".$t['post_plain_text'].",".$t['creator_id'].",0,".TICKET_REQUESTING_STATUS_ID.",0,0,0,".$t['company_id'].",".$t['contact_id'].",0,0,".$t['modified_time'].",".$t['modified_time'].")";
+
+				if (mysqli_query($this->manager->conn,$query) === TRUE) {
+					$counter++;
+					$this->successes++;
+				}
+				else {
+					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+					}
+				}
+			}
+
+			$records = [];
+
 			// update tickets_history for tickets with no opening status = new
 			$query = "SELECT t.*
 					  FROM tickets t
@@ -1986,8 +2085,10 @@ class TicketsHistroy extends BaseClass {
 				
 				$t = nullIt($t);
 
+				$creator_id = isE80($t['creator_id'],$this->manager->conn) ? $t['creator_id'] : $t['assignee_id'];
+
 				$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
-						  VALUES (".$counter.",NULL,".$t['id'].",".$t['creator_id'].",".$t['title'].",".$t['post'].",".$t['post_plain_text'].",".$t['creator_id'].",".$t['assignee_id'].",".TICKET_NEW_STATUS_ID.",".$t['priority_id'].",".$t['division_id'].",".$t['equipment_id'].",".$t['company_id'].",".$t['contact_id'].",".$t['job_type_id'].",".$t['level_id'].",".$t['created_at'].",".$t['created_at'].")";
+						  VALUES (".$counter.",NULL,".$t['id'].",".$creator_id.",".$t['title'].",".$t['post'].",".$t['post_plain_text'].",".$t['creator_id'].",".$t['assignee_id'].",".TICKET_NEW_STATUS_ID.",".$t['priority_id'].",".$t['division_id'].",".$t['equipment_id'].",".$t['company_id'].",".$t['contact_id'].",".$t['job_type_id'].",".$t['level_id'].",".$t['created_at'].",".$t['created_at'].")";
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$counter++;
@@ -2521,7 +2622,7 @@ class Attachments extends BaseClass {
 		$deleted_db = $deleted_fs = $added_db = $added_fs = 0;
 
 		// remove records on db and file on filesystem
-		$query = "SELECT * FROM files WHERE resource_type LIKE '%Post%'";
+		$query = "SELECT * FROM files WHERE resource_type LIKE '%Post%' OR resource_type LIKE '%Ticket%'";
 		$result = mysqli_query($this->manager->conn, $query);
 		$records = mysqli_fetch_all($result,MYSQL_ASSOC);
 
@@ -2688,6 +2789,58 @@ class Attachments extends BaseClass {
 							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
 						}
 					}
+				}
+			}
+		}
+
+		$query = mssql_query("SELECT t.Date_Creation, t.Id as Ticket_Id, f.Id_Customer, f.Id_Customer_User, d.* FROM Documents d
+							  INNER JOIN Help_Desk_Form f ON f.Id = Id_ticket_request
+							  INNER JOIN Tickets t ON t.Id_Ticket_Request = f.Id
+							  WHERE d.Id_ticket_request IS NOT NULL
+							  AND d.Path IS NOT NULL
+							  AND d.Path != ''");
+
+		$result = array();
+
+		while ($row = mssql_fetch_assoc($query)) $result[] = $row;
+
+		foreach ($result as $m) {
+
+			$query = "SELECT COUNT(*) FROM tickets WHERE id = ".$m['Ticket_Id'];
+			$result = mysqli_query($this->manager->conn,$query);
+			$ticket = mysqli_fetch_array($result);
+
+			if ($ticket[0] > 0) {
+
+				$url = 'http://www.elettric80inc.com/convergence/uploads/posts_documents/'.rawurlencode($m['Path']);
+				$content = @file_get_contents($url);
+
+				if ($content) {
+					$uploader_id = findCompanyPersonIdFromOldUserCustomerId($m['Id_Customer_User'],$m['Id_Customer'],$this->manager->conn);
+					$temp = explode(".",$m['Path']);
+					$extension = $temp[count($temp)-1];
+					$file_name = 'TICKET#'.$m['Ticket_Id']."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
+					$query = "INSERT INTO files (id,name,file_path,file_name,file_extension,resource_type,resource_id,uploader_id, thumbnail_id, created_at, updated_at) VALUES ('".$m['Id']."','".$m['Path']."','attachments','".$file_name."','".$extension."','App\\\Models\\\Ticket','".$m['Ticket_Id']."','".$uploader_id."',NULL,'".$m['Date_Creation']."','".$m['Date_Creation']."')";
+
+					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$added_db++;
+						if (file_put_contents(ATTACHMENTS.DS.$file_name, $content)) {
+							$added_fs++;
+						}
+						else {
+							$this->errors++;
+							if ($this->debug) {
+								logMessage("DEBUG: The file couldn't be copied @ ".ATTACHMENTS.DS.$file_name);
+							}
+						}
+					}
+					else {
+						$this->errors++;
+						if ($this->debug) {
+							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						}
+					}
+
 				}
 			}
 		}
