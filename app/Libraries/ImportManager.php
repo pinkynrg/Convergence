@@ -928,18 +928,25 @@ class Tags extends BaseClass {
 			foreach ($table as $r) {
 
 				$r = nullIt(sanitize($r));
-			
-				$query = "INSERT INTO tags (id,name) 
-						  VALUES (".$r['Id'].",".$r['Tag_Description'].")";
-
 				
-				if (mysqli_query($this->manager->conn,$query) === TRUE) {
-					$this->successes++;
-				}
-				else {
-					$this->errors++;
-					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+				$query = "SELECT * FROM tags WHERE name = ".$r['Tag_Description'];
+
+				$result = mysqli_query($this->manager->conn, $query);
+				$record = mysqli_fetch_array($result);
+
+				if (!$record) {
+					$query = "INSERT INTO tags (id,name) 
+							  VALUES (".$r['Id'].",".$r['Tag_Description'].")";
+
+					
+					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$this->successes++;
+					}
+					else {
+						$this->errors++;
+						if ($this->debug) {
+							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						}
 					}
 				}
 			}
@@ -1546,7 +1553,7 @@ class CompanyMainContacts extends BaseClass {
 
 	public function importSelf() {
 
-		$query = mssql_query("SELECT * FROM Customers WHERE Contact != ''");
+		$query = mssql_query("SELECT * FROM Customers WHERE Contact != '' AND Contact IS NOT NULL");
 
 		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
 
