@@ -1415,7 +1415,7 @@ class CompanyPerson extends BaseClass {
 						else {
 							$this->errors++;
 							if ($this->debug) {
-								logMessage("DEBUG: ".mysqli_error($this->manager->conn)."[ERROR DELETE company_person ID 1 = ".$fix[0]."]");
+								logMessage("DEBUG: ".mysqli_error($this->manager->conn)."[ERROR DELETE company_person ID = ".$fix[0]."] and email = ".$fix[10]);
 							}
 						}
 					}
@@ -1766,7 +1766,7 @@ class TicketLinks extends BaseClass {
 
 		if ($this->truncate()) {
 
-			$counter = 0;
+			$counter = 1;
 
 			foreach ($table as $r) {
 				
@@ -2360,18 +2360,25 @@ class Users extends BaseClass {
 
 				$u = nullIt(sanitize($u));
 
-				$query = "INSERT INTO users (id,person_id,username,password,created_at,updated_at) 
-						  VALUES (".$counter.",".$u['Id_Contact'].",".$u['Customer_User'].",".$u['Customer_Password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+				$query = "SELECT * FROM people WHERE id = ".$u['Id_Contact'];
+				$result = mysqli_query($this->manager->conn, $query);
+				$record = mysqli_fetch_array($result);
 
-				if (mysqli_query($this->manager->conn,$query) === TRUE) {
-					$this->successes++;
-					$counter++;
-				}
-				else {
-					$this->errors++;
-					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
-						logMessage("QUERY: ".$query);
+				if ($record) {
+
+					$query = "INSERT INTO users (id,person_id,username,password,created_at,updated_at) 
+							  VALUES (".$counter.",".$u['Id_Contact'].",".$u['Customer_User'].",".$u['Customer_Password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+
+					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$this->successes++;
+						$counter++;
+					}
+					else {
+						$this->errors++;
+						if ($this->debug) {
+							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+							logMessage("QUERY CUSTOMER USER: ".$query);
+						}
 					}
 				}
 			}
@@ -2388,19 +2395,27 @@ class Users extends BaseClass {
 
 				$u = nullIt(sanitize($u));
 
-				$query = "INSERT INTO users (id,person_id,username,password,created_at,updated_at) 
-						  VALUES (".$counter.",".$u['Employee_Id'].",".$u['User_name'].",".$u['User_password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+				$query = "SELECT * FROM people WHERE id = ".$u['Employee_Id'];
+				$result = mysqli_query($this->manager->conn, $query);
+				$record = mysqli_fetch_array($result);
 
-				if (mysqli_query($this->manager->conn,$query) === TRUE) {
-					$this->successes++;
-					$counter++;
-				}
-				else {
-					$this->errors++;
-					if ($this->debug) {
-						logMessage("DEBUG: ".mysqli_error($this->manager->conn));
-						logMessage("QUERY: ".$query);
+				if ($record) {
+
+					$query = "INSERT INTO users (id,person_id,username,password,created_at,updated_at) 
+							  VALUES (".$counter.",".$u['Employee_Id'].",".$u['User_name'].",".$u['User_password'].",'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')";
+
+					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$this->successes++;
+						$counter++;
 					}
+					else {
+						$this->errors++;
+						if ($this->debug) {
+							// logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+							logMessage("QUERY EMPLOYEE USER: ".$query);
+						}
+					}
+
 				}
 			}
 
