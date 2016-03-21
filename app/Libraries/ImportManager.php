@@ -2645,7 +2645,7 @@ class Attachments extends BaseClass {
 
 			$delete_db_record = false;
 
-			$file_name = PUBLIC_FOLDER.DS.$record['file_path'].DS.$record['file_name'];
+			$file_name = IMAGES.DS.$record['file_path'].DS.$record['file_name'];
 			
 			if (file_exists($file_name)) {
 				if (unlink($file_name)) {
@@ -2886,7 +2886,7 @@ class Thumbnails extends BaseClass {
 
 			$delete_db_record = false;
 
-			$file_name = PUBLIC_FOLDER.DS.$record['file_path'].DS.$record['file_name'];
+			$file_name = IMAGES.DS.$record['file_path'].DS.$record['file_name'];
 			
 			if (file_exists($file_name)) {
 				if (unlink($file_name)) {
