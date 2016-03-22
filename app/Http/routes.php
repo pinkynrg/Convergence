@@ -19,7 +19,7 @@ Route::post('start',['uses' => 'LoginController@storeInfo', 'as' => 'login.store
 
 Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'files.show']);
 
-Route::group(array('middleware' => 'auth'), function() {
+Route::group(array('middleware' => ['auth','log']), function() {
 
 	Route::get('/', ['as' => 'root', function () {
 		return redirect()->route('tickets.index');

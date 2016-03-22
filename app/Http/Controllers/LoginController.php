@@ -4,7 +4,6 @@ use Input;
 use Auth;
 use Hash;
 use Session;
-use Activity;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\CompanyPerson;
@@ -67,8 +66,6 @@ class LoginController extends Controller {
 					$user->save();
 				}
 				
-				Activity::log('User Login');
-
 				return redirect()->intended()->with('successes',['Accessed successfully']);
 			}
 		}
@@ -96,7 +93,6 @@ class LoginController extends Controller {
 
 	public function doLogout() {
 		if (Auth::check()) {
-			Activity::log('User Logout');
 			Session::flush();
 			Auth::logout();
 		}

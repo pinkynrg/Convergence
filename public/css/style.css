@@ -842,6 +842,14 @@ legend {
   width: 90%;
 }
 
+.activity-request-btn {
+  margin: 0px;
+}
+
+.modal-content pre {
+  margin: 10px;
+}
+
 /*menu section*/
 .vertical_menu { width: 220px; }
 .vertical_menu_container { width: 220px; height: 1000px; float: left; margin-right: 15px; }

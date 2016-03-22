@@ -9,7 +9,7 @@
 	<table class="table table-striped table-condensed table-hover table-nowrap">
 		<thead>
 			<tr class="orderable">
-				<th column="statuses.name" class="visible-xs"> </th>
+				<th column="statuses.name" class="visible-xs visible-ms"> </th>
 				<th column="tickets.id" weight="0" type="desc">Ticket</th>
 				<th column="tickets.title">Title</th>
 				<th column="statuses.name" class="hidden-xs hidden-ms">Status</th>
@@ -21,11 +21,11 @@
 				@endif
 
 				<th column="divisions.name" class="hidden-xs hidden-ms">Division</th>
-				<th column="last_operation_date" class="hidden-xs">Updated</th>
+				<th column="last_operation_date" class="hidden-xs hidden-ms">Updated</th>
 				<th column="levels.name" class="hidden-xs hidden-ms">Level</th>
 				
 				@if (Auth::user()->active_contact->isE80())
-					<th column="deadline" class="hidden-xs hidden-ms">Deadline</th>
+					<th column="deadline" class="hidden-xs">Deadline</th>
 				@endif
 			</tr>
 		</thead>
@@ -34,7 +34,7 @@
 				@foreach ($tickets as $ticket) 	
 
 				<tr>
-					<td class="visible-xs"><i class="ticket_status_icon {{ $ticket->status_icon() }}"></i></td>
+					<td class="visible-xs visible-ms"><i class="ticket_status_icon {{ $ticket->status_icon() }}"></i></td>
 					<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
 					<td> 
 						<div class="visible-xs visible-ms ticket_head_details">

@@ -80,7 +80,7 @@ define("TICKETS_ICON", "fa fa-ticket");
 define("MANAGE_ICON", "fa fa-cog");
 define("COMPANIES_ICON", "fa fa-building");
 define("CONTACTS_ICON", "fa fa-book");
-define("USERS_ICON", "fa fa-book");
+define("USERS_ICON", "fa fa-users");
 define("EQUIPMENT_ICON", "fa fa-wrench");
 define("SERVICES_ICON", "fa fa-server");
 define("ACTIVITIES_ICON", "fa fa-info");
