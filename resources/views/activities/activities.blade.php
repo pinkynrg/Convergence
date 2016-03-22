@@ -22,7 +22,7 @@
 				@foreach ($activities as $activity)
 
 					<tr>
-						<td> {!! $activity->created_at !!} </td>
+						<td> {!! $activity->date('created_at',true) !!} </td>
 						<td> {!! count($activity->user) ? $activity->user->username : 'System' !!} </td>				
 						<td class="hidden-xs hidden-ms"> 
 							{!! count($activity->contact) ? 
@@ -48,7 +48,7 @@
 											<h4 class="modal-title">Request Content</h4>
 										</div>
 
-							      		{{ var_dump(json_decode($activity->request)) }}
+										<pre>{{ json_encode(json_decode($activity->request),JSON_PRETTY_PRINT) }}</pre>
 
 								      	<div class="modal-footer">
 								        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -1177,11 +1177,6 @@ class People extends BaseClass {
 					$r['Last_Name'] = trim(implode(" ",array_slice($exploded,1)));
 				}
 				
-				$r['Email'] = filter_var($r['Email'], FILTER_VALIDATE_EMAIL) ? strtolower($r['Email']) : "";
-				$r['Phone'] = str_replace(array("1-","+1"),"",$r['Phone']);
-				$r['Phone'] = str_replace(array(".","-"," ","(",")"),"",$r['Phone']);
-				$r['Phone'] = (strlen($r['Phone']) < 10 || strlen($r['Phone']) > 10) ? "" : $r['Phone'];
-
 				$r = nullIt(sanitize($r));
 				
 				$query = "INSERT INTO people (id,first_name,last_name,created_at,updated_at) 
@@ -1218,16 +1213,6 @@ class People extends BaseClass {
 						$c['Last_Name'] .= ucfirst($part)." ";
 
 				$c['Id_Contact'] = $c['Id_Contact'] == '' ? '' : $c['Id_Contact'] + CONSTANT_GAP_CONTACTS;
-
-				$c['Phone'] = str_replace(array("1-","+1"),"",$c['Phone']);
-				$c['Phone'] = str_replace(array(".","-"," ","(",")"),"",$c['Phone']);
-				$c['Phone'] = (strlen($c['Phone']) < 10 || strlen($c['Phone']) > 10) ? "" : $c['Phone'];
-
-				$c['CellPhone'] = str_replace(array("1-","+1"),"",$c['CellPhone']);
-				$c['CellPhone'] = str_replace(array(".","-"," ","(",")"),"",$c['CellPhone']);
-				$c['CellPhone'] = (strlen($c['CellPhone']) < 10 || strlen($c['CellPhone']) > 10) ? "" : $c['CellPhone'];
-
-				$c['Email'] = strtolower($c['Email']);
 
 				$c = nullIt(sanitize($c));
 
@@ -1311,9 +1296,11 @@ class CompanyPerson extends BaseClass {
 				}
 				
 				$r['Email'] = filter_var($r['Email'], FILTER_VALIDATE_EMAIL) ? strtolower($r['Email']) : "";
-				$r['Phone'] = str_replace(array("1-","+1"),"",$r['Phone']);
+				
+				$r['Phone'] = substr($r['Phone'], 0, 2) == "1-" ? substr($r['Phone'], 2) : $r['Phone'];				
+				$r['Phone'] = str_replace("+1","",$r['Phone']);
 				$r['Phone'] = str_replace(array(".","-"," ","(",")"),"",$r['Phone']);
-				$r['Phone'] = (strlen($r['Phone']) < 10 || strlen($r['Phone']) > 10) ? "" : $r['Phone'];
+				$r['Phone'] = (strlen($r['Phone']) != 10) ? "" : $r['Phone'];
 
 				$r = nullIt(sanitize($r));
 
@@ -1353,13 +1340,15 @@ class CompanyPerson extends BaseClass {
 
 				$c['Id_Contact'] = $c['Id_Contact'] == '' ? '' : $c['Id_Contact'] + CONSTANT_GAP_CONTACTS;
 
-				$c['Phone'] = str_replace(array("1-","+1"),"",$c['Phone']);
+				$c['Phone'] = substr($c['Phone'], 0, 2) == "1-" ? substr($c['Phone'], 2) : $c['Phone'];
+				$c['Phone'] = str_replace("+1","",$c['Phone']);
 				$c['Phone'] = str_replace(array(".","-"," ","(",")"),"",$c['Phone']);
-				$c['Phone'] = (strlen($c['Phone']) < 10 || strlen($c['Phone']) > 10) ? "" : $c['Phone'];
+				$c['Phone'] = (strlen($c['Phone']) != 10) ? "" : $c['Phone'];
 
-				$c['CellPhone'] = str_replace(array("1-","+1"),"",$c['CellPhone']);
+				$c['CellPhone'] = substr($c['CellPhone'], 0, 2) == "1-" ? substr($c['CellPhone'], 2) : $c['CellPhone'];				
+				$c['CellPhone'] = str_replace("+1","",$c['CellPhone']);
 				$c['CellPhone'] = str_replace(array(".","-"," ","(",")"),"",$c['CellPhone']);
-				$c['CellPhone'] = (strlen($c['CellPhone']) < 10 || strlen($c['CellPhone']) > 10) ? "" : $c['CellPhone'];
+				$c['CellPhone'] = (strlen($c['CellPhone']) != 10) ? "" : $c['CellPhone'];
 
 				$c['Email'] = strtolower($c['Email']);
 
