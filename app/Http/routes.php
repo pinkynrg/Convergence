@@ -11,14 +11,6 @@
 |
 */
 
-Route::get('login', array('uses' => 'LoginController@showLogin', 'as' => 'login.index'));
-Route::post('login', array('uses' => 'LoginController@doLogin', 'as' => 'login.login'));
-Route::get('logout', array('uses' => 'LoginController@doLogout', 'as' => 'login.logout'));
-Route::get('start',['uses' => 'LoginController@start', 'as' => 'login.start']);
-Route::post('start',['uses' => 'LoginController@storeInfo', 'as' => 'login.store_info']);
-
-Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'files.show']);
-
 Route::group(array('middleware' => ['auth','log']), function() {
 
 	Route::get('/', ['as' => 'root', function () {
@@ -117,6 +109,7 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::get('companies/{id}/equipment', ['uses' => 'CompaniesController@equipment', 'as' => 'companies.equipment']);
 	Route::get('companies/{id}/hotels', ['uses' => 'CompaniesController@hotels', 'as' => 'companies.hotels']);
 	Route::get('companies/{id}/services', ['uses' => 'CompaniesController@services', 'as' => 'companies.services']);
+	Route::get('my-company',['uses' => 'CompaniesController@myCompany', 'as' => 'companies.my_company']);
 
 	// tickets request route
 	Route::get('ticket-requests/create',['uses' => 'TicketRequestsController@create', 'as' => 'ticket_requests.create']);
@@ -192,12 +185,16 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	// activities routes
 	Route::get('activities',['uses' => 'ActivitiesController@index', 'as' => 'activities.index']);
 
-	//charts
+	// charts
 	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);
 	Route::match(['get'], 'dashboard/{contact_id}', ['uses' => 'DashboardController@dashboardContact', 'as' => 'dashboard.show']);
 	Route::match(['get'], 'statistics', ['uses' => 'StatisticsController@index', 'as' => 'statistics.index']);
 
-	//attachments
+	// customer site pages controller
+	Route::get('training', array('uses' => 'CustomerSiteController@training', 'as' => 'public.training'));
+	Route::get('products', array('uses' => 'CustomerSiteController@products', 'as' => 'public.products'));
+
+	// attachments
 	Route::post('files', ['uses' => 'FilesController@upload', 'as' => 'files.upload']);
 	Route::delete('files/{id}', ['uses' => 'FilesController@destroy', 'as' => 'files.destroy']);
 
@@ -209,3 +206,13 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::get('ajax/files/{target}/{target_action}/{id}', ['uses' => 'FilesController@listFiles', 'as' => 'files.list']);
 
 });
+
+Route::get('helpdesk', array('uses' => 'CustomerSiteController@helpdesk', 'as' => 'public.helpdesk'));
+Route::get('login', array('uses' => 'LoginController@showLogin', 'as' => 'login.index'));
+Route::post('login', array('uses' => 'LoginController@doLogin', 'as' => 'login.login'));
+Route::get('logout', array('uses' => 'LoginController@doLogout', 'as' => 'login.logout'));
+Route::get('start',['uses' => 'LoginController@start', 'as' => 'login.start']);
+Route::post('start',['uses' => 'LoginController@storeInfo', 'as' => 'login.store_info']);
+Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'files.show']);
+
+?>

@@ -96,7 +96,7 @@ class LoginController extends Controller {
 			Session::flush();
 			Auth::logout();
 		}
-		return redirect()->route('login.index');
+		return redirect()->route('public.helpdesk');
 	}
 
 	public function start() {

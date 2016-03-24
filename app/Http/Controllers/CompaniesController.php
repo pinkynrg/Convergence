@@ -101,15 +101,28 @@ class CompaniesController extends BaseController {
 
 	public function show($id) {
         if (Auth::user()->can('read-company')) {
-            
-            $data['menu_actions'] = [
-                Form::editItem(route('companies.edit',$id),'Edit This Company',Auth::user()->can('update-company')),
-                Form::addItem(route('company_person.create',$id),'Create Contact',Auth::user()->can('create-contact')),
-                Form::addItem(route('equipment.create',$id),'Create Equipment',Auth::user()->can('create-equipment')),
-                Form::addItem(route('services.create',$id),'Create Service',Auth::user()->can('create-service'))
-            ];
+            return $this->company($id);
+        }
+        else return redirect()->back()->withErrors(['Access denied to companies show page']);      
+	}
 
-            $data['company'] = Company::find($id);
+    public function myCompany() {
+        $id = Auth::user()->active_contact->company->id;
+        return $this->company($id);
+    }
+
+    private function company($id) {
+        $data['menu_actions'] = [
+            Form::editItem(route('companies.edit',$id),'Edit This Company',Auth::user()->can('update-company')),
+            Form::addItem(route('company_person.create',$id),'Create Contact',Auth::user()->can('create-contact')),
+            Form::addItem(route('equipment.create',$id),'Create Equipment',Auth::user()->can('create-equipment')),
+            Form::addItem(route('services.create',$id),'Create Service',Auth::user()->can('create-service'))
+        ];
+
+        $data['company'] = self::API()->find(['id'=>$id]);
+
+        if ($data['company']) {
+
             $data['company']->contacts = CompanyPersonController::API()->all(['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
             $data['company']->tickets = TicketsController::API()->all(['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
             $data['company']->equipment = EquipmentController::API()->all(['where' => ['companies.id|=|'.$id], 'paginate' => 10]);
@@ -120,9 +133,12 @@ class CompaniesController extends BaseController {
             $data['title'] = $data['company']->name;
             
             return view('companies/show',$data);
+
         }
-        else return redirect()->back()->withErrors(['Access denied to companies show page']);      
-	}
+        else {
+            return redirect()->back()->withErrors(['404 The following Company coudn\'t be found']);  
+        }
+    }
 
 	public function edit($id) {
         if (Auth::user()->can('update-company')) {

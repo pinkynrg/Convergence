@@ -7,27 +7,33 @@ class MenuBuilder {
 
 	private $menu;
 
-	public static function build() {
+	public static function build() {		
 
 		$raw_menus = [
-		
+
+			"public" => [
+				['type'=>'group','label'=>'Customers','icon'=>PUBLIC_ICON,'menu'=>[
+					['type'=>'item','label'=>'Helpdesk','icon'=>HELPDESK_ICON,'link'=>route('public.helpdesk'),'show'=>true]
+				]]
+			],
+
 			"employee" => [
 				['type'=>'group','label'=>'Manage','icon'=>MANAGE_ICON,'menu'=>[
-					['type'=>'item','id'=>'tickets','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::user()->can('read-all-ticket')],
-					['type'=>'item','label'=>'Companies','icon'=>COMPANIES_ICON,'link'=>route('companies.index'),'show'=>Auth::user()->can('read-all-company')],
-					['type'=>'item','label'=>'Contacts','icon'=>CONTACTS_ICON,'link'=>route('company_person.index'),'show'=>Auth::user()->can('read-all-contact')],
-					['type'=>'item','label'=>'Users','icon'=>USERS_ICON,'link'=>route('users.index'),'show'=>Auth::user()->can('read-all-user')],
-					['type'=>'item','label'=>'Equipment','icon'=>EQUIPMENT_ICON,'link'=>route('equipment.index'),'show'=>Auth::user()->can('read-all-equipment')],
-					['type'=>'item','label'=>'Services','icon'=>SERVICES_ICON,'link'=>route('services.index'),'show'=>Auth::user()->can('read-all-service')],
-					['type'=>'item','label'=>'Escalation Profiles','icon'=>ESCALATIONS_ICON,'link'=>route('escalation_profiles.index'),'show'=>Auth::user()->can('read-all-escalation-profiles')],
-					['type'=>'item','label'=>'Activities','icon'=>ACTIVITIES_ICON,'link'=>route('activities.index'),'show'=>Auth::user()->can('read-all-activity')]
+					['type'=>'item','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::check() && Auth::user()->can('read-all-ticket')],
+					['type'=>'item','label'=>'Companies','icon'=>COMPANIES_ICON,'link'=>route('companies.index'),'show'=>Auth::check() && Auth::user()->can('read-all-company')],
+					['type'=>'item','label'=>'Contacts','icon'=>CONTACTS_ICON,'link'=>route('company_person.index'),'show'=>Auth::check() && Auth::user()->can('read-all-contact')],
+					['type'=>'item','label'=>'Users','icon'=>USERS_ICON,'link'=>route('users.index'),'show'=>Auth::check() && Auth::user()->can('read-all-user')],
+					['type'=>'item','label'=>'Equipment','icon'=>EQUIPMENT_ICON,'link'=>route('equipment.index'),'show'=>Auth::check() && Auth::user()->can('read-all-equipment')],
+					['type'=>'item','label'=>'Services','icon'=>SERVICES_ICON,'link'=>route('services.index'),'show'=>Auth::check() && Auth::user()->can('read-all-service')],
+					['type'=>'item','label'=>'Escalation Profiles','icon'=>ESCALATIONS_ICON,'link'=>route('escalation_profiles.index'),'show'=>Auth::check() && Auth::user()->can('read-all-escalation-profiles')],
+					['type'=>'item','label'=>'Activities','icon'=>ACTIVITIES_ICON,'link'=>route('activities.index'),'show'=>Auth::check() && Auth::user()->can('read-all-activity')]
 
 				]],
 				['type'=>'group','label'=>'Access','icon'=>ACCESS_ICON,'menu'=>[
-					['type'=>'item','label'=>'Permissions','icon'=>PERMISSIONS_ICON,'link'=>route('permissions.index'),'show'=>Auth::user()->can('read-all-permission')],
-					['type'=>'item','label'=>'Roles','icon'=>ROLES_ICON,'link'=>route('roles.index'),'show'=>Auth::user()->can('read-all-role')],
-					['type'=>'item','label'=>'Groups','icon'=>USERS_ICON,'link'=>route('groups.index'),'show'=>Auth::user()->can('read-all-group')],
-					['type'=>'item','label'=>'Groups Types','icon'=>GROUP_TYPES_ICON,'link'=>route('group_types.index'),'show'=>Auth::user()->can('read-all-group-type')]
+					['type'=>'item','label'=>'Permissions','icon'=>PERMISSIONS_ICON,'link'=>route('permissions.index'),'show'=>Auth::check() && Auth::user()->can('read-all-permission')],
+					['type'=>'item','label'=>'Roles','icon'=>ROLES_ICON,'link'=>route('roles.index'),'show'=>Auth::check() && Auth::user()->can('read-all-role')],
+					['type'=>'item','label'=>'Groups','icon'=>USERS_ICON,'link'=>route('groups.index'),'show'=>Auth::check() && Auth::user()->can('read-all-group')],
+					['type'=>'item','label'=>'Groups Types','icon'=>GROUP_TYPES_ICON,'link'=>route('group_types.index'),'show'=>Auth::check() && Auth::user()->can('read-all-group-type')]
 				]],
 				['type'=>'group','label'=>'Statistics','icon'=>STATISTICS_ICON,'menu'=>[	
 					['type'=>'item','label'=>'General Statistics','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
@@ -41,17 +47,23 @@ class MenuBuilder {
 			],
 
 			"customer" => [
-				['type'=>'group','label'=>'Manage','icon'=>MANAGE_ICON,'menu'=>[
-					['type'=>'item','id'=>'tickets','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::user()->can('read-all-ticket')]
+				['type'=>'group','label'=>'Menu','icon'=>HOME_ICON,'menu'=>[
+					['type'=>'item','id'=>'tickets','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::check() && Auth::user()->can('read-all-ticket')],
+					['type'=>'item','id'=>'tickets','label'=>'My Company','icon'=>COMPANIES_ICON,'link'=>route('companies.my_company'),'show'=>Auth::check() && Auth::user()->can('read-company')],
+					['type'=>'item','label'=>'Products','icon'=>PRODUCTS_ICON,'link'=>route('public.products'),'show'=>true],
+					['type'=>'item','label'=>'Training','icon'=>TRAINING_ICON,'link'=>route('public.training'),'show'=>true],
 				]]
 			]
 		];
 
-		if (Auth::user()->active_contact->isE80()) {
-			$raw_menu = $raw_menus["employee"];
+		if (!Auth::check()) {
+			$raw_menu = $raw_menus["public"];
+		}
+		elseif (Auth::user()->active_contact->isE80()) {
+			$raw_menu = array_merge($raw_menus["employee"]);
 		}
 		else {
-			$raw_menu = $raw_menus["customer"];
+			$raw_menu = array_merge($raw_menus["customer"]);
 		}
 
 		return self::render($raw_menu);

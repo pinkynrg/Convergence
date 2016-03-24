@@ -5,7 +5,23 @@ use Auth;
 
 class CompaniesController extends BaseController {
 
-    public function all($params)
+     public function all($params)
+    {
+        $params['order'] = isset($params['order']) ? $params['order'] : ['name|ASC'];
+        $companies = $this->query();
+        $companies = parent::execute($companies, $params);
+        return $companies;
+    }
+
+    public function find($params) {
+
+        $companies = $this->query();
+        $companies = $companies->where("companies.id",$params['id']);
+        $company = $companies->get()->first() ? $companies->get()->first() : [];
+        return $company;
+    }
+
+    public function query()
     { 
         $params['order'] = isset($params['order']) ? $params['order'] : ['name|ASC'];
 
@@ -21,8 +37,6 @@ class CompaniesController extends BaseController {
             $companies->where("companies.id","=",Auth::user()->active_contact->company_id);            
         }
     
-    	$companies = parent::execute($companies, $params);
-
         return $companies;
     }
 

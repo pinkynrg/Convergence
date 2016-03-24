@@ -15,7 +15,7 @@ class File extends CustomModel {
 	}
 
 	public function real_path() {
-		return IMAGES.DS.$this->file_path.DS.$this->file_name;
+		return FILES.DS.$this->file_path.DS.$this->file_name;
 	}
 
 	public function thumbnail() {

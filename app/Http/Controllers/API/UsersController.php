@@ -6,7 +6,7 @@ class UsersController extends BaseController {
 
     public static function all($params)
     {
-    	$params['order'] = isset($params['order']) ? $params['order'] : ['username|ASC'];
+    	$params['order'] = isset($params['order']) ? $params['order'] : ['last_name|ASC','first_name|ASC'];
     	
         $users = User::select("users.*");
         $users->leftJoin('people','users.person_id','=','people.id');

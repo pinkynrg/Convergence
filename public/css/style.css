@@ -1,7 +1,10 @@
 body {
-  background-image: url(/images/style/skulls_lightblue.png);
+  background-image: url(/files/style/skulls_lightblue.png);
   background-color: #E4EFF3;
-	font-size: 12px;
+}
+
+table {
+  font-size: 12px;
 }
 
 td {
@@ -18,6 +21,10 @@ hr {
 
 .nowrap {
   white-space: nowrap;
+}
+
+.header_container {
+  margin-bottom: 15px;
 }
 
 .header_container div {
@@ -849,6 +856,30 @@ legend {
 .modal-content pre {
   margin: 10px;
 }
+
+@media (min-width: 700px) {
+  #training_palletizer {
+    background-image: url(/files/style/palletizer.jpg);
+    background-repeat: no-repeat;
+    background-position: right;
+    min-height: 500px; 
+  }
+
+  #training_lgv {
+    background-image: url(/files/style/lgv.jpg);
+    background-repeat: no-repeat;
+    background-position: right;
+    min-height: 500px; 
+  }
+
+  #training_system {
+    background-image: url(/files/style/system.jpg);
+    background-repeat: no-repeat;
+    background-position: right;
+    min-height: 500px; 
+  }
+}
+
 
 /*menu section*/
 .vertical_menu { width: 220px; }

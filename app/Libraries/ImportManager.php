@@ -648,8 +648,8 @@ class GroupRole extends BaseClass {
 				1 => array(2,5,8,11,14,17,20,23,26,29,32,35,38,41), 	// all managers roles
 				2 => array(15,18,21,24,27,30),							// ticket operator, post operator, contact operator, user operator, equipment operator, company operator, post operator
 				3 => array(13,28), 										// can only view tickets and posts
-				10 => array(15,30),										// is only ticket, post operator
-				11 => array(13,28),										// can only view tickets and posts
+				10 => array(15,25,30),									// is only ticket, post operator
+				11 => array(13,25,28),									// can only view tickets and posts
 			];
 
 			foreach ($group_roles as $group_id => $roles) {
@@ -2641,7 +2641,7 @@ class Attachments extends BaseClass {
 
 			$delete_db_record = false;
 
-			$file_name = IMAGES.DS.$record['file_path'].DS.$record['file_name'];
+			$file_name = FILES.DS.$record['file_path'].DS.$record['file_name'];
 			
 			if (file_exists($file_name)) {
 				if (unlink($file_name)) {
@@ -2882,7 +2882,7 @@ class Thumbnails extends BaseClass {
 
 			$delete_db_record = false;
 
-			$file_name = IMAGES.DS.$record['file_path'].DS.$record['file_name'];
+			$file_name = FILES.DS.$record['file_path'].DS.$record['file_name'];
 			
 			if (file_exists($file_name)) {
 				if (unlink($file_name)) {
@@ -2927,7 +2927,7 @@ class Thumbnails extends BaseClass {
 
 			if (!in_array($path_info['extension'],['zip','7z','rar','pam','tgz','bz2','iso','ace'])) 
 			{
-				$path = IMAGES.DS.$image['file_path'].DS.$image['file_name'];
+				$path = FILES.DS.$image['file_path'].DS.$image['file_name'];
 			
 				if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
 				{

@@ -17,7 +17,7 @@
 @else
 	<div class="container wrapper">
 @endif
-	
+
 	<div class="horizontal_menu hidden-lg">	
 		@include('includes.horizontal-menu')
 	</div>
@@ -42,8 +42,9 @@
 				</div>
 			@endif
 
+		<hr class="col-xs-12">
+
 		</div>
-		<hr>
 		@include('includes.errors')
 		@yield('content')
 		<hr>

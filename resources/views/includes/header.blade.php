@@ -9,7 +9,7 @@
 	@else
 		<div id="logo">
 	@endif
-		<a href="{{ route('root') }}"><img src="/images/style/logo-elettric80.png"></a>
+		<a href="{{ route('root') }}"><img src="/files/style/logo-elettric80.png"></a>
 	</div>
 
 	@if (Auth::check())
