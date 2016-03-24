@@ -2,16 +2,22 @@
 
 class FormBuilder extends \Illuminate\Html\FormBuilder
 {
-	public static function BSGroup($options = array()) {
+	public function BSGroup($options = array()) {
 		$options['class'] = isset($options['bclass']) ? $options['bclass'] : "";
 		return "<div class='form-group ".$options['class']."'>";
 	}
 
-	public static function BSEndGroup() {
+	public function BSEndGroup() {
 		return "</div>";
 	}
 
-	public static function BSStatic($value, $options = array()) {
+	public function BSFile($name, $value) {
+		$text = $this->file($name,['id' => $name, 'class' => 'file_uploader', 'style' => 'display:none']);
+		$text .= $this->BSButton($value, ['class' => 'fake_file_uploader']);
+		return $text;
+	}
+
+	public function BSStatic($value, $options = array()) {
 		$bootstrap_class = 'form-control-static';
 		$options['bclass'] = isset($options['bclass']) ? $options['bclass'] : "";
 		$static = "<div class='".$options['bclass']."'>";

@@ -872,6 +872,10 @@ $(".pagination").rPage();
 
 if (true) {
 
+	$(".fake_file_uploader").click(function () {
+		$(".file_uploader").click();
+	});
+
 	// trigger ajax request when searching
 	$("input[type='text'].search").bind("keyup change", function () {
 		var $target = $(this).closest("div[ajax-route]");
@@ -1297,6 +1301,10 @@ if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") 
 	});
 }
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@/start
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 if (url.target == "start") {
 
 	$("#use_info_all_contacts_fake").on('switchChange.bootstrapSwitch',function() {
@@ -1318,8 +1326,25 @@ if (url.target == "start") {
 	var value = $("#use_info_all_contacts").val() == "true" ? true : false;
 	
 	$("#use_info_all_contacts_fake").bootstrapSwitch('state', value);
+}
 
+if (url.target == "start" || (url.target == "people" && url.target_action == "edit") || (url.target == "companies" && url.target_action == "edit")) {
 
+	$("#profile_picture").change(function () {
+		
+		if (this.files && this.files[0]) {
+			
+			var reader = new FileReader();
+			reader.onload = function (e) {
+			
+			$('#profile_picture_thumbnail')
+				.attr('src', e.target.result)
+				.width(100);
+			};
+
+			reader.readAsDataURL(this.files[0]);
+		}
+	});
 }
 
 });

@@ -55,7 +55,7 @@ class FilesController extends Controller {
 		$files = is_null($id) ? [] : File::where('resource_type',$resource_type)->where("resource_id",$id)->get();
 
 		foreach ($files as $file) {
-			$file->size = filesize(FILES.DS.$file->file_path.DS.$file->file_name);
+			$file->size = filesize(RESOURCES.DS.$file->file_path.DS.$file->file_name);
 		}
 
 		return $files;
@@ -111,6 +111,8 @@ class FilesController extends Controller {
 	        $request['target_action'] = Input::get('target_action');
 
 	        $response = $this->repo->upload($request);
+
+	        $response = Response::json($response, 200);
 
 	        return $response;
 	    }

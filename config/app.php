@@ -145,6 +145,7 @@ return [
 		'Barryvdh\Snappy\ServiceProvider',
 		'Mews\Purifier\PurifierServiceProvider',
 		'Barryvdh\Debugbar\ServiceProvider',
+		'Intervention\Image\ImageServiceProvider',
 		
 		/*
 		 * Application Service Providers...

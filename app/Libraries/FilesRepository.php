@@ -4,6 +4,7 @@ use App\Models\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Config;
+use Intervention\Image\Facades\Image as Image;
 
 class FilesRepository
 {
@@ -26,7 +27,7 @@ class FilesRepository
         switch ($request['target']) {
             case "tickets" : $path = "attachments"; break;
             case "posts" : $path = "attachments"; break;
-            case "people" : $path = "images/profile_pictures"; break;
+            case "people" : $path = "profiles"; break;
         }
 
         $file->file_path = $path;
@@ -42,7 +43,12 @@ class FilesRepository
         $file->resource_id = $request['target_id'];
         $file->uploader_id = $request['uploader_id'];
 
-        $copy_result = $request['file']->move(ATTACHMENTS,$file->file_name);
+        $copy_result = $request['file']->move(RESOURCES.DS.$file->file_path,$file->file_name);
+        
+        // crops the image
+        if ($request['target'] == "people") {
+            $this->cropImage(RESOURCES.DS.$file->file_path.DS.$file->file_name,100,100);
+        }
 
         if ($copy_result) {
                 
@@ -80,13 +86,13 @@ class FilesRepository
             $code = 500;
         }
 
-        $response = Response::json([
+        $response = [
             'id' => $file_id,
             'error' => $error,
             'message' => $message,
             'thumbnail_id' => $thumbnail_id,
             'code'  => $code
-        ], 200);
+        ];
 
         return $response;
     }
@@ -135,6 +141,10 @@ class FilesRepository
     private function createUniqueFilename($target,$target_id,$uploader_id,$extension)
     {
         return strtoupper(str_singular($target))."#".$target_id."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
+    }
+
+    private function cropImage($source_url, $width, $height) {
+        $img = Image::make($source_url)->fit($width, $height)->save();
     }
 
     private function createThumbnail($file) {

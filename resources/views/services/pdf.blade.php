@@ -9,7 +9,7 @@
 
 <div class="wrapper">
 
-	<img id="logo" src="http://local.convergence.it/images/style/logo-elettric80.png">
+	<img id="logo" src="http://local.convergence.it/resources/style/logo-elettric80.png">
 
 	<hr>
 

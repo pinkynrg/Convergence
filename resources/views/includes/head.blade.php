@@ -44,6 +44,6 @@
 <script src="/javascript/bootstrap-switch.min.js"></script>
 <script src="/javascript/script.js"></script>
 
-<link rel="shortcut icon" href="{{ asset('/files/style/favicon.ico') }}">
+<link rel="shortcut icon" href="{{ asset('/resources/style/favicon.ico') }}">
 
 <title>{{ isset($title) ? $title : "[missing page title]" }}</title>

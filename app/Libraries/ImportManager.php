@@ -2641,7 +2641,7 @@ class Attachments extends BaseClass {
 
 			$delete_db_record = false;
 
-			$file_name = FILES.DS.$record['file_path'].DS.$record['file_name'];
+			$file_name = RESOURCES.DS.$record['file_path'].DS.$record['file_name'];
 			
 			if (file_exists($file_name)) {
 				if (unlink($file_name)) {
@@ -2882,7 +2882,7 @@ class Thumbnails extends BaseClass {
 
 			$delete_db_record = false;
 
-			$file_name = FILES.DS.$record['file_path'].DS.$record['file_name'];
+			$file_name = RESOURCES.DS.$record['file_path'].DS.$record['file_name'];
 			
 			if (file_exists($file_name)) {
 				if (unlink($file_name)) {
@@ -2927,7 +2927,7 @@ class Thumbnails extends BaseClass {
 
 			if (!in_array($path_info['extension'],['zip','7z','rar','pam','tgz','bz2','iso','ace'])) 
 			{
-				$path = FILES.DS.$image['file_path'].DS.$image['file_name'];
+				$path = RESOURCES.DS.$image['file_path'].DS.$image['file_name'];
 			
 				if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
 				{

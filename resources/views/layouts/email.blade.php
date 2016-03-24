@@ -16,7 +16,7 @@
 		<tr>
 			<td>
 
-				<div><img width="200" class="logo" src="{{ SITE_URL."/images/style/mini-logo-elettric80.png" }}"/></div>
+				<div><img width="200" class="logo" src="{{ SITE_URL."/resources/style/mini-logo-elettric80.png" }}"/></div>
 
 				<hr>
 

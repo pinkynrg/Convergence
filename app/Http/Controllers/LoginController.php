@@ -10,6 +10,7 @@ use App\Models\CompanyPerson;
 use App\Models\Division;
 use App\Models\Department;
 use App\Models\Title;
+use App\Libraries\FilesRepository;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StartRequest;
 
@@ -109,6 +110,7 @@ class LoginController extends Controller {
 			$user = User::find($session['user_id']);
 			$profile = new \stdClass();
 			$profile->id = $user->id;
+			$profile->profile_picture = $user->owner->profile_picture();
 			$profile->first_name = $user->owner->first_name;
 			$profile->last_name = $user->owner->last_name;
 			$profile->username = $user->username;
@@ -139,6 +141,31 @@ class LoginController extends Controller {
 
 			$user = User::find(Session::get("start_session.user_id"));
 			$person = $user->owner;
+
+			if (Input::file('profile_picture') && Input::file('profile_picture')->isValid()) {
+
+				$request['file'] = Input::file('profile_picture');
+				$request['target'] = "people";
+				$request['target_id'] = $person->id;
+				$request['uploader_id'] = $user->active_contact->id;
+
+				$repo = new FilesRepository();
+
+				$result = $repo->upload($request);
+
+				if (!$result['error']) {
+					$old_profile_picture = $person->profile_picture_id;
+					
+					if (!is_null($old_profile_picture)) {
+						$person->profile_picture_id = NULL;
+						$person->save();
+						$repo->destroy($old_profile_picture);
+					}
+
+					$person->profile_picture_id = $result['id'];
+					$person->save();
+				}
+			}
 
 			if (Session::get("start_session.safe_enough") == false) {
 				$user->password = Hash::make($request->get('password'));

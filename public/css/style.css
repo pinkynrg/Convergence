@@ -1,5 +1,5 @@
 body {
-  background-image: url(/files/style/skulls_lightblue.png);
+  background-image: url(/resources/style/skulls_lightblue.png);
   background-color: #E4EFF3;
 }
 
@@ -44,6 +44,10 @@ hr {
 
 #update_profile_picture {
   margin-bottom: 10px;
+}
+
+#profile_picture_form {
+  margin-bottom: 15px;
 }
 
 #loading {
@@ -859,21 +863,21 @@ legend {
 
 @media (min-width: 700px) {
   #training_palletizer {
-    background-image: url(/files/style/palletizer.jpg);
+    background-image: url(/resources/style/palletizer.jpg);
     background-repeat: no-repeat;
     background-position: right;
     min-height: 500px; 
   }
 
   #training_lgv {
-    background-image: url(/files/style/lgv.jpg);
+    background-image: url(/resources/style/lgv.jpg);
     background-repeat: no-repeat;
     background-position: right;
     min-height: 500px; 
   }
 
   #training_system {
-    background-image: url(/files/style/system.jpg);
+    background-image: url(/resources/style/system.jpg);
     background-repeat: no-repeat;
     background-position: right;
     min-height: 500px; 

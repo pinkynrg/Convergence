@@ -11,6 +11,18 @@
 
 		<h3> General Information </h3>
 
+		<div class="row" id="profile_picture_form">
+			<div class="col-xs-12">
+				<div class="thumbnail thumb-md">
+					<img id="profile_picture_thumbnail" src="{{ $profile->profile_picture }}">
+				</div>
+				<div>
+					{!! Form::BSFile("profile_picture","Upload Profile Picture") !!}
+				</div>
+
+			</div>
+		</div>
+
 		<div class="row">
 			<div class="col-xs-6">
 

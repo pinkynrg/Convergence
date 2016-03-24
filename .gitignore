@@ -3,8 +3,8 @@
 .env
 .DS_Store
 composer.phar
-/public/files/thumbnails
-/public/files/attachments
+/public/resources/thumbnails
+/public/resources/attachments
 /public/tmp
 /public/ckfinder/userfiles
 /backups
