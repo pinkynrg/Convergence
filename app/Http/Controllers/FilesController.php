@@ -63,12 +63,7 @@ class FilesController extends Controller {
 
 	public function show($id) {
 		$file = File::find($id);
-		$real_path = $file->real_path();
-		$path = FileManager::get($real_path);
-    	$type = FileManager::mimeType($real_path);
-    	$response = Response::make($path, 200);
-    	$response->header("Content-Type", $type);
-    	return $response;
+    	return response()->download($file->real_path(), $file->name);
 	}
     
     public function upload()
