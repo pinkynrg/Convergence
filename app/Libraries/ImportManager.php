@@ -1135,7 +1135,7 @@ class Companies extends BaseClass {
 			$queries = ["INSERT INTO companies (id, name, address, country, city, state, zip_code, connection_type_id, support_type_id, created_at,updated_at) 
 					VALUES ('".ELETTRIC80_COMPANY_ID."','Elettric80 - Chicago','8100 Monticello Ave','United States','Chicago','Illinois', '60076',NULL,NULL,'".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."')"];
 
-			foreach ($queries as $query) {							
+			foreach ($queries as $query) {
 			
 				if (mysqli_query($this->manager->conn, $query) === TRUE) {
 					$this->successes++;
@@ -1145,6 +1145,32 @@ class Companies extends BaseClass {
 				}
 			}
 
+			$query = "SELECT id FROM companies";
+			$result = mysqli_query($this->manager->conn,$query);
+			while ($row = mysqli_fetch_array($result)) $companies[] = $row;
+
+			foreach ($companies as $company) {
+
+				$file = null;
+
+				$query = "SELECT * FROM files WHERE resource_id = ".$company['id']." AND resource_type = 'App\\\Models\\\Company'";
+				$result = mysqli_query($this->manager->conn,$query);
+				while ($row = mysqli_fetch_array($result)) $file = $row;
+
+				if (isset($file)) {
+					$query = "UPDATE companies SET profile_picture_id = '".$file['id']."' WHERE id = '".$company['id']."'";
+
+					if (mysqli_query($this->manager->conn,$query) === TRUE) {
+						$this->successes++;
+					}
+					else {
+						$this->errors++;
+						if ($this->debug) {
+							logMessage("DEBUG: ".mysqli_error($this->manager->conn));
+						}
+					}
+				}
+			}
 
 			logMessage("Successes: ".$this->successes,'successes');
 			logMessage("Errors: ".$this->errors,'errors');
@@ -1240,7 +1266,7 @@ class People extends BaseClass {
 
 				$file = null;
 
-				$query = "SELECT * FROM files WHERE resource_id = ".$person['id']." AND file_path = 'profiles'";
+				$query = "SELECT * FROM files WHERE resource_id = ".$person['id']." AND resource_type = 'App\\\Models\\\Person'";
 				$result = mysqli_query($this->manager->conn,$query);
 				while ($row = mysqli_fetch_array($result)) $file = $row;
 
@@ -2915,7 +2941,7 @@ class Thumbnails extends BaseClass {
 			}
 		}
 
-		$query = "SELECT * FROM files WHERE thumbnail_id IS NULL AND file_path LIKE 'attachments'";
+		$query = "SELECT * FROM files WHERE thumbnail_id IS NULL AND file_path LIKE 'attachments' OR (resource_type = 'App\\\Models\\\Company')";
 		$result = mysqli_query($this->manager->conn, $query);
 		$images = mysqli_fetch_all($result,MYSQLI_BOTH);
 
@@ -2949,7 +2975,14 @@ class Thumbnails extends BaseClass {
 				}
 
 				$destination = THUMBNAILS.DS.$path_info['filename'].".png";
-				$command2 = "sudo timeout 120 ".env('CONVERT','convert')." -resize '384x384' $source $destination";
+				
+				if ($image['file_path'] == 'profiles') { 
+					$command2 = "sudo ".env('CONVERT','convert')." -resize '100x100' $source $destination";
+				}
+				else {
+					$command2 = "sudo ".env('CONVERT','convert')." -resize '384x384' $source $destination";
+				}
+				
 				
 				$result = exec($command2);
 

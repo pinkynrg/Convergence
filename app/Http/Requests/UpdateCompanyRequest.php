@@ -30,18 +30,18 @@ class UpdateCompanyRequest extends Request {
 	{
 		return [
 			'name' => 'required',
-            'country' => 'required|string',
-            'state' => 'required|string',
-            'city' => 'required|string',
-            'address' => 'required',
-            'zip_code' => 'required|numeric',
-            'group_email' => 'email',
-            'account_manager_id' => 'required|numeric',
-            'support_type_id' => 'required|numeric',
-            'connection_type_id' => 'required|numeric',
-            'account_manager_id' => 'required|numeric',
-            'main_contact_id' => 'required|numeric',
-            'escalation_profile_id' => 'required|numeric'
+			'country' => 'required|string',
+			'state' => 'required|string',
+			'city' => 'required|string',
+			'address' => 'required',
+			'zip_code' => 'required|numeric',
+			'group_email' => 'email',
+			'account_manager_id' => 'required|numeric',
+			'support_type_id' => 'required|numeric',
+			'connection_type_id' => 'required|numeric',
+			'account_manager_id' => 'required|numeric',
+			'main_contact_id' => 'required|numeric',
+			'escalation_profile_id' => 'required|numeric'
         ];
 	}
 

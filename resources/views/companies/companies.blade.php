@@ -7,6 +7,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
+				<th></th>
 				<th column="companies.name" weight="0" type="asc">Company</th>
 				<th column="account_managers.last_name" class="hidden-xs hidden-ms">Account Manager</th>
 				<th column="main_contacts.last_name" class="hidden-xs hidden-ms">Main Contact Name</th>
@@ -22,6 +23,11 @@
 			@if ($companies->count())
 				@foreach ($companies as $company) 	
 				<tr>
+					<td>
+						<div class="thumbnail">
+							<img class="thumb_company_profile_picture" src="{{ $company->profile_picture()->thumbnail() }}">
+						</div>
+					</td>
 					<td> 
 						<a href="{{route('companies.show', $company->id) }}"> {{  $company->name }} </a> 
 					</td>

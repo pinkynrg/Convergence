@@ -24,7 +24,7 @@
 		<div class="row" id="profile_picture_form">
 			<div class="col-xs-12">
 				<div class="thumbnail thumb-md">
-					<img id="profile_picture_thumbnail" src="{{ $person->profile_picture() }}">
+					<img id="profile_picture_thumbnail" src="{{ $person->profile_picture()->path() }}">
 				</div>
 				<div>
 					{!! Form::BSFile("profile_picture","Upload Picture") !!}

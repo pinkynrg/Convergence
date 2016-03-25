@@ -32,6 +32,20 @@
 			$company->escalation_profile_id : null, ["key" => "id", "value" => "!name"]) !!}
 		{!! Form::BSEndGroup() !!}
 
+		@if (Route::currentRouteName() == "companies.edit")
+			<div class="row" id="profile_picture_form">
+				<div class="col-xs-12">
+					<div class="thumbnail thumb-md">
+						<img id="profile_picture_thumbnail" src="{{ $company->profile_picture()->path() }}">
+					</div>
+					<div>
+						{!! Form::BSFile("profile_picture","Upload Picture") !!}
+					</div>
+
+				</div>
+			</div>
+		@endif
+
 	</div>
 
 	<div class="col-xs-6">

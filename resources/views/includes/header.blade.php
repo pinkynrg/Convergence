@@ -15,7 +15,7 @@
 	@if (Auth::check())
 		<div id="login_panel">
 			<div id="login_panel_thumb">				
-				<img src="{!! Auth::user()->owner->profile_picture() !!}">
+				<img src="{!! Auth::user()->owner->profile_picture()->path() !!}">
 			</div>
 			<div id="loginfo">			
 				<div> <a href="{{ route('company_person.show', Auth::user()->active_contact->id) }}"> {{ Auth::user()->owner->name() }} </a> </div>

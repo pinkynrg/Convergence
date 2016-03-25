@@ -1,7 +1,10 @@
-<div class="table-responsive">
+<div id="company_profile_picture">
+	<img src="{{ $company->profile_picture()->path() }}">
+</div>
+<div id="company_details" class="table-responsive">
 	<table class="table table-striped table-condensed table-hover">
 		<tr>
-			<th class="col-xs-6 col-md-3 col-lg-2">Company</th>
+			<th class="col-xs-6 col-md-3">Company</th>
 			<td> {{ $company->name }} </td>			
 		</tr>
 		<tr>

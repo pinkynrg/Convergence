@@ -6,7 +6,7 @@
 			<div class="col-xs-2">
 				<div id="dashboard_contact_info">
 					<div id="dashboard_thumb" class="thumbnail thumb-bg">
-						<img src="{{ $contact->person->profile_picture() }}">
+						<img src="{{ $contact->person->profile_picture()->path() }}">
 					</div>
 					<div id="dashboard_contact_details">
 						<div> <b>Name: </b> {{ $contact->person->name() }} </div>

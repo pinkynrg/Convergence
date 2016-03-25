@@ -20,6 +20,7 @@ use App\Http\Requests\CreateCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Http\Controllers\CompanyPersonController;
 use App\Http\Controllers\TicketsController;
+use App\Libraries\FilesRepository;
 use Request;
 use Input;
 use Form;
@@ -172,6 +173,32 @@ class CompaniesController extends BaseController {
 	public function update($id, UpdateCompanyRequest $request) {
 
         $company = Company::find($id);
+
+        if (Input::file('profile_picture') && Input::file('profile_picture')->isValid()) {
+
+            $request['file'] = Input::file('profile_picture');
+            $request['target'] = "companies";
+            $request['target_id'] = $company->id;
+            $request['uploader_id'] = Auth::user()->active_contact->id;
+
+            $repo = new FilesRepository();
+
+            $result = $repo->upload($request);
+
+            if (!$result['error']) {
+                $old_profile_picture = $company->profile_picture_id;
+                
+                if (!is_null($old_profile_picture)) {
+                    $company->profile_picture_id = NULL;
+                    $company->save();
+                    $repo->destroy($old_profile_picture);
+                }
+
+                $company->profile_picture_id = $result['id'];
+                $company->save();
+            }
+        }
+
         $company->update($request->all());
 
         $company_account_manager = CompanyAccountManager::where('company_id','=',$id)->first();

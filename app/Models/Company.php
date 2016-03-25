@@ -49,4 +49,8 @@ class Company extends CustomModel {
 		return $this->belongsTo('App\Models\EscalationProfile');
 	}
 
+	public function profile_picture() {
+		$picture = File::find($this->profile_picture_id);
+		return $picture ? $picture : File::find(DEFAULT_COMPANY_MISSING_PICTURE_ID);
+	}
 }

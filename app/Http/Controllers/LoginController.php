@@ -110,7 +110,7 @@ class LoginController extends Controller {
 			$user = User::find($session['user_id']);
 			$profile = new \stdClass();
 			$profile->id = $user->id;
-			$profile->profile_picture = $user->owner->profile_picture();
+			$profile->profile_picture = $user->owner->profile_picture()->path();
 			$profile->first_name = $user->owner->first_name;
 			$profile->last_name = $user->owner->last_name;
 			$profile->username = $user->username;

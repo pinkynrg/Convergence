@@ -28,6 +28,7 @@ class FilesRepository
             case "tickets" : $path = "attachments"; break;
             case "posts" : $path = "attachments"; break;
             case "people" : $path = "profiles"; break;
+            case "companies" : $path = "profiles"; break;
         }
 
         $file->file_path = $path;
@@ -47,7 +48,10 @@ class FilesRepository
         
         // crops the image
         if ($request['target'] == "people") {
-            $this->cropImage(RESOURCES.DS.$file->file_path.DS.$file->file_name,100,100);
+            $this->cropPerson(RESOURCES.DS.$file->file_path.DS.$file->file_name,100,100);
+        }
+        elseif ($request['target'] == "companies") {
+            $this->cropCompany(RESOURCES.DS.$file->file_path.DS.$file->file_name,280);
         }
 
         if ($copy_result) {
@@ -143,8 +147,14 @@ class FilesRepository
         return strtoupper(str_singular($target))."#".$target_id."UPLOADER#".$uploader_id."UUID#".uniqid().".".$extension;
     }
 
-    private function cropImage($source_url, $width, $height) {
+    private function cropPerson($source_url, $width, $height) {
         $img = Image::make($source_url)->fit($width, $height)->save();
+    }
+
+    private function cropCompany($source_url, $width) {
+        $img = Image::make($source_url)->resize($width, null, function ($constraint) {
+            $constraint->aspectRatio();
+        })->resizeCanvas($width, $width, 'center', false, 'ffffff')->save();
     }
 
     private function createThumbnail($file) {
