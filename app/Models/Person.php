@@ -25,6 +25,6 @@ class Person extends CustomModel {
 
 	public function profile_picture() {
 		$picture = File::find($this->profile_picture_id);
-		return $picture ? $picture : File::find(DEFAULT_COMPANY_MISSING_PICTURE_ID);
+		return $picture ? $picture : File::find(DEFAULT_PROFILE_PICTURE_ID);
 	}
 }

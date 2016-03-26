@@ -7,7 +7,7 @@
 	<table class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th></th>
+				<th id="company_logo"></th>
 				<th column="companies.name" weight="0" type="asc">Company</th>
 				<th column="account_managers.last_name" class="hidden-xs hidden-ms">Account Manager</th>
 				<th column="main_contacts.last_name" class="hidden-xs hidden-ms">Main Contact Name</th>

@@ -42,6 +42,10 @@ hr {
   margin: auto;
 }
 
+#company_logo {
+  width: 60px;
+}
+
 .thumb_company_profile_picture {
   width: 30px;
   height: 30px!important;

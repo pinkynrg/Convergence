@@ -27,6 +27,9 @@ class File extends CustomModel {
 		elseif (in_array(strtolower($this->file_extension),['rar','7z','zip'])) {
 			$file_id = COMPRESSED_FILE_PICTURE_ID;
 		}
+		elseif ($this->file_extension == "msg") {
+			$file_id = EMAIL_FILE_PICTURE_ID;
+		}
 		else {
 			$file_id = DEFAULT_MISSING_PICTURE_ID;
 		}

@@ -10,7 +10,7 @@
 		<div class="post_header_details">
 			<div class="post_author">
 				<a href="{{ route('people.show', $post->author->person->id) }}"> {{ $post->author->person->name() }} </a> 
-				@if ($post->status_id == POST_PRIVATE_STATUS_ID) (private) @endif 
+				@if ($post->status_id == POST_PRIVATE_STATUS_ID) (internal post) @endif 
 			</div>
 			<div class="post_datetime"> 
 				{{ $post->date("created_at") }} 
