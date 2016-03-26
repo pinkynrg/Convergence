@@ -1102,7 +1102,7 @@ class Companies extends BaseClass {
 
 	public function importSelf() {
 
-		$query = mssql_query('SELECT * FROM Customers WHERE Id = 183');
+		$query = mssql_query('SELECT * FROM Customers');
 
 		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
 
