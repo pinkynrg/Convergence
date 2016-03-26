@@ -878,6 +878,7 @@ if (true) {
 
 	// trigger ajax request when searching
 	$("input[type='text'].search").bind("keyup change", function () {
+
 		var $target = $(this).closest("div[ajax-route]");
 
 		clearTimeout(search_timeout);
@@ -888,7 +889,7 @@ if (true) {
 	});
 
 	$("#searchclear").click(function(){
-    	$("#search_field").val('');
+    	$("#search_field").val('').change();
 	});
 
 	// trigger ajax request when filtering
