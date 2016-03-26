@@ -1677,7 +1677,7 @@ class CompanyAccountManagers extends BaseClass {
 class Tickets extends BaseClass {
 		
 	public $table_name = 'tickets';
-	public $dependency_names = ['levels','company_person','statuses','priorities','divisions','equipment','companies','job_types'];
+	public $dependency_names = ['levels','company_person','statuses','priorities','divisions','equipment','companies','job_types','users'];
 	private $questions = [
 		"Description of the issue:",
 		"Is it the first time that you have noticed this issue? If no when did the issue start?",
