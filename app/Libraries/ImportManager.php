@@ -1102,7 +1102,7 @@ class Companies extends BaseClass {
 
 	public function importSelf() {
 
-		$query = mssql_query('SELECT * FROM Customers');
+		$query = mssql_query('SELECT * FROM Customers WHERE Id = 183');
 
 		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
 
@@ -1112,7 +1112,7 @@ class Companies extends BaseClass {
 
 				$r = nullIt(sanitize($r));
 
-				$r['Connect_Option'] = $r['Connect_Option'] == "'A'" ? "'1'" : "'2'";
+				$r['Connect_Option'] = $r['Connect_Option'] == '"A"' ? "'1'" : "'2'";
 				$r['Id_Support_Type'] = $r['Id_Support_Type'] == '"0"' ? 'NULL' : $r['Id_Support_Type'];
 				
 				$query = "INSERT INTO companies (id, name, address, country, city, state, zip_code, connection_type_id, support_type_id, escalation_profile_id, created_at,updated_at) 
