@@ -118,6 +118,16 @@ select {
 	width: 320px;
 	margin: auto;
 	margin-top: 10px;
+	#header {
+		#logo {
+			width: 280;
+			margin: 0px 20px;
+			img {
+				max-width: 100%;
+				max-height: 100%;
+			}
+		}
+	}
 	#content {
 		width: 300px;
 		margin: 10px auto;
@@ -244,7 +254,6 @@ body {
 			}
 			#filters {
 				text-align: center;
-				// padding-bottom: 5px;
 				border-bottom: 1px solid #DDD;
 				.multifilter { 
 					margin-bottom: 15px; 
@@ -574,7 +583,7 @@ body {
 	.slider_container {
 		margin: auto; 
 		text-align: center;
-		margin-bottom: 50px;
+		margin: 25px 0px;
 		.slider-horizontal {
 			width: 85%;
 		}
@@ -864,18 +873,18 @@ body {
 }
 
 @media (max-width: 750px) {
-    .status_slider_container, .priority_slider_container {
+    .slider_container {
 		margin: auto; 
 		text-align: center;
-		margin-bottom: 60px!important;
-		.slider-tick-label {
-			-webkit-transform: rotate(30deg);
-			-moz-transform: rotate(30deg);
-			-ms-transform: rotate(30deg);
-			-o-transform: rotate(30deg);
-			filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-			margin-top: 10px;
-		}
+		margin-bottom: 40px!important;
+	}
+	.slider-tick-label {
+		-webkit-transform: rotate(30deg);
+		-moz-transform: rotate(30deg);
+		-ms-transform: rotate(30deg);
+		-o-transform: rotate(30deg);
+		filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+		margin-top: 10px;
 	}
 }
 
