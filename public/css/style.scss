@@ -818,7 +818,9 @@ body {
 @media (max-width: 768px) {
 	body {
 		#logo {
-			width: 0px !important;
+			&.hidable {
+				width: 0px !important;
+			}
 			&.hidable img {
 				display: none;
 			}

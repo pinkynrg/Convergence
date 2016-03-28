@@ -35,9 +35,13 @@
 			
 			<div id="inner_container">
 				<div id="header_container" class="row">
-					<div class="col-lg-9 col-sm-8 col-ms-7 col-xs-12">
-						<h2 id="title"> {!! isset($title) ? $title : "" !!} </h2>
-					</div>
+					@if (isset($active_search))
+						<div class="col-lg-9 col-sm-8 col-ms-7 col-xs-12">
+					@else
+						<div class="col-xs-12">
+					@endif
+							<h2 id="title"> {!! isset($title) ? $title : "" !!} </h2>
+						</div>
 					
 					@if (isset($active_search))
 						<div id="search_wrapper" class="col-lg-3 col-sm-4 col-ms-5 col-xs-12 pull-right">
