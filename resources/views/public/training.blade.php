@@ -24,7 +24,7 @@
   <li class="nav"><a target="training_system" href="#training_system" data-toggle="tab"> System </a></li>
 </ul>
 
-<div class="tab-content mrg-brm-20">
+<div id="training-tab-content" class="tab-content">
 
 	<div class="tab-pane fade in active" id="training_palletizer">
 
@@ -40,25 +40,25 @@
 					<li> Production change overs </li>
 				</ul>
 			</ul>
-
+			
 			<ul>
 				<li> PT - Palletizer Support and Calibration </li>
 				<ul>
 					<li> Understand wiring diagrams and technical manuals </li>
-					<li> Make adjustments, substitutions, and configuration on the installed electrical devices </li>
+					<li> Adjustments and configuration on the installed electrical devices </li>
 					<li> Understand and troubleshoot Alarms </li>
 					<li> Calibrate Gripper functions </li>
 					<li> Belt, Bearing, Rail, Rack, Pinion Replacements, etc... </li>
 				</ul>
 			</ul>
-
+			
 			<ul>
 				<li> PM - Palletizer Maintenance </li>
 				<ul>
 					<li> Understand wiring diagrams and technical manuals </li>
 					<li> Identify consumable components and provide replacement </li>
 					<li> Perform routine Preventative Maintenance </li>
-				</ul>
+				</ul>	
 			</ul>
 
 			<ul>

@@ -1,6 +1,15 @@
+@if (Route::currentRouteName() == "companies.edit")
+	<div id="profile_picture_form" class="row">
+		<div class="col-xs-12">
+			<div>
+				{!! Form::BSFile("profile_picture","Upload Picture", $company->profile_picture()->path()) !!}
+			</div>
+		</div>
+	</div>
+@endif
+
 <div class="row">
 	<div class="col-xs-6">
-		
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("name", "Company Name") !!}
 			{!! Form::BSText("name") !!}
@@ -31,25 +40,9 @@
 			{!! Form::BSSelect("escalation_profile_id", $escalation_profiles, isset($company->escalation_profile_id) ? 
 			$company->escalation_profile_id : null, ["key" => "id", "value" => "!name"]) !!}
 		{!! Form::BSEndGroup() !!}
-
-		@if (Route::currentRouteName() == "companies.edit")
-			<div class="row" id="profile_picture_form">
-				<div class="col-xs-12">
-					<div class="thumbnail thumb-md">
-						<img id="profile_picture_thumbnail" src="{{ $company->profile_picture()->path() }}">
-					</div>
-					<div>
-						{!! Form::BSFile("profile_picture","Upload Picture") !!}
-					</div>
-
-				</div>
-			</div>
-		@endif
-
 	</div>
 
 	<div class="col-xs-6">
-
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("country", "Country") !!}
 			{!! Form::BSText("country") !!}
@@ -81,7 +74,6 @@
 				{!! Form::BSSelect("main_contact_id", $main_contacts, null, ["key" => "id", "value" => ["!person.last_name"," ","!person.first_name"]]) !!}
 			@endif
 		{!! Form::BSEndGroup() !!}
-
 	</div>
 </div>
 

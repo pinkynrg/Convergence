@@ -1,57 +1,64 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	@include('includes.head')
-</head>
-<body>
 
-@include('includes.debug')
+	<head>
+		<meta charset="utf-8">
+		@include('includes.head')
+	</head>
 
-@include('includes.header')
+	<body>
 
-<div id="loading"></div>
+		@include('includes.debug')
 
-@if (Route::currentRouteName() != "companies.show" && Route::currentRouteName() != "company_person.show")
-	<div class="container wrapper" ajax-route= {{ "http://$_SERVER[HTTP_HOST]"."$_SERVER[REQUEST_URI]" }} >
-@else
-	<div class="container wrapper">
-@endif
+		@include('includes.header')
 
-	<div class="horizontal_menu hidden-lg">	
-		@include('includes.horizontal-menu')
-	</div>
+		<!-- used when ajax is executing -->
+		<div id="loading"></div>
 
-	<div class="vertical_menu_container hidden-xs hidden-ms hidden-sm hidden-md">
-		<div class="vertical_menu">
-			@include('includes.vertical-menu')
-		</div>
-	</div>
-	
-	<div class="inner_container">
-		<div class="header_container row">
-			<div class="col-sm-6 col-ms-6 col-xs-12">
-				<h2 class="title"> {!! isset($title) ? $title : "[missing page title]" !!} </h2>
+		@if (Route::currentRouteName() != "companies.show" && Route::currentRouteName() != "company_person.show")
+			<div id="main_container" class="container" ajax-route= {{ "http://$_SERVER[HTTP_HOST]"."$_SERVER[REQUEST_URI]" }} >
+		@else
+			<div id="main_container" class="container">
+		@endif
+			
+			<div id="horizontal_menu_container">
+				<div id="horizontal_menu" class="hidden-lg">	
+					@include('includes.horizontal-menu')
+				</div>
+			</div>
+
+			<div id="vertical_menu_container" class="hidden-xs hidden-ms hidden-sm hidden-md">
+				<div id="vertical_menu">
+					@include('includes.vertical-menu')
+				</div>
 			</div>
 			
-			@if (isset($active_search))
-				<div class="col-lg-3 col-sm-2 col-ms-1 col-xs-0"></div>
-				<div class="col-lg-3 col-sm-4 col-ms-5 col-xs-12 form-group">
-					<input id="search_field" type="text" columns="{{$active_search}}" class="form-control search" placeholder="search">
-					<span id="searchclear" class="glyphicon glyphicon-remove-circle"></span>
+			<div id="inner_container">
+				<div id="header_container" class="row">
+					<div class="col-lg-9 col-sm-8 col-ms-7 col-xs-12">
+						<h2 id="title"> {!! isset($title) ? $title : "" !!} </h2>
+					</div>
+					
+					@if (isset($active_search))
+						<div id="search_wrapper" class="col-lg-3 col-sm-4 col-ms-5 col-xs-12 pull-right">
+							<div class="input-group">
+								<input id="search" type="text" columns="{{$active_search}}" class="form-control" placeholder="search">
+								<span id="clear_search" class="input-group-addon"><i class="fa fa-times"></i></span>
+							</div>
+						</div>
+					@endif
+
 				</div>
-			@endif
+				
+				@include('includes.errors')
+				
+				@yield('content')
 
-		<hr class="col-xs-12">
-
+			</div>
 		</div>
-		@include('includes.errors')
-		@yield('content')
-		<hr>
-	</div>
-</div>
 
-@include('includes.footer')
+		@include('includes.footer')
 
-</body>
+	</body>
+	
 </html>

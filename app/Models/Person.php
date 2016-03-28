@@ -18,9 +18,15 @@ class Person extends CustomModel {
 	}
 
 	public function name() {
-		$this->first_name = $this->first_name ? $this->first_name : '[first name missing]';
-		$this->last_name = $this->last_name ? $this->last_name : '[last name missing]';
-		return $this->last_name." ".$this->first_name;
+		$first_name = $this->first_name ? $this->first_name : '[first name missing]';
+		$last_name = $this->last_name ? $this->last_name : '[last name missing]';
+		return $last_name." ".$first_name;
+	}
+
+	public function short_name() {
+		$first_letter_first_name = $this->first_name ? substr($this->first_name,0,1)."." : '[missing].';
+		$last_name = $this->last_name ? $this->last_name : '[last name missing]';
+		return $last_name." ".$first_letter_first_name;
 	}
 
 	public function profile_picture() {

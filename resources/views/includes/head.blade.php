@@ -17,7 +17,6 @@
 <link rel="stylesheet" href="/css/bootstrap-grid-ms.css">
 <link rel="stylesheet" href="/css/bootstrap-slider.css">
 <link rel="stylesheet" href="/css/style.css">
-
 <!-- Scripts -->
 <!-- <script src="/javascript/jquery-1.12.min.js"></script> -->
 <script src="/javascript/jquery-1.11.3.min.js"></script>

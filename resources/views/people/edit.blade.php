@@ -3,6 +3,14 @@
 	
 	{!! Form::model($person, array('method' => 'PATCH', 'route' => array('people.update',$person->id), 'files' => 'true')) !!}
 
+		<div id="profile_picture_form" class="row">
+			<div class="col-xs-12">
+				<div>
+					{!! Form::BSFile("profile_picture","Upload Picture", $person->profile_picture()->path()) !!}
+				</div>
+			</div>
+		</div>
+
 		<div class="row">
 			{!! Form::hidden("company_id", null, array("id" => "company_id")) !!}
 			{!! Form::hidden("person_id", null, array("id" => "person_id")) !!}
@@ -20,19 +28,6 @@
 				{!! Form::BSEndGroup() !!}
 			</div>
 		</div>
-
-		<div class="row" id="profile_picture_form">
-			<div class="col-xs-12">
-				<div class="thumbnail thumb-md">
-					<img id="profile_picture_thumbnail" src="{{ $person->profile_picture()->path() }}">
-				</div>
-				<div>
-					{!! Form::BSFile("profile_picture","Upload Picture") !!}
-				</div>
-
-			</div>
-		</div>
-
 
 		{!! Form::BSSubmit("Submit", ['bclass' => 'col-xs-offset-2']) !!}
 

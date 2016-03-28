@@ -11,9 +11,11 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		return "</div>";
 	}
 
-	public function BSFile($name, $value) {
-		$text = $this->file($name,['id' => $name, 'class' => 'file_uploader', 'style' => 'display:none']);
-		$text .= $this->BSButton($value, ['class' => 'fake_file_uploader']);
+	public function BSFile($name, $value, $src) {
+		$text = $this->file($name,['id' => $name, 'class' => 'profile_picture_uploader', 'style' => 'display:none']);
+		$text .= "<div class='thumbnail profile_picture_upload_link'>";
+		$text .= "<img src='$src'>";
+		$text .= "</div>";
 		return $text;
 	}
 

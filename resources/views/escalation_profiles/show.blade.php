@@ -1,22 +1,20 @@
 @extends('layouts.default')
 
 @section('content')
-	<div id="escalation_profile_wrapper">
-		<table class="table table-striped table-hover">
-			<tr>
-				<th> Name </th> <td> {{ $escalation_profile->name }} </td>
-			</tr>
-			<tr>
-				<th> Description </th> <td> {{ $escalation_profile->description }} </td>
-			</tr>
-			<tr>
-				<th> Created </th> <td> {{ $escalation_profile->date("created_at") }} </td>
-			</tr>
-			<tr>
-				<th> Updated </th> <td> {{ $escalation_profile->date("updated_at") }} </td>
-			</tr>
-		</table>
-	</div>
+	<table class="table table-striped table-hover">
+		<tr>
+			<th> Name </th> <td> {{ $escalation_profile->name }} </td>
+		</tr>
+		<tr>
+			<th> Description </th> <td> {{ $escalation_profile->description }} </td>
+		</tr>
+		<tr>
+			<th> Created </th> <td> {{ $escalation_profile->date("created_at") }} </td>
+		</tr>
+		<tr>
+			<th> Updated </th> <td> {{ $escalation_profile->date("updated_at") }} </td>
+		</tr>
+	</table>
 
 	<h3>Escalation Events</h3>	
 

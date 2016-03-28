@@ -4,20 +4,22 @@
 
 <div id="header" class="row">
 
+	<!-- E80 Logo -->
 	@if (Auth::check())
-		<div id="logo" class="logo-hidden">
+		<div id="logo" class="hidable">
 	@else
 		<div id="logo">
 	@endif
 		<a href="{{ route('root') }}"><img src="/resources/style/logo-elettric80.png"></a>
 	</div>
 
+	<!-- Login Ribbon -->
 	@if (Auth::check())
-		<div id="login_panel">
-			<div id="login_panel_thumb">				
+		<div id="login_ribbon">
+			<div id="thumb">				
 				<img src="{!! Auth::user()->owner->profile_picture()->path() !!}">
 			</div>
-			<div id="loginfo">			
+			<div id="info">			
 				<div> <a href="{{ route('company_person.show', Auth::user()->active_contact->id) }}"> {{ Auth::user()->owner->name() }} </a> </div>
 				<div> 
 					@if (Session::get('debug') == true)

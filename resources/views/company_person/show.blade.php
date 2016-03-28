@@ -14,7 +14,7 @@
 	  	@endforeach
 	</ul>
 
-	<div class="tab-content mrg-brm-20">
+	<div class="tab-content">
 
 		<div class="tab-pane fade in active" id="{{ $company_person->company->id }}">
 			@include('company_person.contact', array("company_person" => $company_person))

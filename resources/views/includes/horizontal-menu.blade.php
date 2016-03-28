@@ -24,7 +24,11 @@
 
 						@if ($elem->show)
 
-							<li class="dropdown">
+							@if(Menu::isExpanded($elem))
+								<li class="dropdown active">
+							@else 
+								<li class="dropdown">
+							@endif
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> 
 									<span class="icon">{!! $elem->icon !!}</span> {!! $elem->label !!} <span class="caret"></span></a>
           						<ul class="dropdown-menu">
@@ -33,7 +37,13 @@
 
           								@if ($subelem->show)
 
-											<li><a href="{{ $subelem->link }}"> <span class="icon">{!! $subelem->icon !!}</span> {!! $subelem->label !!} </a></li>
+          									@if(Menu::isSelected($subelem))
+												<li class="active">
+											@else
+												<li>											
+											@endif
+												<a href="{{ $subelem->link }}"> <span class="icon"> {!! $subelem->icon !!}</span> {!! $subelem->label !!} <span class="sr-only">(current)</span> </a>
+											</li>
 
 										@endif
 
@@ -48,13 +58,13 @@
 
 						@if ($elem->show)
 
-							@if (Request::url() === $elem->link)
+							@if(Menu::isSelected($elem))
 								<li class="active">
-									<a href="{{ $elem->link }}"> {!! $elem->icon !!} {!! $elem->label !!} <span class="sr-only">(current)</span> </a>
-								</li> 	
-							@else 
-								<li><a href="{{ $elem->link }}"> {!! $elem->icon !!} {!! $elem->label !!} <span class="sr-only">(current)</span> </a></li>
+							@else
+								<li>											
 							@endif
+								<a href="{{ $elem->link }}"> <span class="icon"> {!! $elem->icon !!} </span> {!! $elem->label !!} <span class="sr-only">(current)</span> </a>
+							</li> 	
 
 						@endif
 

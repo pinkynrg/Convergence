@@ -10,7 +10,7 @@
   <li class="nav"><a target="lgv" href="#lgv" data-toggle="tab"> LGV Systems </a></li>
 </ul>
 
-<div class="tab-content mrg-brm-20">
+<div class="tab-content">
 	
 	<div class="tab-pane fade in active" id="palletizer">
 		<table class="table table-striped">

@@ -5,9 +5,9 @@
 
 		@include('companies.form')
 
-		<div class="nav_form navb">
-			<div class="title"> Contact Info </div>
-		</div>	
+		<hr>
+
+		<h3>Contact Information</h3>
 
 		@include('people.create')
 		@include('company_person.form')

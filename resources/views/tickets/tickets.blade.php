@@ -6,7 +6,7 @@
 		</div>
 	@endif
 
-	<table class="table table-striped table-condensed table-hover table-nowrap">
+	<table id="tickets_table" class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
 				<th column="statuses.name" class="visible-xs visible-ms"> </th>
@@ -21,11 +21,11 @@
 				@endif
 
 				<th column="divisions.name" class="hidden-xs hidden-ms">Division</th>
-				<th column="last_operation_date" class="hidden-xs hidden-ms">Updated</th>
+				<th column="last_operation_date" class="hidden-xs">Updated</th>
 				<th column="levels.name" class="hidden-xs hidden-ms">Level</th>
 				
 				@if (Auth::user()->active_contact->isE80())
-					<th column="deadline" class="hidden-xs">Deadline</th>
+					<th column="deadline" class="hidden-xs  hidden-ms">Deadline</th>
 				@endif
 			</tr>
 		</thead>

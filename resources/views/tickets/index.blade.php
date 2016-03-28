@@ -51,8 +51,6 @@
 
 		</div>
 
-		<hr>
-
 	@endif
 
 	@include('tickets/tickets', array('tickets' => $tickets))

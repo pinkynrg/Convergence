@@ -65,7 +65,7 @@ var getUrlParameter = function (sPageURL, sParam) {
 var resetFilter = function($this) {
 	var $target = $this.closest("div[ajax-route]");
 	$target.find('.multifilter').selectpicker('deselectAll').selectpicker('setStyle', 'btn-info','remove');
-	$target.find('#search_field').val("");
+	$target.find('#search').val("");
 	ajaxUpdate($target);
 };
 
@@ -167,7 +167,7 @@ var setupFilters = function () {
 
 			filters = JSON.parse($.cookie(cookie_name));
 			
-			$target.find("#search_field").val(filters['search_field']);
+			$target.find("#search").val(filters['search']);
 
 			$target.find(".multifilter").each(function () {
 				$(this).val(filters['multifilter'][$(this).attr('id')]);
@@ -227,7 +227,7 @@ var saveFiltersSetup = function ($target) {
 	cookie_name = url.target+"|"+url.target_action+"|"+ajax_route+"#"+"filters";
 
 	filters['page'] = 1;
-	filters['search_field'] = "";
+	filters['search'] = "";
 	filters['order'] = new Object();
 	filters['multifilter'] = new Object();
 	
@@ -235,7 +235,7 @@ var saveFiltersSetup = function ($target) {
 		filters['page'] = getUrlParameter(href,"page");
 	}
 
-	filters['search_field'] = $target.find("#search_field").val();
+	filters['search'] = $target.find("#search").val();
 
 	$target.find("tr.orderable th[type]:visible").each(function () {
 		filters['order'][$(this).attr('column')] = new Object();
@@ -257,7 +257,7 @@ var getParams = function($target) {
 	params['where'] = [];
 	params['page'] = 1;
 
-	var $search = $target.find("input[type='text'].search:visible");
+	var $search = $target.find("input[type='text']#search:visible");
 	var $table_order = $target.find("tr.orderable th[type]");
 	var $multifilter = $target.find("select.selectpicker.multifilter");
 
@@ -629,24 +629,24 @@ var updateServicePage = function () {
 
 var updateMenuPosition = function () {
 	
-	var wrapper_top = parseInt($('.wrapper').offset().top),
-		wrapper_height = parseInt($('.wrapper').css('height')),
-		wrapper_padding = parseInt($('.wrapper').css('padding-top')),
-		menu_height = parseInt($('.vertical_menu .panel-group').css('height')),
+	var wrapper_top = parseInt($('#main_container').offset().top),
+		wrapper_height = parseInt($('#main_container').css('height')),
+		wrapper_padding = parseInt($('#main_container').css('padding-top')),
+		menu_height = parseInt($('#vertical_menu .panel-group').css('height')),
 		from_top = parseInt($(document).scrollTop()),
 		left_over = wrapper_height - from_top,
 		offset = (left_over + wrapper_top) - menu_height - wrapper_padding;
 
     if ($(document).scrollTop() > wrapper_top) {
     	if (offset < wrapper_padding) {
-    		$('.vertical_menu').css('position','fixed').css('top',offset+'px');
+    		$('#vertical_menu').css('position','fixed').css('top',offset+'px');
     	}
     	else {
-    		$('.vertical_menu').css('position','fixed').css('top',wrapper_padding+'px');
+    		$('#vertical_menu').css('position','fixed').css('top',wrapper_padding+'px');
     	}
 
     } else {
-        $('.vertical_menu').css('position','relative').css('top','0px');
+        $('#vertical_menu').css('position','relative').css('top','0px');
     }
 };
 
@@ -872,12 +872,12 @@ $(".pagination").rPage();
 
 if (true) {
 
-	$(".fake_file_uploader").click(function () {
-		$(".file_uploader").click();
+	$(".profile_picture_upload_link").click(function () {
+		$(".profile_picture_uploader").click();
 	});
 
 	// trigger ajax request when searching
-	$("input[type='text'].search").bind("keyup change", function () {
+	$("input[type='text']#search").bind("keyup change", function () {
 
 		var $target = $(this).closest("div[ajax-route]");
 
@@ -885,11 +885,11 @@ if (true) {
 		
 		search_timeout = setTimeout(function () {
 			ajaxUpdate($target);
-		},1000);
+		},500);
 	});
 
-	$("#searchclear").click(function(){
-    	$("#search_field").val('').change();
+	$("#clear_search").click(function(){
+    	$("#search").val('').change();
 	});
 
 	// trigger ajax request when filtering
@@ -1331,14 +1331,14 @@ if (url.target == "start") {
 
 if (url.target == "start" || (url.target == "people" && url.target_action == "edit") || (url.target == "companies" && url.target_action == "edit")) {
 
-	$("#profile_picture").change(function () {
+	$(".profile_picture_uploader").change(function () {
 		
 		if (this.files && this.files[0]) {
 			
 			var reader = new FileReader();
 			reader.onload = function (e) {
 			
-			$('#profile_picture_thumbnail')
+			$('.profile_picture_upload_link img')
 				.attr('src', e.target.result)
 				.width(100);
 			};
