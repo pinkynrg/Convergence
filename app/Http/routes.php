@@ -186,6 +186,7 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::get('activities',['uses' => 'ActivitiesController@index', 'as' => 'activities.index']);
 
 	// charts
+	Route::get('charts/status-count', ['uses' => 'ChartsController@statusCount', 'as' => 'charts.history_status_count']);
 	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);
 	Route::match(['get'], 'dashboard/{contact_id}', ['uses' => 'DashboardController@dashboardContact', 'as' => 'dashboard.show']);
 	Route::match(['get'], 'statistics', ['uses' => 'StatisticsController@index', 'as' => 'statistics.index']);

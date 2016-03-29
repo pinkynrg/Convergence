@@ -36,13 +36,7 @@ class MenuBuilder {
 					['type'=>'item','label'=>'Groups Types','icon'=>GROUP_TYPES_ICON,'link'=>route('group_types.index'),'show'=>Auth::check() && Auth::user()->can('read-all-group-type')]
 				]],
 				['type'=>'group','label'=>'Statistics','icon'=>STATISTICS_ICON,'menu'=>[	
-					['type'=>'item','label'=>'General Statistics','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
-					['type'=>'item','label'=>'Tickets Status','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
-					['type'=>'item','label'=>'Tickets Divisions','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
-					['type'=>'item','label'=>'Customer','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
-					['type'=>'item','label'=>'Date','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
-					['type'=>'item','label'=>'Employee','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true],
-					['type'=>'item','label'=>'Month','icon'=>STATISTICS_ICON,'link'=>'#', 'show'=>true]
+					['type'=>'item','label'=>'History Status Count','icon'=>STATISTICS_ICON,'link'=>route('charts.history_status_count'), 'show'=>true],
 				]]
 			],
 
