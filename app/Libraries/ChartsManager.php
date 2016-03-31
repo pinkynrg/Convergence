@@ -198,22 +198,22 @@ class ChartsManager {
         $max = Carbon::parse($max_datetime);
 
         $data_set = collect(DB::select(
-            DB::raw("SELECT DATE(end) as date, SUM(CASE 
+            DB::raw("SELECT DATE(end) as date, 
+                    SUM(CASE 
                         WHEN status_start = $status_id AND status_end IS NOT NULL THEN -1
                         WHEN status_end = $status_id THEN 1 
                         ELSE 0 
-                    END) as `count`
-                    FROM 
-                    (SELECT th1.created_at as start, th2.created_at as end, DATEDIFF(th2.created_at, th1.created_at), 
+                    END) as count
+                FROM (
+                    SELECT th1.created_at as start, th2.created_at as end,
                     th1.ticket_id, th1.status_id as status_start, th2.status_id as status_end
                     FROM tickets_history th1
-                    LEFT JOIN tickets_history th2 ON th2.previous_id = th1.id
-                    WHERE (th1.status_id != th2.status_id) OR (th1.status_id IS NULL)
-                    UNION
-                    SELECT NULL as start, created_at as end, NULL, ticket_id, NULL as status_start, status_id as status_end
-                    FROM tickets_history
-                    WHERE status_id = 1) u
-                    GROUP BY DATE(end)")
+                    RIGHT JOIN tickets_history th2 ON th2.previous_id = th1.id
+                    LEFT JOIN tickets t ON t.id = th2.ticket_id AND t.deleted_at IS NULL
+                    WHERE t.id IS NOT NULL
+                    AND (th1.status_id != th2.status_id OR th1.status_id IS NULL)
+                ) u
+                GROUP BY DATE(end)")
         ))->keyBy('date');
 
         while ($min <= $max) {
@@ -241,7 +241,7 @@ class ChartsManager {
             case TICKET_IN_PROGRESS_STATUS_ID: $chart->colors = ["#E4CFA1"]; break;     // pastel yellow
             case TICKET_WFF_STATUS_ID: $chart->colors = ["#B6E2AB"]; break;             // pastel green
             case TICKET_SOLVED_STATUS_ID: $chart->colors = ["#ABC1E2"]; break;          // pastel blue
-            case TICKET_CLOSED_STATUS_ID: $chart->colors = ["#9CA1AA"]; break;           // pastel gray
+            case TICKET_CLOSED_STATUS_ID: $chart->colors = ["#9CA1AA"]; break;          // pastel gray
         }
 
         $chart->xAxis->type = "datetime";

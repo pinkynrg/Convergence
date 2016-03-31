@@ -1,7 +1,9 @@
 {
   "private": true,
   "devDependencies": {
+    "bower": "*",
     "gulp": "^3.8.8",
-    "laravel-elixir": "*"
+    "laravel-elixir": "*",
+    "main-bower-files": "^2.11.1"
   }
 }

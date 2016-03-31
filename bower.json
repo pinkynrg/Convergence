@@ -1,0 +1,89 @@
+{
+  "name": "convergence",
+  "description": "",
+  "main": "",
+  "authors": [
+    "meli.f@elettric80.it"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/pinkynrg/convergence2.0",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass": "^3.3.6",
+    "bootstrap-grid-ms": "^3.0.0",
+    "components-font-awesome": "^4.5.0",
+    "bootstrap-select": "^1.10.0",
+    "devbridge-autocomplete": "^1.2.24",
+    "jquery-ui": "^1.11.4",
+    "bootstrap-tagsinput": "^0.8.0",
+    "bootstrap-multiEmail": "git://github.com/ThinkBigPartners/bootstrap-multiEmail.git",
+    "bootstrap-duallistbox": "^3.0.5",
+    "bootstrap-datepicker": "^1.6.0",
+    "blueimp-gallery-with-desc": "^2.16.4",
+    "dropzone": "^4.3.0",
+    "bootstrap-switch": "^3.3.2",
+    "seiyria-bootstrap-slider": "^6.1.6",
+    "ckeditor": "^4.5.7",
+    "bootstrap3-typeahead": "^4.0.1",
+    "jquery-prevent-double-submit": "^1.0.1",
+    "highcharts": "highcharts.com#^4.2.3",
+    "rpage": "*",
+    "jquery-cookie": "https://github.com/carhartl/jquery-cookie",
+    "js-cookie": "^2.1.0"
+  },
+  "resolutions": {
+    "jquery": ">= 1.9.0"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/css/bootstrap.css",
+        "dist/fonts/*.*",
+        "dist/js/bootstrap.js",
+        "fonts/*.*"
+      ]
+    },
+    "dropzone": {
+      "main": [
+        "dist/dropzone.js"
+      ]
+    },
+    "bootstrap-grid-ms": {
+      "main": [
+        "dist/bootstrap-grid-ms.css"
+      ]
+    },
+     "jquery": {
+      "main": [
+        "jquery.js",
+        "jquery-migrate.js"
+      ]
+    },
+    "highcharts": {
+      "main": [
+        "lib/highcharts.js",
+        "lib/highstock.js",
+        "lib/highcharts-3d.js"
+      ]
+    },
+    "blueimp-gallery-with-desc": {
+      "main": [
+        "css/blueimp-gallery.css",
+        "js/blueimp-gallery.js",
+        "js/jquery.blueimp-gallery.js"
+      ]
+    },
+    "bootstrap-datepicker": {
+      "main": [
+        "dist/js/bootstrap-datepicker.js"
+      ]
+    }
+  }
+}

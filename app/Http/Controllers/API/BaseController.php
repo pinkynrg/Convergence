@@ -6,11 +6,21 @@ use DB;
 
 class BaseController extends Controller {
 
-    protected static function execute($model, $params)
-    {
+    protected static function execute($model, $params) {
+        // sanitize parameters
         $params = self::sanitize($params);
-
         // apply filters
+        $model = self::filter($model,$params);
+        // ordering
+        $model = self::order($model,$params);
+        // paginate
+        $data = self::paginate($model,$params);
+
+        return $data;
+    }
+
+    protected static function filter($model, $params) {
+
         if (isset($params['where'])) {
             foreach ($params['where'] as $exp) {
                 $model->where(function($query) use ($exp) {
@@ -22,11 +32,11 @@ class BaseController extends Controller {
                     foreach ($targets as $target) {
                         if ($operand == "LIKE") {
                             foreach ($values as $elem) {
-                                $query->orWhere($target,$operand,$elem);                                // TODO: check if column exists
+                                $query->orWhere($target,$operand,$elem);                            // TODO: check if column exists
                             }
                         }
                         elseif ($operand == "=" || $operand == "IN") {
-                            $query->orWhereIn($target,$values);                                         // TODO: check if column exists
+                            $query->orWhereIn($target,$values);                                     // TODO: check if column exists
                         }
                         elseif ($operand == "!=" || $operand == "<" || $operand == ">") {
                             $query->orWhere($target,$operand,$values);
@@ -37,7 +47,11 @@ class BaseController extends Controller {
             }
         }
 
-        // apply ordering (DB level)
+        return $model;
+    }
+
+    protected static function order($model,$params) {
+        
         if (isset($params['order'])) {
             foreach ($params['order'] as $order) {
                 $order = explode("|",$order);
@@ -46,12 +60,26 @@ class BaseController extends Controller {
             }
         }
 
-        // paginate
-        $model = isset($params['paginate']) ? $params['paginate'] == "false" ? $model->get() : $model->paginate($params['paginate']) : $model->paginate(PAGINATION);
         return $model;
     }
 
-    private static function sanitize($params) {
+    protected static function paginate($model,$params) {
+        
+        if (isset($params['paginate'])) {
+            if ($params['paginate'] == "false") {
+                $data = $model->get();
+            }
+            else {
+                $data = $model->paginate($params['paginate']);
+            }
+        }
+        else {
+            $data = $model->paginate(PAGINATION);
+        }
+        return $data;
+    }
+
+    protected static function sanitize($params) {
 
         $params['order'] = isset($params['order']) && is_array($params['order']) ? $params['order'] : array();
         $params['where'] = isset($params['where']) && is_array($params['where']) ? $params['where'] : array();
