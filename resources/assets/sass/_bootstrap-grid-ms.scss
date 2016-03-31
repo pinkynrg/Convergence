@@ -29,6 +29,13 @@ $screen-ms-max: ($screen-sm-min - 1);
 // Redefined Extra Small max value
 $screen-xs-max-new: ($screen-ms-min - 1);
 
+@font-face {
+  font-family: 'Glyphicons Halflings';
+
+  src: url('../fonts/glyphicons-halflings-regular.eot');
+  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
 // Common styles (see make-grid-columns() in bootstrap/mixins/_grid-framework.less)
 .col-ms-1,
 .col-ms-2,

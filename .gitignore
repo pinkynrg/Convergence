@@ -6,6 +6,7 @@
 /public/ckfinder/userfiles
 /backups
 /bower_components
+/storage/debugbar
 npm-debug.log
 .env
 .DS_Store

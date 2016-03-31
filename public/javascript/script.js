@@ -6,7 +6,6 @@ var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	asc_icon = '<i class="fa fa-sort-amount-asc"></i>',
 	debug = true,
 	regex = /\/([a-zA-Z\-]*)([\/]?)(create|[\d]*)([\/]?)([a-zA-Z\-]*)([\/]?)/g,
-	timer,
 	protocol = window.location.protocol,
 	host = window.location.hostname,
 	path = window.location.pathname,
@@ -16,7 +15,8 @@ var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	ticket_draft_routine,
 	ticket_request_draft_routine,
 	post_draft_routine,
-	search_timeout;
+	search_timeout,
+	ajax_timeout;
 
 var url = (function () {
 	return {
@@ -70,9 +70,14 @@ var resetFilter = function($this) {
 };
 
 var ajaxUpdate = function($target) {
-	var params = getParams($target);
+	
+	clearTimeout(ajax_timeout);
+	
+	ajax_timeout = setTimeout(function () {
+		var params = getParams($target);
 	var url = getUrl(params,$target);
 	ajaxRequest(url,$target);
+	},100);
 };
 
 var toggleOrder = function($elem) {
