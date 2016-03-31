@@ -44,7 +44,6 @@
   "overrides": {
     "bootstrap": {
       "main": [
-        "dist/css/bootstrap.css",
         "dist/fonts/*.*",
         "dist/js/bootstrap.js",
         "fonts/*.*"
@@ -56,9 +55,7 @@
       ]
     },
     "bootstrap-grid-ms": {
-      "main": [
-        "dist/bootstrap-grid-ms.css"
-      ]
+      "main": []
     },
      "jquery": {
       "main": [

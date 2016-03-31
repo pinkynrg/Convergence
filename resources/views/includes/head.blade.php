@@ -1,14 +1,13 @@
 <meta name="viewport" content="width=320, initial-scale=1">
 
 <!-- Stylesheets -->
-<link rel="stylesheet" href="/css/bootstrap.css">
+<link rel="stylesheet" href="/css/bootstrap-and-bootstrap-grid-ms.css">
 <link rel="stylesheet" href="/css/font-awesome.css">
 <link rel="stylesheet" href="/css/bootstrap-select.css">
 <link rel="stylesheet" href="/css/bootstrap-tagsinput.css">
 <link rel="stylesheet" href="/css/bootstrap-multiEmail.css">
 <link rel="stylesheet" href="/css/bootstrap-duallistbox.css">
 <link rel="stylesheet" href="/css/bootstrap-switch.css">
-<link rel="stylesheet" href="/css/bootstrap-grid-ms.css">
 <link rel="stylesheet" href="/css/bootstrap-slider.css">
 <link rel="stylesheet" href="/css/dropzone.css">
 <link rel="stylesheet" href="/css/blueimp-gallery.css">

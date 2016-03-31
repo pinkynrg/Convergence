@@ -13,7 +13,7 @@
 				<th column="tickets.id" weight="0" type="desc">Ticket</th>
 				<th column="tickets.title">Title</th>
 				<th column="statuses.name" class="hidden-xs hidden-ms">Status</th>
-				<th column="priorities.id" class="hidden-xs hidden-ms">Priority</th>
+				<th column="priorities.id" class="hidden-xs">Priority</th>
 				<th column="assignees.last_name" class="hidden-xs hidden-ms">Assignee</th>
 				
 				@if (Route::currentRouteName() == "tickets.index")
@@ -25,7 +25,7 @@
 				<th column="levels.name" class="hidden-xs hidden-ms">Level</th>
 				
 				@if (Auth::user()->active_contact->isE80())
-					<th column="deadline" class="hidden-xs  hidden-ms">Deadline</th>
+					<th column="deadline" class="hidden-xs hidden-ms hidden-sm">Deadline</th>
 				@endif
 			</tr>
 		</thead>
@@ -48,7 +48,7 @@
 						</div>
 					</td>
 					<td class="hidden-xs hidden-ms nowrap"> {{ $ticket->status->label }} </td>
-					<td class="hidden-xs hidden-ms nowrap"> 
+					<td class="hidden-xs nowrap"> 
 						@if (count($ticket->priority)) 
 							{{ $ticket->priority->label }} ({{ $ticket->priority->weight }}) 
 						@else
@@ -83,7 +83,7 @@
 						@if (count($ticket->level)) {{ $ticket->level->name }} @else TBA @endif
 					</td>
 						@if (Auth::user()->active_contact->isE80())
-							<td class="hidden-xs hidden-ms nowrap">
+							<td class="hidden-xs hidden-ms hidden-sm nowrap">
 								@if ($ticket->deadline)
 									@if ($ticket->deadline < 0 && $ticket->E80_working())
 										<div style="color:red">
