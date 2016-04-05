@@ -1,0 +1,13 @@
+body { background-repeat: repeat; background-image: url('http://convergence.provvedo.com/images/style/skulls_lightblue.png'); }
+table.wrapper { max-width: 500px; background-color: #FFF; padding: 20px 15px; border: 1px solid #D4D4D4; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #E0E0E0; margin: 10px 0; padding: 0; }
+a { color:#004E94 }
+td { font-family: Arial, sans-serif, 'Open Sans' }
+td.thumbnail { vertical-align: top; }
+td.thumbnail img { width: 50px; }
+.inline { display: inline-block; }
+.footer { width:100%; vertical-align: bottom; font-size: 12px; }
+td.bold { font-weight: bold; }
+.thumbnail { padding-right: 10px; }
+.post { padding: 10px 20px 0px 20px; color: #676767; }
+table.table, .post { font-size: 13px; }

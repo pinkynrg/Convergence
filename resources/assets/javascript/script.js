@@ -836,7 +836,7 @@ $("input.switch").bootstrapSwitch({radioAllOff:true});
 $.ajaxSetup({ cache: false });
 
 // prevent double submittion script
-$('form').preventDoubleSubmit();
+$('form').preventDoubleSubmission();
 
 Dropzone.autoDiscover = false;
 

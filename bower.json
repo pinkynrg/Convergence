@@ -49,6 +49,9 @@
         "fonts/*.*"
       ]
     },
+    "jquery-prevent-double-submit": {
+      "main": []
+    },
     "dropzone": {
       "main": [
         "dist/dropzone.js"

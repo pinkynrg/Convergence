@@ -4,6 +4,9 @@
 /public/resources/attachments
 /public/tmp
 /public/ckfinder/userfiles
+/public/javascript/
+/public/css/
+/public/fonts/
 /backups
 /bower_components
 /storage/debugbar

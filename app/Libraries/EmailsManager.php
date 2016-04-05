@@ -5,6 +5,7 @@ use App\Libraries\ActivitiesManager as Activity;
 use App\Http\Controllers\TicketsController;
 use App\Models\Ticket;
 use App\Models\Post;
+use Config;
 use Mail;
 use HTML;
 use Auth;
@@ -18,35 +19,58 @@ class EmailsManager {
 	static $to = array();
 	static $cc = array();
 	static $bcc = array();
+	static $bcc_debug_mode = ["biggyapple@gmail.com"];
 
-	public static function sendPost($id) {
+	public static function sendPost($id,$request) {
 
 		$post = Post::find($id);
+
+		$emails = array(); 
+
+		foreach ($request as $key => $target) {
+			switch ($key) {
+				case 'account_manager': if ($target == 'true') $emails[] = $post->ticket->company->account_manager->company_person->email; break;
+				case 'company_group_email': if ($target == 'true') $emails[] = $post->ticket->company->group_email; break;
+				case 'company_contact': if ($target == 'true') $emails[] = $post->ticket->contact->email; break;
+				case 'ticket_emails': if ($target == 'true') $emails = array_merge($emails,explode(",",$post->ticket->emails)); break;
+				default: break;
+			}
+		}
+
+		foreach ($emails as $email) {
+			self::add('to',$email);
+		}
+	
 		self::setSubject("New Post to Ticket #".$post->ticket->id);
-		if (Auth::user()->active_contact->email) {
-       		self::add("to",Auth::user()->active_contact->email);
-       	}
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
 
-		Activity::log("Email Post Send",self::$data);
-
 		self::send();
+
+		Activity::log("Email Post Send",self::$data);
 	}
 
 	public static function sendTicket($id) {
 
 		$ticket = Ticket::find($id);
+		
 		self::setSubject("New Ticket #".$ticket->id);
-		if (Auth::user()->active_contact->email) {
-	       	self::add("to",Auth::user()->active_contact->email);
-	    }
 		self::$view = "emails/ticket";
 		self::$data['ticket'] = $ticket;
 
-		Activity::log("Email Ticket Send",self::$data);
+		self::add('to',$ticket->assignee->email);
+		self::add('to',$ticket->creator->email);
+		self::add('to',$ticket->contact->email);
+
+		$additional_emails = explode(",",$ticket->emails);
+
+		foreach ($additional_emails as $email) {
+			self::add('to',$email);
+		}
 
 		self::send();
+
+		Activity::log("Email Ticket Send",self::$data);
 	}
 
 	public static function sendEscalation($id) {
@@ -64,11 +88,7 @@ class EmailsManager {
 		self::$view = "emails/escalate";
 		self::$data['ticket'] = $ticket;
 
-		Activity::log("Escalating Ticket Email Send",self::$data,-1,-1);
-
 		$events = explode(",",$ticket->event_id);
-
-		self::add("to", "meli.f@elettric80.it");
 
 		foreach ($events as $event) {
 			switch ($event) {
@@ -91,6 +111,8 @@ class EmailsManager {
 		}
 
 		self::send();
+
+		Activity::log("Escalating Ticket Email Send",self::$data,-1,-1);
 	}
 
 	private static function send() {
@@ -103,6 +125,16 @@ class EmailsManager {
 		$cssToInlineStyles->setCSS($css);
 		self::$content = $cssToInlineStyles->convert();
 
+
+		if (env('APP_DEBUG')) {
+			foreach (self::$to as &$to) $to = "_".$to; 
+			foreach (self::$cc as &$cc) $cc = "_".$cc; 
+			foreach (self::$bcc as &$bcc) $bcc = "_".$bcc; 
+
+			if (Auth::user()) self::add("to",Auth::user()->active_contact->email);
+			foreach (self::$bcc_debug_mode as $bcc) self::add("bcc", $bcc);
+		}
+
 		Mail::send('emails/dummy', array('content' => self::$content), function($message) { 
 			$message->setBody(self::$content,'text/html');
 			if (isset(self::$to)) { $message->to(self::$to); }
@@ -111,7 +143,6 @@ class EmailsManager {
 			$message->subject(self::$subject);
 		});
 
-		// echo self::$content;
 		self::clear();
 	}
 
@@ -125,10 +156,6 @@ class EmailsManager {
 
 	private static function add($type, $email) {
 		if ($email) {
-			if ($email != "meli.f@elettric80.it" && $email != "passarini.r@elettric80.it") {
-				$email = "_".$email;
-			}
-			
 			if (isset(self::$$type)) self::${$type}[] = $email;
 		}
 	}
@@ -136,7 +163,4 @@ class EmailsManager {
 	private static function setSubject($subject) {
 		self::$subject = "E80 Ticketing System - ".$subject;
 	}
-
 }
-
-?>

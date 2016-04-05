@@ -33,10 +33,10 @@ function sanitize($row) {
 		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
-		// $row[$key] = nl2br($row[$key]);																		// replace \n\r \n with <br>
+		// $row[$key] = nl2br($row[$key]);																	// replace \n\r \n with <br>
 		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', ' ', $row[$key]);								// removed non-UTF8 chartacters
 		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]);													// removed redundand spaces
-		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){2,}/', '<br />', $row[$key]);				// replace redundant <br>, space ...
+		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){2,}/', '<br />', $row[$key]);						// replace redundant <br>, space ...
 		$row[$key] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $row[$key]);								// removed br from end post -->
 		$row[$key] = preg_replace('/<img[^>]+\>/i', '', $row[$key]);  										// remove all image tags
 		$row[$key] = str_replace('&nbsp;','',$row[$key]);													// removed html space
@@ -297,7 +297,8 @@ class EscalationProfiles extends BaseClass {
 		if ($this->truncate()) {
 
 			$queries = [
-				"INSERT INTO escalation_profiles (id, name, description) VALUES (1,'Default Company Profile','This is the default escalation company profile')"
+				"INSERT INTO escalation_profiles (id, name, description) VALUES (1,'Default Company Profile','This is the default escalation company profile')",
+				"INSERT INTO escalation_profiles (id, name, description) VALUES (2,'For Tests','This a test escalation profile suppose to contain short terms events')"
 			];
 
 			foreach ($queries as $query) {
@@ -342,7 +343,24 @@ class EscalationProfileEvents extends BaseClass {
 				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',2,1209600)",
 				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',3,5184000)",
 				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',4,7776000)",
-				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',5,7776000)"
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,1,'1,2,4',5,7776000)",
+
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,2,'1,2,4',1,60)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,2,'1,2,4',2,300)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,2,'1,2,4',3,600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,2,'1,2,4',4,1800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (1,2,'1,2,4',5,3600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,2,'1,2,4',1,60)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,2,'1,2,4',2,300)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,2,'1,2,4',3,600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,2,'1,2,4',4,1800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (2,2,'1,2,4',5,3600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,2,'1,2,4',1,60)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,2,'1,2,4',2,300)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,2,'1,2,4',3,600)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,2,'1,2,4',4,1800)",
+				"INSERT INTO escalation_profile_event (level_id, profile_id, event_id, priority_id, delay_time) VALUES (3,2,'1,2,4',5,3600)"
+
 			];
 
 			foreach ($queries as $query) {							

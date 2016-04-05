@@ -25,9 +25,9 @@ class ActivitiesManager {
         $activity->contact_id = isset($contact_id) ? $contact_id : Auth::user()->active_contact->id;
         $activity->method = Request::method();
         $activity->path = Request::path();
-        $activity->route = Request::route()->getName();
         $activity->request = json_encode($params);
         $activity->ip_address = Request::ip();
+        $activity->route = Request::route() ? Request::route()->getName() : NULL;
         $activity->text = $text;
 
         $activity->save();

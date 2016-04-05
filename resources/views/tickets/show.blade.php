@@ -257,7 +257,7 @@
 								
 								<div class="inline_switch">
 									<div class="inline_switch_input"> 
-										<input type="checkbox" id="email_account_manager" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->account_manager)) disabled @endif> 
+										<input type="checkbox" id="email_account_manager" name="emails[account_manager]" class="switch" data-off-text="Void" data-on-text="Send" value="true" @if (!isset($ticket->company->account_manager)) disabled @endif> 
 									</div>
 									
 									<div class="inline_switch_label" @if (!isset($ticket->company->account_manager)) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif >
@@ -268,7 +268,7 @@
 								
 								<div class="inline_switch">
 									<div class="inline_switch_input"> 
-										<input type="checkbox" id="email_company_group_email" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->company->group_email)) disabled @endif>  
+										<input type="checkbox" id="email_company_group_email" name="emails[company_group_email]" class="switch" data-off-text="Void" data-on-text="Send" value="true" @if (!isset($ticket->company->group_email)) disabled @endif>  
 									</div>
 									<div class="inline_switch_label" @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif > 
 										<div>Company group email:</div>
@@ -278,8 +278,8 @@
 
 								<div class="inline_switch">
 									<div class="inline_switch_input"> 
-										{!! Form::hidden("email_company_contact",null,["id" => "email_company_contact"]) !!}
-										<input type="checkbox"  id="fake_email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->contact->email)) disabled @endif> 
+										{!! Form::hidden("emails[company_contact]",null,["id" => "email_company_contact"]) !!}
+										<input type="checkbox"  id="fake_email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="true" @if (!isset($ticket->contact->email)) disabled @endif> 
 									</div>
 									<div class="inline_switch_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
 										<div>Contact reference:</div>
@@ -289,7 +289,7 @@
 
 								<div class="inline_switch">
 									<div class="inline_switch_input"> 
-										<input type="checkbox" id="email_ticket_emails" class="switch" data-off-text="Void" data-on-text="Send" value="" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
+										<input type="checkbox" id="email_ticket_emails" name="emails[ticket_emails]" class="switch" data-off-text="Void" data-on-text="Send" value="true" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
 									</div>
 									<div class="inline_switch_label" @if (!isset($ticket->emails) || $ticket->emails == '') data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif >
 										<div>Additional emails:</div>

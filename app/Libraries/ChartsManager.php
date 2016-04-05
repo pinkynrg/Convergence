@@ -189,7 +189,7 @@ class ChartsManager {
         return $chart->renderOptions();
     }
 
-    public static function statusCountPerDateData($status_id) {
+    public static function statusCountToDateData($status_id) {
         
         $min_datetime = DB::table('tickets')->min('created_at');
         $max_datetime = DB::table('tickets')->max('created_at');
@@ -228,7 +228,73 @@ class ChartsManager {
         return $result;
     }
 
-    public static function statusCountPerDate($status_id) {
+    public static function statusCountToDate($status_id) {
+        
+        $chart = new Highchart();
+
+        $status = DB::table('statuses')->where('id',$status_id)->get()[0];
+
+        $chart->title->text = $status->name." Tickets Count to Date";
+        
+        switch ($status_id) {
+            case TICKET_NEW_STATUS_ID: $chart->colors = ["#ECA9A9"]; break;             // pastel red
+            case TICKET_IN_PROGRESS_STATUS_ID: $chart->colors = ["#E4CFA1"]; break;     // pastel yellow
+            case TICKET_WFF_STATUS_ID: $chart->colors = ["#B6E2AB"]; break;             // pastel green
+            case TICKET_SOLVED_STATUS_ID: $chart->colors = ["#ABC1E2"]; break;          // pastel blue
+            case TICKET_CLOSED_STATUS_ID: $chart->colors = ["#9CA1AA"]; break;          // pastel gray
+        }
+
+        $chart->xAxis->type = "datetime";
+        $chart->legend->enabled = false;
+        $chart->credits->enabled = false;
+        $chart->series[0]->type = 'area';
+        $chart->chart->zoomType = 'xy';
+        $chart->plotOptions->area->marker->enabled = false;
+
+        $chart->series[0]->data = self::statusCountToDateData($status_id);
+
+        return $chart->renderOptions();
+    }
+
+    public static function statusCountPerDayData($status_id) {
+        
+        $min_datetime = DB::table('tickets')->min('created_at');
+        $max_datetime = DB::table('tickets')->max('created_at');
+
+        $min = Carbon::parse($min_datetime);
+        $max = Carbon::parse($max_datetime);
+
+        $data_set = collect(DB::select(
+            DB::raw("SELECT DATE(end) as date, 
+                    SUM(CASE 
+                        WHEN status_start = $status_id AND status_end IS NOT NULL THEN -1
+                        WHEN status_end = $status_id THEN 1 
+                        ELSE 0 
+                    END) as count
+                FROM (
+                    SELECT th1.created_at as start, th2.created_at as end,
+                    th1.ticket_id, th1.status_id as status_start, th2.status_id as status_end
+                    FROM tickets_history th1
+                    RIGHT JOIN tickets_history th2 ON th2.previous_id = th1.id
+                    LEFT JOIN tickets t ON t.id = th2.ticket_id AND t.deleted_at IS NULL
+                    WHERE t.id IS NOT NULL
+                    AND (th1.status_id != th2.status_id OR th1.status_id IS NULL)
+                ) u
+                GROUP BY DATE(end)")
+        ))->keyBy('date');
+
+        while ($min <= $max) {
+            $date = $min->addDay(1)->format('Y-m-d');
+            $count = isset($data_set[$date]) ? $data_set[$date]->count : 0;
+            $datetime = strtotime($date);
+            $datetime_utc = new HighchartJsExpr("Date.UTC(".date('Y',$datetime).",".(date('m',$datetime)-1).",".date('d,H,i,s',$datetime).")");
+            $result[] = [$datetime_utc,(int)$count];
+        }
+
+        return $result;
+    }
+
+    public static function statusCountPerDay($status_id) {
         
         $chart = new Highchart();
 
@@ -251,7 +317,7 @@ class ChartsManager {
         $chart->chart->zoomType = 'xy';
         $chart->plotOptions->area->marker->enabled = false;
 
-        $chart->series[0]->data = self::statusCountPerDateData($status_id);
+        $chart->series[0]->data = self::statusCountPerDayData($status_id);
 
         return $chart->renderOptions();
     }
