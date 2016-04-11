@@ -135,12 +135,18 @@ class EmailsManager {
 			foreach (self::$bcc_debug_mode as $bcc) self::add("bcc", $bcc);
 		}
 
-		Mail::send('emails/dummy', array('content' => self::$content), function($message) { 
-			$message->setBody(self::$content,'text/html');
-			if (isset(self::$to)) { $message->to(self::$to); }
-			if (isset(self::$cc)) { $message->cc(self::$cc); }
-			if (isset(self::$bcc)) { $message->bcc(self::$bcc); }
-			$message->subject(self::$subject);
+		$data['subject'] = self::$subject;
+		$data['content'] = self::$content;
+		$data['to'] = self::$to;
+		$data['cc'] = self::$cc;
+		$data['bcc'] = self::$bcc;
+
+		Mail::queue('emails/dummy', array('content' => $data['content']), function($message) use ($data) { 
+			$message->setBody($data['content'],'text/html');
+			$message->to($data['to']);
+			$message->cc($data['cc']);
+			$message->bcc($data['bcc']);
+			$message->subject($data['subject']);
 		});
 
 		self::clear();
