@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-use App\Libraries\SlackController;
+use App\Libraries\SlackManager;
 use App\Libraries\EmailsManager;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -71,7 +71,7 @@ class PostsController extends BaseController {
 		$this->updateTicket($request);
 
 		EmailsManager::sendPost($post->id, $request->get('emails'));
-		// SlackManager::sendPost($post);
+		SlackManager::sendPost($post);
 
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);
 	}

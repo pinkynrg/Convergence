@@ -32,19 +32,8 @@ class SlackManager {
 		$payload->attachments[0]->text = strip_tags($ticket->post);
 		
 		$payload_json = json_encode($payload);
-
-		switch ($ticket->division_id) {
-			case 1: $url = self::POST_TO_LGV_CHANNEL; break;		// LGV
-			case 2: $url = self::POST_TO_PLC_CHANNEL; break;		// PLC
-			case 3: $url = self::POST_TO_PC_CHANNEL; break;			// PC
-			case 5: $url = self::POST_TO_GENERAL_CHANNEL; break;	// BEMA
-			case 6: $url = self::POST_TO_GENERAL_CHANNEL; break;	// FIELD
-			case 7: $url = self::POST_TO_GENERAL_CHANNEL; break;	// OTHER
-			case 8: $url = self::POST_TO_GENERAL_CHANNEL; break;	// SPARE PARTS
-			case 9: $url = self::POST_TO_GENERAL_CHANNEL; break;	// RELIABILITY
-		}
-
-		$url = self::POST_TO_TEST_CHANNEL;
+		
+		$url = self::getChannel($ticket->division_id);
 
 		$response = self::apiCall($url,['payload' => $payload_json]);
 	}
@@ -70,20 +59,30 @@ class SlackManager {
 		
 		$payload_json = json_encode($payload);
 
-		switch ($post->ticket->division_id) {
-			case 1: $url = self::POST_TO_LGV_CHANNEL; break;		// LGV
-			case 2: $url = self::POST_TO_PLC_CHANNEL; break;		// PLC
-			case 3: $url = self::POST_TO_PC_CHANNEL; break;			// PC
-			case 5: $url = self::POST_TO_GENERAL_CHANNEL; break;	// BEMA
-			case 6: $url = self::POST_TO_GENERAL_CHANNEL; break;	// FIELD
-			case 7: $url = self::POST_TO_GENERAL_CHANNEL; break;	// OTHER
-			case 8: $url = self::POST_TO_GENERAL_CHANNEL; break;	// SPARE PARTS
-			case 9: $url = self::POST_TO_GENERAL_CHANNEL; break;	// RELIABILITY
-		}
-
-		$url = self::POST_TO_TEST_CHANNEL;
+		$url = self::getChannel($post->ticket->division_id);
 
 		$response = self::apiCall($url,['payload' => $payload_json]);
+	}
+
+	static protected function getChannel($division_id) {
+		
+		if (env('APP_DEBUG')) {
+			$url = self::POST_TO_TEST_CHANNEL;							// TEST
+		}
+		else {
+			switch ($ticket->division_id) {
+				case 1: $url = self::POST_TO_LGV_CHANNEL; break;		// LGV
+				case 2: $url = self::POST_TO_PLC_CHANNEL; break;		// PLC
+				case 3: $url = self::POST_TO_PC_CHANNEL; break;			// PC
+				case 5: $url = self::POST_TO_GENERAL_CHANNEL; break;	// BEMA
+				case 6: $url = self::POST_TO_GENERAL_CHANNEL; break;	// FIELD
+				case 7: $url = self::POST_TO_GENERAL_CHANNEL; break;	// OTHER
+				case 8: $url = self::POST_TO_GENERAL_CHANNEL; break;	// SPARE PARTS
+				case 9: $url = self::POST_TO_GENERAL_CHANNEL; break;	// RELIABILITY
+			}
+		}
+
+		return $url;
 	}
 
 	static protected function apiCall($url, $parameters = array())

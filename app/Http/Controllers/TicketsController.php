@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-use App\Libraries\SlackController;
+use App\Libraries\SlackManager;
 use App\Libraries\EmailsManager;
 use App\Http\Requests\CreateTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
@@ -250,7 +250,7 @@ class TicketsController extends BaseController {
        	$this->updateLinks($ticket);
    		$this->updateHistory($ticket); 
    		EmailsManager::sendTicket($ticket->id);
-		// SlackManager::sendTicket($ticket);
+		SlackManager::sendTicket($ticket);
 
         return redirect()->route('tickets.index')->with('successes',['Ticket created successfully']);
 	}
