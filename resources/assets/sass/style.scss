@@ -445,9 +445,9 @@ body {
 	margin-bottom: 5px;
 	&>li {
 		&>a {
-			padding-right: 10px;
-			padding-left: 10px;
+			padding: 7px;
 			color:inherit;
+			font-size: 12px;
 			margin: 0px 3px 0px 0px;
 			&.info, &.danger {
 				border-radius: 4px;
