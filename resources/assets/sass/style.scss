@@ -18,12 +18,15 @@ a, a:visited, a:link, a:active, a:visited { color: #181093; cursor: pointer; tex
 	margin: 0px;
 	&.thumb-xs {
 		width: 40px;
+		min-height: 40px;
 	}
 	&.thumb-sm {
 		width: 65px;
+		min-height: 65px;
 	}
 	&.thumb-md {
 		width: 90px;
+		min-height: 90px;
 	}
 }
 
