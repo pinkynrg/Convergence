@@ -1777,9 +1777,7 @@ class Tickets extends BaseClass {
 
 				$t['Ticket_Post'] = Purifier::clean($t['Ticket_Post']);
 
-				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] ? htmlToText($t['Ticket_Post']) : "";
 				// if the post without the html tags is an empty string, use title for both rich and raw posts
-				$t['Ticket_Post_Plain'] = $t['Ticket_Post'] == '' ? $t['Ticket_Title'] : $t['Ticket_Post_Plain'];
 				$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
 				$t['Deleted_At'] = $t['Deleted_Ticket'] == '1' ? $t['Date_Update'] : '';
 				$t['Status'] = $t['Status'] != '5' ? $t['Status'] : '3';
@@ -1801,8 +1799,8 @@ class Tickets extends BaseClass {
 
 				$t['Level'] = $t['Level'] == 'NULL' ? 1 : $t['Level'];
 
-				$query = "INSERT INTO tickets (id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at,deleted_at) 
-				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$t['Ticket_Post_Plain'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Level'].",".$t['Date_Creation'].",".$t['Date_Update'].",".$t['Deleted_At'].")";
+				$query = "INSERT INTO tickets (id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at,deleted_at) 
+				 		  VALUES (".$t['Id'].",".$t['Ticket_Title'].",".$t['Ticket_Post'].",".$creator_id.",".$assignee_id.",".$t['Status'].",".$t['Priority'].",".$t['Id_System'].",".$t['Id_Equipment'].",".$t['Id_Customer'].",".$contact_id.",".$t['Job_Type'].",".$t['Level'].",".$t['Date_Creation'].",".$t['Date_Update'].",".$t['Deleted_At'].")";
 								
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
@@ -1923,10 +1921,8 @@ class Posts extends BaseClass {
 				$p['Date_Creation'] = str_replace(".0000000","", $p['Date_Creation']);
 				$p['Post_Public'] = $p['Post_Public'] == '0' ? '2' : '3';
 				$p['Post'] = Purifier::clean($p['Post']);
-				$p['Post_Plain'] = $p['Post'] ? htmlToText($p['Post']) : "";
 
 				$p['Post'] = $p['Post'] == '' ? $p['Counter'] > 1 ? '<p>see attachments</p>' : '<p>see attachment</p>' : $p['Post'];
-				$p['Post_Plain'] = $p['Post_Plain'] == '' ? $p['Counter'] > 1 ? '<p>see attachments</p>' : '<p>see attachment</p>' : $p['Post_Plain'];
 
 				if ($p['Id_Customer_User'] != '') {
 					$subquery1 = mssql_query("SELECT * FROM Customer_User_Login WHERE Customer_Id = '".$p['Id_Customer_User']."'");
@@ -1944,7 +1940,6 @@ class Posts extends BaseClass {
 
 				if (strpos($p['Post'],"<p>Waiting for feedback") !== false) {
 					$p['Post'] = str_replace("Waiting for feedback: ", "", $p['Post']);
-					$p['Post_Plain'] = str_replace("Waiting for feedback: ","",$p['Post_Plain']);
 					$p['Ticket_Status_Id'] = TICKET_WFF_STATUS_ID;
 				}
 				else {
@@ -1956,8 +1951,8 @@ class Posts extends BaseClass {
 
 				$p = nullIt($p);
 
-				$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,status_id,ticket_status_id,created_at,updated_at) 
-						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Post_Plain'].",".$author_id.",".$p['Post_Public'].",".$p['Ticket_Status_Id'].",".$p['Date_Creation'].",".$p['Date_Creation'].")";
+				$query = "INSERT INTO posts (id,ticket_id,post,author_id,status_id,ticket_status_id,created_at,updated_at) 
+						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$author_id.",".$p['Post_Public'].",".$p['Ticket_Status_Id'].",".$p['Date_Creation'].",".$p['Date_Creation'].")";
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
@@ -1988,13 +1983,12 @@ class Posts extends BaseClass {
 
 				$p['Post'] = trim($p['Comment']) == "" ? "Ticket Closed" : $p['Comment'];
 				$p['Post'] = Purifier::clean($p['Post']);
-				$p['Post_Plain'] = $p['Post'] ? htmlToText($p['Post']) : "";
 				$assignee_id = findCompanyPersonId($p['Id_Assignee'],$this->manager->conn);
 
 				$p = nullIt($p);
 
-				$query = "INSERT INTO posts (ticket_id,post,post_plain_text,author_id,status_id,ticket_status_id,created_at,updated_at) 
-						  VALUES (".$p['Id'].",".$p['Post'].",".$p['Post_Plain'].",".$assignee_id.",3,".TICKET_SOLVED_STATUS_ID.",".$p['Date_Update'].",".$p['Date_Update'].")";
+				$query = "INSERT INTO posts (ticket_id,post,author_id,status_id,ticket_status_id,created_at,updated_at) 
+						  VALUES (".$p['Id'].",".$p['Post'].",".$assignee_id.",3,".TICKET_SOLVED_STATUS_ID.",".$p['Date_Update'].",".$p['Date_Update'].")";
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$this->successes++;
@@ -2070,8 +2064,8 @@ class TicketsHistory extends BaseClass {
 					$t = nullIt($t);
 					$ti = nullIt($ti);
 
-					$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
-					 		  VALUES (".$counter.",NULL,".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['post_plain_text'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$ti['level_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
+					$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+					 		  VALUES (".$counter.",NULL,".$t['Id_Ticket'].",".$changer_id.",".$ti['title'].",".$ti['post'].",".$ti['creator_id'].",".$assignee_id.",".$t['Id_Status'].",".$t['Id_Priority'].",".$t['Id_Division'].",".$ti['equipment_id'].",".$ti['company_id'].",".$ti['contact_id'].",".$ti['job_type_id'].",".$ti['level_id'].",".$t['date_time_formatted'].",".$t['date_time_formatted'].")";
 					 		  
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
 						$counter++;
@@ -2132,8 +2126,8 @@ class TicketsHistory extends BaseClass {
 
 				$t = nullIt($t);
 
-				$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
-						  VALUES (".$counter.",NULL,".$t['id'].",".$t['creator_id'].",".$t['title'].",".$t['post'].",".$t['post_plain_text'].",".$t['creator_id'].",0,".TICKET_REQUESTING_STATUS_ID.",0,0,0,".$t['company_id'].",".$t['contact_id'].",0,0,".$t['modified_time'].",".$t['modified_time'].")";
+				$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+						  VALUES (".$counter.",NULL,".$t['id'].",".$t['creator_id'].",".$t['title'].",".$t['post'].",".$t['creator_id'].",0,".TICKET_REQUESTING_STATUS_ID.",0,0,0,".$t['company_id'].",".$t['contact_id'].",0,0,".$t['modified_time'].",".$t['modified_time'].")";
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$counter++;
@@ -2164,8 +2158,8 @@ class TicketsHistory extends BaseClass {
 
 				$creator_id = isE80($t['creator_id'],$this->manager->conn) ? $t['creator_id'] : $t['assignee_id'];
 
-				$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
-						  VALUES (".$counter.",NULL,".$t['id'].",".$creator_id.",".$t['title'].",".$t['post'].",".$t['post_plain_text'].",".$t['creator_id'].",".$t['assignee_id'].",".TICKET_NEW_STATUS_ID.",".$t['priority_id'].",".$t['division_id'].",".$t['equipment_id'].",".$t['company_id'].",".$t['contact_id'].",".$t['job_type_id'].",".$t['level_id'].",".$t['created_at'].",".$t['created_at'].")";
+				$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+						  VALUES (".$counter.",NULL,".$t['id'].",".$creator_id.",".$t['title'].",".$t['post'].",".$t['creator_id'].",".$t['assignee_id'].",".TICKET_NEW_STATUS_ID.",".$t['priority_id'].",".$t['division_id'].",".$t['equipment_id'].",".$t['company_id'].",".$t['contact_id'].",".$t['job_type_id'].",".$t['level_id'].",".$t['created_at'].",".$t['created_at'].")";
 
 				if (mysqli_query($this->manager->conn,$query) === TRUE) {
 					$counter++;
@@ -2195,8 +2189,8 @@ class TicketsHistory extends BaseClass {
 					
 					$th = nullIt($th);
 
-					$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,post_plain_text,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
-						  VALUES (".$counter.",NULL,".$th['ticket_id'].",".$th['creator_id'].",".$th['title'].",".$th['post'].",".$th['post_plain_text'].",".$th['creator_id'].",".$th['assignee_id'].",".$record['status_id'].",".$th['priority_id'].",".$th['division_id'].",".$th['equipment_id'].",".$th['company_id'].",".$th['contact_id'].",".$th['job_type_id'].",".$th['level_id'].",".$th['modified_time'].",".$th['modified_time'].")";
+					$query = "INSERT INTO tickets_history (id,previous_id,ticket_id,changer_id,title,post,creator_id,assignee_id,status_id,priority_id,division_id,equipment_id,company_id,contact_id,job_type_id,level_id,created_at,updated_at) 
+						  VALUES (".$counter.",NULL,".$th['ticket_id'].",".$th['creator_id'].",".$th['title'].",".$th['post'].",".$th['creator_id'].",".$th['assignee_id'].",".$record['status_id'].",".$th['priority_id'].",".$th['division_id'].",".$th['equipment_id'].",".$th['company_id'].",".$th['contact_id'].",".$th['job_type_id'].",".$th['level_id'].",".$th['modified_time'].",".$th['modified_time'].")";
 
 					if (mysqli_query($this->manager->conn,$query) === TRUE) {
 						$counter++;

@@ -55,7 +55,7 @@
 	</table>
 		
 	<div class="post">
-		{{ $ticket->post_plain_text }}
+		{{ $ticket->post('html') }}
 	</div>
 	
 @endsection

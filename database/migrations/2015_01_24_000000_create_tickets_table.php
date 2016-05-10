@@ -18,7 +18,6 @@ class CreateTicketsTable extends Migration {
 			$table->increments('id');
 			$table->string('title');
 			$table->text('post');
-			$table->text('post_plain_text');
 			$table->integer('creator_id')->unsigned();
 			$table->integer('assignee_id')->unsigned();
 			$table->integer('status_id')->unsigned();

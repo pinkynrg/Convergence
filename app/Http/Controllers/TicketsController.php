@@ -205,7 +205,6 @@ class TicketsController extends BaseController {
 
 		$ticket->title = $request->get('title');
 		$ticket->post = $request->get('post');
-		$ticket->post_plain_text = $request->get('post') == "" ? "<p></p>" : Html2Text::convert($request->get('post'));
 		$ticket->creator_id = Auth::user()->active_contact->id;
 		$ticket->status_id = TICKET_DRAFT_STATUS_ID;
 		$ticket->assignee_id = $request->get('assignee_id');
@@ -232,7 +231,6 @@ class TicketsController extends BaseController {
 
 		$ticket->title = $request->get('title');
 		$ticket->post = $request->get('post');
-		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
 		$ticket->creator_id = Auth::user()->active_contact->id;
 		$ticket->status_id = TICKET_NEW_STATUS_ID;
 		$ticket->assignee_id = $request->get('assignee_id');
@@ -262,7 +260,6 @@ class TicketsController extends BaseController {
 		$ticket->company_id = $request->get('company_id');
 		$ticket->title = $request->get('title');
 		$ticket->post = $request->get('post');
-		$ticket->post_plain_text = Html2Text::convert($request->get('post'));
 		$ticket->assignee_id = $request->get('assignee_id');
 		$ticket->division_id = $request->get('division_id');
 		$ticket->equipment_id = $request->get('equipment_id');
@@ -340,7 +337,6 @@ class TicketsController extends BaseController {
 		$history->ticket_id = $ticket->id;
 		$history->title = $ticket->title;
 		$history->post = $ticket->post;
-		$history->post_plain_text = $ticket->post_plain_text;
 		$history->creator_id = $ticket->creator_id;
 		$history->assignee_id = $ticket->assignee_id;
 		$history->status_id = $ticket->status_id;

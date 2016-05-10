@@ -16,7 +16,6 @@ class CreatePostsTable extends Migration {
 			$table->increments('id');
 			$table->integer('ticket_id')->unsigned();
 			$table->text('post');
-			$table->text('post_plain_text');
 			$table->integer('author_id')->unsigned();
 			$table->integer('status_id')->unsigned();
 			$table->integer('ticket_status_id')->unsigned();

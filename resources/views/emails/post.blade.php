@@ -55,7 +55,7 @@
 		</tr>
 	</table>
 
-	<div class="post">{{ $post->ticket->post_plain_text }}</div>
+	<div class="post">{{ $post->ticket->post('html') }}</div>
 
 	<hr>
 
@@ -73,6 +73,6 @@
 		</tr>
 	</table>
 
-	<div class="post">{{ trim($post->post_plain_text) }}</div>
+	<div class="post">{{ trim($post->post('html')) }}</div>
 
 @endsection

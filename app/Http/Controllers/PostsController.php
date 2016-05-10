@@ -43,7 +43,6 @@ class PostsController extends BaseController {
 		$post = $draft ? $draft : new Post();
 		$post->ticket_id = $request->get('ticket_id');
 		$post->post = $request->get('post');
-		$post->post_plain_text = $request->get('post') == "" ? "<p></p>" : Html2Text::convert($request->get('post'));
 		$post->author_id = Auth::user()->active_contact->id;
 		$post->status_id = POST_DRAFT_STATUS_ID;
 		$post->ticket_status_id = $request->get('status_id');
@@ -61,7 +60,6 @@ class PostsController extends BaseController {
 		$post = $draft ? $draft : new Post();
 		$post->ticket_id = $request->get('ticket_id');
 		$post->post = $request->get('post');
-		$post->post_plain_text = Html2Text::convert($request->get('post'));
 		$post->author_id = Auth::user()->active_contact->id;
 		$post->status_id = $request->get('is_public') ? POST_PUBLIC_STATUS_ID : POST_PRIVATE_STATUS_ID;
 		$post->ticket_status_id = $request->get('status_id');
@@ -105,7 +103,6 @@ class PostsController extends BaseController {
 			$history->ticket_id = $ticket->id;
 			$history->title = $ticket->title;
 			$history->post = $ticket->post;
-			$history->post_plain_text = $ticket->post_plain_text;
 			$history->creator_id = $ticket->creator_id;
 			$history->assignee_id = $ticket->assignee_id;
 			$history->status_id = $ticket->status_id;

@@ -11,6 +11,11 @@ class SlackManager {
 	const POST_TO_PLC_CHANNEL = "https://hooks.slack.com/services/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";
 	const POST_TO_GENERAL_CHANNEL = "https://hooks.slack.com/services/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";
 
+	static function markDownToSlack($text) {
+		$text = str_replace("**","*",$text);
+		return $text;
+	}
+
 	static function sendTicket($ticket) {
 		
 		$payload = new \stdClass();
@@ -29,7 +34,7 @@ class SlackManager {
 		}
 
 		$payload->attachments[0]->title = $ticket->title;
-		$payload->attachments[0]->text = strip_tags($ticket->post);
+		$payload->attachments[0]->text = self::markDownToSlack($ticket->post);
 		
 		$payload_json = json_encode($payload);
 		
@@ -55,7 +60,7 @@ class SlackManager {
 			case 5: $payload->color = "#adebad"; break; //GREEN: information request
 		}
 
-		$payload->attachments[0]->text = strip_tags("*".$post->author->person->name().":* ".$post->post);
+		$payload->attachments[0]->text = self::markDownToSlack("*".$post->author->person->name().":* ".$post->post);
 		
 		$payload_json = json_encode($payload);
 

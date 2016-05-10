@@ -48,7 +48,6 @@ class TicketRequestsController extends Controller {
 		$ticket->company_id = Auth::user()->active_contact->company->id;
 		$ticket->contact_id = Auth::user()->active_contact->id;
 		$ticket->post = $post;
-		$ticket->post_plain_text = Html2Text::convert($post);
 
 		$ticket->status_id = TICKET_REQUESTING_STATUS_ID;
 		$ticket->assignee_id = 0;
@@ -73,7 +72,6 @@ class TicketRequestsController extends Controller {
 
 		$ticket->title = $request->get('title');
 		$ticket->post = $request->get('post');
-		$ticket->post_plain_text = "";
 		$ticket->creator_id = Auth::user()->active_contact->id;
 		$ticket->company_id = Auth::user()->active_contact->company->id;
 		$ticket->contact_id = Auth::user()->active_contact->id;
@@ -101,7 +99,6 @@ class TicketRequestsController extends Controller {
 		$history->ticket_id = $ticket->id;
 		$history->title = $ticket->title;
 		$history->post = $ticket->post;
-		$history->post_plain_text = $ticket->post_plain_text;
 		$history->creator_id = $ticket->creator_id;
 		$history->assignee_id = $ticket->assignee_id;
 		$history->status_id = $ticket->status_id;

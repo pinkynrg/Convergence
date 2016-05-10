@@ -49,7 +49,7 @@
 			@if (isset($important_post) && Auth::user()->can('read-all-post'))
 				<div class="alert alert-{{ $important_post->alert_type }}" role="{{ $important_post->alert_type }}"> 
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<div> <i class="fa fa-info-circle"></i> <b>TICKET IS {{ strtoupper($ticket->status->name) }}</b>: <br> {{ $important_post->post_plain_text }} </div>
+					<div> <i class="fa fa-info-circle"></i> <b>TICKET IS {{ strtoupper($ticket->status->name) }}</b>: <br> {!! $important_post->post('html') !!} </div>
 				</div>
 			@endif
 
