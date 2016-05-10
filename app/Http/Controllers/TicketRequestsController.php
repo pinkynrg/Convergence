@@ -1,7 +1,6 @@
 <?php namespace App\Http\Controllers;
 
 use Auth;
-use Html2Text\Html2Text;
 use App\Models\Ticket;
 use App\Models\TicketHistory;
 use App\Http\Requests\CreateTicketRequestRequest;

@@ -1,6 +1,5 @@
 <?php namespace App\Libraries;
 
-use Html2Text\Html2Text;
 use Purifier;
 use \ForceUTF8\Encoding;
 use League\HTMLToMarkdown\HtmlConverter;
@@ -83,11 +82,6 @@ function nullIt($row) {
 	}
 
 	return $row;
-}
-
-function htmlToText($html) {
-	$html = mb_convert_encoding($html, 'html-entities', mb_detect_encoding($html));
-	return  Html2Text::convert($html);
 }
 
 function findCompanyPersonIdFromOldUserCustomerId($id,$company_id,$conn) {

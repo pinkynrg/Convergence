@@ -5,7 +5,6 @@ use App\Libraries\EmailsManager;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\UpdatePostDraftRequest;
-use Html2Text\Html2Text;
 use App\Models\TicketHistory;
 use App\Models\Ticket;
 use App\Models\Post;

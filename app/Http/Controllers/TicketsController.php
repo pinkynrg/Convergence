@@ -21,7 +21,6 @@ use App\Models\TagTicket;
 use App\Models\Tag;
 use App\Models\Level;
 use App\Models\Post;
-use Html2Text\Html2Text;
 use Session;
 use Request;
 use Response;
