@@ -2,7 +2,7 @@
 	<div class="col-xs-12">
 		
 		{!! Form::BSGroup() !!}
-			{!! Form::BSTextArea('post',null,['id' => 'post', 'data-provide' => 'markdown']) !!}
+			{!! Form::BSTextArea('post',null,['id' => 'post']) !!}
 		{!! Form::BSEndGroup() !!}
 		
 		{!! Form::dropZone() !!}

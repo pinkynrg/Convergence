@@ -985,6 +985,8 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 
 	fillSelectFields();
 
+	$("#post").markdown();
+
 	$("#ticket_form").submit(function() {
 		clearInterval(ticket_draft_routine);
 	});
@@ -1048,9 +1050,12 @@ if (url.target == "tickets" && url.target_action == "show") {
 		clearForm($(this));
 	});
 
-	$("textarea#post").change(function () {
-		if (url.target == "tickets" && url.target_action == "show") {			
-			savePostDraft();
+	$("#post").markdown({
+		onChange: function(e) {
+			clearInterval(post_draft_routine);
+			if (url.target == "tickets" && url.target_action == "show") {			
+				savePostDraft();
+			}
 		}
 	});
 
@@ -1098,6 +1103,10 @@ if (url.target == "ticket-requests" && url.target_action == "create") {
 			$("#"+key).val(questions[key]);
 		}
 	}
+}
+
+if (url.target == "posts" && url.target_action == "edit") {
+	$("#post").markdown();
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

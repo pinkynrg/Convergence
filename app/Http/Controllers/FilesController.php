@@ -42,9 +42,7 @@ class FilesController extends Controller {
 		    else {
 	    		$ticket = Ticket::where("id",$target_id)->first();
 		    }
-
-	    	$id = $ticket->id;
-
+		    $id = isset($ticket->id) ? $ticket->id : null;
 		}
 		elseif ($target == "people") {
 			$target_id = is_null($target_id) ? Auth::user()->owner->id : $target_id;
