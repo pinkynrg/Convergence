@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="/css/bootstrap-slider.css">
 <link rel="stylesheet" href="/css/dropzone.css">
 <link rel="stylesheet" href="/css/blueimp-gallery.css">
+<link rel="stylesheet" href="/css/bootstrap-markdown.min.css">
 <link rel="stylesheet" href="/css/style.css">
 
 <!-- Scripts -->
@@ -35,7 +36,10 @@
 <script src="/javascript/blueimp-gallery.js"></script>
 <script src="/javascript/jquery.blueimp-gallery.js"></script>
 <script src="/javascript/responsive-paginate.js"></script>
-<script src="/ckeditor/ckeditor.js"></script>
+<script src="/javascript/markdown.js"></script>
+<script src="/javascript/to-markdown.js"></script>
+<script src="/javascript/bootstrap-markdown.js"></script>
+
 <script src="/javascript/script.js"></script>
 
 <link rel="shortcut icon" href="{{ asset('/resources/style/favicon.ico') }}">

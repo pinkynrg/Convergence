@@ -93,6 +93,9 @@ input, textarea, select, button, .bootstrap-tagsinput {
 		&[disabled] {
 			background-color: $gray !important;
 		}
+		&:focus {
+			background-color: #FFF !important;
+		}
 	}
 }
 
@@ -832,6 +835,19 @@ body {
 	}
 } 
 
+.md-editor {
+	&.active {
+		textarea:focus {
+			background-color: #FFF!important;
+		}
+	}
+	textarea, .md-preview {
+		padding: 10px;
+		border: none;
+		border-top: 1px solid #ddd;
+	}
+}
+
 // bootstrap autocomplete
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; cursor: default; overflow: auto; -webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); -moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); }
 .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
@@ -842,6 +858,29 @@ body {
 .autocomplete-group strong { font-weight: bold; font-size: 16px; color: #000; display: block; border-bottom: 1px solid #000; }
 
 // media queries
+@media (max-width: 320px) {
+	.ajax_pagination ul {
+		display: inline-block;
+    	margin: auto !important; 
+	}
+}
+
+@media (max-width: 750px) {
+    .slider_container {
+		margin: auto; 
+		text-align: center;
+		margin-bottom: 40px!important;
+	}
+	.slider-tick-label {
+		-webkit-transform: rotate(30deg);
+		-moz-transform: rotate(30deg);
+		-ms-transform: rotate(30deg);
+		-o-transform: rotate(30deg);
+		filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+		margin-top: 10px;
+	}
+}
+
 @media (max-width: 768px) {
 	body {
 		#logo {
@@ -901,22 +940,6 @@ body {
 	}
 }
 
-@media (max-width: 750px) {
-    .slider_container {
-		margin: auto; 
-		text-align: center;
-		margin-bottom: 40px!important;
-	}
-	.slider-tick-label {
-		-webkit-transform: rotate(30deg);
-		-moz-transform: rotate(30deg);
-		-ms-transform: rotate(30deg);
-		-o-transform: rotate(30deg);
-		filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-		margin-top: 10px;
-	}
-}
-
 @media (max-width: 800px) {
 	#company_profile {
 		#profile_picture {
@@ -926,12 +949,5 @@ body {
 			padding-right: 0px;
 			border: 0px;
 		}
-	}
-}
-
-@media (max-width: 320px) {
-	.ajax_pagination ul {
-		display: inline-block;
-    	margin: auto !important; 
 	}
 }

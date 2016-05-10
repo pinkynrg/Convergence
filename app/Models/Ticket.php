@@ -35,6 +35,18 @@ class Ticket extends CustomModel {
 		return strlen($this->title) > 30 ? substr($this->title,0,30)."..." : $this->title;
 	}
 
+	public function post($type = null) {
+
+		$parsedown = new \Parsedown();
+
+		switch ($type) {
+			case 'html': $post = $parsedown->text($this->post); break;
+			default : $post = $this->post; break;
+		}
+
+		return $post;
+	}
+
 	public function priority()
 	{
 		return $this->belongsTo('App\Models\Priority');		

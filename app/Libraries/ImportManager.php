@@ -3,6 +3,7 @@
 use Html2Text\Html2Text;
 use Purifier;
 use \ForceUTF8\Encoding;
+use League\HTMLToMarkdown\HtmlConverter;
 
 function logMessage($message,$type = 'normal') {
 	$message = str_replace(["\t"], '', $message);
@@ -20,30 +21,55 @@ function logMessage($message,$type = 'normal') {
 	echo RESET_COLOR;
 }
 
+function isHTML($str) { return preg_match( "/\/[a-z]*>/i", $str ) != 0; }
+
 function sanitize($row) {
 	
+
 	foreach ($row as $key => $value) {
+
+		$test = false && $key == "Post";
+
 		$row[$key] = strtolower($row[$key]) == 'na' ? '' : $row[$key];
+		if ($test) echo '1) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == 'n/a' ? '' : $row[$key];
+		if ($test) echo '2) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == 'test' ? '' : $row[$key];
+		if ($test) echo '3) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == 'void' ? '' : $row[$key];
+		if ($test) echo '4) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == 'test - void' ? '' : $row[$key];
+		if ($test) echo '5) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == 'tba' ? '' : $row[$key];
+		if ($test) echo '6) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == 'tbd' ? '' : $row[$key];
+		if ($test) echo '7) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
+		if ($test) echo '8) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
+		if ($test) echo '9) '.$row[$key]."\n";
 		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
-		// $row[$key] = nl2br($row[$key]);																	// replace \n\r \n with <br>
-		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', ' ', $row[$key]);								// removed non-UTF8 chartacters
+		if ($test) echo '10) '.$row[$key]."\n";
+		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '<br>', $row[$key]);							// removed non-UTF8 chartacters
+		if ($test) echo '11) '.$row[$key]."\n";
+		$row[$key] = str_replace('&nbsp;',' ',$row[$key]);													// removed html space
+		if ($test) echo '12) '.$row[$key]."\n";
 		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]);													// removed redundand spaces
+		if ($test) echo '13) '.$row[$key]."\n";
 		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){2,}/', '<br />', $row[$key]);						// replace redundant <br>, space ...
+		if ($test) echo '14) '.$row[$key]."\n";
 		$row[$key] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $row[$key]);								// removed br from end post -->
+		if ($test) echo '15) '.$row[$key]."\n";
 		$row[$key] = preg_replace('/<img[^>]+\>/i', '', $row[$key]);  										// remove all image tags
-		$row[$key] = str_replace('&nbsp;','',$row[$key]);													// removed html space
+		if ($test) echo '16) '.$row[$key]."\n";
 		$row[$key] = str_replace('&#65533;','',$row[$key]);													// removed html placeholder
+		if ($test) echo '17) '.$row[$key]."\n";
 		$row[$key] = str_replace('<p></p>','',$row[$key]);													// removed html placeholder
+		if ($test) echo '18) '.$row[$key]."\n";
 		$row[$key] = Encoding::toUTF8($row[$key]);															// fixes broken UTF8 characters
+		if ($test) echo '19) '.$row[$key]."\n";
 		$row[$key] = trim(trim($row[$key]));
+		if ($test) echo '20) '.$row[$key]."\n";
 	}
 
 	return $row;
@@ -1706,12 +1732,15 @@ class Tickets extends BaseClass {
 
 	public function importSelf() {
 
+		$converter = new HtmlConverter();
+
 		$query = mssql_query("SELECT Tickets.*, f.Id as fid, f.Question_01, f.Question_02, 
 							  f.Question_03, f.Question_04, f.Question_05, f.Id_Customer_User FROM Tickets 
 							  LEFT JOIN Help_Desk_Form f ON f.id = Tickets.Id_Ticket_Request
 							  WHERE Creator != 0 AND Creator IS NOT NULL
 							  AND Status != 0 AND Status IS NOT NULL
-							  AND Priority != 0 AND Priority IS NOT NULL");
+							  AND Priority != 0 AND Priority IS NOT NULL
+							  AND Tickets.Id = 3944");
 
 		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
 
@@ -1755,6 +1784,9 @@ class Tickets extends BaseClass {
 				$t['Ticket_Post'] = $t['Ticket_Post'] == '' ? Purifier::clean($t['Ticket_Title']) : $t['Ticket_Post'];
 				$t['Deleted_At'] = $t['Deleted_Ticket'] == '1' ? $t['Date_Update'] : '';
 				$t['Status'] = $t['Status'] != '5' ? $t['Status'] : '3';
+
+				//convert from html to markdown
+				$t['Ticket_Post'] = $converter->convert($t['Ticket_Post']);
 
 				$t = nullIt($t);
 
@@ -1871,6 +1903,8 @@ class Posts extends BaseClass {
 
 	public function importSelf() {
 
+		$converter = new HtmlConverter();
+
 		$query = mssql_query("SELECT p.*, d.Counter FROM Posts p
 							LEFT JOIN (SELECT Second_Id, count(*) Counter FROM Documents WHERE Type = 'post' GROUP BY Second_Id) d ON d.Second_Id = p.Id 
 							WHERE (p.Post IS NOT NULL AND p.Post NOT LIKE '')
@@ -1909,8 +1943,6 @@ class Posts extends BaseClass {
 					$author_id = findCompanyPersonId($p['Author'],$this->manager->conn);
 				}
 
-				$p = nullIt($p);
-
 				if (strpos($p['Post'],"<p>Waiting for feedback") !== false) {
 					$p['Post'] = str_replace("Waiting for feedback: ", "", $p['Post']);
 					$p['Post_Plain'] = str_replace("Waiting for feedback: ","",$p['Post_Plain']);
@@ -1919,6 +1951,11 @@ class Posts extends BaseClass {
 				else {
 					$p['Ticket_Status_Id'] = TICKET_IN_PROGRESS_STATUS_ID;	
 				}
+
+				//convert from html to markdown
+				$p['Post'] = $converter->convert($p['Post']);
+
+				$p = nullIt($p);
 
 				$query = "INSERT INTO posts (id,ticket_id,post,post_plain_text,author_id,status_id,ticket_status_id,created_at,updated_at) 
 						  VALUES (".$p['Id'].",".$p['Id_Ticket'].",".$p['Post'].",".$p['Post_Plain'].",".$author_id.",".$p['Post_Public'].",".$p['Ticket_Status_Id'].",".$p['Date_Creation'].",".$p['Date_Creation'].")";
@@ -1930,6 +1967,7 @@ class Posts extends BaseClass {
 					$this->errors++;
 					if ($this->debug) {
 						logMessage("DEBUG: ".mysqli_error($this->manager->conn)." [Post ID = ".$p['Id']."]");
+						echo $p['Post'];
 						if (!isset($ids)) $ids = ''; $ids .= $p['Id'].",";
 					}
 				}

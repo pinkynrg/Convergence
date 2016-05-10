@@ -21,4 +21,16 @@ class Post extends CustomModel {
 		return $this->morphMany('App\Models\File','resource');
 	}
 
+	public function post($type = null) {
+
+		$parsedown = new \Parsedown();
+
+		switch ($type) {
+			case 'html': $post = $parsedown->text($this->post); break;
+			default : $post = $this->post; break;
+		}
+
+		return $post;
+	}
+
 }

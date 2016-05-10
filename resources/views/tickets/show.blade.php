@@ -31,7 +31,7 @@
 					</div>
 				</div>
 
-				<div id="ticket_post"> {!! $ticket->post !!} </div>
+				<div id="ticket_post"> {!! $ticket->post('html') !!} </div>
 
 				@include('files.attachments',['attachments' => $ticket->attachments])
 

@@ -416,7 +416,7 @@ var activateTicketDraftMode = function() {
 			'linked_tickets_id' : $("input#linked_tickets_id").val() ? $("input#linked_tickets_id").val() : '',
 			'title' 			: $("input#title").val() ? $("input#title").val() : '',
 			'assignee_id' 		: $("select#assignee_id").val() ? $("select#assignee_id").val() : dummy_id,
-			'post' 				: CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '',
+			'post' 				: $("textarea#post").val() ? $("textarea#post").val() : '',
 			'tagit' 			: $("input#tagit").val() ? $("input#tagit").val() : '',
 			'division_id' 		: $("select#division_id").val() ? $("select#division_id").val() : dummy_id,
 			'level_id' 			: $("select#level_id").val() ? $("select#level_id").val() : dummy_id,
@@ -450,7 +450,7 @@ var savePostDraft = function(callback) {
 
 		var data = {
 			'ticket_id' : url.target_id,
-			'post' : CKEDITOR.instances['post'].getData() ? CKEDITOR.instances['post'].getData() : '',
+			'post' : $("textarea#post").val() ? $("textarea#post").val() : '',
 			'status_id' : dummy_id,
 			'priority_id' : dummy_id
 		}
@@ -480,10 +480,6 @@ var clearForm = function($clicked) {
 	$form.find("input[type='text']").val("");
 	$form.find("select").val("");
 	$form.find("textarea").val("");
-	
-	if ($("textarea#post").length != 0) {
-		CKEDITOR.instances['post'].setData("");
-	}
 	
 	// remove attached images if any
 	var remove_links = document.getElementsByClassName("dz-remove");
@@ -823,11 +819,8 @@ $('.datepicker').datepicker({ autoclose: true });
 // bootstrap tooltips
 $('[data-toggle="tooltip"]').tooltip();   
 
-	// bootstrap popover
+// bootstrap popover
 $('[data-toggle="popover"]').popover();
-
-// ckeditor
-if ($("textarea#post").length != 0) { CKEDITOR.replace('post'); }
 
 // bootstrap switch
 $("input.switch").bootstrapSwitch({radioAllOff:true});
@@ -1051,13 +1044,11 @@ if (url.target == "tickets" && url.target_action == "show") {
 		clearForm($(this));
 	});
 
-	if (typeof CKEDITOR.instances['post'] != 'undefined') {														// if it is supported
-		CKEDITOR.instances['post'].on('change',function () {
-			if (url.target == "tickets" && url.target_action == "show") {			
-				savePostDraft();
-			}
-		});
-	}
+	$("textarea#post").change(function () {
+		if (url.target == "tickets" && url.target_action == "show") {			
+			savePostDraft();
+		}
+	});
 
 	$("#fake_is_public").on('switchChange.bootstrapSwitch',function() {											// if toggle public
 		var current = $(this).bootstrapSwitch('state');

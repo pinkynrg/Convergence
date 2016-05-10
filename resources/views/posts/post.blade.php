@@ -22,7 +22,7 @@
 			@endif
 		</div>
 	</div>
-	<div class="post_content"> {!! $post->post !!} </div>
+	<div class="post_content"> {!! $post->post('html') !!} </div>
 	@include('files.attachments', array("attachments" => $post->attachments))
 </div>
 

@@ -30,13 +30,14 @@
     "dropzone": "^4.3.0",
     "bootstrap-switch": "^3.3.2",
     "seiyria-bootstrap-slider": "^6.1.6",
-    "ckeditor": "^4.5.7",
     "bootstrap3-typeahead": "^4.0.1",
     "jquery-prevent-double-submit": "^1.0.1",
     "highcharts": "highcharts.com#^4.2.3",
     "rpage": "*",
     "jquery-cookie": "https://github.com/carhartl/jquery-cookie",
-    "js-cookie": "^2.1.0"
+    "js-cookie": "^2.1.0",
+    "bootstrap-markdown": "^2.10.0",
+    "to-markdown": "^3.0.0"
   },
   "resolutions": {
     "jquery": ">= 1.9.0"
@@ -60,7 +61,7 @@
     "bootstrap-grid-ms": {
       "main": []
     },
-     "jquery": {
+    "jquery": {
       "main": [
         "jquery.js",
         "jquery-migrate.js"
