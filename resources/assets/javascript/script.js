@@ -690,7 +690,11 @@ function setupStatusSlider() {
 		$.get('/API/tickets/find?id='+url.target_id, function (data) {
 
 			status_id = data.status_id;
-			allowed_statuses = data.allowed_statuses.split(",");
+			
+			allowed_statuses = $.map(data.allowed_statuses.split(","), function(value) {
+				return parseInt(value,10);
+			});
+
 			tick = statusSliderMapper(status_id,false);
 
 			// if current status id of the ticket can stay the way it is keep the same value, 
