@@ -2959,6 +2959,9 @@ class Thumbnails extends BaseClass {
 					$deleted_fs++;
 				} else {
 					$this->errors++;
+					if ($this->debug) {
+						logMessage("DEBUG: Unable to delete ".$file_path);
+					}
 				}
 			}
 			else $delete_db_record = true;
