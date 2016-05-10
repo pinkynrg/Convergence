@@ -1739,8 +1739,7 @@ class Tickets extends BaseClass {
 							  LEFT JOIN Help_Desk_Form f ON f.id = Tickets.Id_Ticket_Request
 							  WHERE Creator != 0 AND Creator IS NOT NULL
 							  AND Status != 0 AND Status IS NOT NULL
-							  AND Priority != 0 AND Priority IS NOT NULL
-							  AND Tickets.Id = 3944");
+							  AND Priority != 0 AND Priority IS NOT NULL");
 
 		while ($row = mssql_fetch_array($query, MSSQL_ASSOC)) $table[] = $row;
 
