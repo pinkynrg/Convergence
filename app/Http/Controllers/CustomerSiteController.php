@@ -12,7 +12,7 @@ class CustomerSiteController extends Controller {
 	}
 
 	public function helpdesk() {
-		$this->data['title'] = "Convergence ~ Helpdesk Support";
+		$this->data['title'] = "Convergence - Customer Service";
         return view('public/helpdesk', $this->data);
 	}
 
