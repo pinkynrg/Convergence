@@ -55,7 +55,7 @@
 		</tr>
 	</table>
 
-	<div class="post">{{ $post->ticket->post('html') }}</div>
+	<div class="post">{!! $post->ticket->post('html') !!}</div>
 
 	<hr>
 
