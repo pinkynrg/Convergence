@@ -73,6 +73,6 @@
 		</tr>
 	</table>
 
-	<div class="post">{{ trim($post->post('html')) }}</div>
+	<div class="post">{!! trim($post->post('html')) !!}</div>
 
 @endsection
