@@ -3117,9 +3117,8 @@ class Thumbnails extends BaseClass {
 					$remove_from_temp = TEMP.DS.$path_info['filename'].".png";
 				} 
 				else {
-					$command = "~";
-					$image['file_name'] .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
-					$source = $path;
+					$path .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
+                	$source = $path;
 				}
 
 				$destination = THUMBNAILS.DS.$path_info['filename'].".png";

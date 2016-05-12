@@ -160,6 +160,7 @@ class FilesRepository
     private function createThumbnail($file) {
 
         $response = false;
+        $remove_from_temp = false;
 
         $path_info = pathinfo($file['file_name']);
 
@@ -172,15 +173,16 @@ class FilesRepository
                 $command = env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".TEMP." ".$path." > /dev/null";
                 exec($command);
                 $source = TEMP.DS.$path_info['filename'].".pdf[0]";
+                $remove_from_temp = TEMP.DS.$path_info['filename'].".pdf";
             } 
             elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
                 $command = env('FFMPEG','ffmpeg')." -i ".$path." -ss 00:00:01.000 -vframes 1 ".TEMP.DS.$path_info['filename'].".png > /dev/null";
                 exec($command);
                 $source = TEMP.DS.$path_info['filename'].".png";
+                $remove_from_temp = $source;
             } 
             else {
-                $source_file = $file['file_name'];
-                $source_file .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
+                $path .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
                 $source = $path;
             }
 
@@ -190,6 +192,10 @@ class FilesRepository
             $result = exec($command2);
 
             if (file_exists($destination)) {
+
+                if (file_exists($destination)) {
+                    if ($remove_from_temp) unlink($remove_from_temp);
+                }
 
                 $thumbnail = new File();
                 $thumbnail->name = $file['name'];
