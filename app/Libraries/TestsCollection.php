@@ -91,11 +91,5 @@ $tests[] = array(
 	'O' => "Customer emailed :  \n1. \"SA176883 deposited in bay BS4526-03 on 6-1-2013 @ 11:30am\"  \n2. \"SA176884 deposited in bay BS4503-01 by LGV 9 on 6-01-2013 @ 11:45 am\"  \n3. \"SA178090 deposited in bay BS3205-04 by LGV 14 on 6-1-2013 @ 2:05pm\"  \n4. \"LGV 14 stopped in bay BS4542-01 while trying to pick up two pallets of the Sparkle(r) item 21650511. There was a good LPN and a bad LPN in the double stack. The good LPN that contained all the information was SA178613. The other pallet in the double stack that only had pallet information in E-80 was SA178612. The mission on LGV 14 was canceled around 7:15 on 6-2-2013 and the pallets were sent to the Carwash to be I'd. \"  \n5. \"There were loads allocated and LGV 12 was going to a bay. LGV 12 dropped off pallet SA176881 in bay BS4537-04 around 1:40pm on 6-2-2013. The LGV was moving a single pallet. Again this pallet only had information in E-80 and not Red Prairie.\"  \n6. \"SA177097 dropped off by LGV 27 in bay BS4517-01 at 6:10 pm on 6-2-2013  \n  \nSA176882 dropped off by LGV 19 in bay BS4521-02 at 6:15 pm on 6-2-2013\""
 );
 
-$tests[] = array(
-	'I' => "QUERY|POSTS|3053",
-	'O' => ""
-);
-
-
 
 ?>
