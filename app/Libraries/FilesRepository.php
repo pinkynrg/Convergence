@@ -165,27 +165,27 @@ class FilesRepository
 
         if (!in_array($path_info['extension'],['zip','7z','rar','pam','tgz','bz2','iso','ace'])) 
         {
-            $path = $file['file_path'].DS.$file['file_name'];
+            $path = RESOURCES.DS.$file['file_path'].DS.$file['file_name'];
         
             if (in_array($path_info['extension'],['xlsx','xls','docx','doc','odt','ppt','pptx','pps','ppsx','txt','csv','log'])) 
             {
-                $command = "sudo ".env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".base_path().DS."public".DS."tmp ".base_path().DS."public".DS.$path;
+                $command = env('LIBREOFFICE','soffice')." --headless --convert-to pdf:writer_pdf_Export --outdir ".TEMP." ".$path." > /dev/null";
                 exec($command);
-                $source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".pdf[0]";
+                $source = TEMP.DS.$path_info['filename'].".pdf[0]";
             } 
             elseif (in_array($path_info['extension'],['mp4','mpg','avi','mkv','flv','xvid','divx','mpeg','mov','vid','vob'])) {
-                $command = "sudo ".env('FFMPEG','ffmpeg')." -i ".base_path().DS."public".DS.$path." -ss 00:00:01.000 -vframes 1 ".base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
+                $command = env('FFMPEG','ffmpeg')." -i ".$path." -ss 00:00:01.000 -vframes 1 ".TEMP.DS.$path_info['filename'].".png > /dev/null";
                 exec($command);
-                $source = base_path().DS."public".DS."tmp".DS.$path_info['filename'].".png";
+                $source = TEMP.DS.$path_info['filename'].".png";
             } 
             else {
                 $source_file = $file['file_name'];
                 $source_file .= $path_info["extension"] == "pdf" ? "[0]" : ""; 
-                $source = base_path().DS."public".DS.$file['file_path'].DS.$source_file;
+                $source = $path;
             }
 
             $destination = THUMBNAILS.DS.$path_info['filename'].".png";
-            $command2 = "sudo ".env('CONVERT','convert')." -resize '384x384' $source $destination";
+            $command2 = env('CONVERT','convert')." -resize '384x384' $source $destination";
             
             $result = exec($command2);
 
