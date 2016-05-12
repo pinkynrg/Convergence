@@ -24,60 +24,104 @@ function isHTML($str) { return preg_match( "/\/[a-z]*>/i", $str ) != 0; }
 
 function sanitize($row) {
 	
-
 	foreach ($row as $key => $value) {
-
-		$test = false && $key == "Post";
-
-		$row[$key] = strtolower($row[$key]) == 'na' ? '' : $row[$key];
-		if ($test) echo '1) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == 'n/a' ? '' : $row[$key];
-		if ($test) echo '2) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == 'test' ? '' : $row[$key];
-		if ($test) echo '3) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == 'void' ? '' : $row[$key];
-		if ($test) echo '4) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == 'test - void' ? '' : $row[$key];
-		if ($test) echo '5) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == 'tba' ? '' : $row[$key];
-		if ($test) echo '6) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == 'tbd' ? '' : $row[$key];
-		if ($test) echo '7) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == 'unknown' ? '' : $row[$key];
-		if ($test) echo '8) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == '1900-01-01' ? '' : $row[$key];
-		if ($test) echo '9) '.$row[$key]."\n";
-		$row[$key] = strtolower($row[$key]) == '1970-01-01' ? '' : $row[$key];
-		if ($test) echo '10) '.$row[$key]."\n";
-		$row[$key] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '<br>', $row[$key]);							// removed non-UTF8 chartacters
-		if ($test) echo '11) '.$row[$key]."\n";
-		$row[$key] = str_replace('&nbsp;',' ',$row[$key]);													// removed html space
-		if ($test) echo '12) '.$row[$key]."\n";
-		$row[$key] = preg_replace('!\s+!', ' ',$row[$key]);													// removed redundand spaces
-		if ($test) echo '13) '.$row[$key]."\n";
-		$row[$key] = preg_replace('/(<br[\s]?[\/]?>[\s]*){2,}/', '<br />', $row[$key]);						// replace redundant <br>, space ...
-		if ($test) echo '14) '.$row[$key]."\n";
-		$row[$key] = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $row[$key]);								// removed br from end post -->
-		if ($test) echo '15) '.$row[$key]."\n";
-		$row[$key] = preg_replace('/<img[^>]+\>/i', '', $row[$key]);  										// remove all image tags
-		if ($test) echo '16) '.$row[$key]."\n";
-		$row[$key] = str_replace('&#65533;','',$row[$key]);													// removed html placeholder
-		if ($test) echo '17) '.$row[$key]."\n";
-		$row[$key] = str_replace('<p></p>','',$row[$key]);													// removed html placeholder
-		if ($test) echo '18) '.$row[$key]."\n";
-		$row[$key] = Encoding::toUTF8($row[$key]);															// fixes broken UTF8 characters
-		if ($test) echo '19) '.$row[$key]."\n";
-		$row[$key] = trim(trim($row[$key]));
-		if ($test) echo '20) '.$row[$key]."\n";
+		$row[$key] = sanitizeElement($row[$key]);
 	}
 
 	return $row;
+}
+
+function sanitizeElement($elem) {
+
+	$test = false;
+		
+	$elem = str_replace("‘","'",$elem);
+	if ($test) echo '-3) '.json_encode($elem)."\n";
+	$elem = str_replace("’","'",$elem);
+	if ($test) echo '-2) '.json_encode($elem)."\n";
+	$elem = str_replace("“","\"",$elem);
+	if ($test) echo '-1) '.json_encode($elem)."\n";
+	$elem = str_replace("”","\"",$elem);
+	if ($test) echo '0) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == 'na' ? '' : $elem;
+	if ($test) echo '1) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == 'n/a' ? '' : $elem;
+	if ($test) echo '2) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == 'test' ? '' : $elem;
+	if ($test) echo '3) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == 'void' ? '' : $elem;
+	if ($test) echo '4) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == 'test - void' ? '' : $elem;
+	if ($test) echo '5) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == 'tba' ? '' : $elem;
+	if ($test) echo '6) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == 'tbd' ? '' : $elem;
+	if ($test) echo '7) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == 'unknown' ? '' : $elem;
+	if ($test) echo '8) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == '1900-01-01' ? '' : $elem;
+	if ($test) echo '9) '.json_encode($elem)."\n";
+	$elem = strtolower($elem) == '1970-01-01' ? '' : $elem;
+	if ($test) echo '10) '.json_encode($elem)."\n";
+	$elem = preg_replace("/[\r]+/", "", $elem);
+	if ($test) echo '11) '.json_encode($elem)."\n";
+	$elem = isHTML($elem) ? preg_replace("/[\n]+/", "", $elem) : preg_replace("/[\n]/", "<br>", $elem);
+	if ($test) echo '12) '.json_encode($elem)."\n";
+	$elem = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $elem); 									// removed non-UTF8 chartacters
+	if ($test) echo '13) '.json_encode($elem)."\n";
+	$elem = str_replace('&nbsp;',' ',$elem);													// removed html space
+	if ($test) echo '14) '.json_encode($elem)."\n";
+	$elem = preg_replace('!\s+!', ' ',$elem);													// removed redundand spaces
+	if ($test) echo '15) '.json_encode($elem)."\n";
+	$elem = preg_replace('/(<br[\s]?[\/]?>[\s]*){3,}/', '<br /><br />', $elem);					// replace redundant <br>, space ...
+	if ($test) echo '16) '.json_encode($elem)."\n";
+	$elem = preg_replace('/<br[\s]?[\/]?>[\s]*$/', '', $elem);									// removed br from end post -->
+	if ($test) echo '17) '.json_encode($elem)."\n";
+	$elem = preg_replace('/<img[^>]+\>/i', '', $elem);  										// remove all image tags
+	if ($test) echo '18) '.json_encode($elem)."\n";
+	$elem = str_replace('&#65533;',' ',$elem);													// removed html placeholder
+	if ($test) echo '19) '.json_encode($elem)."\n";
+	$elem = str_replace('&#65535;','',$elem);													// removed html placeholder
+	if ($test) echo '20) '.json_encode($elem)."\n";
+	$elem = str_replace('<p></p>','',$elem);													// removed html placeholder
+	if ($test) echo '21) '.json_encode($elem)."\n";
+	$elem = Encoding::toUTF8($elem);															// fixes broken UTF8 characters
+	if ($test) echo '23) '.json_encode($elem)."\n";
+	$elem = str_replace(" dont"," don't",$elem);												// grammar 1
+	if ($test) echo '24) '.json_encode($elem)."\n";
+	$elem = str_replace(" doesnt "," doesn't ",$elem);											// grammar 2
+	if ($test) echo '25) '.json_encode($elem)."\n";
+	$elem = str_replace(" im "," i'm ",$elem);													// grammar 3
+	if ($test) echo '26) '.json_encode($elem)."\n";
+	$elem = trim(trim($elem));
+	if ($test) echo '29) '.json_encode($elem)."\n";
+
+	return $elem;
+}
+
+function fixMarkdown($elem) {
+
+	$test = false;
+
+	$elem = preg_replace("/^(1)([)])/", "$1.", $elem);
+	if ($test) echo '1) '.json_encode($elem)."\n";
+	$elem = preg_replace("/([\\n]+\d)([)])/", "$1.", $elem);
+	if ($test) echo '2) '.json_encode($elem)."\n";
+	$elem = preg_replace("/([\\n]+[\da-zA-z]\.)([^\s])/", "$1 $2", $elem);
+	if ($test) echo '3) '.json_encode($elem)."\n";
+	$elem = strip_tags($elem);
+	if ($test) echo '4) '.json_encode($elem)."\n";
+	$elem = trim(trim($elem));
+	if ($test) echo '5) '.json_encode($elem)."\n";
+
+	return $elem;
 }
 
 function nullIt($row) {
 	foreach ($row as $key => $value) {
 		$row[$key] = stripslashes($row[$key]);																// srip existing escapes slashes
 		$row[$key] = addslashes($row[$key]);																// add them slashes now that the string is reset to no slash
+		$row[$key] = trim($row[$key]);
 		$row[$key] = strtolower($row[$key]) == '' ? 'NULL' : "\"".$row[$key]."\"";
 	}
 
@@ -150,6 +194,54 @@ function findMatchingContactId($ticket) {
 	}
 
 	return $id ? $id : null;
+}
+
+function testTicketImport() {
+	
+	$converter = new HtmlConverter();
+	$pass = true;
+	
+	require('TestsCollection.php');
+
+	foreach ($tests as $key => $test) {
+		$temp = explode('|',$test['I']);
+		if ($temp[0] == 'QUERY') {
+			$query = mssql_query("SELECT * FROM dbo.".$temp[1]." WHERE Id = ".$temp[2]);
+			$result = mssql_fetch_array($query, MSSQL_ASSOC);
+			mssql_free_result($query);
+			
+			if ($temp[1] == 'TICKETS') {	
+				$input = $result['Ticket_Post'];
+			}
+			else {
+				$input = $result['Post'];
+			}
+		}
+		else {
+			$input = $test['I'];
+		}
+
+		$output = fixMarkdown($converter->convert(Purifier::clean(sanitizeElement($input))));
+
+		echo("==============================================================================================================\n");
+		logMessage("INPUT:".json_encode($input));
+		echo("--------------------------------------------------------------------------------------------------------------\n");
+		logMessage("EXPECTED OUTPUT:".json_encode($test['O']));
+		echo("--------------------------------------------------------------------------------------------------------------\n");
+		logMessage("ACTUAL OUTPUT:".json_encode($output));
+		echo("==============================================================================================================\n");
+
+		if ($test['O'] == $output) {
+			logMessage("test ".$test['I']." passed!");
+		}
+		else {
+			logMessage("test ".$test['I']." didn't pass!");
+			$pass = false;
+			die();
+		}
+	}
+
+	return $pass;
 }
 
 class ImportManager {
@@ -1726,6 +1818,14 @@ class Tickets extends BaseClass {
 
 	public function importSelf() {
 
+		if (testTicketImport()) {
+			logMessage("Testing PASSED!");
+		}
+		else {
+			logMessage("Testing NOT PASSED: ABORTING!");
+			die();
+		}
+		
 		$converter = new HtmlConverter();
 
 		$query = mssql_query("SELECT Tickets.*, f.Id as fid, f.Question_01, f.Question_02, 
@@ -1747,7 +1847,6 @@ class Tickets extends BaseClass {
 				$t['Contact_Id'] = findMatchingContactId($t);
 				$t['Contact_Id'] = trim($t['Contact_Id']) == '' ? '' : trim($t['Contact_Id']) + CONSTANT_GAP_CONTACTS;
 				$t['Ticket_Title'] = trim(htmlspecialchars_decode(strip_tags($t['Ticket_Title'])));
-				
 				if ($is_requesting) {
 					$ticket_post = "<p>";
 					$ticket_post .= "<b>".$this->questions[0]."</b><br>";
@@ -1776,8 +1875,9 @@ class Tickets extends BaseClass {
 				$t['Deleted_At'] = $t['Deleted_Ticket'] == '1' ? $t['Date_Update'] : '';
 				$t['Status'] = $t['Status'] != '5' ? $t['Status'] : '3';
 
+
 				//convert from html to markdown
-				$t['Ticket_Post'] = $converter->convert($t['Ticket_Post']);
+				$t['Ticket_Post'] = fixMarkdown($converter->convert($t['Ticket_Post']));
 
 				$t = nullIt($t);
 
@@ -1916,7 +2016,7 @@ class Posts extends BaseClass {
 				$p['Post_Public'] = $p['Post_Public'] == '0' ? '2' : '3';
 				$p['Post'] = Purifier::clean($p['Post']);
 
-				$p['Post'] = $p['Post'] == '' ? $p['Counter'] > 1 ? '<p>see attachments</p>' : '<p>see attachment</p>' : $p['Post'];
+				$p['Post'] = $p['Post'] == '' ? $p['Counter'] > 1 ? '<p>See attachments: </p>' : '<p>See attachment: </p>' : $p['Post'];
 
 				if ($p['Id_Customer_User'] != '') {
 					$subquery1 = mssql_query("SELECT * FROM Customer_User_Login WHERE Customer_Id = '".$p['Id_Customer_User']."'");
@@ -1933,7 +2033,7 @@ class Posts extends BaseClass {
 				}
 
 				if (strpos($p['Post'],"<p>Waiting for feedback") !== false) {
-					$p['Post'] = str_replace("Waiting for feedback: ", "", $p['Post']);
+					$p['Post'] = $p['Post'] == "<p>Waiting for feedback:</p>" ? "" : str_replace("Waiting for feedback: ", "", $p['Post']);
 					$p['Ticket_Status_Id'] = TICKET_WFF_STATUS_ID;
 				}
 				else {
@@ -1941,7 +2041,7 @@ class Posts extends BaseClass {
 				}
 
 				//convert from html to markdown
-				$p['Post'] = $converter->convert($p['Post']);
+				$p['Post'] = fixMarkdown($converter->convert($p['Post']));
 
 				$p = nullIt($p);
 
@@ -1978,6 +2078,8 @@ class Posts extends BaseClass {
 				$p['Post'] = trim($p['Comment']) == "" ? "Ticket Closed" : $p['Comment'];
 				$p['Post'] = Purifier::clean($p['Post']);
 				$assignee_id = findCompanyPersonId($p['Id_Assignee'],$this->manager->conn);
+
+				$p['Post'] = fixMarkdown($converter->convert($p['Post']));
 
 				$p = nullIt($p);
 

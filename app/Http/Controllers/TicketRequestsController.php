@@ -3,6 +3,8 @@
 use Auth;
 use App\Models\Ticket;
 use App\Models\TicketHistory;
+use App\Libraries\SlackManager;
+use App\Libraries\EmailsManager;
 use App\Http\Requests\CreateTicketRequestRequest;
 use App\Http\Requests\CreateTicketRequestDraftRequest;
 
@@ -31,16 +33,13 @@ class TicketRequestsController extends Controller {
 		$draft = TicketsController::API()->getDraft();
 		$ticket = $draft ? $draft : new Ticket();
 
-		$post = "<p>";
+		$post = "";
 
 		foreach ($this->questions as $key => $question) {
-			$post .= "<b>".$question."</b><br>";
+			$post .= "**".$question."**  \n";
 			$post .= $request->get($key) == "" ? "[not answered]" : $request->get($key);
-			$post .= "<br><br>";
+			$post .= "\n\n";
 		}
-
-		$post .= "</p>";
-		var_dump($post);
 
 		$ticket->title = $request->get("title");
 		$ticket->creator_id = Auth::user()->active_contact->id;
