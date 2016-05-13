@@ -25,16 +25,16 @@
 			<td class="bold">Priority</td><td>{{ $ticket->priority->name }}</td>
 		</tr>
 		<tr>
-			<td class="bold">Contact Name:</td><td>{{ isset($post->ticket->contact_id) ? $post->ticket->contact->person->name() : '-' }}</td>
+			<td class="bold">Contact Name:</td><td>{{ isset($ticket->contact_id) ? $ticket->contact->person->name() : '-' }}</td>
 		</tr>
 		<tr>
-			<td class="bold">Contact Phone:</td><td>{!! isset($post->ticket->contact_id) && isset($post->ticket->contact->phone) ? $post->ticket->contact->phone() : '-' !!}</td>
+			<td class="bold">Contact Phone:</td><td>{!! isset($ticket->contact_id) && isset($ticket->contact->phone) ? $ticket->contact->phone() : '-' !!}</td>
 		</tr>
 		<tr>
-			<td class="bold">Contact Cellphone:</td><td>{!! isset($post->ticket->contact_id) && isset($post->ticket->contact->cellphone) ? $post->ticket->contact->cellphone() : '-' !!}</td>
+			<td class="bold">Contact Cellphone:</td><td>{!! isset($ticket->contact_id) && isset($ticket->contact->cellphone) ? $ticket->contact->cellphone() : '-' !!}</td>
 		</tr>
 		<tr>
-			<td class="bold">Contact Email:</td><td>{!! isset($post->ticket->contact_id) && isset($post->ticket->contact->email) ? $post->ticket->contact->email() : '-' !!}</td>
+			<td class="bold">Contact Email:</td><td>{!! isset($ticket->contact_id) && isset($ticket->contact->email) ? $ticket->contact->email() : '-' !!}</td>
 		</tr>
 	</table>
 
