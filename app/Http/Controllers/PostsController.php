@@ -62,7 +62,7 @@ class PostsController extends BaseController {
 		$post->author_id = Auth::user()->active_contact->id;
 		$post->status_id = $request->get('is_public') ? POST_PUBLIC_STATUS_ID : POST_PRIVATE_STATUS_ID;
 		$post->ticket_status_id = $request->get('status_id');
-		$post->created_at = $post->updated_at;
+		if (isset($post->updated_at)) $post->created_at = $post->updated_at;
 		$post->save();
 
 		$this->updateTicket($request);
