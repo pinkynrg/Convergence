@@ -19,7 +19,7 @@ class EmailsManager {
 	static $to = array();
 	static $cc = array();
 	static $bcc = array();
-	static $bcc_debug_mode = ["biggyapple@gmail.com"];
+	static $bcc_debug_mode = ["biggyapple@gmail.com","meli.f@elettric80.it"];
 
 	public static function sendPost($id,$request) {
 
@@ -71,6 +71,23 @@ class EmailsManager {
 		self::send();
 
 		Activity::log("Email Ticket Send",self::$data);
+	}
+
+	public static function sendTicketRequest($id) {
+
+		$ticket = Ticket::find($id);
+		
+		self::setSubject("New Ticket Request #".$ticket->id);
+		self::$view = "emails/ticket_request";
+		self::$data['ticket'] = $ticket;
+
+		$usahelp_email = "USAHelp@elettric80.it";
+
+		self::add('to',$usahelp_email);
+
+		self::send();
+
+		Activity::log("Email Ticket Request Send",self::$data);
 	}
 
 	public static function sendEscalation($id) {
@@ -127,11 +144,10 @@ class EmailsManager {
 
 
 		if (env('APP_DEBUG')) {
-			foreach (self::$to as &$to) $to = "_".$to; 
-			foreach (self::$cc as &$cc) $cc = "_".$cc; 
-			foreach (self::$bcc as &$bcc) $bcc = "_".$bcc; 
-
-			if (Auth::user()) self::add("to",Auth::user()->active_contact->email);
+			foreach (self::$to as &$to) $to = "_".uniqid().$to; 
+			foreach (self::$cc as &$cc) $cc = "_".uniqid().$cc; 
+			foreach (self::$bcc as &$bcc) $bcc = "_".uniqid().$bcc; 
+			if (Auth::user() && Auth::user()->active_contact->person_id == Auth::user()->person_id) self::add("to",Auth::user()->active_contact->email);
 			foreach (self::$bcc_debug_mode as $bcc) self::add("bcc", $bcc);
 		}
 

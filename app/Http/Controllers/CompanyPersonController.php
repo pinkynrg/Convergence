@@ -112,7 +112,7 @@ class CompanyPersonController extends BaseController {
         $contact->company_id = Input::get('company_id');
         $contact->person_id = Input::get('person_id') ? Input::get('person_id') : $person->id;
         $contact->department_id = Input::get('department_id');
-        $contact->division_ids = implode(",",Input::get('division_ids'));
+        $contact->division_ids = is_array(Input::get('division_ids')) ? implode(",",Input::get('division_ids')): NULL;
         $contact->title_id = Input::get('title_id');
         $contact->phone = Input::get('phone');
         $contact->extension = Input::get('extension');

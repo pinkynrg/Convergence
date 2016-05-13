@@ -43,6 +43,27 @@ class SlackManager {
 		$response = self::apiCall($url,['payload' => $payload_json]);
 	}
 
+	static function sendTicketRequest($ticket) {
+		
+		$payload = new \stdClass();
+		$payload->attachments = array();
+		$payload->attachments[] = new \stdClass();
+
+		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
+		$payload->attachments[0]->pretext = ":label: *New Ticket Request* <".route('tickets.show',$ticket->id)."|#".$ticket->id."> | <".route('companies.show',$ticket->company->id)."|".$ticket->company->name.">";
+
+		$payload->color = "#000000";
+		
+		$payload->attachments[0]->title = $ticket->title;
+		$payload->attachments[0]->text = self::markDownToSlack($ticket->post);
+		
+		$payload_json = json_encode($payload);
+		
+		$url = self::getChannel();
+
+		$response = self::apiCall($url,['payload' => $payload_json]);
+	}
+
 	static function sendPost($post) {
 
 		$payload = new \stdClass();
@@ -69,13 +90,13 @@ class SlackManager {
 		$response = self::apiCall($url,['payload' => $payload_json]);
 	}
 
-	static protected function getChannel($division_id) {
+	static protected function getChannel($division_id = null) {
 		
 		if (env('APP_DEBUG')) {
 			$url = self::POST_TO_TEST_CHANNEL;							// TEST
 		}
 		else {
-			switch ($ticket->division_id) {
+			switch ($division_id) {
 				case 1: $url = self::POST_TO_LGV_CHANNEL; break;		// LGV
 				case 2: $url = self::POST_TO_PLC_CHANNEL; break;		// PLC
 				case 3: $url = self::POST_TO_PC_CHANNEL; break;			// PC
@@ -84,6 +105,7 @@ class SlackManager {
 				case 7: $url = self::POST_TO_GENERAL_CHANNEL; break;	// OTHER
 				case 8: $url = self::POST_TO_GENERAL_CHANNEL; break;	// SPARE PARTS
 				case 9: $url = self::POST_TO_GENERAL_CHANNEL; break;	// RELIABILITY
+				default: $url = self::POST_TO_GENERAL_CHANNEL; break;	// UNKNOWN
 			}
 		}
 

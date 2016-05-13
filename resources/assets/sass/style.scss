@@ -611,7 +611,11 @@ body {
 		width: 100%;
 		&.post_private {
   			background-color: #EFEFEF;
+			border: 3px double #CCC;
   			color: #5D5D5D;
+  			.post_header {
+				border-bottom: 1px solid #CCC;
+			}
 		}
 		.post_header {
   			height: 90px;

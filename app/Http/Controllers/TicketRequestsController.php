@@ -57,8 +57,8 @@ class TicketRequestsController extends Controller {
 		$ticket->save();
 
    		$this->updateHistory($ticket); 
-   		// EmailsManager::sendTicket($ticket->id);
-		// SlackManager::sendTicket($ticket);
+   		EmailsManager::sendTicketRequest($ticket->id);
+		SlackManager::sendTicketRequest($ticket);
 
         return redirect()->route('tickets.index')->with('successes',['Ticket request created successfully']);
 	}
