@@ -261,8 +261,8 @@
 									</div>
 									
 									<div class="inline_switch_label" @if (!isset($ticket->company->account_manager)) data-toggle="tooltip" data-placement="right" title="Make sure account manager is selected for company. Also make sure the account manager  has a valid email address." @endif >
-										<div>Account manager:</div>
-										<div>{{ (!isset($ticket->company->account_manager)) ? "Not Available" : $ticket->company->account_manager->company_person->email }}</div>
+										<div class="inline_switch_label_header">Account manager:</div>
+										<div class="inline_switch_label_element">{{ (!isset($ticket->company->account_manager)) ? "Not Available" : $ticket->company->account_manager->company_person->email }}</div>
 									</div>
 								</div>
 								
@@ -271,8 +271,8 @@
 										<input type="checkbox" id="email_company_group_email" name="emails[company_group_email]" class="switch" data-off-text="Void" data-on-text="Send" value="true" @if (!isset($ticket->company->group_email)) disabled @endif>  
 									</div>
 									<div class="inline_switch_label" @if (!isset($ticket->company->group_email)) data-toggle="tooltip" data-placement="right" title="Make sure the group company email is a valid email address." @endif > 
-										<div>Company group email:</div>
-										<div>{{ (!isset($ticket->company->group_email)) ? "Not Available" : $ticket->company->group_email }} </div>
+										<div class="inline_switch_label_header">Company group email:</div>
+										<div class="inline_switch_label_element">{{ (!isset($ticket->company->group_email)) ? "Not Available" : $ticket->company->group_email }} </div>
 									</div>
 								</div>
 
@@ -282,8 +282,8 @@
 										<input type="checkbox"  id="fake_email_company_contact" class="switch" data-off-text="Void" data-on-text="Send" value="true" @if (!isset($ticket->contact->email)) disabled @endif> 
 									</div>
 									<div class="inline_switch_label" @if (!isset($ticket->contact->email)) data-toggle="tooltip" data-placement="right" title="Make sure there is a main contact setup for this ticket." @endif > 
-										<div>Contact reference:</div>
-										<div>{{ (!isset($ticket->contact->email)) ? "Not Available" : $ticket->contact->email }} </div>
+										<div class="inline_switch_label_header">Contact reference:</div>
+										<div class="inline_switch_label_element">{{ (!isset($ticket->contact->email)) ? "Not Available" : $ticket->contact->email }} </div>
 									</div>
 								</div>
 
@@ -292,8 +292,14 @@
 										<input type="checkbox" id="email_ticket_emails" name="emails[ticket_emails]" class="switch" data-off-text="Void" data-on-text="Send" value="true" @if (!isset($ticket->emails) || $ticket->emails == '') disabled @endif>
 									</div>
 									<div class="inline_switch_label" @if (!isset($ticket->emails) || $ticket->emails == '') data-toggle="tooltip" data-placement="right" title="Make sure to have set other extra email address to this ticket." @endif >
-										<div>Additional emails:</div>
-										<div>{{ (!isset($ticket->emails) || $ticket->emails == '') ? "Not Available" : $ticket->emails }} </div>
+										<div class="inline_switch_label_header">Additional emails:</div>
+										@if (!isset($ticket->emails) || $ticket->emails == '')
+											Not Available 
+										@else 
+											@foreach(explode(",",$ticket->emails) as $email)
+												<div class="inline_switch_label_element">{{ $email }}</div>
+											@endforeach
+										@endif
 									</div>
 								</div>
 

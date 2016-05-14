@@ -108,6 +108,12 @@ select {
 	.inline_switch_label, .inline_switch_input {
 		float: left;
 		font-weight: bold;
+		.inline_switch_label_header, .inline_switch_label_element {
+			width: 150px;
+			text-overflow: ellipsis; 
+	  		overflow:hidden;
+	  		white-space: nowrap;
+		}
 	}
 }
 
@@ -879,7 +885,7 @@ body {
 		.md-header {
 			.btn-group {
 				button {
-					&[data-handler='bootstrap-markdown-cmdImage'], &[data-handler='bootstrap-markdown-cmdUrl'] {
+					&[data-handler='bootstrap-markdown-cmdImage'], &[data-handler='bootstrap-markdown-cmdUrl'], &[data-handler='bootstrap-markdown-cmdListO'], &[data-handler='bootstrap-markdown-cmdItalic'] {
 						display: none;
 					}
 				}
@@ -896,12 +902,6 @@ body {
 	}
 	.slider-tick-label {
 		display: none!important;
-		// -webkit-transform: rotate(30deg);
-		// -moz-transform: rotate(30deg);
-		// -ms-transform: rotate(30deg);
-		// -o-transform: rotate(30deg);
-		// filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-		// margin-top: 10px;
 	}
 	.slider-tick-mini-label {
 		display: inline-block!important;
