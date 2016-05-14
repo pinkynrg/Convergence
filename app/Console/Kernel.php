@@ -1,5 +1,6 @@
 <?php namespace App\Console;
 
+use App\Libraries\SlackManager;
 use App\Libraries\EmailsManager;
 use App\Http\Controllers\TicketsController;
 use Illuminate\Console\Scheduling\Schedule;
@@ -37,5 +38,10 @@ class Kernel extends ConsoleKernel {
 			}
 			
         })->everyMinute();
+
+        $schedule->call(function () {
+			SlackManager::setChannelsTopic();
+
+        })->twiceDaily(7, 15);
 	}
 }

@@ -1,5 +1,6 @@
 <?php namespace App\Libraries;
 
+use App\Http\Controllers\TicketsController;
 use Request;
 use Route;
 
@@ -11,9 +12,101 @@ class SlackManager {
 	const POST_TO_PLC_CHANNEL = "https://hooks.slack.com/services/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";
 	const POST_TO_GENERAL_CHANNEL = "https://hooks.slack.com/services/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";
 
+	const GENERAL_CHANNEL = "C0A49EZDL";
+	const TEST_CHANNEL = "C0AB60DDF";
+	const PC_CHANNEL = "C0A49EP1S";
+	const PLC_CHANNEL = "C0A49QFDF";
+	const LGV_CHANNEL = "C0A49E352";
+	
+	const BOT_C2_TOKEN = "xoxb-42840363603-pBbIFWOAdtRDwhW5FIsc4eoi";
+
 	static function markDownToSlack($text) {
 		$text = str_replace("**","*",$text);
 		return $text;
+	}
+
+	static function setChannelsTopic() {
+		if (env('APP_DEBUG')) {
+			self::setChannelTopic("test");
+		}
+		else {
+			self::setChannelTopic("general");
+			self::setChannelTopic("lgv");
+			self::setChannelTopic("pc");
+			self::setChannelTopic("plc");
+		}
+	}
+
+	static function setChannelTopic($channel) {
+
+		$url = "https://slack.com/api/channels.setTopic";
+		$payload = array();
+		$channel = strtolower($channel);
+		
+		
+		if ($channel == "test") {
+			$channel_id = self::TEST_CHANNEL;
+			$division_id = LGV_DIVISION_ID.":".PC_DIVISION_ID.":".PLC_DIVISION_ID;
+		}
+		elseif ($channel == "pc") {
+			$channel_id = self::PC_CHANNEL;
+			$division_id = PC_DIVISION_ID;
+		}
+		elseif ($channel == "plc") {
+			$channel_id = self::PLC_CHANNEL; 
+			$division_id = PLC_DIVISION_ID;
+
+		}
+		elseif ($channel == "lgv") {
+			$channel_id = self::LGV_CHANNEL;
+			$division_id = LGV_DIVISION_ID;
+		}
+		elseif ($channel == "general") {
+			$channel_id = self::TEST_CHANNEL;
+			$division_id = LGV_DIVISION_ID.":".PC_DIVISION_ID.":".PLC_DIVISION_ID;
+		}
+		
+		if ($channel_id) {
+
+			$total = count(TicketsController::API()->all([
+        		'where' => [
+	    			'tickets.division_id|=|'.$division_id
+        		],
+        		'paginate' => 'false'
+        	]));
+
+			$opened = count(TicketsController::API()->all([
+        		'where' => [
+        			'tickets.status_id|=|'.TICKET_REQUESTING_STATUS_ID.":".TICKET_NEW_STATUS_ID.":".TICKET_IN_PROGRESS_STATUS_ID,
+	    			'tickets.division_id|=|'.$division_id
+        		],
+        		'paginate' => 'false'
+        	]));
+        	
+        	$waiting = count(TicketsController::API()->all([
+        		'where' => [
+        			'tickets.status_id|=|'.TICKET_WFF_STATUS_ID.":".TICKET_WFP_STATUS_ID,
+	    			'tickets.division_id|=|'.$division_id
+        		],
+    			'paginate' => 'false'
+        	]));
+        	
+        	$closed = count(TicketsController::API()->all([
+        		'where' => [
+        			'tickets.status_id|=|'.TICKET_SOLVED_STATUS_ID.":".TICKET_CLOSED_STATUS_ID,
+	    			'tickets.division_id|=|'.$division_id
+        		],
+        		'paginate' => 'false'
+        	]));
+        	
+        	$topic = "Requesting/New/Progress: *".$opened."* Waiting Feedback/Parts: *".$waiting."* Solved/Closed: *".$closed."*";
+
+			$payload['channel'] = $channel;
+			$payload['topic'] = $topic;
+			$payload['token'] = self::BOT_C2_TOKEN;
+
+			$response = self::apiCall($url,['channel' => $channel_id, 'topic' => $topic, 'token' => self::BOT_C2_TOKEN]);
+		}
 	}
 
 	static function sendTicket($ticket) {
@@ -125,6 +218,7 @@ class SlackManager {
 			$e->getMessage();
 		}	
 	}
+
 }
 
 ?>

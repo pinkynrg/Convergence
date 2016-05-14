@@ -144,9 +144,9 @@ class EmailsManager {
 
 
 		if (env('APP_DEBUG')) {
-			foreach (self::$to as &$to) $to = "_".uniqid().$to; 
-			foreach (self::$cc as &$cc) $cc = "_".uniqid().$cc; 
-			foreach (self::$bcc as &$bcc) $bcc = "_".uniqid().$bcc; 
+			foreach (self::$to as &$to) $to = uniqid()."_".$to; 
+			foreach (self::$cc as &$cc) $cc = uniqid()."_".$cc; 
+			foreach (self::$bcc as &$bcc) $bcc = uniqid()."_".$bcc; 
 			if (Auth::user() && Auth::user()->active_contact->person_id == Auth::user()->person_id) self::add("to",Auth::user()->active_contact->email);
 			foreach (self::$bcc_debug_mode as $bcc) self::add("bcc", $bcc);
 		}
