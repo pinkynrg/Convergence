@@ -5,6 +5,10 @@
 
 	<hr>
 
+	@if ($ticket->email_text)
+		<p> {{ $ticket->email_text }} </p>
+	@endif
+
 	<table class="table">
 		<tr>
 			<td class="bold" width="200">Ticket #</td><td>{{ $ticket->id }}</td>

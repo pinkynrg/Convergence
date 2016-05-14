@@ -45,7 +45,7 @@ class TicketsController extends BaseController {
 
         $raw3 = DB::raw('(SELECT MAX(id) as post_id, ticket_id FROM posts GROUP BY ticket_id) as d1');
 
-        $raw4 = DB::raw("(SELECT time.ticket_id, time.active_work, epe.event_id,
+        $raw4 = DB::raw("(SELECT time.ticket_id, time.active_work, epe.event_id, epe.email_text,
                             
                             CASE WHEN t.status_id IN (".str_replace(":",",",TICKETS_ACTIVE_STATUS_IDS).")
                                 THEN epe.delay_time - time.active_work 
@@ -81,7 +81,7 @@ class TicketsController extends BaseController {
 
                         ) as final");
 
-        $tickets = Ticket::select("tickets.*",$raw1,$raw2,'statuses.allowed_statuses','final.active_work','final.deadline','final.event_id');
+        $tickets = Ticket::select("tickets.*",$raw1,$raw2,'statuses.allowed_statuses','final.active_work','final.deadline','final.event_id','final.email_text');
         $tickets->leftJoin('company_person as creator_contacts','tickets.creator_id','=','creator_contacts.id');
         $tickets->leftJoin('company_person as assignee_contacts','tickets.assignee_id','=','assignee_contacts.id');
         $tickets->leftJoin('people as assignees','assignee_contacts.person_id','=','assignees.id');
