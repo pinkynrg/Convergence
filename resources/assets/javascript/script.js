@@ -685,7 +685,8 @@ function setupStatusSlider() {
 			allowed_statuses, 
 			tick,
 			ticks = [],
-			labels = [];
+			labels = [],
+			mini_labels = [];
 
 		$.get('/API/tickets/find?id='+url.target_id, function (data) {
 
@@ -710,6 +711,7 @@ function setupStatusSlider() {
 
 				for (var i=0; i<data.length; i++) {
 					labels.push(data[i]['name']);
+					mini_labels.push(data[i]['label']);
 					ticks.push(statusSliderMapper(data[i]['id'],false));
 				}
 
@@ -719,6 +721,7 @@ function setupStatusSlider() {
 					value: tick,
 					selection: 'none',
 					ticks_labels: labels,
+					ticks_mini_labels: mini_labels,
 					tooltip: 'hide'
 				});
 
@@ -761,6 +764,7 @@ function setupPrioritySlider() {
 			var item = [];
 			
 			item['labels'] = $.map(data, function(dataItem) { return dataItem.name; });
+			item['mini_labels'] = $.map(data, function(dataItem) { return dataItem.label; });
 			item['ids'] = $.map(data, function(dataItem) { return dataItem.id; });
 
 			var priority_id = data.priority_id;
@@ -775,6 +779,7 @@ function setupPrioritySlider() {
 				    value: priority_id,
 				    selection: 'none',
 				    ticks_labels: item['labels'],
+				    ticks_mini_labels: item['mini_labels'],
 				    ticks_snap_bounds: 30,
 				    tooltip: 'hide',
 				    reversed: true
@@ -985,7 +990,9 @@ if (url.target == "tickets" && (url.target_action == "create" || url.target_acti
 
 	fillSelectFields();
 
-	$("#post").markdown();
+	$("#post").markdown({
+		'fullscreen': {'enable': false}
+	});
 
 	$("#ticket_form").submit(function() {
 		clearInterval(ticket_draft_routine);
@@ -1051,6 +1058,7 @@ if (url.target == "tickets" && url.target_action == "show") {
 	});
 
 	$("#post").markdown({
+		'fullscreen': {'enable': false},
 		onChange: function(e) {
 			clearInterval(post_draft_routine);
 			if (url.target == "tickets" && url.target_action == "show") {			
@@ -1106,7 +1114,7 @@ if (url.target == "ticket-requests" && url.target_action == "create") {
 }
 
 if (url.target == "posts" && url.target_action == "edit") {
-	$("#post").markdown();
+	$("#post").markdown({'fullscreen': {'enable': false}});
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

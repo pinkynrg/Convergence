@@ -50,6 +50,11 @@
         "fonts/*.*"
       ]
     },
+    "seiyria-bootstrap-slider": {
+      "main": [
+        "dist/css/bootstrap-slider.css"
+      ]
+    },
     "jquery-prevent-double-submit": {
       "main": []
     },
