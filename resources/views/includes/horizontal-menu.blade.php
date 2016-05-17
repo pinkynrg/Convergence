@@ -10,7 +10,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<span class="navbar-brand"> <a href="/"><b>ConVergence</b></a> </span> 
+			<span class="navbar-brand"> <a href="/"><b>Convergence</b></a> </span> 
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->

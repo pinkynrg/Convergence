@@ -27,15 +27,20 @@ class EmailsManager {
 
 		$emails = array(); 
 
-		foreach ($request as $key => $target) {
-			switch ($key) {
-				case 'account_manager': if ($target == 'true') $emails[] = $post->ticket->company->account_manager->company_person->email; break;
-				case 'company_group_email': if ($target == 'true') $emails[] = $post->ticket->company->group_email; break;
-				case 'company_contact': if ($target == 'true') $emails[] = $post->ticket->contact->email; break;
-				case 'ticket_emails': if ($target == 'true') $emails = array_merge($emails,explode(",",$post->ticket->emails)); break;
-				default: break;
+		if ($request) {
+			foreach ($request as $key => $target) {
+				switch ($key) {
+					case 'account_manager': if ($target == 'true') $emails[] = $post->ticket->company->account_manager->company_person->email; break;
+					case 'company_group_email': if ($target == 'true') $emails[] = $post->ticket->company->group_email; break;
+					case 'company_contact': if ($target == 'true') $emails[] = $post->ticket->contact->email; break;
+					case 'ticket_emails': if ($target == 'true') $emails = array_merge($emails,explode(",",$post->ticket->emails)); break;
+					default: break;
+				}
 			}
 		}
+
+		self::add('to',$post->ticket->assignee->email);
+		self::add('to',$post->ticket->creator->email);
 
 		foreach ($emails as $email) {
 			self::add('to',$email);

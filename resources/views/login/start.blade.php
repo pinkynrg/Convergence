@@ -9,7 +9,7 @@
 
 				<div class="alert alert-info info_start" role="info"> 
 					<div> <i class="fa fa-info-circle"></i>
-						Before you start, it is neccessary you complete some information about yourself.
+						Before you start, please provide the following information.
 					</div>
 				</div>
 
@@ -50,7 +50,7 @@
 
 				<div class="alert alert-info" role="info"> 
 					<div> <i class="fa fa-info-circle"></i>
-						Please fill out necessary information for each tab below ~ OR ~ use the same informations for all you contacts by checking `Use info for all`
+						Please fill out each tab -OR- Use the same information for all of your contacts by checking "Use info for all"
 					</div>
 				</div>
 
