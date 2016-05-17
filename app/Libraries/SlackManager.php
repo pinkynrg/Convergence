@@ -6,11 +6,8 @@ use Route;
 
 class SlackManager {
 
-	const POST_TO_TEST_CHANNEL = "https://hooks.slack.com/services/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";
-	const POST_TO_PC_CHANNEL = "https://hooks.slack.com/services/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";
-	const POST_TO_LGV_CHANNEL = "https://hooks.slack.com/services/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";
-	const POST_TO_PLC_CHANNEL = "https://hooks.slack.com/services/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";
-	const POST_TO_GENERAL_CHANNEL = "https://hooks.slack.com/services/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";
+	const API_POST_MESSAGE = "https://slack.com/api/chat.postMessage";
+	const API_SET_CHANNEL_TOPIC = "https://slack.com/api/channels.setTopic";
 
 	const GENERAL_CHANNEL = "C0A49EZDL";
 	const TEST_CHANNEL = "C0AB60DDF";
@@ -41,7 +38,6 @@ class SlackManager {
 
 	static function setChannelTopic($channel) {
 
-		$url = "https://slack.com/api/channels.setTopic";
 		$payload = array();
 		$channel = strtolower($channel);
 		
@@ -107,7 +103,7 @@ class SlackManager {
 			$payload['topic'] = $topic;
 			$payload['token'] = self::BOT_C2_TOKEN;
 
-			$response = self::apiCall($url,['channel' => $channel_id, 'topic' => $topic, 'token' => self::BOT_C2_TOKEN]);
+			$response = self::apiCall(self::API_SET_CHANNEL_TOPIC,['channel' => $channel_id, 'topic' => $topic, 'token' => self::BOT_C2_TOKEN]);
 		}
 	}
 
@@ -118,32 +114,24 @@ class SlackManager {
 		$text .= "<".route('companies.show',$ticket->company->id)."|".$ticket->company->name."> | ";
 		$text .= "changed by <".route('company_person.show',$changer->id)."|".$changer->person->name().">";			// by Author Name
 
-		$payload = new \stdClass();
-		$payload->attachments = array();
-		$payload->attachments[] = new \stdClass();
-		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
-		$payload->attachments[0]->pretext = $text;
-		$payload->attachments[0]->color = self::getPriorityColor($ticket->priority_id);
-	
 		$changes_list = "";
-
 		foreach ($changes as $key => $change) {
-			if ($key == "post") {
-				$changes_list .= "post: `Content was changed`\n";
-			}
-			else {
-				$changes_list .= $key.": `".$change['old_value']."` → `".$change['new_value']."`\n";
-			}
+			if ($key == "post") $changes_list .= "post: `Content was changed`\n";
+			else $changes_list .= $key.": `".$change['old_value']."` → `".$change['new_value']."`\n";
 		}
 
-		$payload->attachments[0]->title = "The following changes were made:";
-		$payload->attachments[0]->text = $changes_list;
+		$attachments[0] = new \stdClass();
+		$attachments[0]->mrkdwn_in = ["pretext","text"];
+		$attachments[0]->pretext = $text;
+		$attachments[0]->color = self::getPriorityColor($ticket->priority_id);
+		$attachments[0]->title = "The following changes were made:";
+		$attachments[0]->text = $changes_list;
 
-		$payload_json = json_encode($payload);
-		
-		$url = self::getChannel($ticket->division_id);
+		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['channel'] = self::getChannel($ticket->division_id);
+		$payload['attachments'] = json_encode($attachments);
 
-		$response = self::apiCall($url,['payload' => $payload_json]);
+		$response = self::apiCall(self::API_POST_MESSAGE,$payload);
 	}
 
 	static function sendTicket($ticket) {
@@ -152,20 +140,18 @@ class SlackManager {
 		$title .= "<".route('companies.show',$ticket->company->id)."|".$ticket->company->name."> | ";							// Company Name |
 		$title .= "by <".route('company_person.show',$ticket->creator->id)."|".$ticket->creator->person->name().">";			// by Author Name
 		
-		$payload = new \stdClass();
-		$payload->attachments = array();
-		$payload->attachments[] = new \stdClass();
-		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
-		$payload->attachments[0]->pretext = $title;
-		$payload->attachments[0]->color = self::getPriorityColor($ticket->priority_id);
-		$payload->attachments[0]->title = $ticket->title;
-		$payload->attachments[0]->text = self::markDownToSlack($ticket->post);
+		$attachments[0] = new \stdClass();
+		$attachments[0]->mrkdwn_in = ["pretext","text"];
+		$attachments[0]->pretext = $title;
+		$attachments[0]->color = self::getPriorityColor($ticket->priority_id);
+		$attachments[0]->title = $ticket->title;
+		$attachments[0]->text = self::markDownToSlack($ticket->post);
 		
-		$payload_json = json_encode($payload);
-		
-		$url = self::getChannel($ticket->division_id);
+		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['channel'] = self::getChannel($ticket->division_id);
+		$payload['attachments'] = json_encode($attachments);
 
-		$response = self::apiCall($url,['payload' => $payload_json]);
+		$response = self::apiCall(self::API_POST_MESSAGE,$payload);
 	}
 
 	static function sendEscalation($ticket) {
@@ -174,20 +160,18 @@ class SlackManager {
 		$title .= "<".route('companies.show',$ticket->company->id)."|".$ticket->company->name."> | ";									// Company Name |
 		$title .= "by <".route('company_person.show',$ticket->creator->id)."|".$ticket->creator->person->name().">";					// by Author Name
 
-		$payload = new \stdClass();
-		$payload->attachments = array();
-		$payload->attachments[] = new \stdClass();
-		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
-		$payload->attachments[0]->pretext = $title;
-		$payload->attachments[0]->color = self::getPriorityColor($ticket->priority_id);
-		$payload->attachments[0]->title = $ticket->title;
-		$payload->attachments[0]->text = self::markDownToSlack($ticket->post);
+		$attachments[0] = new \stdClass();
+		$attachments[0]->mrkdwn_in = ["pretext","text"];
+		$attachments[0]->pretext = $title;
+		$attachments[0]->color = self::getPriorityColor($ticket->priority_id);
+		$attachments[0]->title = $ticket->title;
+		$attachments[0]->text = self::markDownToSlack($ticket->post);
 		
-		$payload_json = json_encode($payload);
-		
-		$url = self::getChannel($ticket->division_id);
+		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['channel'] = self::getChannel($ticket->division_id);
+		$payload['attachments'] = json_encode($attachments);
 
-		$response = self::apiCall($url,['payload' => $payload_json]);
+		$response = self::apiCall(self::API_POST_MESSAGE,$payload);
 	}
 
 	static function sendTicketRequest($ticket) {
@@ -196,20 +180,18 @@ class SlackManager {
 		$title .= "<".route('companies.show',$ticket->company->id)."|".$ticket->company->name."> | ";							// Company Name |
 		$title .= "by <".route('company_person.show',$ticket->creator->id)."|".$ticket->creator->person->name().">";			// by Author Name
 
-		$payload = new \stdClass();
-		$payload->attachments = array();
-		$payload->attachments[] = new \stdClass();
-		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
-		$payload->attachments[0]->pretext = $title;
-		$payload->attachments[0]->color = self::getPriorityColor($ticket->priority_id);
-		$payload->attachments[0]->title = $ticket->title;
-		$payload->attachments[0]->text = self::markDownToSlack($ticket->post);
+		$attachments[0] = new \stdClass();
+		$attachments[0]->mrkdwn_in = ["pretext","text"];
+		$attachments[0]->pretext = $title;
+		$attachments[0]->color = self::getPriorityColor($ticket->priority_id);
+		$attachments[0]->title = $ticket->title;
+		$attachments[0]->text = self::markDownToSlack($ticket->post);
 		
-		$payload_json = json_encode($payload);
-		
-		$url = self::getChannel();
+		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['channel'] = self::getChannel($ticket->division_id);
+		$payload['attachments'] = json_encode($attachments);
 
-		$response = self::apiCall($url,['payload' => $payload_json]);
+		$response = self::apiCall(self::API_POST_MESSAGE,$payload);
 	}
 
 	static function sendPost($post) {
@@ -218,19 +200,17 @@ class SlackManager {
 		$title .= "<".route('companies.show',$post->ticket->company->id)."|".$post->ticket->company->name."> | ";			// Company Name |
 		$title .= "by <".route('company_person.show',$post->author->id)."|".$post->author->person->name().">";				// by Author Name
 
-		$payload = new \stdClass();
-		$payload->attachments = array();
-		$payload->attachments[] = new \stdClass();
-		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
-		$payload->attachments[0]->pretext = $title;
-		$payload->attachments[0]->color = self::getPriorityColor($post->ticket->priority_id);
-		$payload->attachments[0]->text = self::markDownToSlack($post->post);
-		
-		$payload_json = json_encode($payload);
+		$attachments[0] = new \stdClass();
+		$attachments[0]->mrkdwn_in = ["pretext","text"];
+		$attachments[0]->pretext = $title;
+		$attachments[0]->color = self::getPriorityColor($post->ticket->priority_id);
+		$attachments[0]->text = self::markDownToSlack($post->post);
 
-		$url = self::getChannel($post->ticket->division_id);
+		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['channel'] = self::getChannel($post->ticket->division_id);
+		$payload['attachments'] = json_encode($attachments);
 
-		$response = self::apiCall($url,['payload' => $payload_json]);
+		$response = self::apiCall(self::API_POST_MESSAGE,$payload);
 	}
 
 	static function getPriorityColor($priority_id) {
@@ -246,25 +226,25 @@ class SlackManager {
 	}
 
 	static protected function getChannel($division_id = null) {
-		
+
 		if (env('APP_DEBUG')) {
-			$url = self::POST_TO_TEST_CHANNEL;							// TEST
+			$id = self::TEST_CHANNEL;							// TEST
 		}
 		else {
 			switch ($division_id) {
-				case 1: $url = self::POST_TO_LGV_CHANNEL; break;		// LGV
-				case 2: $url = self::POST_TO_PLC_CHANNEL; break;		// PLC
-				case 3: $url = self::POST_TO_PC_CHANNEL; break;			// PC
-				case 5: $url = self::POST_TO_GENERAL_CHANNEL; break;	// BEMA
-				case 6: $url = self::POST_TO_GENERAL_CHANNEL; break;	// FIELD
-				case 7: $url = self::POST_TO_GENERAL_CHANNEL; break;	// OTHER
-				case 8: $url = self::POST_TO_GENERAL_CHANNEL; break;	// SPARE PARTS
-				case 9: $url = self::POST_TO_GENERAL_CHANNEL; break;	// RELIABILITY
-				default: $url = self::POST_TO_GENERAL_CHANNEL; break;	// UNKNOWN
+				case 1: $id = self::LGV_CHANNEL; break;		// LGV
+				case 2: $id = self::PLC_CHANNEL; break;		// PLC
+				case 3: $id = self::PC_CHANNEL; break;			// PC
+				case 5: $id = self::GENERAL_CHANNEL; break;	// BEMA
+				case 6: $id = self::GENERAL_CHANNEL; break;	// FIELD
+				case 7: $id = self::GENERAL_CHANNEL; break;	// OTHER
+				case 8: $id = self::GENERAL_CHANNEL; break;	// SPARE PARTS
+				case 9: $id = self::GENERAL_CHANNEL; break;	// RELIABILITY
+				default: $id = self::GENERAL_CHANNEL; break;	// UNKNOWN
 			}
 		}
 
-		return $url;
+		return $id;
 	}
 
 	static protected function apiCall($url, $parameters = array())
