@@ -107,7 +107,7 @@ class SlackManager {
 		}
 	}
 
-	static function sendTicketUpdate($ticket,$changes) {
+	static function sendTicketUpdate($ticket) {
 
 		$changer = $ticket->anchestor(0)->changer;
 		$text = SLACK_UPDATE_TICKET_ICON." *Ticket details changed* <".route('tickets.show',$ticket->id)."|#".$ticket->id."> | ";
@@ -115,7 +115,7 @@ class SlackManager {
 		$text .= "changed by <".route('company_person.show',$changer->id)."|".$changer->person->name().">";			// by Author Name
 
 		$changes_list = "";
-		foreach ($changes as $key => $change) {
+		foreach ($ticket->getChanges() as $key => $change) {
 			if ($key == "post") $changes_list .= "post: `Content was changed`\n";
 			else $changes_list .= $key.": `".$change['old_value']."` → `".$change['new_value']."`\n";
 		}
@@ -194,7 +194,7 @@ class SlackManager {
 		$response = self::apiCall(self::API_POST_MESSAGE,$payload);
 	}
 
-	static function sendPost($post) {
+	static function sendPost($post, $ticket_updated) {
 
 		$title = SLACK_NEW_POST_ICON." *New Post* <".route('tickets.show',$post->ticket->id)."|#".$post->ticket->id."> | "; // New Post #1234 |
 		$title .= "<".route('companies.show',$post->ticket->company->id)."|".$post->ticket->company->name."> | ";			// Company Name |
@@ -205,6 +205,14 @@ class SlackManager {
 		$attachments[0]->pretext = $title;
 		$attachments[0]->color = self::getPriorityColor($post->ticket->priority_id);
 		$attachments[0]->text = self::markDownToSlack($post->post);
+
+		if ($ticket_updated) {
+			$attachments[0]->text .= "\n\n*Also, some ticket details changed*\n";
+			foreach ($post->ticket->getChanges() as $key => $change) {
+				if ($key == "post") $attachments[0]->text .= "post: `Content was changed`\n";
+				else $attachments[0]->text .= $key.": `".$change['old_value']."` → `".$change['new_value']."`\n";
+			}
+		}
 
 		$payload['token'] = self::BOT_C2_TOKEN;
 		$payload['channel'] = self::getChannel($post->ticket->division_id);

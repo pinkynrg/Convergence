@@ -75,4 +75,22 @@
 
 	<div class="post">{!! trim($post->post('html')) !!}</div>
 
+	<hr>
+
+	@if ($ticket_updated)	
+
+		<p> The following changes were made: </p>
+
+		@foreach ($post->ticket->getChanges() as $key => $change)
+			<p>
+				@if ($key == 'post')
+					post: <span class="remarked"> Content was changed </span>
+				@else
+					{{ $key }}: <span class="remarked"> {{ $change['old_value'] }} </span>&nbsp;&nbsp;→&nbsp;&nbsp;<span class="remarked"> {{ $change['new_value'] }} </span>
+				@endif
+			</p>
+		@endforeach
+
+	@endif
+
 @endsection

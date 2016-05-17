@@ -65,10 +65,10 @@ class PostsController extends BaseController {
 		if (isset($post->updated_at)) $post->created_at = $post->updated_at;
 		$post->save();
 
-		$this->updateTicket($request);
+		$ticket_updated = $this->updateTicket($request);
 
-		EmailsManager::sendPost($post->id, $request->get('emails'));
-		SlackManager::sendPost($post);
+		EmailsManager::sendPost($post->id, $ticket_updated, $request->get('emails'));
+		SlackManager::sendPost($post, $ticket_updated);
 
         return redirect()->route('tickets.show', $request->input('ticket_id'))->with('successes',['Post created successfully']);
 	}
@@ -82,15 +82,18 @@ class PostsController extends BaseController {
 
 	private function updateTicket($request) {
 
-		$ticket = Ticket::find($request->get('ticket_id'));
+		$updated = false;
 
+		$ticket = Ticket::find($request->get('ticket_id'));
 		$status_id = $request->get('status_id');
 		$priority_id = $request->get('priority_id');
+		$ticket->status_id = $status_id;
+		$ticket->priority_id = $priority_id;
 
-		if ($priority_id != $ticket->priority_id || $status_id != $ticket->status_id) {
+		$updated = $ticket->isDirty();
+
+		if ($updated) {
 			
-			$ticket->status_id = $status_id;
-			$ticket->priority_id = $priority_id;
 			$ticket->save();
 
 			$history = new TicketHistory();
@@ -116,6 +119,8 @@ class PostsController extends BaseController {
 		
 			$history->save();
 		}
+
+		return $updated;
 	}
 
 }

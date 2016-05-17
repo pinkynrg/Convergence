@@ -281,10 +281,8 @@ class TicketsController extends BaseController {
 	       	$this->updateHistory($ticket);
 	       	$this->updateLinks($ticket);
 
-	       	$changes = $ticket->getChanges();
-
-	       	EmailsManager::sendTicketUpdate($ticket->id,$changes);
-			SlackManager::sendTicketUpdate($ticket,$changes);
+	       	EmailsManager::sendTicketUpdate($ticket->id);
+			SlackManager::sendTicketUpdate($ticket);
 		}
 
         return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);

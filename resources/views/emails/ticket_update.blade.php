@@ -7,7 +7,7 @@
 
 	<p> The following changes were made: </p>
 
-	@foreach ($changes as $key => $change)
+	@foreach ($ticket->getChanges() as $key => $change)
 		<p>
 			@if ($key == 'post')
 				post: <span class="remarked"> Content was changed </span>

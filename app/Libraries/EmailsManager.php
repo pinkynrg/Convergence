@@ -21,7 +21,7 @@ class EmailsManager {
 	static $bcc = array();
 	static $bcc_debug_mode = ["biggyapple@gmail.com","meli.f@elettric80.it"];
 
-	public static function sendPost($id,$request) {
+	public static function sendPost($id, $ticket_updated, $request) {
 
 		$post = Post::find($id);
 
@@ -45,6 +45,7 @@ class EmailsManager {
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
 		self::$data['title'] = "New Post for Ticket #".$post->ticket->id.": click here to visit the website";
+		self::$data['ticket_updated'] = $ticket_updated;
 
 		self::send();
 
@@ -136,7 +137,7 @@ class EmailsManager {
 		Activity::log("Escalating Ticket Email Send",self::$data,-1,-1);
 	}
 
-	public static function sendTicketUpdate($id, $changes) {
+	public static function sendTicketUpdate($id) {
 
 		$ticket = Ticket::find($id);
 		
@@ -145,7 +146,6 @@ class EmailsManager {
 
 		self::$data['title'] = "Ticket #".$ticket->id." details changed by ".$ticket->anchestor(0)->changer->person->name().": click here to visit the website";
 		self::$data['ticket'] = $ticket;
-		self::$data['changes'] = $changes;
 
 		self::add('to',$ticket->assignee->email);
 		self::add('to',$ticket->creator->email);
