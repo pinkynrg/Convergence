@@ -75,9 +75,9 @@
 
 	<div class="post">{!! trim($post->post('html')) !!}</div>
 
-	<hr>
-
 	@if ($ticket_updated)	
+
+		<hr>
 
 		<p> The following changes were made: </p>
 
