@@ -41,9 +41,10 @@ class EmailsManager {
 			self::add('to',$email);
 		}
 	
-		self::setSubject("New Post to Ticket #".$post->ticket->id);
+		self::setSubject("New Post | Ticket #".$post->ticket->id." | ".$post->author->person->name());
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
+		self::$data['title'] = "New Post for Ticket #".$post->ticket->id.": click here to visit the website";
 
 		self::send();
 
@@ -54,9 +55,10 @@ class EmailsManager {
 
 		$ticket = Ticket::find($id);
 		
-		self::setSubject("New Ticket #".$ticket->id);
+		self::setSubject("New Ticket #".$ticket->id." | ".$ticket->creator->person->name());
 		self::$view = "emails/ticket";
 		self::$data['ticket'] = $ticket;
+		self::$data['title'] = "New Ticket #".$ticket->id.": click here to visit the website";
 
 		self::add('to',$ticket->assignee->email);
 		self::add('to',$ticket->creator->email);
@@ -77,9 +79,10 @@ class EmailsManager {
 
 		$ticket = Ticket::find($id);
 		
-		self::setSubject("New Ticket Request #".$ticket->id);
+		self::setSubject("New Ticket Request #".$ticket->id." | ".$ticket->company->name." | ".$ticket->creator->person->name());
 		self::$view = "emails/ticket_request";
 		self::$data['ticket'] = $ticket;
+		self::$data['title'] = "New Ticket Request #".$ticket->id.": click here to visit the website";
 
 		$usahelp_email = "USAHelp@elettric80.it";
 
@@ -101,8 +104,9 @@ class EmailsManager {
 		$president = "nelson.w@elettric80.it";
 
 		$ticket = TicketsController::API()->find(['id'=>$id]);
-		self::setSubject("Escalate Ticket #".$ticket->id);
+		self::setSubject("Escalate Ticket #".$ticket->id." | ".$ticket->company->name);
 		self::$view = "emails/escalate";
+		self::$data['title'] = "Escalate Ticket #".$ticket->id.": click here to visit the website";
 		self::$data['ticket'] = $ticket;
 
 		$events = explode(",",$ticket->event_id);
@@ -132,6 +136,33 @@ class EmailsManager {
 		Activity::log("Escalating Ticket Email Send",self::$data,-1,-1);
 	}
 
+	public static function sendTicketUpdate($id, $changes) {
+
+		$ticket = Ticket::find($id);
+		
+		self::setSubject("Ticket Update | Ticket #".$ticket->id." | ".$ticket->anchestor(0)->changer->person->name());
+		self::$view = "emails/ticket_update";
+
+		self::$data['title'] = "Ticket #".$ticket->id." details changed by ".$ticket->anchestor(0)->changer->person->name().": click here to visit the website";
+		self::$data['ticket'] = $ticket;
+		self::$data['changes'] = $changes;
+
+		self::add('to',$ticket->assignee->email);
+		self::add('to',$ticket->creator->email);
+		self::add('to',$ticket->contact->email);
+
+		$additional_emails = explode(",",$ticket->emails);
+
+		foreach ($additional_emails as $email) {
+			self::add('to',$email);
+		}
+
+		self::send();
+
+		Activity::log("Email Ticket Request Send",self::$data);
+	}
+
+
 	private static function send() {
 		
 		$html = view(self::$view,self::$data)->render();
@@ -140,8 +171,8 @@ class EmailsManager {
 
 		$cssToInlineStyles->setHTML($html);
 		$cssToInlineStyles->setCSS($css);
-		self::$content = $cssToInlineStyles->convert();
 
+		self::$content = $cssToInlineStyles->convert();
 
 		if (env('APP_DEBUG')) {
 			foreach (self::$to as &$to) $to = uniqid()."_".$to; 
@@ -183,6 +214,6 @@ class EmailsManager {
 	}
 
 	private static function setSubject($subject) {
-		self::$subject = "E80 Ticketing System - ".$subject;
+		self::$subject = "E80 - ".$subject;
 	}
 }

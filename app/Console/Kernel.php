@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel {
 
 			foreach ($tickets as $ticket) {
 				EmailsManager::sendEscalation($ticket->id);
+				SlackManager::sendEscalation($ticket);
 			}
 			
         })->everyMinute();

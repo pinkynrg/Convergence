@@ -20,8 +20,10 @@ class SlackManager {
 	
 	const BOT_C2_TOKEN = "xoxb-42840363603-pBbIFWOAdtRDwhW5FIsc4eoi";
 
-	static function markDownToSlack($text) {
-		$text = str_replace("**","*",$text);
+	static public function markDownToSlack($text) {
+		$text = preg_replace("/[`]{2}/","",$text);
+		$text = preg_replace('/[\*]{2}([^\*]*)[\*]{2}/', '*$1*',$text);
+		$text = preg_replace('/[~]{2}([^~]*)[~]{2}/', '~$1~',$text);
 		return $text;
 	}
 
@@ -109,23 +111,75 @@ class SlackManager {
 		}
 	}
 
+	static function sendTicketUpdate($ticket,$changes) {
+
+		$changer = $ticket->anchestor(0)->changer;
+		$text = SLACK_UPDATE_TICKET_ICON." *Ticket details changed* <".route('tickets.show',$ticket->id)."|#".$ticket->id."> | ";
+		$text .= "<".route('companies.show',$ticket->company->id)."|".$ticket->company->name."> | ";
+		$text .= "changed by <".route('company_person.show',$changer->id)."|".$changer->person->name().">";			// by Author Name
+
+		$payload = new \stdClass();
+		$payload->attachments = array();
+		$payload->attachments[] = new \stdClass();
+		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
+		$payload->attachments[0]->pretext = $text;
+		$payload->attachments[0]->color = self::getPriorityColor($ticket->priority_id);
+	
+		$changes_list = "";
+
+		foreach ($changes as $key => $change) {
+			if ($key == "post") {
+				$changes_list .= "post: `Content was changed`\n";
+			}
+			else {
+				$changes_list .= $key.": `".$change['old_value']."` → `".$change['new_value']."`\n";
+			}
+		}
+
+		$payload->attachments[0]->title = "The following changes were made:";
+		$payload->attachments[0]->text = $changes_list;
+
+		$payload_json = json_encode($payload);
+		
+		$url = self::getChannel($ticket->division_id);
+
+		$response = self::apiCall($url,['payload' => $payload_json]);
+	}
+
 	static function sendTicket($ticket) {
+		
+		$title = SLACK_NEW_TICKET_ICON." *New Ticket* <".route('tickets.show',$ticket->id)."|#".$ticket->id."> | "; 			// New Ticket #1234 |
+		$title .= "<".route('companies.show',$ticket->company->id)."|".$ticket->company->name."> | ";							// Company Name |
+		$title .= "by <".route('company_person.show',$ticket->creator->id)."|".$ticket->creator->person->name().">";			// by Author Name
 		
 		$payload = new \stdClass();
 		$payload->attachments = array();
 		$payload->attachments[] = new \stdClass();
-
 		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
-		$payload->attachments[0]->pretext = ":label: *New Ticket* <".route('tickets.show',$ticket->id)."|#".$ticket->id."> | <".route('companies.show',$ticket->company->id)."|".$ticket->company->name.">";
+		$payload->attachments[0]->pretext = $title;
+		$payload->attachments[0]->color = self::getPriorityColor($ticket->priority_id);
+		$payload->attachments[0]->title = $ticket->title;
+		$payload->attachments[0]->text = self::markDownToSlack($ticket->post);
+		
+		$payload_json = json_encode($payload);
+		
+		$url = self::getChannel($ticket->division_id);
 
-		switch ($ticket->priority_id) {
-			case 1: $payload->color = "#cc0000"; break; //RED: system stop high
-			case 2: $payload->color = "#ff8080"; break; //LIGHT RED: very critical issue
-			case 3: $payload->color = "#ff944d"; break; //ORANGE: critical issue medium
-			case 4: $payload->color = "#feff99"; break; //YELLOW: non critical issue
-			case 5: $payload->color = "#adebad"; break; //GREEN: information request
-		}
+		$response = self::apiCall($url,['payload' => $payload_json]);
+	}
 
+	static function sendEscalation($ticket) {
+		
+		$title = SLACK_ESCALATION_ICON." *Escalate Ticket* <".route('tickets.show',$ticket->id)."|#".$ticket->id."> | ";				// Escalate Ticket #1234 |
+		$title .= "<".route('companies.show',$ticket->company->id)."|".$ticket->company->name."> | ";									// Company Name |
+		$title .= "by <".route('company_person.show',$ticket->creator->id)."|".$ticket->creator->person->name().">";					// by Author Name
+
+		$payload = new \stdClass();
+		$payload->attachments = array();
+		$payload->attachments[] = new \stdClass();
+		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
+		$payload->attachments[0]->pretext = $title;
+		$payload->attachments[0]->color = self::getPriorityColor($ticket->priority_id);
 		$payload->attachments[0]->title = $ticket->title;
 		$payload->attachments[0]->text = self::markDownToSlack($ticket->post);
 		
@@ -138,15 +192,16 @@ class SlackManager {
 
 	static function sendTicketRequest($ticket) {
 		
+		$title = SLACK_TICKET_REQUEST_ICON." *New Ticket Request* <".route('tickets.show',$ticket->id)."|#".$ticket->id."> | "; // New Ticket Request #1234 |
+		$title .= "<".route('companies.show',$ticket->company->id)."|".$ticket->company->name."> | ";							// Company Name |
+		$title .= "by <".route('company_person.show',$ticket->creator->id)."|".$ticket->creator->person->name().">";			// by Author Name
+
 		$payload = new \stdClass();
 		$payload->attachments = array();
 		$payload->attachments[] = new \stdClass();
-
 		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
-		$payload->attachments[0]->pretext = ":label: *New Ticket Request* <".route('tickets.show',$ticket->id)."|#".$ticket->id."> | <".route('companies.show',$ticket->company->id)."|".$ticket->company->name.">";
-
-		$payload->color = "#000000";
-		
+		$payload->attachments[0]->pretext = $title;
+		$payload->attachments[0]->color = self::getPriorityColor($ticket->priority_id);
 		$payload->attachments[0]->title = $ticket->title;
 		$payload->attachments[0]->text = self::markDownToSlack($ticket->post);
 		
@@ -159,28 +214,35 @@ class SlackManager {
 
 	static function sendPost($post) {
 
+		$title = SLACK_NEW_POST_ICON." *New Post* <".route('tickets.show',$post->ticket->id)."|#".$post->ticket->id."> | "; // New Post #1234 |
+		$title .= "<".route('companies.show',$post->ticket->company->id)."|".$post->ticket->company->name."> | ";			// Company Name |
+		$title .= "by <".route('company_person.show',$post->author->id)."|".$post->author->person->name().">";				// by Author Name
+
 		$payload = new \stdClass();
 		$payload->attachments = array();
 		$payload->attachments[] = new \stdClass();
-
 		$payload->attachments[0]->mrkdwn_in = ["pretext","text"];
-		$payload->attachments[0]->pretext = ":pencil2: *New Post* <".route('tickets.show',$post->ticket->id)."|#".$post->ticket->id."> | <".route('companies.show',$post->ticket->company->id)."|".$post->ticket->company->name.">";
-
-		switch ($post->ticket->priority_id) {
-			case 1: $payload->color = "#cc0000"; break; //RED: system stop high
-			case 2: $payload->color = "#ff8080"; break; //LIGHT RED: very critical issue
-			case 3: $payload->color = "#ff944d"; break; //ORANGE: critical issue medium
-			case 4: $payload->color = "#feff99"; break; //YELLOW: non critical issue
-			case 5: $payload->color = "#adebad"; break; //GREEN: information request
-		}
-
-		$payload->attachments[0]->text = self::markDownToSlack("*".$post->author->person->name().":* ".$post->post);
+		$payload->attachments[0]->pretext = $title;
+		$payload->attachments[0]->color = self::getPriorityColor($post->ticket->priority_id);
+		$payload->attachments[0]->text = self::markDownToSlack($post->post);
 		
 		$payload_json = json_encode($payload);
 
 		$url = self::getChannel($post->ticket->division_id);
 
 		$response = self::apiCall($url,['payload' => $payload_json]);
+	}
+
+	static function getPriorityColor($priority_id) {
+		switch ($priority_id) {
+			case 1: $color = "#CC0000"; break; 	//RED: system stop high
+			case 2: $color = "#FF8080"; break; 	//LIGHT RED: very critical issue
+			case 3: $color = "#FF944D"; break; 	//ORANGE: critical issue medium
+			case 4: $color = "#FEFF99"; break; 	//YELLOW: non critical issue
+			case 5: $color = "#ADEBAD"; break; 	//GREEN: information request
+			default: $color = "#CCCCCC"; break;	//GRAY: when not defined (es: tiket request)
+		}
+		return $color;
 	}
 
 	static protected function getChannel($division_id = null) {

@@ -1,33 +1,34 @@
-<style>
-	[style*="Open Sans"] {
-    	font-family: 'Open Sans', Arial, sans-serif !important
-	}
-</style>
+<body>
 
-<!--[if gte mso 9]>
-    <style type="text/css">
-		a {color:red!importand}
-    </style>
-<![endif]-->
+	<div class="heading">{{ $title }}</div>
 
-<center>
-	<table height="30"><tr><td></td></tr></table> <!-- margin top -->
-	<table width="650" class="wrapper">
-		<tr>
-			<td>
+	<style>
+		[style*="Open Sans"] {
+	    	font-family: 'Open Sans', Arial, sans-serif !important
+		}
+	</style>
 
-				<div><img width="200" class="logo" src="{{ SITE_URL."/resources/style/mini-logo-elettric80.png" }}"/></div>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-				<hr>
+	<center>
+		<table height="30"><tr><td></td></tr></table> <!-- margin top -->
+		<table width="650" class="wrapper">
+			<tr>
+				<td>
 
-				@yield('content')
+					<div><img width="200" class="logo" src="{{ SITE_URL."/resources/style/mini-logo-elettric80.png" }}"/></div>
 
-				<hr>
+					<hr>
 
-				<table class="footer"><tr height="30"><td><center><a href="{{SITE_URL}}">{{ SITE_URL}}</a> | &#169; Elettric80 Inc - Convergence </center></td></tr></table> <!-- footer -->
-			</td>
-		</tr>
+					@yield('content')
 
-	</table>
-	<table height="30"><tr><td></td></tr></table> <!-- margin bottom -->
-</center>
+					<hr>
+
+					<table class="footer"><tr height="30"><td><center><a href="{{SITE_URL}}">{{ SITE_URL}}</a> | &#169; Elettric80 Inc - Convergence </center></td></tr></table> <!-- footer -->
+				</td>
+			</tr>
+
+		</table>
+		<table height="30"><tr><td></td></tr></table> <!-- margin bottom -->
+	</center>
+</body>

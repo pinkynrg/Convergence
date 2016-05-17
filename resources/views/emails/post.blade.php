@@ -1,7 +1,7 @@
 @extends('layouts.email')
 @section('content')
 
-	<h3><a href="{{SITE_URL."/tickets/".$post->ticket->id}}"> New Ticket Post: click here to visit the website </a></h3>
+	<h3><a href="{{SITE_URL."/tickets/".$post->ticket->id}}"> {{ $title }} </a></h3>
 
 	<hr>
 

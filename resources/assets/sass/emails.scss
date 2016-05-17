@@ -41,7 +41,27 @@ body {
 			font-weight: bold; 
 		}
 	}
+	span.remarked { 
+		border: 3px solid #E4D5BA;
+		background-color: #E4D5BA;
+		-webkit-border-radius: 2px;
+		-moz-border-radius: 2px; 
+		border-radius: 2px;
+	}
+	p {
+		line-height: 24px;
+	}
 	.inline { display: inline-block; }
 	.footer { width:100%; vertical-align: bottom; font-size: 12px; }
 	.post { padding: 10px 20px 0px 20px; color: #676767; }
+	.heading {
+		display:none;
+		font-size:1px;
+		color:#FFF;
+		line-height:1px;
+		max-height:0px;
+		max-width:0px;
+		opacity:0;
+		overflow:hidden;
+	}
 }

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class TicketHistory extends CustomModel {
+class TicketHistory extends Ticket {
 
 	protected $table = 'tickets_history';
 
@@ -13,63 +13,17 @@ class TicketHistory extends CustomModel {
 		return $this->belongsTo('App\Models\Ticket');
 	}
 
-	public function status()
-	{
-		return $this->belongsTo('App\Models\Status');
-	}
-
-	public function priority()
-	{
-		return $this->belongsTo('App\Models\Priority');		
-	}
-
-	public function job_type()
-	{
-		return $this->belongsTo('App\Models\JobType');		
-	}
-
-	public function assignee()
-	{
-		return $this->belongsTo('App\Models\CompanyPerson');		
-	}
-
 	public function changer()
 	{
 		return $this->belongsTo('App\Models\CompanyPerson');		
 	}
 
-	public function creator()
-	{
-		return $this->belongsTo('App\Models\CompanyPerson');		
+	public function previous($level, $self) {
+		if ($level < 0) return null;
+		elseif ($level == 0) return $self;
+		else {
+			$previous = TicketHistory::where('id','=',$self->previous_id)->first();
+			return count($previous) ? $this->previous(--$level, $previous) : null;
+		}
 	}
-
-	public function company()
-	{
-		return $this->belongsTo('App\Models\Company');		
-	}
-
-	public function division()
-	{
-		return $this->belongsTo('App\Models\Division');
-	}
-
-	public function contact() 
-	{
-		return $this->belongsTo('App\Models\CompanyPerson');
-	}
-
-	public function posts() 
-	{
-		return $this->hasMany('App\Models\Post');
-	}
-
-	public function tags() 
-	{
-		return $this->belongsToMany('App\Models\Tag');
-	}
-	public function equipment()
-	{
-		return $this->belongsTo('App\Models\Equipment');		
-	}
-
 }

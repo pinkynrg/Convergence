@@ -113,4 +113,10 @@ define("TICKET_DRAFT_ICON", "fa fa-file-text-o");
 define("TICKET_SOLVED_ICON", "fa fa-check-circle-o");
 define("TICKET_CLOSED_ICON", "fa fa-times-circle-o");
 
+define("SLACK_ESCALATION_ICON",":bangbang:");
+define("SLACK_UPDATE_TICKET_ICON",":pencil2:");
+define("SLACK_NEW_TICKET_ICON",":bookmark:");
+define("SLACK_TICKET_REQUEST_ICON",":sos:");
+define("SLACK_NEW_POST_ICON",":pencil:");
+
 ?>

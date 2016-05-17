@@ -246,6 +246,7 @@ class TicketsController extends BaseController {
        	$this->updateTags($ticket);
        	$this->updateLinks($ticket);
    		$this->updateHistory($ticket); 
+   		
    		EmailsManager::sendTicket($ticket->id);
 		SlackManager::sendTicket($ticket);
 
@@ -272,11 +273,19 @@ class TicketsController extends BaseController {
 			$ticket->status_id = TICKET_NEW_STATUS_ID;
 		}
 
-		$ticket->save();
+		if ($ticket->isDirty()) {
 
-       	$this->updateTags($ticket);
-       	$this->updateHistory($ticket);
-       	$this->updateLinks($ticket);
+			$ticket->save();
+
+	       	$this->updateTags($ticket);
+	       	$this->updateHistory($ticket);
+	       	$this->updateLinks($ticket);
+
+	       	$changes = $ticket->getChanges();
+
+	       	EmailsManager::sendTicketUpdate($ticket->id,$changes);
+			SlackManager::sendTicketUpdate($ticket,$changes);
+		}
 
         return redirect()->route('tickets.show',$id)->with('successes',['Ticket updated successfully']);
 	}
