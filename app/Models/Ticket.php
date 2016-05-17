@@ -166,21 +166,21 @@ class Ticket extends CustomModel {
 		if ($this->assignee_id != $anchestor->assignee_id) {
 			$difference = array();
 			$difference['new_value'] = CompanyPerson::where('id',$this->assignee_id)->first()->person->name();
-			$difference['old_value'] = CompanyPerson::where('id',$anchestor->assignee_id)->first()->person->name();
+			$difference['old_value'] = count($anchestor->assignee) ? CompanyPerson::where('id',$anchestor->assignee_id)->first()->person->name() : 'TBA';
 			$changes['assignee'] = $difference;				
 		}
 
 		if ($this->division_id != $anchestor->division_id) {
 			$difference = array();
 			$difference['new_value'] = Division::where('id',$this->division_id)->first()->name;
-			$difference['old_value'] = Division::where('id',$anchestor->division_id)->first()->name;
+			$difference['old_value'] = count($anchestor->division) ? Division::where('id',$anchestor->division_id)->first()->name : 'TBA';
 			$changes['division'] = $difference;				
 		}
 
 		if ($this->equipment_id != $anchestor->equipment_id) {
 			$difference = array();
 			$difference['new_value'] = Equipment::where('id',$this->equipment_id)->first()->name();
-			$difference['old_value'] = Equipment::where('id',$anchestor->equipment_id)->first()->name();
+			$difference['old_value'] = count($anchestor->equipment) ? Equipment::where('id',$anchestor->equipment_id)->first()->name() : 'TBA';
 			$changes['equipment'] = $difference;				
 		}
 
@@ -194,21 +194,21 @@ class Ticket extends CustomModel {
 		if ($this->job_type_id != $anchestor->job_type_id) {
 			$difference = array();
 			$difference['new_value'] = JobType::where('id',$this->job_type_id)->first()->name;
-			$difference['old_value'] = JobType::where('id',$anchestor->job_type_id)->first()->name;
+			$difference['old_value'] = count($anchestor->job_type) ? JobType::where('id',$anchestor->job_type_id)->first()->name : 'TBA';
 			$changes['job_type'] = $difference;				
 		}
 
 		if ($this->level_id != $anchestor->level_id) {
 			$difference = array();
 			$difference['new_value'] = Level::where('id',$this->level_id)->first()->name;
-			$difference['old_value'] = Level::where('id',$anchestor->level_id)->first()->name;
+			$difference['old_value'] = count($anchestor->level) ? Level::where('id',$anchestor->level_id)->first()->name : 'TBA';
 			$changes['level'] = $difference;				
 		}
 
 		if ($this->priority_id != $anchestor->priority_id) {
 			$difference = array();
 			$difference['new_value'] = Priority::where('id',$this->priority_id)->first()->name;
-			$difference['old_value'] = Priority::where('id',$anchestor->priority_id)->first()->name;
+			$difference['old_value'] = count($anchestor->priority) ? Priority::where('id',$anchestor->priority_id)->first()->name : 'TBA';
 			$changes['priority'] = $difference;				
 		}
 
@@ -221,7 +221,7 @@ class Ticket extends CustomModel {
 
 		if ($this->status_id != $anchestor->status_id) {
 			$difference = array();
-			$difference['old_value'] = Status::where('id',$this->status_id)->first()->name;
+			$difference['new_value'] = Status::where('id',$this->status_id)->first()->name;
 			$difference['old_value'] = Status::where('id',$anchestor->status_id)->first()->name;
 			$changes['status'] = $difference;
 		}

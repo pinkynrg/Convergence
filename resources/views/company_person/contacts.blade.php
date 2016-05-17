@@ -22,8 +22,6 @@
 				<th column="company_person.email" class="hidden-xs hidden-ms">Email</th>
 				<th column="company_person.cellphone" class="hidden-xs hidden-ms">Cellphone</th>
 				<th column="company_person.phone" class="hidden-xs hidden-ms">Phone</th>
-				<th column="company_person.created_at" class="hidden-xs hidden-ms hidden-sm hidden-md">Created</th>
-				<th column="company_person.updated_at" class="hidden-xs hidden-ms hidden-sm hidden-md">Updated</th>		
 			</tr>
 		</thead>
 		<tbody>
@@ -50,8 +48,6 @@
 				<td class="hidden-xs hidden-ms"> {{ $contact->email }} </td>			
 				<td class="hidden-xs hidden-ms"> {!! $contact->cellphone() !!} </td>				
 				<td class="hidden-xs hidden-ms"> {!! $contact->phone() !!} </td>
-				<td class="hidden-xs hidden-ms hidden-sm hidden-md"> {{ $contact->date("created_at") }} </td>
-				<td class="hidden-xs hidden-ms hidden-sm hidden-md"> {{ $contact->date("updated_at") }} </td>
 			</tr>
 
 			@endforeach
