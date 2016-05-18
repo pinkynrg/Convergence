@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateNetworkEntitiesTable extends Migration
+class CreateVpnsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,12 @@ class CreateNetworkEntitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('network_entities', function (Blueprint $table) {
+        Schema::create('vpns', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id');
             $table->string('name');
             $table->string('description');
-            $table->string('internal_ip');
-            $table->string('external_ip');
-            $table->string('subnet');
-            $table->string('gateway');
-            $table->string('domain');
+            $table->string('ip');
             $table->string('username');
             $table->string('password');
         });
@@ -34,6 +30,6 @@ class CreateNetworkEntitiesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('network_entities');
+        Schema::drop('vpns');
     }
 }
