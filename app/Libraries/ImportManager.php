@@ -1825,6 +1825,8 @@ class Tickets extends BaseClass {
 			logMessage("Testing NOT PASSED: ABORTING!");
 			die();
 		}
+
+		die();
 		
 		$converter = new HtmlConverter();
 

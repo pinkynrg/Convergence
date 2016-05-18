@@ -652,10 +652,24 @@ body {
 		}
 		.post_content {
 			& > hr {
-				border-top: 1px dashed #5D5D5D;
+				border-top: 1px solid #DCDCDC;
 			}
 			p {
 				margin-bottom: 10px;
+			}
+			blockquote {
+				border-color: #D0CFCF;
+			}
+			table.table {
+				tbody {
+					background-color: #F6F6F6!important;
+				}
+				th, td {
+					border-color: #D5D5D5!important;
+				}
+			}
+			img {
+				max-width: 100px;
 			}
 		}
 	}

@@ -214,8 +214,8 @@ class Ticket extends CustomModel {
 
 		if ($this->emails != $anchestor->emails) {
 			$difference = array();
-			$difference['new_value'] = $this->emails;
-			$difference['old_value'] = $anchestor->emails;
+			$difference['new_value'] = $this->emails ? $this->emails : "NONE";
+			$difference['old_value'] = $anchestor->emails ? $anchestor->emails : "NONE";
 			$changes['emails'] = $difference;				
 		}
 

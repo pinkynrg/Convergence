@@ -18,7 +18,6 @@ class SlackManager {
 	const BOT_C2_TOKEN = "xoxb-42840363603-pBbIFWOAdtRDwhW5FIsc4eoi";
 
 	static public function markDownToSlack($text) {
-		$text = preg_replace("/[`]{2}/","",$text);
 		$text = preg_replace('/[\*]{2}([^\*]*)[\*]{2}/', '*$1*',$text);
 		$text = preg_replace('/[~]{2}([^~]*)[~]{2}/', '~$1~',$text);
 		return $text;
@@ -126,6 +125,7 @@ class SlackManager {
 		$attachments[0]->color = self::getPriorityColor($ticket->priority_id);
 		$attachments[0]->title = "The following changes were made:";
 		$attachments[0]->text = $changes_list;
+		$attachments[0]->fallback = "Ticket #".$ticket->id." has been updated";
 
 		$payload['token'] = self::BOT_C2_TOKEN;
 		$payload['channel'] = self::getChannel($ticket->division_id);
@@ -146,7 +146,8 @@ class SlackManager {
 		$attachments[0]->color = self::getPriorityColor($ticket->priority_id);
 		$attachments[0]->title = $ticket->title;
 		$attachments[0]->text = self::markDownToSlack($ticket->post);
-		
+		$attachments[0]->fallback = "Ticket #".$ticket->id." has been created";
+
 		$payload['token'] = self::BOT_C2_TOKEN;
 		$payload['channel'] = self::getChannel($ticket->division_id);
 		$payload['attachments'] = json_encode($attachments);
@@ -166,7 +167,8 @@ class SlackManager {
 		$attachments[0]->color = self::getPriorityColor($ticket->priority_id);
 		$attachments[0]->title = $ticket->title;
 		$attachments[0]->text = self::markDownToSlack($ticket->post);
-		
+		$attachments[0]->fallback = "Ticket #".$ticket->id." has to be escalated";
+
 		$payload['token'] = self::BOT_C2_TOKEN;
 		$payload['channel'] = self::getChannel($ticket->division_id);
 		$payload['attachments'] = json_encode($attachments);
@@ -186,7 +188,8 @@ class SlackManager {
 		$attachments[0]->color = self::getPriorityColor($ticket->priority_id);
 		$attachments[0]->title = $ticket->title;
 		$attachments[0]->text = self::markDownToSlack($ticket->post);
-		
+		$attachments[0]->fallback = "Ticket #".$ticket->id." has to requested";
+
 		$payload['token'] = self::BOT_C2_TOKEN;
 		$payload['channel'] = self::getChannel($ticket->division_id);
 		$payload['attachments'] = json_encode($attachments);
@@ -205,6 +208,7 @@ class SlackManager {
 		$attachments[0]->pretext = $title;
 		$attachments[0]->color = self::getPriorityColor($post->ticket->priority_id);
 		$attachments[0]->text = self::markDownToSlack($post->post);
+		$attachments[0]->fallback = "New post for ticket #".$ticket->id;
 
 		if ($ticket_updated) {
 			$attachments[0]->text .= "\n\n*Also, some ticket details changed*\n";

@@ -1,5 +1,6 @@
 <?php namespace App\Models;
 
+use App\Libraries\CustomParsedown;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends CustomModel {
@@ -23,7 +24,7 @@ class Post extends CustomModel {
 
 	public function post($type = null) {
 
-		$parsedown = new \Parsedown();
+		$parsedown = new CustomParsedown();
 
 		switch ($type) {
 			case 'html': $post = $parsedown->text($this->post); break;

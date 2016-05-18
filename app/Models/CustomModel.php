@@ -17,4 +17,25 @@ class CustomModel extends Model {
     		throw new \Exception('Model date() method, invalid argument 1');
     	}
     }
+
+    public function setNameAttribute($name)
+    {
+        $this->attributes['name'] = trim($name) !== '' ? $name : null;
+    }
+
+    public function setDescriptionAttribute($description)
+    {
+        $this->attributes['description'] = trim($description) !== '' ? $description : null;
+    }
+
+    public function setTitleIdAttribute($number)
+    {
+        $this->attributes['title_id'] = trim($number) !== '' ? $number : null;
+    }
+
+    public function setDepartmentIdAttribute($number)
+    {
+        $this->attributes['department_id'] = trim($number) !== '' ? $number : null;
+    }
+
 }
