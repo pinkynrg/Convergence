@@ -2,7 +2,7 @@
 
 // GENERAL CONFIGURATION
 define("DOMAIN", env('APP_URL'));
-define("PROTOCOL","http://");
+define("PROTOCOL","https://");
 define("SITE_URL",PROTOCOL.DOMAIN);
 define("PAGINATION",50);
 define("MAX_PAGINATION",200);
