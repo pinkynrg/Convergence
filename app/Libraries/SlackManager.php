@@ -208,7 +208,7 @@ class SlackManager {
 		$attachments[0]->pretext = $title;
 		$attachments[0]->color = self::getPriorityColor($post->ticket->priority_id);
 		$attachments[0]->text = self::markDownToSlack($post->post);
-		$attachments[0]->fallback = "New post for ticket #".$ticket->id;
+		$attachments[0]->fallback = "New post for ticket #".$post->ticket->id;
 
 		if ($ticket_updated) {
 			$attachments[0]->text .= "\n\n*Also, some ticket details changed*\n";
