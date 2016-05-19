@@ -20,7 +20,6 @@
 
 	<div class="visible-xs visible-ms">
 		<div class="alert alert-info" role="alert"> 
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			<div> 
 				<i class="fa fa-info-circle"></i>
 				Please go on a wider screen in order to setup escalation events.
@@ -29,7 +28,6 @@
 	</div>
 	<div class="hidden-xs hidden-ms">
 		<div class="alert alert-info" role="alert"> 
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			<div> 
 				<i class="fa fa-info-circle"></i>
 				Here you can add escalation rules: Escalation Events. 

@@ -34,7 +34,8 @@ function sanitize($row) {
 function sanitizeElement($elem) {
 
 	$test = false;
-		
+	
+	$elem = str_replace("`","'",$elem);	
 	$elem = str_replace("‘","'",$elem);
 	if ($test) echo '-3) '.json_encode($elem)."\n";
 	$elem = str_replace("’","'",$elem);

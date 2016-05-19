@@ -48,7 +48,6 @@
 
 			@if (isset($important_post) && Auth::user()->can('read-all-post'))
 				<div class="alert alert-{{ $important_post->alert_type }}" role="{{ $important_post->alert_type }}"> 
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<div> <i class="fa fa-info-circle"></i> <b>TICKET IS {{ strtoupper($ticket->status->name) }}</b>: <br> {!! $important_post->post('html') !!} </div>
 				</div>
 			@endif
@@ -197,14 +196,12 @@
 				@if ($ticket->status_id == TICKET_REQUESTING_STATUS_ID)
 
 					<div class="alert alert-info" role="alert"> 
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						<div> <i class="fa fa-info-circle"></i> This ticket request has to be moderated before being able to write posts. </div>
 					</div>
 
 				@elseif ($ticket->status_id == TICKET_CLOSED_STATUS_ID)
 
 					<div class="alert alert-danger" role="alert"> 
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						<div> <i class="fa fa-info-circle"></i> This ticket is closed. </div>
 					</div>
 
@@ -218,7 +215,6 @@
 
 						@if(isset($draft_post->id))
 							<div class="alert alert-info" role="alert"> 
-								<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 								<div> <i class="fa fa-info-circle"></i> This is a draft post lastly updated the {{ $draft_post->date("updated_at") }} ~ OR ~ <a class="clear_form">Clear Form</a></div>
 							</div>
 						@endif
