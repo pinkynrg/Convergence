@@ -66,7 +66,7 @@ class LoginController extends Controller {
 					$user->last_login = Carbon::now();
 					$user->save();
 				}
-				
+
 				return redirect()->intended()->with('successes',['Accessed successfully']);
 			}
 		}

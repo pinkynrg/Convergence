@@ -49,7 +49,7 @@ class EmailsManager {
 		self::setSubject("New Post | Ticket #".$post->ticket->id." | ".$post->author->person->name());
 		self::$view = "emails/post";
 		self::$data['post'] = $post;
-		self::$data['title'] = "New Post for Ticket #".$post->ticket->id.": click here to visit the website";
+		self::$data['title'] = "New Post for Ticket #".$post->ticket->id;
 		self::$data['ticket_updated'] = $ticket_updated;
 
 		self::send();
@@ -64,7 +64,7 @@ class EmailsManager {
 		self::setSubject("New Ticket #".$ticket->id." | ".$ticket->creator->person->name());
 		self::$view = "emails/ticket";
 		self::$data['ticket'] = $ticket;
-		self::$data['title'] = "New Ticket #".$ticket->id.": click here to visit the website";
+		self::$data['title'] = "New Ticket #".$ticket->id;
 
 		self::add('to',$ticket->assignee->email);
 		self::add('to',$ticket->creator->email);
@@ -88,7 +88,7 @@ class EmailsManager {
 		self::setSubject("New Ticket Request #".$ticket->id." | ".$ticket->company->name." | ".$ticket->creator->person->name());
 		self::$view = "emails/ticket_request";
 		self::$data['ticket'] = $ticket;
-		self::$data['title'] = "New Ticket Request #".$ticket->id.": click here to visit the website";
+		self::$data['title'] = "New Ticket Request #".$ticket->id;
 
 		$usahelp_email = "USAHelp@elettric80.it";
 
@@ -112,7 +112,7 @@ class EmailsManager {
 		$ticket = TicketsController::API()->find(['id'=>$id]);
 		self::setSubject("Escalate Ticket #".$ticket->id." | ".$ticket->company->name);
 		self::$view = "emails/escalate";
-		self::$data['title'] = "Escalate Ticket #".$ticket->id.": click here to visit the website";
+		self::$data['title'] = "Escalate Ticket #".$ticket->id;
 		self::$data['ticket'] = $ticket;
 
 		$events = explode(",",$ticket->event_id);
@@ -149,7 +149,7 @@ class EmailsManager {
 		self::setSubject("Ticket Update | Ticket #".$ticket->id." | ".$ticket->anchestor(0)->changer->person->name());
 		self::$view = "emails/ticket_update";
 
-		self::$data['title'] = "Ticket #".$ticket->id." details changed by ".$ticket->anchestor(0)->changer->person->name().": click here to visit the website";
+		self::$data['title'] = "Ticket #".$ticket->id." details changed by ".$ticket->anchestor(0)->changer->person->name();
 		self::$data['ticket'] = $ticket;
 
 		self::add('to',$ticket->assignee->email);

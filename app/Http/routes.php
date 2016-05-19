@@ -11,11 +11,11 @@
 |
 */
 
-Route::group(array('middleware' => ['auth','log']), function() {
+Route::get('/', ['as' => 'root', function () {
+	return Auth::check() ? redirect()->route('tickets.index') : redirect()->route('public.helpdesk');
+}]);
 
-	Route::get('/', ['as' => 'root', function () {
-		return redirect()->route('tickets.index');
-	}]);
+Route::group(array('middleware' => ['auth','log']), function() {
 
 	Route::get('/debug/enable', function () {
 		if (Auth::user()->owner->id == ADMIN_PERSON_ID) {

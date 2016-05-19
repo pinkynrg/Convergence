@@ -1,11 +1,11 @@
 @extends('layouts.email')
 @section('content')
 
-	<h3><a href="{{SITE_URL."/tickets/".$ticket->id}}"> {{ $title }} </a></h3>
+	<a class="title" href="{{SITE_URL."/tickets/".$ticket->id}}"> {{ $title }} </a>
 
 	<hr>
 
-	<table class="table">
+	<table class="table" id="ticket_details">
 		<tr>
 			<td class="bold" width="200">Ticket #</td><td>{{ $ticket->id }}</td>
 		</tr>
@@ -40,7 +40,7 @@
 
 	<hr>
 
-	<table class="table">
+	<table class="table" id="ticket_container">
 		<tr>
 			<td width="50" class="thumbnail" rowspan="3"><img width="50" src="{{ SITE_URL.$ticket->creator->person->profile_picture()->path() }}"></td>
 		</tr>

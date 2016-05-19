@@ -40,7 +40,7 @@ class Authenticate {
 			}
 			else
 			{
-				return redirect()->route('public.helpdesk');
+				return redirect()->route('login.index');
 			}
 		}
 

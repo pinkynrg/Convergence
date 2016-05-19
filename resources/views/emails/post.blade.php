@@ -1,11 +1,11 @@
 @extends('layouts.email')
 @section('content')
 
-	<h3><a href="{{SITE_URL."/tickets/".$post->ticket->id}}"> {{ $title }} </a></h3>
+	<a class="title" href="{{SITE_URL."/tickets/".$post->ticket->id}}"> {{ $title }} </a>
 
 	<hr>
 
-	<table class="table">
+	<table class="table" id="ticket_details">
 		<tr>
 			<td class="bold" width="200">Ticket #</td><td>{{ $post->ticket->id }}</td>
 		</tr>
@@ -41,7 +41,7 @@
 	<h3>{{ $post->ticket->title }}</h3>
 	
 
-	<table class="table">
+	<table class="table" id="ticket_container">
 		<tr>
 			<td width="50" class="thumbnail" rowspan="3"><img width="50" src="{{ SITE_URL.$post->ticket->creator->person->profile_picture()->path() }}"/></td>
 		</tr>
@@ -59,7 +59,7 @@
 
 	<hr>
 
-	<table class="table">
+	<table class="table" id="post_container">
 		<tr>
 			<td width="50" class="thumbnail" rowspan="3"><img width="50" src="{{ SITE_URL.$post->author->person->profile_picture()->path() }}"/></td>
 		</tr>
@@ -81,15 +81,26 @@
 
 		<p> The following changes were made: </p>
 
-		@foreach ($post->ticket->getChanges() as $key => $change)
-			<p>
-				@if ($key == 'post')
-					post: <span class="remarked"> Content was changed </span>
-				@else
-					{{ $key }}: <span class="remarked"> {{ $change['old_value'] }} </span>&nbsp;&nbsp;→&nbsp;&nbsp;<span class="remarked"> {{ $change['new_value'] }} </span>
-				@endif
-			</p>
-		@endforeach
+		<table class="table" id="ticket_changes">
+			@foreach ($ticket->getChanges() as $key => $change)
+				<tr>
+					<td class="bold"> {{ ucfirst($key) }} </td>
+					@if ($key == 'post')
+						<td> <span class="remarked"> Content was changed </span> </td>
+					@else
+						<td>
+							<span class="remarked"> 
+								{{ $change['old_value'] }} 
+							</span>
+							&nbsp;&nbsp;→&nbsp;&nbsp;
+							<span class="remarked"> 
+								{{ $change['new_value'] }} 
+							</span>
+						</td>
+					@endif
+				</tr>
+			@endforeach
+		</table>
 
 	@endif
 
