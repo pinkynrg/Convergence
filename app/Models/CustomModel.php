@@ -18,6 +18,11 @@ class CustomModel extends Model {
     	}
     }
 
+    public function setHotelIdAttribute($id)
+    {
+        $this->attributes['hotel_id'] = trim($id) !== '' ? $id : null;
+    }
+
     public function setNameAttribute($name)
     {
         $this->attributes['name'] = trim($name) !== '' ? $name : null;
@@ -28,14 +33,14 @@ class CustomModel extends Model {
         $this->attributes['description'] = trim($description) !== '' ? $description : null;
     }
 
-    public function setTitleIdAttribute($number)
+    public function setTitleIdAttribute($id)
     {
-        $this->attributes['title_id'] = trim($number) !== '' ? $number : null;
+        $this->attributes['title_id'] = trim($id) !== '' ? $id : null;
     }
 
-    public function setDepartmentIdAttribute($number)
+    public function setDepartmentIdAttribute($id)
     {
-        $this->attributes['department_id'] = trim($number) !== '' ? $number : null;
+        $this->attributes['department_id'] = trim($id) !== '' ? $id : null;
     }
 
 }

@@ -32,8 +32,8 @@ class CreateTicketRequestRequest extends Request {
 			'question_1' => 'required|string',
 			'question_2' => 'required|string',
 			'question_3' => 'required|string',
-			'question_4' => 'string',
-			'question_5' => 'string',
+			'question_4' => 'required|string',
+			'question_5' => 'required|string',
 		];
 
 		return $rules;

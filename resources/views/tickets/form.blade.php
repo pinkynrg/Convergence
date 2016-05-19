@@ -15,7 +15,7 @@
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('equipment_id','Equipment') !!}
 			{!! Form::BSHidden('equipment_id',null,['id' => 'equipment_id']) !!}
-			{!! Form::BSSelect("fake_equipment_id", array(), null, ['key' => 'id', 'value' => '!name', 'id' => 'fake_equipment_id']) !!}
+			{!! Form::BSSelect("fake_equipment_id", array(), null, ['id' => 'fake_equipment_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
@@ -35,7 +35,7 @@
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel('contact_id','Company Contact') !!}
 			{!! Form::BSHidden('contact_id',null,['id' => 'contact_id']) !!}
-			{!! Form::BSSelect("fake_contact_id", array(), null, ['key' => 'id', 'value' => ['!person.last_name',' ','!person.first_name'], 'id' => 'fake_contact_id']) !!}
+			{!! Form::BSSelect("fake_contact_id", array(), null, ['id' => 'fake_contact_id']) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}

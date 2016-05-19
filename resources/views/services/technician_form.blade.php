@@ -49,11 +49,6 @@
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
-			{!! Form::BSLabel("tech_remote_end[".$tech_num."]", "Remote Dev. End Date", ['class' =>  'tech_remote_group['.$tech_num.']']) !!}
-			{!! Form::BSDatePicker("tech_remote_end[".$tech_num."]",null, ['class' => 'datepicker tech_remote_group['.$tech_num.']', 'data-provider' => 'datepicker','disabled' => 'disabled']) !!}
-		{!! Form::BSEndGroup() !!}
-
-		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("tech_has_onsite[".$tech_num."]", "Has Onsite Job #") !!}
 			{!! Form::BSSelect("tech_has_onsite[".$tech_num."]", ['No','Yes']) !!}
 		{!! Form::BSEndGroup() !!}
