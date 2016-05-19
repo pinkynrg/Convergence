@@ -164,7 +164,7 @@ class EmailsManager {
 
 		self::send();
 
-		Activity::log("Email Ticket Request Send",self::$data);
+		Activity::log("Email Ticket Update Send",self::$data);
 	}
 
 
