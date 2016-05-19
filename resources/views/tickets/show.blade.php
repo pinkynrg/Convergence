@@ -47,8 +47,13 @@
 			@endif
 
 			@if (isset($important_post) && Auth::user()->can('read-all-post'))
-				<div class="alert alert-{{ $important_post->alert_type }}" role="{{ $important_post->alert_type }}"> 
-					<div> <i class="fa fa-info-circle"></i> <b>TICKET IS {{ strtoupper($ticket->status->name) }}</b>: <br> {!! $important_post->post('html') !!} </div>
+				<div id="important_post" class="alert alert-{{ $important_post->alert_type }}" role="{{ $important_post->alert_type }}"> 
+					<div id="important_post_header"> 
+						<i class="fa fa-info-circle"></i> TICKET IS {{ strtoupper($ticket->status->name) }}:
+					</div> 
+					<div id="important_post_content"> 
+						{!! $important_post->post('html') !!}
+					</div>
 				</div>
 			@endif
 
