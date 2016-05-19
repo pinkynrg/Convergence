@@ -1,11 +1,12 @@
 <?php 
 
 // GENERAL CONFIGURATION
+define("PROTOCOL",isset($_SERVER['HTTPS']) ? 'https://' : 'http://');
 define("DOMAIN", env('APP_URL'));
-define("PROTOCOL","https://");
 define("SITE_URL",PROTOCOL.DOMAIN);
-define("PAGINATION",50);
+define("CURRENT_URL",SITE_URL.$_SERVER['REQUEST_URI']);
 define("MAX_PAGINATION",200);
+define("PAGINATION",50);
 
 // IMPORT CONFIGURATION FROM Convergence 1.0
 define("CONVERGENCE_HOST", "198.154.99.22:1088");
