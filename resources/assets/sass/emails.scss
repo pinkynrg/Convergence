@@ -3,6 +3,8 @@ $url:'https://convergence.elettric80inc.com';
 body { 
 	background-repeat: repeat; 
 	background-image: url($url+'/resources/style/skulls_lightblue.png'); 
+	background-color: #F7F7F7;
+	
 	table {
 		&.table {
 			font-size: 13px;
