@@ -187,7 +187,7 @@ class Ticket extends CustomModel {
 		if ($this->contact_id != $anchestor->contact_id) {
 			$difference = array();
 			$difference['new_value'] = CompanyPerson::where('id',$this->contact_id)->first()->person->name();
-			$difference['old_value'] = CompanyPerson::where('id',$anchestor->contact_id)->first()->person->name();
+			$difference['old_value'] = count($anchestor->contact) ? CompanyPerson::where('id',$anchestor->contact_id)->first()->person->name() : 'TBA';
 			$changes['contact'] = $difference;				
 		}
 

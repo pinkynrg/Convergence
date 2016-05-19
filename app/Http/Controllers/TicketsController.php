@@ -273,13 +273,13 @@ class TicketsController extends BaseController {
 			$ticket->status_id = TICKET_NEW_STATUS_ID;
 		}
 
+       	$this->updateLinks($ticket);
+       	$this->updateTags($ticket);
+
 		if ($ticket->isDirty()) {
 
 			$ticket->save();
-
-	       	$this->updateTags($ticket);
 	       	$this->updateHistory($ticket);
-	       	$this->updateLinks($ticket);
 
 	       	EmailsManager::sendTicketUpdate($ticket->id);
 			SlackManager::sendTicketUpdate($ticket);

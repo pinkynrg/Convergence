@@ -153,8 +153,6 @@ class EmailsManager {
 		self::$data['ticket'] = $ticket;
 
 		self::add('to',$ticket->assignee->email);
-		self::add('to',$ticket->creator->email);
-		self::add('to',$ticket->contact->email);
 
 		$additional_emails = explode(",",$ticket->emails);
 
