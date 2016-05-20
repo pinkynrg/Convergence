@@ -4,7 +4,7 @@
 define("PROTOCOL",isset($_SERVER['HTTPS']) ? 'https://' : 'http://');
 define("DOMAIN", env('APP_URL'));
 define("SITE_URL",PROTOCOL.DOMAIN);
-define("CURRENT_URL",SITE_URL.$_SERVER['REQUEST_URI']);
+define("CURRENT_URL",isset($_SERVER['REQUEST_URI']) ? SITE_URL.$_SERVER['REQUEST_URI'] : '');
 define("MAX_PAGINATION",200);
 define("PAGINATION",50);
 

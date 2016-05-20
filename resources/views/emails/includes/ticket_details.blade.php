@@ -13,15 +13,19 @@
 	<tr>
 		<td class="bold">Author</td><td>{{ $ticket->creator->person->name() }}</td>
 	</tr>
-	<tr>
-		<td class="bold">Assignee</td><td>{{ $ticket->assignee->person->name() }}</td>
-	</tr>
-	<tr>
-		<td class="bold">Status</td><td>{{ $ticket->status->name }}</td>
-	</tr>
-	<tr>
-		<td class="bold">Priority</td><td>{{ $ticket->priority->name }}</td>
-	</tr>
+
+	@if ($ticket->status_id != TICKET_REQUESTING_STATUS_ID)
+		<tr>
+			<td class="bold">Assignee</td><td>{{ $ticket->assignee->person->name() }}</td>
+		</tr>
+		<tr>
+			<td class="bold">Status</td><td>{{ $ticket->status->name }}</td>
+		</tr>
+		<tr>
+			<td class="bold">Priority</td><td>{{ $ticket->priority->name }}</td>
+		</tr>
+	@endif
+
 	<tr>
 		<td class="bold">Contact Name:</td><td>{{ isset($ticket->contact_id) ? $ticket->contact->person->name() : '-' }}</td>
 	</tr>

@@ -33,19 +33,19 @@
 					<div class="form-group">
 						<input class="form-control" name="password" type="password" id="password" placeholder="password">
 					</div>
-					<div id="remember" class="checkbox">
+					<!-- <div id="remember" class="checkbox">
 		                <label>
 		                    <input type="checkbox" value="remember-me"> Remember me
 		                </label>
-		            </div>
+		            </div> -->
 					
 					<div class="form-group">
 		            	{!! Form::BSSubmit("Sign in",["id" => "login_btn"]) !!}
 		            </div>
 
-		            <a href="#" class="forgot-password">
+		            <!-- <a href="#" class="forgot-password">
 		                Forgot the password?
-		            </a>
+		            </a> -->
 
 		        {!! Form::close() !!}
 			</div>
