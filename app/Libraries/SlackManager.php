@@ -15,8 +15,6 @@ class SlackManager {
 	const PLC_CHANNEL = "C0A49QFDF";
 	const LGV_CHANNEL = "C0A49E352";
 	
-	const BOT_C2_TOKEN = "xoxb-42840363603-FaCTKxkwkhltJXWpn9Tmd2cG";
-
 	static public function markDownToSlack($text) {
 		$text = preg_replace('/[\*]{2}([^\*]*)[\*]{2}/', '*$1*',$text);
 		$text = preg_replace('/[~]{2}([^~]*)[~]{2}/', '~$1~',$text);
@@ -100,9 +98,9 @@ class SlackManager {
 
 			$payload['channel'] = $channel;
 			$payload['topic'] = $topic;
-			$payload['token'] = self::BOT_C2_TOKEN;
+			$payload['token'] = env('BOT_C2_TOKEN');
 
-			$response = self::apiCall(self::API_SET_CHANNEL_TOPIC,['channel' => $channel_id, 'topic' => $topic, 'token' => self::BOT_C2_TOKEN]);
+			$response = self::apiCall(self::API_SET_CHANNEL_TOPIC,$payload);
 		}
 	}
 
@@ -127,7 +125,7 @@ class SlackManager {
 		$attachments[0]->text = $changes_list;
 		$attachments[0]->fallback = "Ticket #".$ticket->id." has been updated";
 
-		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['token'] = env('BOT_C2_TOKEN');
 		$payload['channel'] = self::getChannel($ticket->division_id);
 		$payload['attachments'] = json_encode($attachments);
 
@@ -148,7 +146,7 @@ class SlackManager {
 		$attachments[0]->text = self::markDownToSlack($ticket->post);
 		$attachments[0]->fallback = "Ticket #".$ticket->id." has been created";
 
-		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['token'] = env('BOT_C2_TOKEN');
 		$payload['channel'] = self::getChannel($ticket->division_id);
 		$payload['attachments'] = json_encode($attachments);
 
@@ -169,7 +167,7 @@ class SlackManager {
 		$attachments[0]->text = self::markDownToSlack($ticket->post);
 		$attachments[0]->fallback = "Ticket #".$ticket->id." has to be escalated";
 
-		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['token'] = env('BOT_C2_TOKEN');
 		$payload['channel'] = self::getChannel($ticket->division_id);
 		$payload['attachments'] = json_encode($attachments);
 
@@ -190,7 +188,7 @@ class SlackManager {
 		$attachments[0]->text = self::markDownToSlack($ticket->post);
 		$attachments[0]->fallback = "Ticket #".$ticket->id." has to requested";
 
-		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['token'] = env('BOT_C2_TOKEN');
 		$payload['channel'] = self::getChannel($ticket->division_id);
 		$payload['attachments'] = json_encode($attachments);
 
@@ -218,7 +216,7 @@ class SlackManager {
 			}
 		}
 
-		$payload['token'] = self::BOT_C2_TOKEN;
+		$payload['token'] = env('BOT_C2_TOKEN');
 		$payload['channel'] = self::getChannel($post->ticket->division_id);
 		$payload['attachments'] = json_encode($attachments);
 

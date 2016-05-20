@@ -20,6 +20,15 @@ class EmailsManager {
 	static $cc = array();
 	static $bcc = array();
 	static $bcc_debug_mode = ["biggyapple@gmail.com","meli.f@elettric80.it"];
+	
+	const HELPDESK_MANAGER_EMAIL = "kotsakos.t@elettric80.it";
+	const PC_TEAM_LEADER_EMAIL = "melzi.a@elettric80.it";
+	const PLC_TEAM_LEADER_EMAIL = "passarini.r@elettric80.it";
+	const LGV_TEAM_LEADER_EMAIL = "armenta.a@elettric80.it";
+	const FIELD_MANAGER_EMAIL = "balla.d@elettric80.it";
+	const CUSTOMER_SERVICE_MANAGER_EMAIL = "racannelli.m@elettric80.it";
+	const PRESIDENT_EMAIL = "nelson.w@elettric80.it";
+	const USAHELP_EMAIL = "USAHelp@elettric80.it";
 
 	public static function sendPost($id, $ticket_updated, $request) {
 
@@ -39,11 +48,17 @@ class EmailsManager {
 			}
 		}
 
-		self::add('to',$post->ticket->assignee->email);
-		self::add('to',$post->ticket->creator->email);
+		$emails[] = $post->ticket->assignee->email;
 
 		foreach ($emails as $email) {
 			self::add('to',$email);
+		}
+
+		switch ($post->ticket->division->id) {
+			case LGV_DIVISION_ID: self::add("cc", self::LGV_TEAM_LEADER_EMAIL); break;
+			case PC_DIVISION_ID: self::add("cc", self::PC_TEAM_LEADER_EMAIL); break;
+			case PLC_DIVISION_ID: self::add("cc", self::PLC_TEAM_LEADER_EMAIL); break;
+			default: break;
 		}
 	
 		self::setSubject("New Post | Ticket #".$post->ticket->id." | ".$post->author->person->name());
@@ -60,7 +75,7 @@ class EmailsManager {
 	public static function sendTicket($id) {
 
 		$ticket = Ticket::find($id);
-		
+
 		self::setSubject("New Ticket #".$ticket->id." | ".$ticket->creator->person->name());
 		self::$view = "emails/ticket";
 		self::$data['ticket'] = $ticket;
@@ -74,6 +89,13 @@ class EmailsManager {
 
 		foreach ($additional_emails as $email) {
 			self::add('to',$email);
+		}
+
+		switch ($ticket->division->id) {
+			case LGV_DIVISION_ID: self::add("cc", self::LGV_TEAM_LEADER_EMAIL); break;
+			case PC_DIVISION_ID: self::add("cc", self::PC_TEAM_LEADER_EMAIL); break;
+			case PLC_DIVISION_ID: self::add("cc", self::PLC_TEAM_LEADER_EMAIL); break;
+			default: break;
 		}
 
 		self::send();
@@ -90,9 +112,8 @@ class EmailsManager {
 		self::$data['ticket'] = $ticket;
 		self::$data['title'] = "New Ticket Request #".$ticket->id;
 
-		$usahelp_email = "USAHelp@elettric80.it";
-
-		self::add('to',$usahelp_email);
+		self::add('to', self::USAHELP_EMAIL);
+		self::add('cc', self::HELPDESK_MANAGER_EMAIL);
 
 		self::send();
 
@@ -100,14 +121,6 @@ class EmailsManager {
 	}
 
 	public static function sendEscalation($id) {
-
-		$helpdesk_manager_email = "kotsakos.t@elettric80.it";
-		$pc_team_leader = "melzi.a@elettric80.it";
-		$plc_team_leader = "passarini.r@elettric80.it";
-		$lgv_team_leader = "armenta.a@elettric80.it";
-		$field_manager = "balla.d@elettric80.it";
-		$customer_service_manager = "racannelli.m@elettric80.it";
-		$president = "nelson.w@elettric80.it";
 
 		$ticket = TicketsController::API()->find(['id'=>$id]);
 		self::setSubject("Escalate Ticket #".$ticket->id." | ".$ticket->company->name);
@@ -120,19 +133,19 @@ class EmailsManager {
 		foreach ($events as $event) {
 			switch ($event) {
 				case EVENT_ASSIGNEE_ID : self::add("to", $ticket->assignee->email); break;
-				case EVENT_HELPDESK_MANAGER_ID : self::add("to", $helpdesk_manager_email); break;
+				case EVENT_HELPDESK_MANAGER_ID : self::add("to", self::HELPDESK_MANAGER_EMAIL); break;
 				case EVENT_ACCOUNT_MANAGER_ID : self::add("to", $ticket->company->account_manager->email); break;				
 				case EVENT_TEAM_LEADER_ID : 
 					switch ($ticket->division->id) {
-						case LGV_DIVISION_ID: self::add("to", $lgv_team_leader); break;
-						case PC_DIVISION_ID: self::add("to", $pc_team_leader); break;
-						case PLC_DIVISION_ID: self::add("to", $plc_team_leader); break;
+						case LGV_DIVISION_ID: self::add("to", self::LGV_TEAM_LEADER_EMAIL); break;
+						case PC_DIVISION_ID: self::add("to", self::PC_TEAM_LEADER_EMAIL); break;
+						case PLC_DIVISION_ID: self::add("to", self::PLC_TEAM_LEADER_EMAIL); break;
 						default: break;
 					} 
 				break;
-				case EVENT_FIELD_MANAGER_ID : self::add("to", $field_manager); break;
-				case EVENT_CUSTOMER_SERVICE_MANAGER_ID : self::add("to", $customer_service_manager); break;
-				case EVENT_THE_PRESIDENT_ID : self::add("to", $president); break;
+				case EVENT_FIELD_MANAGER_ID : self::add("to", self::FIELD_MANAGER_EMAIL); break;
+				case EVENT_CUSTOMER_SERVICE_MANAGER_ID : self::add("to", self::CUSTOMER_SERVICE_MANAGER_EMAIL); break;
+				case EVENT_THE_PRESIDENT_ID : self::add("to", self::PRESIDENT_EMAIL); break;
 				default: break;
 			}
 		}
@@ -212,7 +225,7 @@ class EmailsManager {
 
 	private static function add($type, $email) {
 		if ($email) {
-			if (isset(self::$$type)) self::${$type}[] = $email;
+			if (isset(self::$$type) && !in_array($email,self::$$type)) self::${$type}[] = $email;
 		}
 	}
 
