@@ -26,15 +26,27 @@
 			}
 
 			.title {
-				font-size: 72px;
+				font-size: 60px;
 				margin-bottom: 40px;
+			}
+
+			.subtitle {
+				font-size: 30px;
+				margin-bottom: 40px;
+			}
+
+			.remarked {
+				font-weight: bold;
+				color: #A0AEB5;
 			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
 			<div class="content">
-				<div class="title">Be right back.</div>
+				<div class="title">The E80 ticketing system is currently under maintenance.</div>
+				<div class="subtitle">Please contact <span class="remarked">usahelp&#64;elettric80.it</span> or call <span class="remarked">(877)-358-0462</span> or <span class="remarked">(847)-3297-717</span>
+				</div>
 			</div>
 		</div>
 	</body>
