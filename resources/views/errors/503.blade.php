@@ -8,7 +8,7 @@
 				padding: 0;
 				width: 100%;
 				height: 100%;
-				color: #B0BEC5;
+				color: #979797;
 				display: table;
 				font-weight: 100;
 				font-family: 'Lato';
@@ -37,7 +37,7 @@
 
 			.remarked {
 				font-weight: bold;
-				color: #A0AEB5;
+				color: #6A7276;
 			}
 		</style>
 	</head>
@@ -45,7 +45,7 @@
 		<div class="container">
 			<div class="content">
 				<div class="title">The E80 ticketing system is currently under maintenance.</div>
-				<div class="subtitle">Please contact <span class="remarked">usahelp&#64;elettric80.it</span> or call <span class="remarked">(877)-358-0462</span> or <span class="remarked">(847)-3297-717</span>
+				<div class="subtitle">Please contact <span class="remarked">usahelp&#64;elettric80.it</span> or call <span class="remarked">(877)-358-0462</span> or <span class="remarked">(847)-329-7717</span>
 				</div>
 			</div>
 		</div>
