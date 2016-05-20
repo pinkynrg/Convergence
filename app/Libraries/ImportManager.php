@@ -1827,8 +1827,6 @@ class Tickets extends BaseClass {
 			die();
 		}
 
-		die();
-		
 		$converter = new HtmlConverter();
 
 		$query = mssql_query("SELECT Tickets.*, f.Id as fid, f.Question_01, f.Question_02, 
