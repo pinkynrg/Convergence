@@ -36,7 +36,6 @@ class CreateCompaniesTable extends Migration {
 			$table->foreign('escalation_profile_id')->references('id')->on('escalation_profiles');
 			$table->foreign('connection_type_id')->references('id')->on('connection_types');
 			$table->foreign('support_type_id')->references('id')->on('support_types');
-			$table->foreign('profile_picture_id')->references('id')->on('files');
 		});
 	}
 

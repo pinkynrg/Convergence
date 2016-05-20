@@ -15,7 +15,7 @@ class SlackManager {
 	const PLC_CHANNEL = "C0A49QFDF";
 	const LGV_CHANNEL = "C0A49E352";
 	
-	const BOT_C2_TOKEN = "xoxb-42840363603-pBbIFWOAdtRDwhW5FIsc4eoi";
+	const BOT_C2_TOKEN = "xoxb-42840363603-FaCTKxkwkhltJXWpn9Tmd2cG";
 
 	static public function markDownToSlack($text) {
 		$text = preg_replace('/[\*]{2}([^\*]*)[\*]{2}/', '*$1*',$text);

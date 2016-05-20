@@ -22,10 +22,7 @@ class CreatePeopleTable extends Migration {
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->softDeletes();
 		});
-
-		Schema::table('people',function(Blueprint $table) {
-			$table->foreign('profile_picture_id')->references('id')->on('files');
-		});
+		
 	}
 
 	/**

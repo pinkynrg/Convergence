@@ -31,7 +31,14 @@ class CreateFilesTable extends Migration {
 		Schema::table('files',function(Blueprint $table) {
 			$table->foreign('thumbnail_id')->references('id')->on('files');
 			$table->foreign('uploader_id')->references('id')->on('company_person');
-			
+		});
+
+		Schema::table('people',function(Blueprint $table) {
+			$table->foreign('profile_picture_id')->references('id')->on('files');
+		});
+
+		Schema::table('companies',function(Blueprint $table) {
+			$table->foreign('profile_picture_id')->references('id')->on('files');
 		});
 	}
 
