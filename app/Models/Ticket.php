@@ -117,7 +117,8 @@ class Ticket extends CustomModel {
 		return $this->hasMany('App\Models\TicketLink','linked_ticket_id')->orderBy('ticket_id');
 	}
 
-	public function attachments() {
+	public function attachments() 
+	{
 		return $this->morphMany('App\Models\File','resource');
 	}
 

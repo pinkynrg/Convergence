@@ -4,19 +4,34 @@ body {
 	background-repeat: repeat; 
 	background-image: url($url+'/resources/style/skulls_lightblue.png'); 
 	background-color: #F7F7F7;
-	
+
 	table {
 		&.table {
 			font-size: 13px;
 		}
 		&.wrapper { 
-			max-width: 500px; 
+			max-width: 700px; 
 			background-color: #FFF; 
 			padding: 20px 15px; 
 			border: 1px solid #D4D4D4; 
 			-webkit-border-radius: 5px; 
 			-moz-border-radius: 5px; 
 			border-radius: 5px; 
+		}
+		&.attachments {
+			tr {
+				td {
+					img {
+						width: 50px;
+						border: 1px dashed #000;
+					}
+				}
+			}
+		}
+		&#ticket_container {
+			#ticket_title {
+				font-weight: bold;
+			}
 		}
 		&#ticket_changes {
 			tr {
@@ -59,7 +74,7 @@ body {
 		text-decoration: none;
 		color: #000000;
 		font-weight: bold;
-		font-size: 17px;
+		font-size: 19px;
 	}
 	.inline { display: inline-block; }
 	.footer { width:100%; vertical-align: bottom; font-size: 12px; }
