@@ -206,6 +206,7 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::get('ajax/tickets/contacts/{company_id}', ['uses' => 'TicketsController@ajaxContactsRequest', 'as' => 'json.tickets.contacts']);
 	Route::get('ajax/tickets/equipment/{company_id}', ['uses' => 'TicketsController@ajaxEquipmentRequest', 'as' => 'json.tickets.equipment']);
 	Route::get('ajax/files/{target}/{target_action}/{id}', ['uses' => 'FilesController@listFiles', 'as' => 'files.list']);
+	Route::post('ajax/markdown', ['uses' => 'MarkdownController@toHtml', 'as' => 'markdown.html']);
 
 });
 
@@ -216,5 +217,9 @@ Route::get('logout', array('uses' => 'LoginController@doLogout', 'as' => 'login.
 Route::get('start',['uses' => 'LoginController@start', 'as' => 'login.start']);
 Route::post('start',['uses' => 'LoginController@storeInfo', 'as' => 'login.store_info']);
 Route::get('files/{id}',['uses' => 'FilesController@show', 'as' => 'files.show']);
+
+Route::any('{any}', function($any) {
+	return redirect()->back()->withErrors(["Ops... the requested page couldn't be found!"]);
+})->where('any', '(.*)?');
 
 ?>
