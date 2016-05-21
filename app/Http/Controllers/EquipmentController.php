@@ -46,7 +46,7 @@ class EquipmentController extends BaseController {
 
 	public function store(CreateEquipmentRequest $request) {
 		$equipment = Equipment::create($request->all());
-        $equipment->warranty_expiration = Carbon::createFromFormat('m/d/Y', $request->get('warranty_expiration'));
+        $equipment->warranty_expiration = $request->get('warranty_expiration') ? Carbon::createFromFormat('m/d/Y', $request->get('warranty_expiration')) : null;
         $equipment->save();
 		return redirect()->route('companies.show',$request->get('company_id'))->with('successes',['equipment created successfully']);
 	}
@@ -66,7 +66,7 @@ class EquipmentController extends BaseController {
 	public function update($id, UpdateEquipmentRequest $request) {
 		$equipment = Equipment::find($id);
         $equipment->update($request->all());
-        $equipment->warranty_expiration = Carbon::createFromFormat('m/d/Y', $request->get('warranty_expiration'));
+        $equipment->warranty_expiration = $request->get('warranty_expiration') ? Carbon::createFromFormat('m/d/Y', $request->get('warranty_expiration')) : null;
         $equipment->save();
         return redirect()->route('companies.show',$equipment->company_id)->with('successes',['equipment updated successfully']);
 	}
