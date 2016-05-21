@@ -28,7 +28,7 @@
 					@include('includes.errors')
 				
 					<div class="form-group">
-						<input class="form-control" name="username" type="text" id="username" placeholder="username">
+						<input class="form-control" name="username" type="text" id="username" placeholder="username" autofocus="on">
 					</div>
 					<div class="form-group">
 						<input class="form-control" name="password" type="password" id="password" placeholder="password">
