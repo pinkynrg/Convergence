@@ -12,7 +12,33 @@ return array(
      |
      */
 
-    'enabled' => true,
+    'enabled' => function () {
+
+        $enabled = false;
+
+        if (Session::get('debug') == true) {
+
+            $enabled = true;
+
+            // GROUP TYPE
+            Debugbar::info(Auth::user()->active_contact->group_type->name);
+                
+            // GROUP
+            Debugbar::info(Auth::user()->active_contact->group->name);
+                
+            // ROLES
+            foreach (Auth::user()->active_contact->group->roles as $role) {
+                $permissions = [];
+                foreach ($role->permissions as $permission) {
+                    $permissions[] = $permission->name;
+                }
+
+                Debugbar::info(implode(" | ",$permissions)); 
+            }
+        }
+
+        return $enabled;        
+    },
 
     /*
      |--------------------------------------------------------------------------

@@ -8,8 +8,6 @@
 
 	<body>
 
-		@include('includes.debug')
-
 		@include('includes.header')
 
 		<!-- used when ajax is executing -->

@@ -18,7 +18,7 @@
 		"tijsverkoyen/css-to-inline-styles": "^1.5",
 		"mews/purifier": "~2.0",
 		"neitanod/forceutf8": "dev-master",
-		"barryvdh/laravel-debugbar": "^2.2",
+		"barryvdh/laravel-debugbar": "2.2.0",
 		"intervention/image": "^2.3",
 		"league/html-to-markdown": "^4.2",
 		"erusev/parsedown": "^1.6"

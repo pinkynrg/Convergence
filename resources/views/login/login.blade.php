@@ -7,8 +7,6 @@
 
 	<div id="login_panel">
 
-		@include('includes.debug')
-
 		<!-- E80 Logo -->
 		<div id="header" class="row">
 			<div id="logo">
