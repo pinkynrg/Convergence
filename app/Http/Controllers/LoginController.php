@@ -24,7 +24,7 @@ class LoginController extends Controller {
 	    	return view('login/login',$data);
 		}
 		else {
-			return redirect()->intended();
+			return redirect()->route('tickets.index')->with('infos',['You are already logged in Convergence']);
 		}
 	}
 
@@ -67,7 +67,7 @@ class LoginController extends Controller {
 					$user->save();
 				}
 
-				return redirect()->intended()->with('successes',['Accessed successfully']);
+				return redirect()->intended(route('tickets.index'))->with('successes',['Accessed successfully']);
 			}
 		}
 

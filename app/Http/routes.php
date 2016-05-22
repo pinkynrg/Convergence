@@ -165,7 +165,6 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::get('users',['uses' => 'UsersController@index', 'as' => 'users.index']);
 	Route::get('users/create/{id?}', ['uses' => 'UsersController@create', 'as' => 'users.create']);
 	Route::post('users', ['uses' => 'UsersController@store', 'as' => 'users.store']);
-	Route::get('users/{id}',['uses' => 'UsersController@show', 'as' => 'users.show']);
 	Route::patch('users/{id}', ['uses' => 'UsersController@update', 'as' => 'users.update']);
 	Route::get('users/{id}/edit', ['uses' => 'UsersController@edit', 'as' => 'users.edit']);
 
