@@ -30,6 +30,7 @@ class ActivitiesManager {
         $activity->request = json_encode($params);
         $activity->ip_address = Request::ip();
         $activity->route = Request::route() ? Request::route()->getName() : NULL;
+        $activity->text = $text;
 
         $browser = new Browser();
         
