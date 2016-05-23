@@ -33,4 +33,12 @@ class Person extends CustomModel {
 		$picture = File::find($this->profile_picture_id);
 		return $picture ? $picture : File::find(DEFAULT_PROFILE_PICTURE_ID);
 	}
+
+	public function isE80() {
+		$isE80 = false;
+		foreach ($this->company_person as $company_person) {
+			$isE80 = $company_person->isE80() ? true : $isE80;
+		}
+		return $isE80;
+	}
 }

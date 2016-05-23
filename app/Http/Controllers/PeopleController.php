@@ -18,7 +18,7 @@ use Form;
 class PeopleController extends BaseController {
 
 	public function show($id) {
-		if (Auth::user()->can('read-person')) {
+		if (Auth::user()->can('read-person') || (Auth::user()->active_contact->person->id == $id && Auth::user()->can('read-own-person'))) {
 			$person = Person::find($id);
 			$id = Auth::user()->owner->id == $id ? Auth::user()->active_contact : $person->company_person[0]->id;
 			return redirect()->route('company_person.show',$id);

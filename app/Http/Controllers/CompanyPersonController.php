@@ -30,18 +30,22 @@ class CompanyPersonController extends BaseController {
 	}
 
 	public function show($id) {
-		if (Auth::user()->can('read-contact')) {
+		if (Auth::user()->can('read-contact') || (Auth::user()->active_contact->id == $id && Auth::user()->can('read-own-contact'))) {
 			
 			$data['company_person'] = CompanyPerson::find($id);
 	        $data['title'] = $data['company_person']->person->name();
 
 			$data['menu_actions'] = [
 	        	Form::editItem(route('people.edit',$data['company_person']->person->id),'Edit This Person',Auth::user()->can('update-person')),
-	        	Form::editItem(route('company_person.edit',$id), 'Edit This Contact',Auth::user()->can('update-contact'))
+	        	Form::editItem(route('company_person.edit',$id), 'Edit This Contact',Auth::user()->can('update-contact') || 
+	        		(Auth::user()->active_contact->id == $id && Auth::user()->can('read-own-contact')) ||
+	        		(!$data['company_person']->isE80() && Auth::user()->can('update-customer-contact')))
 	        ];
 
 	     	if (isset($data['company_person']->person->user->id)) {
-	        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['company_person']->person->user->id),'Edit Associated User',Auth::user()->can('update-user'));
+	        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['company_person']->person->user->id),'Edit Associated User',Auth::user()->can('update-user') || 
+	        		(Auth::user()->active_contact->person->user->id == $data['company_person']->person->user->id && Auth::user()->can('update-own-user')) ||
+	        		(!$data['company_person']->isE80() && Auth::user()->can('update-customer-user')));
 	     	}
 	     	else {
 	        	$data['menu_actions'][] = Form::addItem(route('users.create',$data['company_person']->person->id),'Create user',Auth::user()->can('create-user'));
@@ -66,7 +70,7 @@ class CompanyPersonController extends BaseController {
 
  			$data['company_person']->division_tickets = TicketsController::API()->all([
 				"where" => [
-					"divisions.id|=|".str_replace(",",":",$data['company_person']->division_ids),
+					"divisions.id|=|".implode(":",$data['company_person']->division_ids()),
 					"divisions.id|!=|0",
 					"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS
 				],
@@ -126,10 +130,14 @@ class CompanyPersonController extends BaseController {
 	}	
 
 	public function edit($id) {
-		if (Auth::user()->can('update-contact')) {
+
+		$company_person = CompanyPerson::find($id);	
+
+		if 	(Auth::user()->can('update-contact') || 
+			(Auth::user()->active_contact->id == $id && Auth::user()->can('update-own-contact')) ||
+			(!$company_person->isE80() && Auth::user()->can('update-customer-contact'))) {
 
 			$data['title'] = "Edit Contact";
-			$company_person = CompanyPerson::find($id);
 			$data['titles'] = Title::orderBy("name")->get();
 			$data['departments'] = Department::orderBy("name")->get();
 			$data['companies'] = Company::orderBy("name")->get();
@@ -153,7 +161,7 @@ class CompanyPersonController extends BaseController {
         $contact->cellphone = Input::get('cellphone');
         $contact->division_ids = Input::get('division_ids') ? implode(",",Input::get('division_ids')) : "";
         $contact->email = Input::get('email');
-        $contact->group_id = Input::get('group_id');
+        $contact->group_id = Auth::user()->can('update-group-contact') ? Input::get('group_id') : $contact->group_id;
 
         $contact->save();
 

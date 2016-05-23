@@ -1,6 +1,7 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
+use App\Models\User;
 use Auth;
 
 class UpdateUserRequest extends Request {
@@ -12,7 +13,11 @@ class UpdateUserRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return Auth::user()->can('update-user');
+		$user = User::find($this->route('id'));
+
+		return 	(Auth::user()->can('update-user')) || 
+				(Auth::user()->can('update-own-user') && Auth::user()->active_contact->person->user->id == $this->route('id')) ||
+				(Auth::user()->can('update-customer-user') && !$user->owner->isE80());
 	}
 
 	public function forbiddenResponse()

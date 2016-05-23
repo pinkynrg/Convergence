@@ -651,6 +651,22 @@ var updateMenuPosition = function () {
     }
 };
 
+// var markdownPreview = function(e) {
+//     var previewContent;
+// 	var originalContent = e.getContent();
+// 	previewContent = ;
+
+// 	$.get('/API/contacts/all?where[]=companies.id|=|'+company_id+'&paginate=false', function (data) {
+// 		target.html('');
+// 		target.append('<option value="NULL">-</option>');
+// 		for (var i = 0; i<data.length; i++)
+// 			target.append('<option value="'+data[i].id+'">'+data[i].last_name+' '+data[i].first_name+'</option>');
+// 		if (typeof callback === 'function') callback();
+// 	});
+
+//     return previewContent
+// }
+
 function statusSliderMapper(id, to_real) {
 
 	if (to_real == true) {

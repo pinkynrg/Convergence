@@ -90,6 +90,7 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 	}
 
 	public function BSMultiSelect($name, $list = array(), $options = array()) {
+
 		$options['title'] = isset($options['title']) ? ucfirst($options['title']) : ucwords(str_replace("_"," ",$name));
 		$options['class'] = isset($options['class']) ? $options['class'] : "";
 		$options['multiple'] = isset($options['multiple']) && $options['multiple'] == false ? "" : "multiple";

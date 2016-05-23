@@ -51,8 +51,13 @@ class UsersController extends BaseController {
 	}
 
 	public function edit($id) {
-		if (Auth::user()->can('update-user')) {
-			$data['user'] = User::find($id);
+
+		$data['user'] = User::find($id);
+
+		if 	(Auth::user()->can('update-user') || 
+			(Auth::user()->active_contact->person->user->id == $id && Auth::user()->can('update-own-user')) ||
+			(!$data['user']->owner->isE80() && Auth::user()->can('update-customer-user'))) {
+
 			$data['title'] = "Edit User of ".$data['user']->owner->name();
 			$data['user'] = User::find($id);
 			return view('users/edit', $data);

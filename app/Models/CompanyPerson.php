@@ -61,4 +61,8 @@ class CompanyPerson extends CustomModel {
 		$result = $this->company_id == ELETTRIC80_COMPANY_ID;
 		return $result;
 	}
+
+	public function division_ids() {
+		return explode(",",$this->division_ids);
+	}
 }

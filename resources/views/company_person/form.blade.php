@@ -32,7 +32,7 @@
 			{!! Form::BSEndGroup() !!}
 		@endif
 
-		@if (Route::currentRouteName() == "company_person.edit")
+		@if (Route::currentRouteName() == "company_person.edit" && Auth::user()->can('update-group-contact'))
 			{!! Form::BSGroup() !!}
 				{!! Form::BSLabel("group_id", "Permission Group") !!}
 				{!! Form::BSSelect("group_id", $groups, null, array("key" => "id", "value" => "!display_name")) !!}
@@ -85,7 +85,7 @@
 			{!! Form::BSGroup() !!}
 				{!! Form::BSLabel("divisions", "Divisions") !!}
 				{!! Form::BSMultiSelect("division_ids[]", $divisions, 
-					["title" => "divisions", "selected_text" => "Division Active", "value" => "id", "label" => "!name", "selected" => $contact->division_ids]) !!}
+					["title" => "divisions", "selected_text" => "Division Active", "value" => "id", "label" => "!name", "selected" => $contact->division_ids()]) !!}
 			{!! Form::BSEndGroup() !!}
 
 		@endif
