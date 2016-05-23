@@ -15,6 +15,8 @@
 				<th column="activity_log.text">Text</th>
 				<th column="activity_log.request" class="hidden-xs hidden-ms">Request</th>
 				<th column="activity_log.ip_address" class="hidden-xs hidden-ms">IP Address</th>
+				<th column="activity_log.browser" class="hidden-xs hidden-ms">Browser</th>
+				<th column="activity_log.os" class="hidden-xs hidden-ms">OS</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -67,6 +69,8 @@
 
 						</td>
 						<td class="hidden-xs hidden-ms"> {{ $activity->ip_address }} </td>
+						<td class="hidden-xs hidden-ms"> {{ $activity->browser." ".$activity->browser_version }} </td>
+						<td class="hidden-xs hidden-ms"> {{ $activity->os }} </td>
 					</tr>
 
 				@endforeach

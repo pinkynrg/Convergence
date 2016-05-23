@@ -2,6 +2,7 @@
 
 use Auth;
 use Request;
+use Browser;
 use App\Models\Activity;
 
 class ActivitiesManager {
@@ -11,6 +12,7 @@ class ActivitiesManager {
 	public static function log($text = null, $params = null, $user_id = null, $contact_id = null) {
 
         $params = isset($params) ? $params : Request::all();
+        $browser = "";
         
         foreach ($params as $key => &$param) {
             foreach (self::$hides as $hide) {
@@ -28,7 +30,12 @@ class ActivitiesManager {
         $activity->request = json_encode($params);
         $activity->ip_address = Request::ip();
         $activity->route = Request::route() ? Request::route()->getName() : NULL;
-        $activity->text = $text;
+
+        $browser = new Browser();
+        
+        $activity->browser = $browser->getBrowser();
+        $activity->browser_version = $browser->getVersion();
+        $activity->os = $browser->getPlatform();
 
         $activity->save();
 	}

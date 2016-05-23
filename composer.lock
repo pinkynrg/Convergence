@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4152c8f8c7bf8a66123de77f5f4d460c",
-    "content-hash": "8e6e9507ebb4ca3520838ba7579cf239",
+    "hash": "9540e432a6126ff435786b70c88ab994",
+    "content-hash": "2a41a398e441aa6bc14e5692e31b4bdb",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -112,6 +112,48 @@
                 "wkhtmltopdf"
             ],
             "time": "2015-12-22 07:53:26"
+        },
+        {
+            "name": "cbschuld/browser.php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cbschuld/Browser.php.git",
+                "reference": "3d6c005dfde738cad5352cef6b6cf00b62755d39"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cbschuld/Browser.php/zipball/3d6c005dfde738cad5352cef6b6cf00b62755d39",
+                "reference": "3d6c005dfde738cad5352cef6b6cf00b62755d39",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/Browser.php"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Schuld",
+                    "email": "chris@chrisschuld.com",
+                    "homepage": "http://chrisschuld.com"
+                }
+            ],
+            "homepage": "http://chrisschuld.com/projects/browser-php-detecting-a-users-browser-from-php.html",
+            "keywords": [
+                "browser",
+                "detection",
+                "user agent"
+            ],
+            "support": {
+                "source": "https://github.com/cbschuld/Browser.php/tree/master",
+                "issues": "https://github.com/cbschuld/Browser.php/issues"
+            },
+            "time": "2016-04-18 23:00:41"
         },
         {
             "name": "classpreloader/classpreloader",
@@ -4001,7 +4043,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "neitanod/forceutf8": 20
+        "neitanod/forceutf8": 20,
+        "cbschuld/browser.php": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
