@@ -1,5 +1,6 @@
 <?php namespace App\Http\Requests;
 
+use App\Models\Person;
 use App\Http\Requests\Request;
 use Auth;
 
@@ -12,7 +13,8 @@ class UpdatePersonRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return Auth::user()->can('update-person');
+		$person = Person::find($this->route('id'));	
+		return (Auth::user()->can('update-person') || (Auth::user()->can('update-own-person') && Auth::user()->active_contact->person->id == $person->id));
 	}
 
 	public function forbiddenResponse()

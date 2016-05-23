@@ -43,8 +43,10 @@ class MenuBuilder {
 
 			"customer" => [
 				['type'=>'group','label'=>'Menu','icon'=>HOME_ICON,'menu'=>[
-					['type'=>'item','id'=>'tickets','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::check() && Auth::user()->can('read-all-ticket')],
-					['type'=>'item','id'=>'tickets','label'=>'My Company','icon'=>COMPANIES_ICON,'link'=>route('companies.my_company'),'show'=>Auth::check() && Auth::user()->can('read-company')],
+					['type'=>'item','label'=>'Tickets','icon'=>TICKETS_ICON,'link'=>route('tickets.index'),'show'=>Auth::check() && Auth::user()->can('read-all-ticket')],
+					['type'=>'item','label'=>'My Company','icon'=>COMPANIES_ICON,'link'=>route('companies.my_company'),'show'=>Auth::check() && Auth::user()->can('read-company')],
+					['type'=>'item','label'=>'Company\'s Contacts','icon'=>CONTACTS_ICON,'link'=>route('company_person.index'),'show'=>Auth::check() && Auth::user()->can('read-all-contact')],
+					['type'=>'item','label'=>'Company\'s Users','icon'=>USERS_ICON,'link'=>route('users.index'),'show'=>Auth::check() && Auth::user()->can('read-all-user')],
 					['type'=>'item','label'=>'Products','icon'=>PRODUCTS_ICON,'link'=>route('public.products'),'show'=>true],
 					['type'=>'item','label'=>'Training','icon'=>TRAINING_ICON,'link'=>route('public.training'),'show'=>true],
 				]]

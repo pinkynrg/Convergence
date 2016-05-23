@@ -161,7 +161,7 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::get('people/{id}/edit', ['uses' => 'PeopleController@edit', 'as' => 'people.edit']);
 
 	// users routes
-	Route::post('users/{id}/switch-contact',['uses' => 'UsersController@switchCompanyPerson', 'as' => 'users.switch_contact']);
+	Route::post('users/switch-contact',['uses' => 'UsersController@switchCompanyPerson', 'as' => 'users.switch_contact']);
 	Route::get('users',['uses' => 'UsersController@index', 'as' => 'users.index']);
 	Route::get('users/create/{id?}', ['uses' => 'UsersController@create', 'as' => 'users.create']);
 	Route::post('users', ['uses' => 'UsersController@store', 'as' => 'users.store']);

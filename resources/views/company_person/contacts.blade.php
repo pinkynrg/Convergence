@@ -64,7 +64,7 @@
 		</div>
 	@endif 
 
-	@if (Route::currentRouteName() == "companies.contacts" || Route::currentRouteName() == "companies.show")
+	@if (Route::currentRouteName() == "companies.contacts" || Route::currentRouteName() == "companies.show" || Route::currentRouteName() == "companies.my_company")
 		<div class="ajax_pagination" scrollup="false">
 			{!! $contacts->render() !!}
 		</div>

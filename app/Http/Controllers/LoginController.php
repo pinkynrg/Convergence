@@ -60,7 +60,7 @@ class LoginController extends Controller {
 					
 				// double check if the user has an active contact, if not, setup one
 				if (is_null(Auth::user()->active_contact_id)) {
-					$user = User::find(Auth::user()->id);
+					$user = Auth::user();
 					$contact = CompanyPerson::where('person_id',Auth::user()->person_id)->first();
 					$user->active_contact_id = $contact->id;
 					$user->last_login = Carbon::now();

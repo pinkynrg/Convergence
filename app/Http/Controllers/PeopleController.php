@@ -27,8 +27,10 @@ class PeopleController extends BaseController {
 	}
 
 	public function edit($id) {
-		if (Auth::user()->can('update-person')) {
-			$data['person'] = Person::find($id);
+
+		$data['person'] = Person::find($id);
+		
+		if (Auth::user()->can('update-person') || (Auth::user()->can('update-own-person') && Auth::user()->active_contact->person->id == $data['person']->id)) {
 			$data['title'] = $data['person']->name() . " - Edit";
 			return view('people/edit', $data);	
 		}

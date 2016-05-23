@@ -32,11 +32,17 @@
 			{!! Form::BSEndGroup() !!}
 		@endif
 
-		@if (Route::currentRouteName() == "company_person.edit" && Auth::user()->can('update-group-contact'))
-			{!! Form::BSGroup() !!}
-				{!! Form::BSLabel("group_id", "Permission Group") !!}
-				{!! Form::BSSelect("group_id", $groups, null, array("key" => "id", "value" => "!display_name")) !!}
-			{!! Form::BSEndGroup() !!}
+		@if (Route::currentRouteName() == "company_person.edit")
+			@if (Auth::user()->can('update-group-contact'))
+				{!! Form::BSGroup() !!}
+					{!! Form::BSLabel("group_id", "Permission Group") !!}
+					{!! Form::BSSelect("group_id", $groups, null, array("key" => "id", "value" => "!display_name")) !!}
+				{!! Form::BSEndGroup() !!}
+			@else
+				<!-- we need an hidden field becuase the select is disabled so the data won't be submitted -->
+				{!! Form::BSHidden("group_id", $contact['group_id']) !!}
+				{!! Form::BSSelect("group_id", $groups, $contact['group_id'], ["key" => "id", "value" => "!display_name", 'disabled' => 'true']) !!}
+			@endif
 		@endif
 
 		@if (Route::currentRouteName() != "companies.create")

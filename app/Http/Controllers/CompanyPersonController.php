@@ -32,53 +32,60 @@ class CompanyPersonController extends BaseController {
 	public function show($id) {
 		if (Auth::user()->can('read-contact') || (Auth::user()->active_contact->id == $id && Auth::user()->can('read-own-contact'))) {
 			
-			$data['company_person'] = CompanyPerson::find($id);
-	        $data['title'] = $data['company_person']->person->name();
+			$data['company_person'] = self::API()->find(['id'=>$id]);
 
-			$data['menu_actions'] = [
-	        	Form::editItem(route('people.edit',$data['company_person']->person->id),'Edit This Person',Auth::user()->can('update-person')),
-	        	Form::editItem(route('company_person.edit',$id), 'Edit This Contact',Auth::user()->can('update-contact') || 
-	        		(Auth::user()->active_contact->id == $id && Auth::user()->can('read-own-contact')) ||
-	        		(!$data['company_person']->isE80() && Auth::user()->can('update-customer-contact')))
-	        ];
+			if ($data['company_person']) {
+		        
+		        $data['title'] = $data['company_person']->person->name();
 
-	     	if (isset($data['company_person']->person->user->id)) {
-	        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['company_person']->person->user->id),'Edit Associated User',Auth::user()->can('update-user') || 
-	        		(Auth::user()->active_contact->person->user->id == $data['company_person']->person->user->id && Auth::user()->can('update-own-user')) ||
-	        		(!$data['company_person']->isE80() && Auth::user()->can('update-customer-user')));
-	     	}
-	     	else {
-	        	$data['menu_actions'][] = Form::addItem(route('users.create',$data['company_person']->person->id),'Create user',Auth::user()->can('create-user'));
-	     	}			
+				$data['menu_actions'] = [
+		        	Form::editItem(route('people.edit',$data['company_person']->person->id),'Edit This Person',
+		        		(Auth::user()->can('update-person')) ||
+		        		(Auth::user()->can('update-own-person') && Auth::user()->active_contact->person->id == $data['company_person']->person->id)),
+		        	Form::editItem(route('company_person.edit',$id), 'Edit This Contact',Auth::user()->can('update-contact') || 
+		        		(Auth::user()->active_contact->id == $id && Auth::user()->can('read-own-contact')) ||
+		        		(!$data['company_person']->isE80() && Auth::user()->can('update-customer-contact')))
+		        ];
 
-			$data['company_person']->assignee_tickets = TicketsController::API()->all([
-				"where" => [
-					"assignee_contacts.id|=|".$id,"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS],
-				"order" => ["tickets.id|DESC"],
-				"paginate" => 10
-			]);
-			$data['company_person']->contact_tickets = TicketsController::API()->all([
-				"where" => ["creator_contacts.id|=|".$id],
-				"order" => ["tickets.id|DESC"],
-				"paginate" => 10
-			]);
-			$data['company_person']->company_tickets = TicketsController::API()->all([
-				"where" => ["companies.id|=|".$data['company_person']->company->id],
-				"order" => ["tickets.id|DESC"],
-				"paginate" => 10
-			]);
+		     	if (isset($data['company_person']->person->user->id)) {
+		        	$data['menu_actions'][] = Form::editItem(route('users.edit',$data['company_person']->person->user->id),'Edit Associated User',Auth::user()->can('update-user') || 
+		        		(Auth::user()->active_contact->person->user->id == $data['company_person']->person->user->id && Auth::user()->can('update-own-user')) ||
+		        		(!$data['company_person']->isE80() && Auth::user()->can('update-customer-user')));
+		     	}
+		     	else {
+		        	$data['menu_actions'][] = Form::addItem(route('users.create',$data['company_person']->person->id),'Create user',Auth::user()->can('create-user'));
+		     	}			
 
- 			$data['company_person']->division_tickets = TicketsController::API()->all([
-				"where" => [
-					"divisions.id|=|".implode(":",$data['company_person']->division_ids()),
-					"divisions.id|!=|0",
-					"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS
-				],
-				"order" => ["tickets.id|DESC"],
-				"paginate" => 10
-			]);
+				$data['company_person']->assignee_tickets = TicketsController::API()->all([
+					"where" => [
+						"assignee_contacts.id|=|".$id,"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS],
+					"order" => ["tickets.id|DESC"],
+					"paginate" => 10
+				]);
+				$data['company_person']->contact_tickets = TicketsController::API()->all([
+					"where" => ["creator_contacts.id|=|".$id],
+					"order" => ["tickets.id|DESC"],
+					"paginate" => 10
+				]);
+				$data['company_person']->company_tickets = TicketsController::API()->all([
+					"where" => ["companies.id|=|".$data['company_person']->company->id],
+					"order" => ["tickets.id|DESC"],
+					"paginate" => 10
+				]);
 
-			return view('company_person/show', $data);
+	 			$data['company_person']->division_tickets = TicketsController::API()->all([
+					"where" => [
+						"divisions.id|=|".implode(":",$data['company_person']->division_ids()),
+						"divisions.id|!=|0",
+						"statuses.id|=|".TICKETS_ACTIVE_STATUS_IDS
+					],
+					"order" => ["tickets.id|DESC"],
+					"paginate" => 10
+				]);
+
+				return view('company_person/show', $data);
+			}
+			else return redirect()->back()->withErrors(['404 The following Contact coudn\'t be found']);	
 		}
 		else return redirect()->back()->withErrors(['Access denied to contacts show page']);
 
