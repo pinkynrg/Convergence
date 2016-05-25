@@ -604,15 +604,14 @@ body {
 		border: 3px double #ddd;
 		margin-bottom: 15px;
 		width: 100%;
+		background-color: #FFFFFF;
 		&.post_private {
 			border: 3px double #CCC;
   			color: #5D5D5D;
+  			background-color: #F8F8F8;
   			.post_header {
   				background-color: #EBEBEB;
 				border-bottom: 1px solid #CCC;
-			}
-			.post_content {
-  				background-color: #F8F8F8;
 			}
 		}
 		.post_header {
