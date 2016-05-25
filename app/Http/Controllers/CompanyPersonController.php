@@ -23,7 +23,7 @@ class CompanyPersonController extends BaseController {
     		$data['contacts'] = self::API()->all(Request::input());
 			$data['title'] = "Contacts";
 	    	$data['menu_actions'] = [Form::addItem(route('company_person.create'),'Create contact',Auth::user()->can('create-contact'))];
-			$data['active_search'] = implode(",",['people.first_name','people.last_name','companies.name','email']);
+			$data['active_search'] = implode(",",['people.first_name','people.last_name','companies.name','email','groups.name']);
             return Request::ajax() ? view('company_person/contacts',$data) : view('company_person/index',$data);
         }
         else return redirect()->back()->withErrors(['Access denied to contacts index page']);

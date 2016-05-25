@@ -98,15 +98,20 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$options['selected_text'] = isset($options['selected_text']) ? $options['selected_text'] : false;
 		$options['data-size'] = isset($options['data-size']) ? $options['data-size'] : 'auto';
 		$options['search'] = isset($options['search']) ? $options['search'] == true ? "true" : "false" : "true";
-		$options['value'] = isset($options['value']) ? $options['value'] : '';
 		$options['label'] = isset($options['label']) ? $options['label'] : '';
 		$options['selected'] = isset($options['selected']) ? $options['selected'] : array();
 
 		$multi = "<select id='".$name."' name='".$name."' class='selectpicker ".$options['class']."' ".$options['multiple']." title='".$options['title']."'";
 		
 		if ($options['selected_text']) {
-			$multi .= "data-count-selected-text='".$options['selected_text']."' width='100px' data-size='".$options['data-size']."' data-selected-text-format='count>0'";
+			$multi .= "data-count-selected-text='".$options['selected_text']."'";
 		}
+
+		if ($options['data-size']) {
+			$multi .= "data-size='".$options['data-size']."'";
+		}
+
+		$multi .= "width='100px' data-selected-text-format='count>0'";
 
 		$multi .= "data-live-search='".$options['search']."'>";
 
@@ -120,6 +125,7 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 				$multi .= "<option value=".$item->{$options['value']}.">";
 			}
 
+
 			if (is_array($options['label'])) {
 				foreach ($options['label'] as $part) {
 					$label .= $part[0] == "!" ? $item->{substr($part,1)} : $part;
@@ -131,8 +137,10 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 			$multi .= trim($label);
 			$multi .= "</option>";
+
 		}
-		
+
+
 		$multi .= "</select>";
 
 		return $multi;
@@ -147,7 +155,6 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		
 		if (isset($options['key']) && $options['value']) {
 			foreach ($collection as $item) {
-
 				$key = $item->{$options['key']};
 				$label = "";
 

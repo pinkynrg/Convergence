@@ -34,6 +34,7 @@ class CompanyPersonController extends BaseController {
         $contacts->leftJoin('people','company_person.person_id','=','people.id');
         $contacts->leftJoin('companies','company_person.company_id','=','companies.id');
         $contacts->leftJoin('titles','company_person.title_id','=','titles.id');
+        $contacts->leftJoin('groups','company_person.group_id','=','groups.id');
         $contacts->leftJoin('departments','company_person.department_id','=','departments.id');
         $contacts->leftJoin('company_main_contacts','company_main_contacts.company_id','=','companies.id');
 

@@ -30,7 +30,7 @@
 
 				@endforeach
 			@else 
-				<tr><td colspan="6">@include('includes.no-contents')</td></tr>
+				<tr><td colspan="100%">@include('includes.no-contents')</td></tr>
 			@endif 
 
 		</tbody>

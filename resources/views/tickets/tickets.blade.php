@@ -102,11 +102,7 @@
 
 				@endforeach
 			@else 
-				@if (Auth::user()->active_contact->isE80())
-					<tr><td colspan="10">@include('includes.no-contents')</td></tr>
-				@else
-					<tr><td colspan="9">@include('includes.no-contents')</td></tr>
-				@endif
+				<tr><td colspan="100%">@include('includes.no-contents')</td></tr>
 			@endif
 
 		</tbody>

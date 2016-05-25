@@ -14,4 +14,3 @@
 	@include('emails.includes.ticket',['ticket' => $ticket])
 	
 @endsection
-	

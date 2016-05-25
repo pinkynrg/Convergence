@@ -15,6 +15,8 @@
 					<th column="companies.name">Company</th>
 				@endif 
 
+				<th column="groups.name" class="hidden-xs hidden-ms">Permissions Group</th>
+
 				@if (Route::currentRouteName() == "companies.contacts" || Route::currentRouteName() == "companies.show")
 					<th column="is_main_contact">Main Contact</th>
 				@endif
@@ -35,6 +37,8 @@
 					<td> <a href="{{ route('companies.show', $contact->company->id) }}"> {{ $contact->company->name }} </a> </td>
 				@endif
 
+				<td class="hidden-xs hidden-ms"> {{ $contact->group->display_name }} </td>			
+
 				@if (Route::currentRouteName() == "companies.contacts" || Route::currentRouteName() == "companies.show")
 					<td>
 						@if ($contact->is_main_contact == 1) 
@@ -52,7 +56,7 @@
 
 			@endforeach
 		@else 
-			<tr><td colspan="8">@include('includes.no-contents')</td></tr>
+			<tr><td colspan="100%">@include('includes.no-contents')</td></tr>
 		@endif 
 
 		</tbody>

@@ -35,7 +35,7 @@
 		</td>
 	</tr>
 	<tr class="email_text">
-		<td colspan="6">
+		<td colspan="100%">
 			<b>Message to include in the email</b>
 			{!! Form::BSTextArea("email_text[".$counter."]") !!}
 		</td>
