@@ -17,16 +17,24 @@ a, a:visited, a:link, a:active, a:visited { color: #181093; cursor: pointer; tex
 .thumbnail { 
 	margin: 0px;
 	&.thumb-xs {
-		width: 40px;
-		min-height: 40px;
+		height: 40px;
 	}
 	&.thumb-sm {
-		width: 65px;
-		min-height: 65px;
+		height: 65px;
 	}
 	&.thumb-md {
-		width: 90px;
-		min-height: 90px;
+		height: 120px;
+		&.captioned {
+			img {
+				height: 87px;
+			}
+		}
+		.caption {
+			padding: 5px 0px 0px 0px;
+		}
+	}
+	img {
+		height: 100%;
 	}
 }
 
@@ -499,6 +507,8 @@ body {
 /* Ticket page */
 
 #tickets_table {
+	td.ticket_status > i { margin-left: 5px; font-size: 15px; }
+
 	.ticket_head_details {
 	  font-size: 10px;
 	}
@@ -507,70 +517,41 @@ body {
 	  font-size: 9px;
 	  font-style: italic!important;
 	}
-
-	.ticket_status_icon {
-		margin-left: 5px;
-		font-size: 15px;
-		&.fa-exclamation-circle {
-		  color: #DE4747;
-		}
-		&.fa-spinner {
-		  color: #6167C5;
-		}
-		&.fa-clock-o {
-		  color: #B67817;
-		}
-		&.fa-truck {
-		  color: #264034;
-		}
-		&.fa-check-circle-o {
-		  color: #00802F;
-		}
-		&.fa-times-circle-o {
-		  color: #656565;
-		}
-	}
 }
 
 // @tickets/show
 #ticket_cotainer {
 	#ticket_wrapper {
-		background-color: #FFFCE9;
 		border: 3px double #DCD8C5;
-		padding: 15px;
 		margin: 20px 0px 10px 0px;
+		background-color: #FFFEF1;
 		width: 100%;
-		border-radius: 10px;
 		#ticket_header {
-			margin-bottom: 10px;
-			min-height: 130px;
+			padding: 10px;
+			background-color: #FFFCE0;
 			border-bottom: 1px solid #DCD8C5;
-			.thumbnail {
-	  			margin: 0px 10px 0px 0px;
-	  			float: left;
-	  			font-size: 12px;
-	  			text-align: center;
+			min-height: 140px;
+			.thumbnail_wrapper {
+		  		float: left;
+		  		display: inline-block;
+				.thumbnail {
+		  			margin: 0px 10px 0px 0px;
+		  			font-size: 12px;
+		  			text-align: center;
+				}
 			}
 			.ticket_header_details {
 				width: 100%;
 				#ticket_title {
 					font-size: 16px;
 				}
-				#ticket_status {
-	  				font-size: 14px;
-	  				&.ticket_status_new {
-						color: #23932D;
-					}
-					&.ticket_status_on_hold {
-						color: #DB9047;
-					}
-					&.ticket_status_closed {
-						color: #7C7C7C;
-					}
+				#company {
+					display: inline-block;
 				}
 			}
 		}
 		#ticket_post {
+			padding: 10px;
 			:last-child {
 				margin-bottom: 0px;
 			}
@@ -620,22 +601,25 @@ body {
 		margin-top: 15px;
 	}
 	@at-root.post {
-		padding: 15px;
 		border: 3px double #ddd;
 		margin-bottom: 15px;
 		width: 100%;
 		&.post_private {
-  			background-color: #EFEFEF;
 			border: 3px double #CCC;
   			color: #5D5D5D;
   			.post_header {
+  				background-color: #EBEBEB;
 				border-bottom: 1px solid #CCC;
+			}
+			.post_content {
+  				background-color: #F8F8F8;
 			}
 		}
 		.post_header {
-  			height: 90px;
-			margin-bottom: 15px;
+  			height: 85px;
+			padding: 10px;
 			border-bottom: 1px solid #DCD8C5;
+			background-color: #F4F4F4;
   			.thumbnail {
 	  			margin: 0px 10px 0px 0px;
 	  			float: left;
@@ -648,18 +632,13 @@ body {
 			}
 			.post_details {
 				a {
-					color: #AAA !important;
   					text-decoration: none;
   					font-size: 15px;
 				}
-				a:hover {
-					color: #000 !important;
-				}
-				color: #000;
-				text-decoration: none;
 			}
 		}
 		.post_content {
+			padding: 10px;
 			& > hr {
 				border-top: 1px solid #DCDCDC;
 			}
@@ -680,14 +659,23 @@ body {
 			img {
 				max-width: 100px;
 			}
+			:last-child {
+				margin-bottom: 0px;
+			}
 		}
 	}
 }
 
-.attachments {
-	margin-top: 15px;
-	padding-top: 15px;
-	border-top: 1px solid #DCD8C5;
+.attachments_wrapper {
+	.attachments_header {
+		padding: 4px 10px 0px 10px;
+		height: 30px;
+		font-weight: bold;
+		font-size: 15px;
+	}
+	.attachments_content {
+		padding: 10px;
+	}
 }
 
 // @companies/show
@@ -814,6 +802,19 @@ body {
 }
 
 // extra //
+
+.ticket_status {
+	display: inline-block;
+	font-weight: bold;
+	&.status_new { color: #DE4747; }
+	&.status_progress { color: #6167C5; }
+	&.status_wcf { color: #B67817; }
+	&.status_wfp { color: #264034; }
+	&.status_request { color: #DE4747; }
+	&.status_solved { color: #00802F; }
+	&.status_closed { color : #656565; }
+	&.status_draft { color: #656565; }
+}
 
 // profile picture upload
 #profile_picture_form {

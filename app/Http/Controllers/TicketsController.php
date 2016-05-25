@@ -96,24 +96,11 @@ class TicketsController extends BaseController {
 				foreach ($temp as $elem) $linked_to[] = $elem->ticket_id;
 				$data['ticket']['linked_to'] = self::API()->all(['where' => ['tickets.id|IN|'.implode(":",$linked_to)]]);
 
-				switch ($data['ticket']->status_id) {
-					case TICKET_NEW_STATUS_ID 			: $data['status_class'] = 'ticket_status_new'; break;
-					case TICKET_IN_PROGRESS_STATUS_ID 	: $data['status_class'] = 'ticket_status_new'; break;
-					case TICKET_WFF_STATUS_ID 			: $data['status_class'] = 'ticket_status_on_hold'; 
-														  if (isset($data['important_post'])) { 
-														  	$data['important_post']->alert_type = "danger"; 
-														  }
-														  break;
-					case TICKET_WFP_STATUS_ID 			: $data['status_class'] = 'ticket_status_on_hold'; break;
-					case TICKET_REQUESTING_STATUS_ID 	: $data['status_class'] = 'ticket_status_on_hold'; break;
-					case TICKET_SOLVED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
-														  if (isset($data['important_post'])) {
-														  	$data['important_post']->alert_type = "success";
-														  }
-														  break;
-					case TICKET_CLOSED_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; 
-														  break;
-					case TICKET_DRAFT_STATUS_ID 		: $data['status_class'] = 'ticket_status_closed'; break;
+				if (isset($data['important_post'])) { 
+					switch ($data['ticket']->status_id) {
+						case TICKET_WFF_STATUS_ID: $data['important_post']->alert_type = "danger"; break;
+						case TICKET_SOLVED_STATUS_ID: $data['important_post']->alert_type = "success"; break;
+					}
 				}
 
 				return view('tickets/show',$data);

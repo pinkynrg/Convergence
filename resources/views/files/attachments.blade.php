@@ -1,6 +1,9 @@
-@if (count($attachments)) 
-	<div class="attachments">
-		<div class="row">
+@if (count($attachments))
+	<div class="attachments_wrapper">
+		<div class="attachments_header">
+			<i class="fa fa-paperclip" aria-hidden="true"></i> Attachments:
+		</div>
+		<div class="row attachments_content">
 			@foreach ($attachments as $attachment)
 				<div class="col-xs-3 col-ms-2 col-sm-2 col-md-1 col-lg-1">
 					<div class="thumbnail">

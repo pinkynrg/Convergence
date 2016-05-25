@@ -8,22 +8,29 @@
 			<div id="ticket_wrapper">
 
 				<div id="ticket_header">
-					<div class="thumbnail thumb-md">
-						<img src="{{ $ticket->creator->person->profile_picture()->path()}}" alt=" {{ $ticket->creator->person->profile_picture()->path() }} ">
-						<div> {!! $ticket->creator_id ? HTML::link(route('people.show', $ticket->creator->person->id), $ticket->creator->person->short_name()) : '' !!} </div>
+					<div class="thumbnail_wrapper">
+						<div class="thumbnail thumb-md captioned">
+							<img src="{{ $ticket->creator->person->profile_picture()->path()}}" alt=" {{ $ticket->creator->person->profile_picture()->path() }} ">
+							<div class="caption"> {!! $ticket->creator_id ? HTML::link(route('people.show', $ticket->creator->person->id), $ticket->creator->person->short_name()) : '' !!} </div>
+						</div>
 					</div>
-
 					<div class="ticket_header_details">
 						<div id="ticket_title"> 
 							{{ $ticket->title }}
 						</div>
 
-						<div id="ticket_status" class="{{ $status_class }}"> 
-							<span> <i class='fa fa-circle'></i> </span>
+						<div id="company">
+							{{ $ticket->company->name }}
+						</div>
+
+						<div class="ticket_status {{ $ticket->status->color_class() }}"> 
+							<i class="{{ $ticket->status->icon() }}"></i>
 							<span> {{ $ticket->status->name }} </span>
 						</div> 
 
 						<div id="priority">
+							{{ count($ticket->division) ? $ticket->division->name : 'TBA' }}
+							 - 
 							{{ count($ticket->priority) ? $ticket->priority->name : 'TBA' }}
 						</div>
 

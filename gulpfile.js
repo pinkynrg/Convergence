@@ -88,6 +88,8 @@ gulp.task('watch', function () {
          gutil.log(sources[i]);
     }
 
+    gulp.start('default');
+
     watch(sources, function (events, done) {
      clearTimeout(watch_timer);
      watch_timer = setTimeout(function(path) {

@@ -33,5 +33,4 @@ class Post extends CustomModel {
 
 		return $post;
 	}
-
 }

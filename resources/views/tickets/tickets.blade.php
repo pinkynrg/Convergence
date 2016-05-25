@@ -34,7 +34,7 @@
 				@foreach ($tickets as $ticket) 	
 
 				<tr>
-					<td class="visible-xs visible-ms"><i class="ticket_status_icon {{ $ticket->status_icon() }}"></i></td>
+					<td class="visible-xs visible-ms ticket_status {{ $ticket->status->color_class() }}"><i class="{{ $ticket->status->icon() }}"></i></td>
 					<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
 					<td> 
 						<div class="visible-xs visible-ms ticket_head_details">

@@ -105,6 +105,7 @@ define("INFO_ICON", "fa fa-info");
 define("DASHBOARD_ICON", "fa fa-dashboard");
 define("HOTELS_ICON", "fa fa-building");
 define("STATISTICS_ICON", "fa fa-line-chart");
+
 define("TICKET_NEW_ICON", "fa fa-exclamation-circle");
 define("TICKET_IN_PROGRESS_ICON", "fa fa-spinner");
 define("TICKET_WFF_ICON", "fa fa-clock-o");
