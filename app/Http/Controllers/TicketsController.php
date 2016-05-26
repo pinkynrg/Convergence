@@ -72,7 +72,7 @@ class TicketsController extends BaseController {
 
 			    $data['title'] = "Ticket #".$data['ticket']->id;
 				$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit This Ticket",Auth::user()->can('update-ticket'))];
-				$data['ticket']['posts'] = PostsController::API()->all(['where' => ['ticket_id|=|'.$id], "order" => ['posts.id|ASC']]);
+				$data['ticket']['posts'] = PostsController::API()->all(['where' => ['ticket_id|=|'.$id], "order" => ['posts.id|ASC'], "paginate" => "false"]);
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
 				
@@ -81,10 +81,14 @@ class TicketsController extends BaseController {
 					->where("author_id",Auth::user()
 					->active_contact->id)->first();
 
-				$data['important_post'] = Post::where('ticket_id',$id)
-					->whereIn('ticket_status_id',[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])
-					->where('ticket_status_id',$data['ticket']->status_id)
-					->where('status_id',POST_PUBLIC_STATUS_ID)->orderBy('created_at','desc')->first();
+				$data['important_post'] = null;
+
+				if (in_array($data['ticket']->status_id,[TICKET_SOLVED_STATUS_ID,TICKET_WFF_STATUS_ID])) {
+					foreach ($data['ticket']['posts']->reverse() as $post) {
+						if ($post->ticket_status_id != $data['ticket']->status_id) break;
+						else $data['important_post'] = $post;
+					}
+				}
 
 				$links = [];
 				$temp = TicketLink::where("ticket_id","=",$id)->get();
