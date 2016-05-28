@@ -11,6 +11,9 @@
 		<td class="bold">Title</td><td>{{ $ticket->title }}</td>
 	</tr>
 	<tr>
+		<td class="bold">Customer</td><td>{{ $ticket->company->name }}</td>
+	</tr>
+	<tr>
 		<td class="bold">Author</td><td>{{ $ticket->creator->person->name() }}</td>
 	</tr>
 

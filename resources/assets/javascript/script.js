@@ -1073,6 +1073,11 @@ if (url.target == "tickets" && url.target_action == "show") {
 		clearForm($(this));
 	});
 
+	$(".read_more").click(function () {
+		$(this).css("display","none");
+		$(this).parent().find(".content_change").css("display","inline-block");
+	});
+
 	$("#post").markdown({
 		'fullscreen': {'enable': false},
 		onChange: function(e) {

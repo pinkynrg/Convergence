@@ -1,6 +1,7 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Ticket extends CustomModel {
 
@@ -115,7 +116,7 @@ class Ticket extends CustomModel {
 		$m = floor(($this->deadline%3600)/60);
 		$h = floor(($this->deadline%86400)/3600);
 		$d = floor($this->deadline/86400);
-		return $is_negative ? "- "."{$d}d {$h}h {$m}m" : "{$d}d {$h}h {$m}m";;
+		return $is_negative ? "- "."{$d}d {$h}h {$m}m" : "{$d}d {$h}h {$m}m";
 	}
 
 	public function E80_working() {
@@ -124,131 +125,57 @@ class Ticket extends CustomModel {
 
 	public function anchestor($level = 1) {
 		$last = TicketHistory::where('ticket_id','=',$this->id)->orderBy('created_at','desc')->first();
-		return $last->previous($level, $last);
+		return count($last) ? $last->previous($level, $last) : null;
 	}
 
-	public function getChanges($level = 1) {
+	public function diff($id_ticket_history1 = null, $id_ticket_history2 = null) {
 
 		$changes = [];
-		$anchestor = $this->anchestor($level);
 
-		if ($this->title != $anchestor->title) {
-			$difference = array();
-			$difference['new_value'] = $this->title;
-			$difference['old_value'] = $anchestor->title;
-			$changes['title'] = $difference;				
+		if (!isset($id_ticket_history1) && !isset($id_ticket_history2)) {
+			$id_ticket_history1 = $this->anchestor(1)->id;
+			$id_ticket_history2 = $this->anchestor(0)->id;
+		}
+		elseif (!isset($id_ticket_history2)) {
+			$id_ticket_history2 = $this->anchestor(0)->id;
 		}
 
-		if ($this->post != $anchestor->post) {
-			$difference = array();
-			$difference['new_value'] = $this->post;
-			$difference['old_value'] = $anchestor->post;
-			$changes['post'] = $difference;				
+		$assignee = DB::raw("CONCAT(assignees.last_name,' ',assignees.first_name) as assignee");
+		$contact = DB::raw("CONCAT(contacts.last_name,' ',contacts.first_name) as contact");
+		$equipment = DB::raw("CONCAT(COALESCE(NULLIF(equipment.serial_number, ''), '[ND]'),' - ',CONCAT(COALESCE(NULLIF(equipment.name, ''), '[ND]'))) as equipment");
+
+		$tickets = TicketHistory::select('tickets_history.id','tickets_history.title','tickets_history.post',$assignee,'divisions.name as division',$equipment, 
+			$contact,'job_types.name as job_type','levels.name as level','priorities.name as priority','tickets_history.emails','statuses.name as status');
+        $tickets->leftJoin('company_person as assignee_contacts','tickets_history.assignee_id','=','assignee_contacts.id');
+        $tickets->leftJoin('people as assignees','assignee_contacts.person_id','=','assignees.id');
+        $tickets->leftJoin('company_person as ticket_contacts','tickets_history.contact_id','=','ticket_contacts.id');
+        $tickets->leftJoin('people as contacts','ticket_contacts.person_id','=','contacts.id');
+        $tickets->leftJoin('equipment','equipment.id','=','tickets_history.equipment_id');
+        $tickets->leftJoin('divisions','divisions.id','=','tickets_history.division_id');
+        $tickets->leftJoin('job_types','job_types.id','=','tickets_history.job_type_id');
+        $tickets->leftJoin('priorities','priorities.id','=','tickets_history.priority_id');
+        $tickets->leftJoin('statuses','statuses.id','=','tickets_history.status_id');
+        $tickets->leftJoin('levels','levels.id','=','tickets_history.level_id');
+        $tickets->whereIn('tickets_history.id',[$id_ticket_history1,$id_ticket_history2]);
+        $tickets->where('tickets_history.ticket_id',$this->id);
+        $temp = $tickets->get()->toArray();
+
+        foreach ($temp as $record) { 
+        	$key = $record['id'] == $id_ticket_history1 ? 'first' : 'second';
+        	$result[$key] = $record; 
+        }
+
+        if (isset($result['first']) && isset($result['second'])) {
+	        foreach ($result['first'] as $key => $attribute) {
+	        	if ($result['first'][$key] != $result['second'][$key] && $key != 'id') {
+		        	$label = ucfirst(str_replace("_"," ",$key));
+	        		$changes[$label] = new \StdClass();
+	        		$changes[$label]->old = $result['first'][$key];
+	        		$changes[$label]->new = $result['second'][$key];
+	        	}
+	        }
 		}
-
-		if ($this->assignee_id != $anchestor->assignee_id) {
-			$difference = array();
-			$difference['new_value'] = CompanyPerson::where('id',$this->assignee_id)->first()->person->name();
-			$difference['old_value'] = count($anchestor->assignee) ? CompanyPerson::where('id',$anchestor->assignee_id)->first()->person->name() : 'TBA';
-			$changes['assignee'] = $difference;				
-		}
-
-		if ($this->division_id != $anchestor->division_id) {
-			$difference = array();
-			$difference['new_value'] = Division::where('id',$this->division_id)->first()->name;
-			$difference['old_value'] = count($anchestor->division) ? Division::where('id',$anchestor->division_id)->first()->name : 'TBA';
-			$changes['division'] = $difference;				
-		}
-
-		if ($this->equipment_id != $anchestor->equipment_id) {
-			$difference = array();
-			$difference['new_value'] = Equipment::where('id',$this->equipment_id)->first()->name();
-			$difference['old_value'] = count($anchestor->equipment) ? Equipment::where('id',$anchestor->equipment_id)->first()->name() : 'TBA';
-			$changes['equipment'] = $difference;				
-		}
-
-		if ($this->contact_id != $anchestor->contact_id) {
-			$difference = array();
-			$difference['new_value'] = CompanyPerson::where('id',$this->contact_id)->first()->person->name();
-			$difference['old_value'] = count($anchestor->contact) ? CompanyPerson::where('id',$anchestor->contact_id)->first()->person->name() : 'TBA';
-			$changes['contact'] = $difference;				
-		}
-
-		if ($this->job_type_id != $anchestor->job_type_id) {
-			$difference = array();
-			$difference['new_value'] = JobType::where('id',$this->job_type_id)->first()->name;
-			$difference['old_value'] = count($anchestor->job_type) ? JobType::where('id',$anchestor->job_type_id)->first()->name : 'TBA';
-			$changes['job_type'] = $difference;				
-		}
-
-		if ($this->level_id != $anchestor->level_id) {
-			$difference = array();
-			$difference['new_value'] = Level::where('id',$this->level_id)->first()->name;
-			$difference['old_value'] = count($anchestor->level) ? Level::where('id',$anchestor->level_id)->first()->name : 'TBA';
-			$changes['level'] = $difference;				
-		}
-
-		if ($this->priority_id != $anchestor->priority_id) {
-			$difference = array();
-			$difference['new_value'] = Priority::where('id',$this->priority_id)->first()->name;
-			$difference['old_value'] = count($anchestor->priority) ? Priority::where('id',$anchestor->priority_id)->first()->name : 'TBA';
-			$changes['priority'] = $difference;				
-		}
-
-		if ($this->emails != $anchestor->emails) {
-			$difference = array();
-			$difference['new_value'] = $this->emails ? $this->emails : "NONE";
-			$difference['old_value'] = $anchestor->emails ? $anchestor->emails : "NONE";
-			$changes['emails'] = $difference;				
-		}
-
-		if ($this->status_id != $anchestor->status_id) {
-			$difference = array();
-			$difference['new_value'] = Status::where('id',$this->status_id)->first()->name;
-			$difference['old_value'] = Status::where('id',$anchestor->status_id)->first()->name;
-			$changes['status'] = $difference;
-		}
-
-		// $old_tags = [];
-
-		// foreach ($ticket->tags as $tag) { $old_tags[] = strtoupper($tag->name); }
-
-		// $new_tags = [];
-
-		// if (Input::get('linked_tickets_id') != "") {
-		// 	foreach (explode(",",Input::get('tagit')) as $tag) { $new_tags[] = strtoupper($tag); }
-		// }
-
-		// if (count(array_diff($old_tags, $new_tags))) {
-		// 	$changes['tags'] = isset($changes['tags']) ? $changes['tags'] : [];
-		// 	$changes['tags']['removed'] = array_diff($old_tags, $new_tags);
-		// }
-
-		// if (count(array_diff($new_tags, $old_tags))) {
-		// 	$changes['tags'] = isset($changes['tags']) ? $changes['tags'] : [];
-		// 	$changes['tags']['added'] = array_diff($new_tags, $old_tags);;
-		// }
-
-		// $old_links = [];
-
-		// foreach ($ticket->links as $link) { $old_links[] = $link->id; }
-
-		// $new_links = [];
-
-		// if (Input::get('linked_tickets_id') != "") {
-		// 	foreach (explode(",",Input::get('linked_tickets_id')) as $link) { $new_links[] = $link; }
-		// }
-
-		// if (count(array_diff($old_links, $new_links))) {
-		// 	$changes['links'] = isset($changes['links']) ? $changes['links'] : [];
-		// 	$changes['links']['removed'] = array_diff($old_links, $new_links);
-		// }
-
-		// if (count(array_diff($new_links, $old_links))) {
-		// 	$changes['links'] = isset($changes['links']) ? $changes['links'] : [];
-		// 	$changes['links']['added'] = array_diff($new_links, $old_links);;
-		// }
-
+		
         return $changes;
 	}
 }

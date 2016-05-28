@@ -112,9 +112,9 @@ class SlackManager {
 		$text .= "changed by <".route('company_person.show',$changer->id)."|".$changer->person->name().">";			// by Author Name
 
 		$changes_list = "";
-		foreach ($ticket->getChanges() as $key => $change) {
-			if ($key == "post") $changes_list .= "post: `Content was changed`\n";
-			else $changes_list .= $key.": `".$change['old_value']."` → `".$change['new_value']."`\n";
+		foreach ($ticket->diff() as $key => $change) {
+			if ($key == "Post" || $key == "Title") $changes_list .= $key.": `Content was changed`\n";
+			else $changes_list .= $key.": `".$change->old."` → `".$change->new."`\n";
 		}
 
 		$attachments[0] = new \stdClass();

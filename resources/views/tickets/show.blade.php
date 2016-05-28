@@ -89,40 +89,7 @@
 
 				<div class="tab-pane fade" id="ticket_history">
 
-					@if (count($ticket->history))
-					
-					<table class="table table-striped">
-						<thead>
-							<th> Changed by </th>
-							<th class="hidden-xs hidden-ms"> Assignee </th>
-							<th class="hidden-xs hidden-ms"> Status </th>
-							<th class="hidden-xs hidden-ms"> Priority </th>
-							<th class="hidden-xs hidden-ms"> Division </th>
-							<th class="hidden-xs hidden-ms"> Equipment </th>
-							<th> Date </th>
-						</thead>
-
-						@foreach ($ticket->history as $history)
-
-						<tr>
-							<td> {{ isset($history->changer_id) ? $history->changer->person->name() : "" }} </td>
-							<td class="hidden-xs hidden-ms"> {{ count($history->assignee) ? $history->assignee->person->name() : "TBA" }} </td>
-							<td class="hidden-xs hidden-ms"> {{ $history->status->name }} </td>
-							<td class="hidden-xs hidden-ms"> {{ count($history->priority) ? $history->priority->name : "TBA" }} </td>
-							<td class="hidden-xs hidden-ms"> {{ count($history->division) ? $history->division->name : "TBA" }} </td>
-							<td class="hidden-xs hidden-ms"> {{ count($history->equipment) ? $history->equipment->name : "TBA" }} </td>
-							<td> {{ $history->date("created_at") }} </td>
-						</tr>
-
-						@endforeach
-
-					</table>
-
-					@else 
-
-						@include('includes.no-contents')
-
-					@endif
+					@include('tickets.history')
 
 				</div>
 

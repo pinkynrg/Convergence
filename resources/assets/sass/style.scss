@@ -557,6 +557,31 @@ body {
 			}
 		}
 	}
+	#history {
+		font-size: 10px;
+		td {
+			vertical-align: top!important;
+		}
+		.changer {
+			font-size: 12px;
+			margin-bottom: 10px;
+		}
+		.read_more {
+			color: #181093;
+			cursor: pointer;
+		}
+		.history_change {
+			margin-bottom: 3px;
+			.label_change {
+				width: 55px;
+				display: inline-block;
+				font-weight: bold;
+			}
+			.content_change.collapsed {
+				display:none;
+			}
+		}
+	}
 	.tags {
 		padding: 10px 10px 0px 10px;
 		margin-bottom: 15px;
