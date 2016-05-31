@@ -893,6 +893,17 @@ $('.panel-heading[data-toggle="collapse"]').click(function () {
 // responsive pagination
 $(".pagination").rPage();
 
+$("div.col-xs-6, .tabindexed").each(function (k) {
+	$(this).find("input, select, textarea, button").not(":hidden").each(function (i) { 
+		if (k == 0 && i == 0) { $(this).focus(); }
+		var group = parseInt(k/2,10)*10;
+		var civic = k%2 == 0 ? (i+1)*2 : ((i+1)*2)+1;
+		// console.log($(this).attr('id')+'::: k : '+k+' i : '+i+' group: ' + group + ' civic: ' + civic);
+		$(this).attr('tabindex', group+civic ); }
+	);
+});
+
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @/{any}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
