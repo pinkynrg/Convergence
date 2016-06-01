@@ -210,9 +210,9 @@ class SlackManager {
 
 		if ($ticket_updated) {
 			$attachments[0]->text .= "\n\n*Also, some ticket details changed*\n";
-			foreach ($post->ticket->getChanges() as $key => $change) {
-				if ($key == "post") $attachments[0]->text .= "post: `Content was changed`\n";
-				else $attachments[0]->text .= $key.": `".$change['old_value']."` → `".$change['new_value']."`\n";
+			foreach ($post->ticket->diff() as $key => $change) {
+				if ($key == "Post") $attachments[0]->text .= "post: `Content was changed`\n";
+				else $attachments[0]->text .= $key.": `".$change->old."` → `".$change->new."`\n";
 			}
 		}
 
