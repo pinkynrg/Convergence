@@ -63,7 +63,7 @@ class CompanyPerson extends CustomModel {
 			$parsed = $phoneUtil->parse($number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
 			if ($phoneUtil->isValidNumber($parsed)) {
 				$phone = $phoneUtil->format($parsed, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
-				$phone .= isset($ext) && $ext != '' ? 'Ext. '.$ext : '';
+				$phone .= isset($ext) && $ext != '' ? ' ext. '.$ext : '';
 			}
 		}
 		catch (\libphonenumber\NumberParseException $e) {
