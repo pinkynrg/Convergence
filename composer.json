@@ -22,7 +22,8 @@
 		"intervention/image": "^2.3",
 		"league/html-to-markdown": "^4.2",
 		"erusev/parsedown": "^1.6",
-		"cbschuld/browser.php": "dev-master"
+		"cbschuld/browser.php": "dev-master",
+		"giggsey/libphonenumber-for-php": "^7.4"
 	},
 	"repositories": [{
     	"type" : "vcs",

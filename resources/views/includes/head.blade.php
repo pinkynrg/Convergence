@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="/css/dropzone.css">
 <link rel="stylesheet" href="/css/blueimp-gallery.css">
 <link rel="stylesheet" href="/css/bootstrap-markdown.min.css">
+<link rel="stylesheet" href="/css/intlTelInput.css">
 <link rel="stylesheet" href="/css/style.css">
 
 <!-- Scripts -->
@@ -39,6 +40,7 @@
 <script src="/javascript/markdown.js"></script>
 <script src="/javascript/to-markdown.js"></script>
 <script src="/javascript/bootstrap-markdown.js"></script>
+<script src="/javascript/intlTelInput.js"></script>
 
 <script src="/javascript/script.js"></script>
 

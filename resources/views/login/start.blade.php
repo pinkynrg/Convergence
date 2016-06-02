@@ -63,12 +63,14 @@
 						<div class="col-xs-6">
 							{!! Form::BSGroup() !!}
 								{!! Form::BSLabel("contact[phone]", "Phone") !!}
-								{!! Form::BSText("contact[phone]") !!}
+								{!! Form::BSHidden("contact[phone]") !!}
+								{!! Form::BSText("contact[fake_phone]",null,['id'=>'contact[fake_phone]']) !!}
 							{!! Form::BSEndGroup() !!}
 
 							{!! Form::BSGroup() !!}
 								{!! Form::BSLabel("contact[cellphone]", "Cellphone") !!}
-								{!! Form::BSText("contact[cellphone]") !!}
+								{!! Form::BSHidden("contact[cellphone]") !!}
+								{!! Form::BSText("contact[fake_cellphone]",null,['id'=>'contact[fake_cellphone]']) !!}
 							{!! Form::BSEndGroup() !!}
 
 							{!! Form::BSGroup() !!}
@@ -130,12 +132,14 @@
 									<div class="col-xs-6">
 										{!! Form::BSGroup() !!}
 											{!! Form::BSLabel("contacts[$key][phone]", "Phone") !!}
-											{!! Form::BSText("contacts[$key][phone]") !!}
+											{!! Form::BSHidden("contacts[$key][phone]") !!}
+											{!! Form::BSText("contacts[$key][fake_phone]",null,['id'=>"contacts[$key][fake_phone]"]) !!}
 										{!! Form::BSEndGroup() !!}
 
 										{!! Form::BSGroup() !!}
 											{!! Form::BSLabel("contacts[$key][cellphone]", "Cellphone") !!}
-											{!! Form::BSText("contacts[$key][cellphone]") !!}
+											{!! Form::BSHidden("contacts[$key][cellphone]") !!}
+											{!! Form::BSText("contacts[$key][fake_cellphone]",null,['id'=>"contacts[$key][fake_cellphone]"]) !!}
 										{!! Form::BSEndGroup() !!}
 
 										{!! Form::BSGroup() !!}

@@ -34,10 +34,11 @@
     "jquery-prevent-double-submit": "^1.0.1",
     "highcharts": "highcharts.com#^4.2.3",
     "rpage": "*",
-    "jquery-cookie": "https://github.com/carhartl/jquery-cookie",
+    "jquery-cookie": "git://github.com/carhartl/jquery-cookie",
     "js-cookie": "^2.1.0",
     "bootstrap-markdown": "^2.10.0",
-    "to-markdown": "^3.0.0"
+    "to-markdown": "^3.0.0",
+    "intl-tel-input": "git://github.com/jackocnr/intl-tel-input"
   },
   "resolutions": {
     "jquery": ">= 1.9.0"

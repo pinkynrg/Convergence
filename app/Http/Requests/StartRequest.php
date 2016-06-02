@@ -26,15 +26,15 @@ class StartRequest extends Request {
 		$rules['last_name'] = 'string|min:3|required';
 
 		if (Request::get('use_info_all_contacts') == 'true') {
-			$rules["contact.phone"] = 'integer|digits_between:9,10|required';
-			$rules["contact.extension"] = 'digits_between:1,4';
-			$rules["contact.cellphone"] = 'required|digits_between:9,10';
+			$rules["contact.phone"] = 'numeric|required';
+			$rules["contact.extension"] = 'digits_between:1,6';
+			$rules["contact.email"] = 'required|email';
 		}
 		else {
 			foreach (Request::get('contacts') as $key => $contact) {
-				$rules["contacts.$key.phone"] = 'integer|digits_between:9,10|required';
-	            $rules["contacts.$key.extension"] = 'digits_between:1,4';
-	            $rules["contacts.$key.cellphone"] = 'required|digits_between:9,10';
+				$rules["contacts.$key.phone"] = 'numeric|required';
+	            $rules["contacts.$key.extension"] = 'digits_between:1,6';
+				$rules["contacts.$key.email"] = 'required|email';
 	        }
 	    }
 

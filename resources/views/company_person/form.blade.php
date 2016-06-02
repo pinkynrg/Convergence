@@ -17,12 +17,14 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("phone", "Phone") !!}
-			{!! Form::BSText("phone") !!}
+			{!! Form::BSHidden("phone") !!}
+			{!! Form::BSText("fake_phone",null,['id' => "fake_phone"]) !!}
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("cellphone", "Cell Phone") !!}
-			{!! Form::BSText("cellphone") !!}
+			{!! Form::BSHidden("cellphone") !!}
+			{!! Form::BSText("fake_cellphone",null,['id' => "fake_cellphone"]) !!}
 		{!! Form::BSEndGroup() !!}
 
 		@if (Route::currentRouteName() == "companies.create")

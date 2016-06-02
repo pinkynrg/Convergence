@@ -2,6 +2,11 @@
 
 $(document).ready(function() {
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
 var desc_icon = '<i class="fa fa-sort-amount-desc"></i>',
 	asc_icon = '<i class="fa fa-sort-amount-asc"></i>',
 	debug = true,
@@ -903,7 +908,6 @@ $("div.col-xs-6, .tabindexed").each(function (k) {
 	);
 });
 
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @/{any}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -1006,6 +1010,43 @@ if ((url.target == "companies" || url.target == "contacts") && url.target_action
 
     		return returned;
     	}
+	});
+}
+
+if (((url.target == "companies" || url.target == "contacts") && url.target_action == "create") ||
+	(url.target == "contacts" && url.target_action == "edit") || 
+	(url.target == "start")) {
+
+	var $selector = $("input[id*='fake_phone'], input[id*='fake_cellphone']");
+
+	function updatePhoneNumber($this) {
+		var intlNumber = $this.intlTelInput("getNumber");
+	  	var id = $this.attr('id').replace("fake_","").replaceAll("[","\\[").replaceAll("]","\\]");
+	  	$("#"+id).val(intlNumber);
+	}
+
+	$selector.intlTelInput({
+		'initialCountry': "auto",
+		'geoIpLookup': function(callback) {
+		  $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+		    var countryCode = (resp && resp.country) ? resp.country : "";
+		    callback(countryCode);
+		  });
+		},
+		'nationalMode': true,
+		'onlyCountries': ["us", "mx", "it"],
+		'utilsScript': "/javascript/utils.js"
+	});
+
+	$selector.each(function () {
+		var id = $(this).attr('id').replace("fake_","").replaceAll("[","\\[").replaceAll("]","\\]");
+		$(this).intlTelInput("setNumber", $("#"+id).val());
+	}); 
+
+	$("form").submit(function(event) {
+		$selector.each(function () {
+	  		updatePhoneNumber($(this));
+		});
 	});
 }
 

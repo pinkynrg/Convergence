@@ -180,15 +180,15 @@ class LoginController extends Controller {
 
 			if ($request->get('use_info_all_contacts') == "true") {
 
-				$contact = $request->get('contact');
+				$new_contact = $request->get('contact');
 
 				foreach ($person->company_person as $contact) {
-					$contact->phone = $contact['phone'];
-					$contact->extension = $contact['extension'];
-					$contact->cellphone = $contact['cellphone'];
-					$contact->email = $contact['email'];
-					$contact->department_id = $contact['department_id'];
-					$contact->title_id = $contact['title_id'];
+					$contact->phone = $new_contact['phone'];
+					$contact->extension = $new_contact['extension'];
+					$contact->cellphone = $new_contact['cellphone'];
+					$contact->email = $new_contact['email'];
+					$contact->department_id = $new_contact['department_id'];
+					$contact->title_id = $new_contact['title_id'];
 					$contact->save();
 				}
 			}

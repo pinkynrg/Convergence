@@ -26,22 +26,12 @@ class CompanyPerson extends CustomModel {
 
 	public function phone() 
 	{
-		$phone = preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "+1 ($1) $2-$3", $this->phone);
-		
-		if ($phone != '') {
-			$phone = "<a href='tel:+1".$this->phone."'>".$phone;
-			$phone .= $this->extension != '' ? " ext. ".$this->extension : '';
-			$phone .= "</a>";
-		}
-
-		return $phone;
+		return $this->parsePhoneNumber($this->phone,$this->extension);
 	}
 
 	public function cellphone() 
 	{
-		$cellphone = preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "+1 ($1) $2-$3", $this->cellphone);
-		$cellphone = $cellphone != '' ? "<a href='tel:+1".$this->cellphone."'>".$cellphone."</a>" : '';
-		return $cellphone;
+		return $this->parsePhoneNumber($this->cellphone);
 	}
 
 	public function email() {
@@ -64,5 +54,22 @@ class CompanyPerson extends CustomModel {
 
 	public function division_ids() {
 		return explode(",",$this->division_ids);
+	}
+
+	private function parsePhoneNumber($number, $ext = null) {
+		$phone = "";
+		$phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+		try {
+			$parsed = $phoneUtil->parse($number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+			if ($phoneUtil->isValidNumber($parsed)) {
+				$phone = $phoneUtil->format($parsed, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+				$phone .= isset($ext) && $ext != '' ? 'Ext. '.$ext : '';
+			}
+		}
+		catch (\libphonenumber\NumberParseException $e) {
+ 		   // var_dump($e);
+		}
+
+		return $phone;
 	}
 }
