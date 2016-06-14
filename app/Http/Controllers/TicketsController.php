@@ -232,6 +232,7 @@ class TicketsController extends BaseController {
 		$ticket->job_type_id = $request->get('job_type_id');
 		$ticket->level_id = $request->get('level_id');
 		$ticket->emails = $request->get('emails');
+		if (isset($ticket->updated_at)) $ticket->created_at = $ticket->updated_at;
 		$ticket->save();
 
        	$this->updateTags($ticket);
