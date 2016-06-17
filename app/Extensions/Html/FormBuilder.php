@@ -93,11 +93,11 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 
 		$options['title'] = isset($options['title']) ? ucfirst($options['title']) : ucwords(str_replace("_"," ",$name));
 		$options['class'] = isset($options['class']) ? $options['class'] : "";
-		$options['multiple'] = isset($options['multiple']) && $options['multiple'] == false ? "" : "multiple";
+		$options['multiple'] = isset($options['multiple']) && $options['multiple'] == "false" ? "" : "multiple";
 		$options['selected'] = isset($options['selected']) && is_array($options['selected']) ? $options['selected'] : [];
 		$options['selected_text'] = isset($options['selected_text']) ? $options['selected_text'] : false;
 		$options['data-size'] = isset($options['data-size']) ? $options['data-size'] : 'auto';
-		$options['search'] = isset($options['search']) ? $options['search'] == true ? "true" : "false" : "true";
+		$options['search'] = isset($options['search']) ? $options['search'] == "true" ? "true" : "false" : "true";
 		$options['label'] = isset($options['label']) ? $options['label'] : '';
 		$options['selected'] = isset($options['selected']) ? $options['selected'] : array();
 
@@ -114,6 +114,10 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$multi .= "width='100px' data-selected-text-format='count>0'";
 
 		$multi .= "data-live-search='".$options['search']."'>";
+
+		if ($options['multiple'] != "multiple") {
+			$multi .= "<option></option>";
+		}
 
 		foreach ($list as $item) {
 			$label = "";

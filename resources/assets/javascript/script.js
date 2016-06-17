@@ -366,6 +366,7 @@ var ajaxRequest = function(url,$target) {
 			$target.find(".content table tbody").html($(data).find('tbody').html());
 			$target.find(".ajax_pagination[scrollup='true']").html($(data).find(".ajax_pagination[scrollup='true']").html());
 			$target.find(".ajax_pagination[scrollup='false']").html($(data).find(".ajax_pagination[scrollup='false']").html());
+			$('[data-toggle="tooltip"]').tooltip();   
 		},
 		error: function (data) {
 			consoleLog(data);
@@ -842,6 +843,10 @@ $('.multifilter').on('change',function () {
 		$(this).selectpicker('setStyle', 'btn-info','remove');
 	}
 });
+
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+  $('.selectpicker').selectpicker('mobile');
+}
 
 // date picker
 $('.datepicker').datepicker({ autoclose: true });

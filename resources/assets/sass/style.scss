@@ -828,7 +828,6 @@ body {
 // extra //
 
 .ticket_status {
-	display: inline-block;
 	font-weight: bold;
 	&.status_new { color: #DE4747; }
 	&.status_progress { color: #6167C5; }

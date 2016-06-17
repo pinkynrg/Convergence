@@ -12,7 +12,7 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("department_id", "Department") !!}
-			{!! Form::BSSelect("department_id", $departments, null, array("key" => "id", "value" => "!name")) !!}	
+			{!! Form::BSMultiSelect("department_id", $departments, ["title" => "select department", "value" => "id", "data-size" => "10", "label" => "!name", "multiple" => "false", "selected" => [$contact->department_id]]) !!}	
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
@@ -76,7 +76,7 @@
 
 		{!! Form::BSGroup() !!}
 			{!! Form::BSLabel("title_id", "Title") !!}
-			{!! Form::BSSelect("title_id", $titles, null, array("key" => "id", "value" => "!name")) !!}	
+			{!! Form::BSMultiSelect("title_id", $titles, ["title" => "select title", "value" => "id", "label" => "!name",  "data-size" => "10", "search" => "true", "multiple" => "false", "selected" => [$contact->title_id]]) !!}	
 		{!! Form::BSEndGroup() !!}
 
 		{!! Form::BSGroup() !!}
@@ -94,7 +94,7 @@
 			{!! Form::BSGroup() !!}
 				{!! Form::BSLabel("divisions", "Divisions") !!}
 				{!! Form::BSMultiSelect("division_ids[]", $divisions, 
-					["title" => "divisions", "selected_text" => "Division Active", "value" => "id", "label" => "!name", "selected" => $contact->division_ids()]) !!}
+					["title" => "select divisions", "selected_text" => "Division Active", "data-size" => "10", "value" => "id", "label" => "!name", "selected" => $contact->division_ids()]) !!}
 			{!! Form::BSEndGroup() !!}
 
 		@endif

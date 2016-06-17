@@ -143,6 +143,15 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::patch('equipment/{id}', ['uses' => 'EquipmentController@update', 'as' => 'equipment.update']);	
 	Route::get('equipment/{id}/edit', ['uses' => 'EquipmentController@edit', 'as' => 'equipment.edit']);
 
+	// vpns routes 
+	Route::get('vpns',['uses' => 'VpnsController@index', 'as' => 'vpns.index']);
+	Route::get('vpns/create',['uses' => 'VpnsController@create', 'as' => 'vpns.create']);
+	Route::get('vpns/{id}',['uses' => 'VpnsController@show', 'as' => 'vpns.show']);
+	Route::post('vpns', ['uses' => 'VpnsController@store', 'as' => 'vpns.store']);
+	Route::delete('vpns/{id}', ['uses' => 'VpnsController@destroy', 'as' => 'vpns.destroy']);
+	Route::patch('vpns/{id}', ['uses' => 'VpnsController@update', 'as' => 'vpns.update']);	
+	Route::get('vpns/{id}/edit', ['uses' => 'VpnsController@edit', 'as' => 'vpns.edit']);
+
 	// services routes 
 	Route::get('services',['uses' => 'ServicesController@index', 'as' => 'services.index']);
 	Route::get('services/create/{company_id}/{technician_number?}',['uses' => 'ServicesController@create', 'as' => 'services.create']);
@@ -180,6 +189,8 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::get('contacts/{id}/divisionTickets', ['uses' => 'CompanyPersonController@divisionTickets', 'as' => 'company_person.division_tickets']);
 	Route::get('contacts/{id}/contactTickets', ['uses' => 'CompanyPersonController@contactTickets', 'as' => 'company_person.contact_tickets']);
 	Route::get('contacts/{id}/companyTickets', ['uses' => 'CompanyPersonController@companyTickets', 'as' => 'company_person.company_tickets']);
+
+
 
 	// activities routes
 	Route::get('activities',['uses' => 'ActivitiesController@index', 'as' => 'activities.index']);

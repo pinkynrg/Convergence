@@ -9,10 +9,9 @@
 	<table id="tickets_table" class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
-				<th column="statuses.name" class="visible-xs visible-ms"> </th>
+				<th column="statuses.name">Status</th>
 				<th column="tickets.id" weight="0" type="desc">Ticket</th>
 				<th column="tickets.title">Title</th>
-				<th column="statuses.name" class="hidden-xs hidden-ms">Status</th>
 				<th column="priorities.id" class="hidden-xs">Priority</th>
 				<th column="assignees.last_name" class="hidden-xs hidden-ms">Assignee</th>
 				
@@ -34,7 +33,9 @@
 				@foreach ($tickets as $ticket) 	
 
 				<tr>
-					<td class="visible-xs visible-ms ticket_status {{ $ticket->status->color_class() }}"><i class="{{ $ticket->status->icon() }}"></i></td>
+					<td class="ticket_status {{ $ticket->status->color_class() }}">
+						<div data-toggle="tooltip" data-placement="right" title="{{ $ticket->status->name }}"><i class="{{ $ticket->status->icon() }}"></i></div>
+					</td>
 					<td> <a href="{{ route('tickets.show', $ticket->id) }}"> {{ "#".$ticket->id }} </a> </td>
 					<td> 
 						<div class="visible-xs visible-ms ticket_head_details">
@@ -47,7 +48,6 @@
 							Reported by <a href="{{ route('people.show', $ticket->creator->person->id) }}"> {{ $ticket->creator->person->name() }} </a> on {{ date("m/d/Y",strtotime($ticket->created_at)) }} 
 						</div>
 					</td>
-					<td class="hidden-xs hidden-ms nowrap"> {{ $ticket->status->label }} </td>
 					<td class="hidden-xs nowrap"> 
 						@if (count($ticket->priority)) 
 							{{ $ticket->priority->label }} ({{ $ticket->priority->weight }}) 
