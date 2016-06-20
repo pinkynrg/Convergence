@@ -72,7 +72,7 @@ class TicketsController extends BaseController {
 
 			    $data['title'] = "Ticket #".$data['ticket']->id;
 				$data['menu_actions'] = [Form::editItem( route('tickets.edit', $id),"Edit This Ticket",Auth::user()->can('update-ticket'))];
-				$data['ticket']['posts'] = PostsController::API()->all(['where' => ['ticket_id|=|'.$id], "order" => ['posts.id|ASC'], "paginate" => "false"]);
+				$data['ticket']['posts'] = PostsController::API()->all(['where' => ['ticket_id|=|'.$id], "order" => ['posts.created_at|ASC'], "paginate" => "false"]);
 				$data['ticket']['history'] = TicketHistory::where('ticket_id','=',$id)->orderBy('created_at')->get();
 				$data['statuses'] = Status::where('id',TICKET_WFF_STATUS_ID)->orWhere('id',TICKET_SOLVED_STATUS_ID)->get();
 				
