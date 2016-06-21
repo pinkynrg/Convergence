@@ -101,6 +101,10 @@ class FormBuilder extends \Illuminate\Html\FormBuilder
 		$options['label'] = isset($options['label']) ? $options['label'] : '';
 		$options['selected'] = isset($options['selected']) ? $options['selected'] : array();
 
+		$options['selected'] = $this->getValueAttribute($name, $options['selected']);
+
+		$options['selected'] = $options['multiple'] == "multiple" ? $options['selected'] : [$options['selected']];
+
 		$multi = "<select id='".$name."' name='".$name."' class='selectpicker ".$options['class']."' ".$options['multiple']." title='".$options['title']."'";
 		
 		if ($options['selected_text']) {

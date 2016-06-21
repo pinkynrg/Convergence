@@ -20,9 +20,9 @@
 	<tr>
 		<th>Email</th> <td> {!! $company_person->email !!} </td>
 	</tr>
-	<tr>
-		<th>Slack Token</th> <td> {!! $company_person->slack_token !!} </td>
-	</tr>
+	<!-- <tr> -->
+		<!-- <th>Slack Token</th> <td> {!! $company_person->slack_token !!} </td> -->
+	<!-- </tr> -->
 	<tr>
 		<th>Permission Group Type</th> <td> {!! isset($company_person->group_type_id) ? $company_person->group_type->display_name : '' !!} </td>
 	</tr>

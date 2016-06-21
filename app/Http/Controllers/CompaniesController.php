@@ -52,7 +52,7 @@ class CompaniesController extends BaseController {
             $data['group_types'] = GroupType::orderBy("name")->get();
             $data['escalation_profiles'] = EscalationProfile::orderBy("name")->get();
             $data['account_managers'] = CompanyPersonController::API()->all([
-                "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|7"], 
+                "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|".ACCOUNT_MANAGER_TITLE_ID], 
                 "order" => ["people.last_name|ASC","people.first_name|ASC"], 
                 "paginate" => "false"
             ]);
@@ -153,7 +153,7 @@ class CompaniesController extends BaseController {
             $data['company']->main_contact_id = isset($selected_main_contact) ? $selected_main_contact->main_contact_id : null;
 
             $data['account_managers'] = CompanyPersonController::API()->all([
-                "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|7"], 
+                "where" => ["company_person.company_id|=|".ELETTRIC80_COMPANY_ID,"company_person.title_id|=|".ACCOUNT_MANAGER_TITLE_ID], 
                 "order" => ["people.last_name|ASC","people.first_name|ASC"], 
                 "paginate" => "false"
             ]);
