@@ -36,8 +36,11 @@ class MenuBuilder {
 					['type'=>'item','label'=>'Groups Types','icon'=>GROUP_TYPES_ICON,'link'=>route('group_types.index'),'show'=>Auth::check() && Auth::user()->can('read-all-group-type')]
 				]],
 				['type'=>'group','label'=>'Statistics','icon'=>STATISTICS_ICON,'menu'=>[	
-					['type'=>'item','label'=>'Status Count To Date','icon'=>STATISTICS_ICON,'link'=>route('charts.history_status_count_to_date'), 'show'=>true],
-					['type'=>'item','label'=>'Status Count Per Day','icon'=>STATISTICS_ICON,'link'=>route('charts.history_status_count_per_date'), 'show'=>true],
+					['type'=>'item','label'=>'Status Count To Date','icon'=>STATISTICS_ICON,'link'=>route('statistics.history_status_count_to_date'), 'show'=>true],
+					['type'=>'item','label'=>'Status Count Per Day','icon'=>STATISTICS_ICON,'link'=>route('statistics.history_status_count_per_date'), 'show'=>true],
+					['type'=>'item','label'=>'Time Per Division','icon'=>STATISTICS_ICON,'link'=>route('statistics.working_time_by_division'), 'show'=>true],
+					['type'=>'item','label'=>'Time Per Customer','icon'=>STATISTICS_ICON,'link'=>route('statistics.working_time_by_customer'), 'show'=>true],
+					['type'=>'item','label'=>'Time Per Assignee','icon'=>STATISTICS_ICON,'link'=>route('statistics.working_time_by_assignee'), 'show'=>true]
 				]]
 			],
 

@@ -827,6 +827,19 @@ body {
 
 // extra //
 
+.fa-arrow-circle-down {
+	color: green;
+}
+
+.fa-arrow-circle-up {
+	color: red;
+}
+
+.prev {
+	font-size: 10px;
+	color: #8a7878;
+}
+
 .ticket_status {
 	font-weight: bold;
 	&.status_new { color: #DE4747; }

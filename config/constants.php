@@ -59,11 +59,11 @@ define("EVENT_THE_PRESIDENT_ID",9);
 define("LGV_DIVISION_ID",1);
 define("PLC_DIVISION_ID",2);
 define("PC_DIVISION_ID",3);
-define("BEMA_DIVISION_ID",3);
-define("FIELD_DIVISION_ID",3);
-define("SPARE_PARTS_DIVISION_ID",3);
-define("RELIABILITY_DIVISION_ID",3);
-define("OTHERS_DIVISION_ID",3);
+define("BEMA_DIVISION_ID",5);
+define("FIELD_DIVISION_ID",6);
+define("SPARE_PARTS_DIVISION_ID",8);
+define("RELIABILITY_DIVISION_ID",9);
+define("OTHERS_DIVISION_ID",7);
 
 define("EMPLOYEE_GROUP_TYPE_ID",1);
 define("CUSTOMER_GROUP_TYPE_ID",2);
@@ -124,6 +124,8 @@ define("TICKET_DRAFT_ICON", "fa fa-file-text-o");
 define("TICKET_SOLVED_ICON", "fa fa-check-circle-o");
 define("TICKET_CLOSED_ICON", "fa fa-times-circle-o");
 
+define("DECREASED_VALUE_ICON","fa fa-arrow-circle-down");
+define("INCREASED_VALUE_ICON","fa fa-arrow-circle-up");
 define("SLACK_ESCALATION_ICON",":bangbang:");
 define("SLACK_UPDATE_TICKET_ICON",":pencil2:");
 define("SLACK_NEW_TICKET_ICON",":bookmark:");

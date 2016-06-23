@@ -2,10 +2,15 @@
 
 use Ghunti\HighchartsPHP\HighchartJsExpr;
 use Ghunti\HighchartsPHP\Highchart;
+use App\Models\CompanyPerson;
+use App\Models\Division;
+use App\Models\Company;
+use App\Models\Priority;
+use App\Models\Level;
 use Carbon\Carbon;
 use DB;
 
-class ChartsManager {
+class StatisticsManager {
 
     public static function userTicketsStatusData($contact_id) {
         $data = array();
@@ -320,6 +325,171 @@ class ChartsManager {
         $chart->series[0]->data = self::statusCountPerDayData($status_id);
 
         return $chart->renderOptions();
+    }
+
+    public static function resolutionTime($days) {
+
+        $divisions = DB::table('divisions')->whereIn('id',[ 
+            LGV_DIVISION_ID,PLC_DIVISION_ID,PC_DIVISION_ID,
+            BEMA_DIVISION_ID,FIELD_DIVISION_ID,SPARE_PARTS_DIVISION_ID,
+            RELIABILITY_DIVISION_ID,OTHERS_DIVISION_ID 
+        ])->get();
+
+        foreach ($divisions as $key => $division) {
+
+            for ($i=0; $i<10; $i++) {
+                
+                $query = "SELECT SUM(resolution_time) as sum, AVG(resolution_time) as average 
+                        FROM (
+                        SELECT before.ticket_id, SUM(TIMESTAMPDIFF(SECOND, before.created_at, after.created_at)) as resolution_time
+                        FROM tickets_history as `before`
+                        LEFT JOIN tickets_history as `after` ON before.id = after.previous_id
+                        INNER JOIN tickets ON tickets.id = before.ticket_id 
+                        WHERE after.status_id IN (".TICKET_NEW_STATUS_ID.",".TICKET_IN_PROGRESS_STATUS_ID.",".TICKET_REQUESTING_STATUS_ID.",".TICKET_SOLVED_STATUS_ID.",".TICKET_CLOSED_STATUS_ID.")
+                        AND tickets.deleted_at IS NULL
+                        AND tickets.created_at > DATE_SUB(NOW(), INTERVAL ".$days*($i+1)." day)
+                        AND tickets.updated_at < DATE_SUB(NOW(), INTERVAL ".$days*($i)." day)
+                        AND tickets.division_id = $division->id
+                        AND tickets.status_id IN (".TICKET_SOLVED_STATUS_ID.",".TICKET_CLOSED_STATUS_ID.")
+                        GROUP BY before.ticket_id
+                        ) as d$key ";
+
+                $result[$division->label][$i] = DB::select(DB::raw($query))[0];
+            }
+        }
+
+        return $result;
+    }
+
+    public static function workingTimeData($days, $type) {
+
+        $result = null;
+
+        if ($type == "division") {
+            $grouping = Division::whereIn('id',[ 
+                LGV_DIVISION_ID,PLC_DIVISION_ID,PC_DIVISION_ID,
+                BEMA_DIVISION_ID,FIELD_DIVISION_ID,SPARE_PARTS_DIVISION_ID,
+                RELIABILITY_DIVISION_ID,OTHERS_DIVISION_ID 
+            ])->orderBy("name")->get();
+        }
+        elseif ($type == "priority") {
+            $grouping = Priority::orderBy("name")->get();
+        }
+        elseif ($type == "level") {
+            $grouping = Level::orderBy("name")->get();
+        }
+        elseif ($type == "company") {
+            $grouping = Company::orderBy("name")->get();
+        }
+        elseif ($type == "assignee") {
+            $grouping = CompanyPerson::select("company_person.*","people.first_name","people.last_name")
+                        ->leftJoin('people','company_person.person_id','=','people.id')
+                        ->where('company_person.company_id','=',ELETTRIC80_COMPANY_ID)
+                        ->orderBy("last_name")->get();
+
+            foreach ($grouping as $group) {
+                $group->name = $group->last_name." ".$group->first_name;
+            }
+        }
+
+        if (isset($grouping)) {
+            foreach ($grouping as $index => $group) {
+
+                for ($i=0; $i<50; $i++) {
+                    
+                    $query = "SELECT SUM(resolution_time) as sum, COUNT(*) as ticket_count, AVG(resolution_time) as average, DATE_SUB(NOW(), INTERVAL ".$days*($i+1)." day) as date
+                            FROM (
+                            SELECT before.ticket_id, SUM(
+                                TIMESTAMPDIFF(SECOND, 
+                                    GREATEST(DATE_SUB(NOW(), INTERVAL ".$days*($i+1)." day), before.created_at), 
+                                    LEAST(DATE_SUB(NOW(), INTERVAL ".$days*($i)." day), IFNULL(after.created_at,NOW()))
+                                )
+                            )/3600 as resolution_time
+                            FROM tickets_history as `before`
+                            LEFT JOIN tickets_history as `after` ON before.id = after.previous_id
+                            INNER JOIN tickets ON tickets.id = before.ticket_id 
+                            WHERE (
+                                after.status_id IN (".TICKET_NEW_STATUS_ID.",".TICKET_IN_PROGRESS_STATUS_ID.",
+                                ".TICKET_REQUESTING_STATUS_ID.",".TICKET_SOLVED_STATUS_ID.",".TICKET_CLOSED_STATUS_ID.")
+                                OR 
+                                (before.status_id IN (".TICKET_NEW_STATUS_ID.",".TICKET_IN_PROGRESS_STATUS_ID.",
+                                ".TICKET_REQUESTING_STATUS_ID.") AND after.id IS NULL)
+                            )
+                            AND tickets.deleted_at IS NULL
+                            AND tickets.".$type."_id = $group->id
+                            AND TIMESTAMPDIFF(SECOND, 
+                                GREATEST(before.created_at,DATE_SUB(NOW(), INTERVAL ".$days*($i+1)." day)), 
+                                LEAST(DATE_SUB(NOW(), INTERVAL ".$days*($i)." day), IFNULL(after.created_at,NOW()))) > 0
+                            GROUP BY before.ticket_id
+                            ) as ".$type[0]."_$index ";
+
+                    $temp = DB::select(DB::raw($query));
+
+                    foreach ($temp[0] as $key => $value) {
+                        if ($key != "date") {
+                            $div_key = str_replace(" ","_",$group->name);
+                            if ($i == 0) $result[$div_key][$key]['current'] = round($temp[0]->{$key},2);
+                            if ($i == 1) $result[$div_key][$key]['previous'] = round($temp[0]->{$key},2);
+                            $result[$div_key][$key]['historical'][$temp[0]->date] = $temp[0]->{$key};
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public static function workingTime($days, $type) {
+
+        $data = self::workingTimeData($days, $type);
+
+        foreach ($data as $division => $division_data) {
+            foreach ($division_data as $key => $values) {
+                
+                $chart = new Highchart();
+
+                switch ($key) {
+                    case "ticket_count": $chart->colors = ["#ECA9A9"]; break;   // pastel red
+                    case "sum": $chart->colors = ["#E4CFA1"]; break;            // pastel yellow
+                    case "average": $chart->colors = ["#ABC1E2"]; break;        // pastel blue
+                }
+                
+                $chart->xAxis->type = "datetime";
+                $chart->title->text = "";
+                
+                $chart->chart->width = 190;
+                $chart->chart->height = 35;
+                $chart->chart->backgroundColor = null;
+                $chart->chart->borderWidth = 0;
+                $chart->chart->margin = [2,0,2,0];
+
+                $chart->tooltip->backgroundColor = "#FFF";
+                $chart->tooltip->borderWidth = 0;
+                $chart->tooltip->shadow = false;
+                $chart->tooltip->useHTML = true;
+                $chart->tooltip->hideDelay = 0;
+                $chart->tooltip->shared = true;
+                $chart->tooltip->padding = 0;
+
+                $chart->legend->enabled = false;
+                $chart->credits->enabled = false;
+                $chart->plotOptions->area->marker->enabled = false;
+                
+                $chart->series[0]->type = 'area';
+                $chart->series[0]->data = [];
+
+                foreach ($values['historical'] as $date => $value) {
+                    $datetime = strtotime($date);
+                    $datetime_utc = new HighchartJsExpr("Date.UTC(".date('Y',$datetime).",".(date('m',$datetime)-1).",".date('d,H,i,s',$datetime).")");
+                    $chart->series[0]->data[] = [$datetime_utc,(double)$value];
+                }
+
+                $data[$division][$key]['chart'] = $chart->renderOptions();
+            }
+        }
+
+        return $data;
     }
 }
 

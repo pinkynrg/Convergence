@@ -190,17 +190,17 @@ Route::group(array('middleware' => ['auth','log']), function() {
 	Route::get('contacts/{id}/contactTickets', ['uses' => 'CompanyPersonController@contactTickets', 'as' => 'company_person.contact_tickets']);
 	Route::get('contacts/{id}/companyTickets', ['uses' => 'CompanyPersonController@companyTickets', 'as' => 'company_person.company_tickets']);
 
-
-
 	// activities routes
 	Route::get('activities',['uses' => 'ActivitiesController@index', 'as' => 'activities.index']);
 
-	// charts
-	Route::get('charts/status-count-to-date', ['uses' => 'ChartsController@statusCountToDate', 'as' => 'charts.history_status_count_to_date']);
-	Route::get('charts/status-count-per-day', ['uses' => 'ChartsController@statusCountPerDay', 'as' => 'charts.history_status_count_per_date']);
+	// statistics
 	Route::match(['get'], 'dashboard', ['uses' => 'DashboardController@dashboardLoggedContact', 'as' => 'dashboard.logged']);
 	Route::match(['get'], 'dashboard/{contact_id}', ['uses' => 'DashboardController@dashboardContact', 'as' => 'dashboard.show']);
-	Route::match(['get'], 'statistics', ['uses' => 'StatisticsController@index', 'as' => 'statistics.index']);
+	Route::get('statistics/status-count-to-date', ['uses' => 'StatisticsController@statusCountToDate', 'as' => 'statistics.history_status_count_to_date']);
+	Route::get('statistics/status-count-per-day', ['uses' => 'StatisticsController@statusCountPerDay', 'as' => 'statistics.history_status_count_per_date']);
+	Route::get('statistics/working-time-by-division/{days?}', ['uses' => 'StatisticsController@workingTimeByDivision', 'as' => 'statistics.working_time_by_division']);
+	Route::get('statistics/working-time-by-customer/{days?}', ['uses' => 'StatisticsController@workingTimeByCustomer', 'as' => 'statistics.working_time_by_customer']);
+	Route::get('statistics/working-time-by-assignee/{days?}', ['uses' => 'StatisticsController@workingTimeByAssignee', 'as' => 'statistics.working_time_by_assignee']);
 
 	// customer site pages controller
 	Route::get('training', array('uses' => 'CustomerSiteController@training', 'as' => 'public.training'));
