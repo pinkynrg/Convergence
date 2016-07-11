@@ -86,14 +86,14 @@
 							<td class="hidden-xs hidden-ms hidden-sm nowrap">
 								@if ($ticket->deadline)
 									@if ($ticket->deadline < 0 && $ticket->E80_working())
-										<div style="color:red">
-											<b>{{ $ticket->deadline() }}</b>
-											<div class="ticket_foot_details"> 
-												Escalate
+										<div class="escalation_time" style="color:red">
+											{{ $ticket->deadline() }}
+											<div class="escalation_foor_details"> 
+												<b>Escalate</b>
 											</div>
 										</div>
 									@else
-										<div style="color:black"><b>{{ $ticket->deadline() }}</b></div>
+										<div class="escalation_time" style="color:black">{{ $ticket->deadline() }}</div>
 									@endif
 								@endif
 							</td>

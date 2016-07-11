@@ -507,7 +507,10 @@ body {
 /* Ticket page */
 
 #tickets_table {
-	td.ticket_status > i { margin-left: 5px; font-size: 15px; }
+	td.ticket_status {
+		text-align: center;
+		font-size: 17px !important;
+	} 
 
 	.ticket_head_details {
 	  font-size: 10px;
@@ -516,6 +519,20 @@ body {
 	.ticket_foot_details {
 	  font-size: 9px;
 	  font-style: italic!important;
+	}
+
+	.escalation_time {
+		font-size: 10px;
+		border: 1px solid #f14242;
+    	border-radius: 3px;
+		padding: 3px;
+  		text-align: center;
+	    background-color: #ffe4e4;
+
+		.escalation_foor_details {
+	  		font-size: 9px;
+	  		font-style: italic!important;	  	
+		}
 	}
 }
 
