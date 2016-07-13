@@ -644,6 +644,21 @@ body {
 		}
 	}
 	#important_post {
+		blockquote {
+			font-size: 14px;
+			padding: 0px 10px;
+			margin: 0px;
+		}
+		&.alert-success {
+			blockquote {
+				border-color: #92b6a8;
+			}
+		}
+		&.alert-danger {
+			blockquote {
+				border-color: #c27878;
+			}
+		}
 		#important_post_header {
 			font-weight: bold;
 			margin-bottom: 5px;
