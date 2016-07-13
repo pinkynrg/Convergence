@@ -85,16 +85,32 @@
 						@if (Auth::user()->active_contact->isE80())
 							<td class="hidden-xs hidden-ms hidden-sm nowrap">
 								@if ($ticket->deadline)
-									@if ($ticket->deadline < 0 && $ticket->E80_working())
-										<div class="escalation_time escalation_expired">
+									@if ($ticket->E80_working())
+										@if ($ticket->deadline < 0)
+											<div class="escalation_time escalation_expired">
+												{{ $ticket->deadline() }}
+												<div class="escalation_foot_details"> 
+													<b>Escalate</b>
+												</div>
+											</div>
+										@else
+											<div class="escalation_time">
+												{{ $ticket->deadline() }}
+												<div class="escalation_foot_details"> 
+													<b>Time Left</b>
+												</div>
+											</div>
+										@endif
+									@else
+										<div class="escalation_time escalation_paused">
 											{{ $ticket->deadline() }}
-											<div class="escalation_foor_details"> 
-												<b>Escalate</b>
+											<div class="escalation_foot_details"> 
+												<b>Paused</b>
 											</div>
 										</div>
-									@else
-										<div class="escalation_time">{{ $ticket->deadline() }}</div>
 									@endif
+								@else
+									<div class="escalation_time escalation_off"><b>OFF</b></div>
 								@endif
 							</td>
 						@endif

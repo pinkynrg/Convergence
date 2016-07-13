@@ -536,6 +536,18 @@ body {
 	    	border: 1px solid #f14242;
 	    }
 
+		&.escalation_off {
+    	    color: #6a6a6a;
+			background-color: #d9d9d9;
+    		border: 1px solid #6a6a6a;
+	    }
+
+	    &.escalation_paused {
+	        border: 1px solid #959114;
+    		background-color: #f4f2ba;
+    		color: #959114;
+	    }
+
 		.escalation_foor_details {
 	  		font-size: 9px;
 	  		font-style: italic!important;	  	

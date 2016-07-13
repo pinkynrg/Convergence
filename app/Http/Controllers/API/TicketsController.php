@@ -47,7 +47,7 @@ class TicketsController extends BaseController {
 
         $raw4 = DB::raw("(SELECT time.ticket_id, time.active_work, epe.event_id, epe.email_text,
                             
-                            CASE WHEN t.status_id IN (".str_replace(":",",",TICKETS_ACTIVE_STATUS_IDS).")
+                            CASE WHEN t.status_id NOT IN (".TICKET_SOLVED_STATUS_ID.",".TICKET_CLOSED_STATUS_ID.")
                                 THEN epe.delay_time - time.active_work 
                                 ELSE NULL
                             END as deadline
@@ -69,7 +69,7 @@ class TicketsController extends BaseController {
                                 WHERE (th1.level_id != th2.level_id OR th1.priority_id != th2.priority_id)
                                 GROUP BY th1.ticket_id
                             ) as d4 ON (d4.ticket_id = d3.ticket_id AND d4.last_important_update > d3.from)
-                            WHERE d4.ticket_id IS NULL
+                            AND d4.ticket_id IS NULL
 
                             GROUP BY d3.ticket_id
                             ) as time
