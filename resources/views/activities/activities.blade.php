@@ -4,7 +4,7 @@
 		{!! $activities->render() !!}
 	</div>
 
-	<table class="table table-striped table-condensed table-hover">
+	<table id="activities_table" class="table table-striped table-condensed table-hover">
 		<thead>
 			<tr class="orderable">
 				<th column="activity_log.created_at" weight="0" type="desc">Time</th>
@@ -38,7 +38,7 @@
 
 							@if ($activity->request != "[]") 
 
-								<button type="button" class="btn btn-primary activity-request-btn" data-toggle="modal" data-target=".activity{{ $activity->id }}">
+								<button type="button" class="btn btn-primary activity-request-btn btn-sm" data-toggle="modal" data-target=".activity{{ $activity->id }}">
 									Request
 								</button>
 
@@ -61,7 +61,7 @@
 
 							@else 
 
-								<button type="button" class="btn btn-primary activity-request-btn" data-toggle="modal" data-target=".activity{{ $activity->id }}" disabled>
+								<button type="button" class="btn btn-primary activity-request-btn btn-sm" data-toggle="modal" data-target=".activity{{ $activity->id }}" disabled>
 									Request
 								</button>
 
