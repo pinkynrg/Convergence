@@ -591,6 +591,11 @@ body {
 			:last-child {
 				margin-bottom: 0px;
 			}
+			blockquote {
+				border-color: #d9d5ae;
+				font-size: 14px;
+				padding: 0px 10px;
+			}
 		}
 	}
 	#history {
@@ -707,6 +712,8 @@ body {
 			}
 			blockquote {
 				border-color: #D0CFCF;
+				font-size: 14px;
+				padding: 0px 10px;
 			}
 			table.table {
 				tbody {
