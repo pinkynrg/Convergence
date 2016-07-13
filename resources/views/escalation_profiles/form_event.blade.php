@@ -24,7 +24,7 @@
 				!!}
 				@else
 				{!!
-					Form::BSMultiSelect("event_id[".$counter."][]", $escalation_events, ["title" => "Targets", "selected_text" => "Targets Selected", "value" => "id", "label" => "!label", "class" => "col-xs-12 event_id"]);
+					Form::BSMultiSelect("event_id[".$counter."][]", $escalation_events, ["title" => "Select Targets", "selected_text" => "Targets Selected", "value" => "id", "label" => "!label", "class" => "event_id"]);
 				!!}
 				@endif
 

@@ -54,7 +54,7 @@
 		</div>
 		<div>
 
-			@if ($company_person->assignee_tickets->count())
+			@if ($company_person->division_tickets->count())
 				@include('tickets.tickets', array('tickets' => $company_person->division_tickets))
 			@else
 				@include('includes.no-contents')

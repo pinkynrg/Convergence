@@ -1375,7 +1375,7 @@ if (url.target == "escalation-profiles" && typeof url.target_id != "undefined") 
 		consoleLog("added escalation event");
 		var form = $(".escalation_event_form").first().clone();
 		$(".escalation_event_form").last().after(form);
-		form.find('.bootstrap-select').remove();
+		form.find('.bootstrap-select button, .bootstrap-select .dropdown-menu').remove();
 		form.find("option").prop("selected", false);
         form.find('select').selectpicker();
 		updateRowLevel();

@@ -43,7 +43,7 @@
 				<!-- we need an hidden field becuase the select is disabled so the data won't be submitted -->
 				{!! Form::BSLabel("group_id", "Permission Group") !!}
 				{!! Form::BSHidden("group_id", $contact['group_id']) !!}
-				{!! Form::BSSelect("group_id", $groups, $contact['group_id'], ["key" => "id", "value" => "!display_name", 'disabled' => 'true']) !!}
+				{!! Form::BSSelect("group_id", $groups, null, ["key" => "id", "value" => "!display_name", 'disabled' => 'true']) !!}
 			@endif
 			{!! Form::BSEndGroup() !!}
 		@endif
