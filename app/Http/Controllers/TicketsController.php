@@ -46,7 +46,7 @@ class TicketsController extends BaseController {
 			);
 
 			$data['divisions'] = Division::orderBy('name','asc')->get();
-			$data['statuses'] = Status::orderBy('id','asc')->get();
+			$data['statuses'] = Status::where('id','!=',TICKET_DRAFT_STATUS_ID)->orderBy('id','asc')->get();
 
 			$data['active_search'] = implode(",",['tickets.id','tickets.title','tickets.post']);
 
