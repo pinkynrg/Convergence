@@ -1033,7 +1033,7 @@ if (((url.target == "companies" || url.target == "contacts") && url.target_actio
 	$selector.intlTelInput({
 		'initialCountry': "auto",
 		'geoIpLookup': function(callback) {
-		  $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+		  $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
 		    var countryCode = (resp && resp.country) ? resp.country : "";
 		    callback(countryCode);
 		  });
