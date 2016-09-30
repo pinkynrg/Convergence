@@ -40,7 +40,7 @@ class File extends CustomModel {
 	}
 
 	public function is_image() {
-		return  in_array($this->file_extension, ['gif','jpeg','jpg','png','bmp']) ? true : false;
+		return  in_array(strtolower($this->file_extension), ['gif','jpeg','jpg','png','bmp']) ? true : false;
 	}
 
 	public function name() {
