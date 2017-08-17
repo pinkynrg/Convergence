@@ -18,7 +18,7 @@ Route::get('/', ['as' => 'root', function () {
 Route::group(array('middleware' => ['auth','log']), function() {
 
 	Route::get('/debug/enable', function () {
-		if (Auth::user()->owner->id == ADMIN_PERSON_ID) {
+		if (Auth::user()->owner->id == ADMIN_PERSON_ID || Auth::user()->owner->id == ADMIN_PERSON_ID_2) {
 			Session::set("debug",true); 
 		}
 		return redirect()->route('root');
