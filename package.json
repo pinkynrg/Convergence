@@ -1,9 +1,98 @@
 {
-  "private": true,
-  "devDependencies": {
-    "bower": "*",
+  "name": "convergence",
+  "description": "",
+  "main": "",
+  "authors": [
+    "meli.f@elettric80.it"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/pinkynrg/convergence2.0",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
     "gulp": "^3.8.8",
     "laravel-elixir": "*",
-    "main-bower-files": "^2.11.1"
+    "main-bower-files": "^2.11.1",
+    "bootstrap-sass": "^3.3.6",
+    "bootstrap-grid-ms": "^3.0.0",
+    "components-font-awesome": "^4.5.0",
+    "bootstrap-select": "^1.10.0",
+    "devbridge-autocomplete": "^1.2.24",
+    "jquery-ui": "^1.11.4",
+    "bootstrap-tagsinput": "^0.7.1",
+    "bootstrap-multiEmail": "git://github.com/ThinkBigPartners/bootstrap-multiEmail.git",
+    "bootstrap-duallistbox": "^3.0.5",
+    "bootstrap-datepicker": "^1.6.0",
+    "blueimp-gallery-with-desc": "^2.16.4",
+    "dropzone": "^4.3.0",
+    "bootstrap-switch": "^3.3.2",
+    "seiyria-bootstrap-slider": "^6.1.6",
+    "bootstrap-3-typeahead": "^4.0.1",
+    "highcharts": "^4.2.3",
+    "rpage": "*",
+    "jquery-cookie": "git://github.com/carhartl/jquery-cookie",
+    "js-cookie": "^2.1.0",
+    "bootstrap-markdown": "^2.10.0",
+    "to-markdown": "^3.0.0",
+    "intl-tel-input": "git://github.com/jackocnr/intl-tel-input"
+  },
+  "resolutions": {
+    "jquery": ">= 1.9.0"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/fonts/*.*",
+        "dist/js/bootstrap.js",
+        "fonts/*.*"
+      ]
+    },
+    "seiyria-bootstrap-slider": {
+      "main": [
+        "dist/css/bootstrap-slider.css"
+      ]
+    },
+    "jquery-prevent-double-submit": {
+      "main": []
+    },
+    "dropzone": {
+      "main": [
+        "dist/dropzone.js"
+      ]
+    },
+    "bootstrap-grid-ms": {
+      "main": []
+    },
+    "jquery": {
+      "main": [
+        "jquery.js",
+        "jquery-migrate.js"
+      ]
+    },
+    "highcharts": {
+      "main": [
+        "lib/highcharts.js",
+        "lib/highstock.js",
+        "lib/highcharts-3d.js"
+      ]
+    },
+    "blueimp-gallery-with-desc": {
+      "main": [
+        "css/blueimp-gallery.css",
+        "js/blueimp-gallery.js",
+        "js/jquery.blueimp-gallery.js"
+      ]
+    },
+    "bootstrap-datepicker": {
+      "main": [
+        "dist/js/bootstrap-datepicker.js"
+      ]
+    }
   }
 }

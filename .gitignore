@@ -10,6 +10,7 @@
 /backups
 /bower_components
 /storage/debugbar
+/run
 npm-debug.log
 .env
 .DS_Store
