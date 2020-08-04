@@ -1,0 +1,40 @@
+version: '3.5'
+
+services:
+  convergence:
+    build:
+      context: '.'
+      args:
+        uid: ${UID}
+    container_name: convergence
+    environment:
+      - APACHE_RUN_USER=#${UID}
+      - APACHE_RUN_GROUP=#${UID}
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 8000:80
+    networks:
+      backend:
+        aliases:
+          - laravel-app
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    volumes:
+      - ./run/var:/var/lib/mysql
+      - ./database/convergence_20170427_2256CDT.sql:/tmp/convergence_20170427_2256CDT.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=convergence
+      - MYSQL_USER=convergence
+      - MYSQL_PASSWORD=convergence
+    networks:
+      backend:
+        aliases:
+          - db
+
+networks:
+  backend:
+    name: backend-network
