@@ -16,3 +16,8 @@ npm-debug.log
 composer.phar
 *.css.map
 *.sass-cache
+
+# the demo harness fetches and produces these
+/etc/assets/node_modules
+/etc/assets/package-lock.json
+/etc/demo-recording
