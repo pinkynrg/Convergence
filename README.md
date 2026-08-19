@@ -21,6 +21,12 @@ docker compose -f docker-compose.demo.yml exec web php artisan db:seed --class=D
 
 Then <http://localhost:8080>, as `demo` / `demo`.
 
+On an arm64 host (Apple silicon) the `db` service is pinned to
+`platform: linux/amd64`, because `mysql:5.7` was only ever published for amd64
+and the pull otherwise fails with `no matching manifest for linux/arm64/v8`. It
+runs under Docker's emulation, which is slower to start but works; the web
+service has a native arm64 image and is left alone.
+
 `composer install` runs on the host because the PHP 7.1 image carries no
 composer. Two settings in `composer.json` make that safe: `platform.php` pins
 the target to 7.1.33 so the host's PHP 8 does not resolve for itself, and

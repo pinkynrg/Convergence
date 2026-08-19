@@ -2,9 +2,16 @@
 # is installable on a 2026 machine. The images come from mirror.gcr.io rather
 # than Docker Hub because Hub serves its blobs from a host this sandbox's proxy
 # refuses; the mirror serves the same official images from one it allows.
+#
+# mysql:5.7 was only ever published for amd64, so on an arm64 host (Apple
+# silicon) the pull fails with "no matching manifest for linux/arm64/v8".
+# Pinning the platform makes Docker fetch the amd64 image and run it under
+# emulation instead. php:7.1-apache does publish an arm64/v8 variant, so the
+# web service is left to run natively.
 services:
   db:
     image: mirror.gcr.io/library/mysql:5.7
+    platform: linux/amd64
     environment:
       MYSQL_ROOT_PASSWORD: convergence
       MYSQL_DATABASE: convergence
