@@ -28,8 +28,16 @@ runs under Docker's emulation, which is slower to start but works; the web
 service has a native arm64 image and is left alone.
 
 `composer install` runs on the host because the PHP 7.1 image carries no
-composer. Two settings in `composer.json` make that safe: `platform.php` pins
-the target to 7.1.33 so the host's PHP 8 does not resolve for itself, and
+composer. Without composer installed there, the official image does the same job
+and leaves nothing behind:
+
+```bash
+docker run --rm -v "$PWD":/app -w /app mirror.gcr.io/library/composer:2 \
+  install --ignore-platform-reqs --no-scripts
+```
+
+Two settings in `composer.json` make that safe: `platform.php` pins the target
+to 7.1.33 so the host's PHP 8 does not resolve for itself, and
 `platform-check` is off because several of the loosely pinned 2016 dependencies
 now resolve to releases that declare 7.2, though the app runs on 7.1 regardless.
 
