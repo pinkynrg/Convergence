@@ -80,7 +80,9 @@ return [
 
 	'key' => env('APP_KEY', 'SomeRandomString'),
 
-	'cipher' => MCRYPT_RIJNDAEL_128,
+	// Demo only: mcrypt went with PHP 7.2 and the image cannot fetch it, but
+	// Laravel 5.1 already prefers its OpenSSL encrypter when the cipher names one.
+	'cipher' => 'AES-256-CBC',
 
 	/*
 	|--------------------------------------------------------------------------

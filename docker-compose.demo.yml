@@ -1,0 +1,42 @@
+# Convergence as it ran: Laravel 5.1 wants PHP 7.1 and MySQL 5.7, and neither
+# is installable on a 2026 machine. The images come from mirror.gcr.io rather
+# than Docker Hub because Hub serves its blobs from a host this sandbox's proxy
+# refuses; the mirror serves the same official images from one it allows.
+services:
+  db:
+    image: mirror.gcr.io/library/mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: convergence
+      MYSQL_DATABASE: convergence
+      MYSQL_USER: convergence
+      MYSQL_PASSWORD: convergence
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-pconvergence"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  web:
+    image: mirror.gcr.io/library/php:7.1-apache
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./etc/demo-apache.conf:/etc/apache2/sites-available/000-default.conf:ro
+    # pdo_mysql compiles from sources bundled in the image, so it needs no
+    # network. Nothing else can be added here: this is Debian stretch, its apt
+    # repositories are archived, and the sandbox will not proxy them. That is
+    # why the demo runs on the OpenSSL encrypter rather than mcrypt.
+    command: >
+      bash -c "
+        php -m | grep -q pdo_mysql || docker-php-ext-install pdo_mysql mysqli > /dev/null 2>&1;
+        a2enmod rewrite > /dev/null 2>&1;
+        chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null;
+        apache2-foreground
+      "
