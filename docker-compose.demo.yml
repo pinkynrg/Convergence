@@ -3,12 +3,18 @@
 # than Docker Hub because Hub serves its blobs from a host this sandbox's proxy
 # refuses; the mirror serves the same official images from one it allows.
 #
-# mysql:5.7 was only ever published for amd64, so on an arm64 host (Apple
-# silicon) the pull fails with "no matching manifest for linux/arm64/v8".
-# Pinning the platform makes Docker fetch the amd64 image and run it under
-# emulation instead. php:7.1-apache does publish an arm64/v8 variant, so the
-# web service is left to run natively.
+# One `up` is the whole procedure. The dependencies, the assets and the database
+# are each a service rather than a step in a README, so nothing has to exist on
+# the host but Docker: `vendor` and `assets` run to completion first, then `web`
+# migrates, seeds and serves (etc/demo-entrypoint.sh).
+name: convergence
+
 services:
+  # mysql:5.7 was only ever published for amd64, so on an arm64 host (Apple
+  # silicon) the pull fails with "no matching manifest for linux/arm64/v8".
+  # Pinning the platform makes Docker fetch the amd64 image and run it under
+  # emulation instead. Every other image here has an arm64/v8 variant and is
+  # left to run natively.
   db:
     image: mirror.gcr.io/library/mysql:5.7
     platform: linux/amd64
@@ -26,24 +32,65 @@ services:
       timeout: 3s
       retries: 30
 
+  # The PHP 7.1 image carries no composer, and this runs it without asking the
+  # host for one. Two settings in composer.json make the modern composer safe
+  # here: platform.php pins resolution to 7.1.33 whatever PHP the image itself
+  # carries, and platform-check is off because several of the loosely pinned
+  # 2016 dependencies now resolve to releases that declare 7.2.
+  vendor:
+    image: mirror.gcr.io/library/composer:2
+    environment:
+      COMPOSER_ALLOW_SUPERUSER: "1"
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    command: install --ignore-platform-reqs --no-scripts
+
+  # public/css, public/javascript and public/fonts came out of bower and gulp in
+  # 2016 and are gitignored; etc/build-demo-assets.sh rebuilds them from npm. It
+  # skips the install once etc/assets/node_modules exists, so later runs only
+  # recompile.
+  assets:
+    image: mirror.gcr.io/library/node:22-bookworm-slim
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    command: bash /var/www/html/etc/build-demo-assets.sh
+
   web:
     image: mirror.gcr.io/library/php:7.1-apache
+    # There is no .env, and none is needed: Laravel 5.1 reads its configuration
+    # through env(), which finds the container environment, and its
+    # DetectEnvironment swallows the missing file. APP_KEY is 32 raw characters
+    # because 5.1 predates the base64: prefix and uses the value as it finds it.
+    # Debug is on because this only ever listens on localhost, where a stack
+    # trace is worth more than a blank 500.
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: convergencedemoconvergencedemo12
+      DB_HOST: db
+      DB_DATABASE: convergence
+      DB_USERNAME: convergence
+      DB_PASSWORD: convergence
     depends_on:
       db:
         condition: service_healthy
+      vendor:
+        condition: service_completed_successfully
+      assets:
+        condition: service_completed_successfully
     ports:
       - "8080:80"
     volumes:
       - .:/var/www/html
       - ./etc/demo-apache.conf:/etc/apache2/sites-available/000-default.conf:ro
-    # pdo_mysql compiles from sources bundled in the image, so it needs no
-    # network. Nothing else can be added here: this is Debian stretch, its apt
-    # repositories are archived, and the sandbox will not proxy them. That is
-    # why the demo runs on the OpenSSL encrypter rather than mcrypt.
-    command: >
-      bash -c "
-        php -m | grep -q pdo_mysql || docker-php-ext-install pdo_mysql mysqli > /dev/null 2>&1;
-        a2enmod rewrite > /dev/null 2>&1;
-        chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null;
-        apache2-foreground
-      "
+    command: bash /var/www/html/etc/demo-entrypoint.sh
+    # The entrypoint migrates and seeds before it starts apache, so a listening
+    # port means the demo is ready to look at rather than merely started. The
+    # retry budget covers seeding 75 tickets against an emulated MySQL.
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/80"]
+      interval: 3s
+      timeout: 3s
+      retries: 100

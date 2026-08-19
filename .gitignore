@@ -19,5 +19,6 @@ composer.phar
 
 # the demo harness fetches and produces these
 /etc/assets/node_modules
+/etc/assets/package.json
 /etc/assets/package-lock.json
 /etc/demo-recording

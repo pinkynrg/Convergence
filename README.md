@@ -9,35 +9,41 @@ are about, and the statistics the team was measured on.
 
 Nothing it was written for still exists on a current machine. PHP 8 will not
 parse Laravel 5.1, and mcrypt, which its encrypter defaulted to, went with PHP
-7.2. So it runs in containers, at the versions of the day:
+7.2. So it runs in containers, at the versions of the day, and Docker is the
+only thing the host needs:
 
 ```bash
-docker compose -f docker-compose.demo.yml up -d      # PHP 7.1 + MySQL 5.7
-composer install --ignore-platform-reqs --no-scripts # from outside the container
-./etc/build-demo-assets.sh                           # rebuilds public/css and public/javascript
-docker compose -f docker-compose.demo.yml exec web php artisan migrate --force
-docker compose -f docker-compose.demo.yml exec web php artisan db:seed --class=DemoSeeder --force
+docker compose -f docker-compose.demo.yml up
 ```
 
-Then <http://localhost:8080>, as `demo` / `demo`.
+When the log says `Convergence is on http://localhost:8080`, it is: `demo` /
+`demo`. Ctrl-C stops it, and `docker compose -f docker-compose.demo.yml down`
+takes the database with it.
 
-On an arm64 host (Apple silicon) the `db` service is pinned to
-`platform: linux/amd64`, because `mysql:5.7` was only ever published for amd64
-and the pull otherwise fails with `no matching manifest for linux/arm64/v8`. It
-runs under Docker's emulation, which is slower to start but works; the web
-service has a native arm64 image and is left alone.
+That one command is the whole procedure, because every step that used to be run
+by hand is a service in `docker-compose.demo.yml`. MySQL 5.7 comes up; the
+composer and node images fill `vendor/` and rebuild `public/css`,
+`public/javascript` and `public/fonts`; then PHP 7.1 migrates, seeds and serves,
+which is `etc/demo-entrypoint.sh`. Apache starts last, after the seed, so the
+line above is the demo being ready rather than a container being up. The first
+run pulls four images and does both installs, so give it a few minutes; the log
+in front of you is the progress. Later runs skip the installs and are quick, and
+the seed is skipped too if the tickets are still there, so stopping and starting
+keeps whatever was clicked through.
 
-`composer install` runs on the host because the PHP 7.1 image carries no
-composer. Without composer installed there, the official image does the same job
-and leaves nothing behind:
+The app's own configuration is in the compose file rather than a `.env`: Laravel
+5.1 reads it through `env()`, and the container environment is enough, because
+its `DetectEnvironment` swallows the missing file.
 
-```bash
-docker run --rm -v "$PWD":/app -w /app mirror.gcr.io/library/composer:2 \
-  install --ignore-platform-reqs --no-scripts
-```
+On an arm64 host (Apple silicon) `db` is pinned to `platform: linux/amd64`,
+because `mysql:5.7` was only ever published for amd64 and the pull otherwise
+fails with `no matching manifest for linux/arm64/v8`. It runs under Docker's
+emulation, which is slower to start but works; the other three images have
+arm64 variants and run natively.
 
-Two settings in `composer.json` make that safe: `platform.php` pins the target
-to 7.1.33 so the host's PHP 8 does not resolve for itself, and
+`composer install` happens in the composer image because the PHP 7.1 image
+carries no composer, and two settings in `composer.json` make that safe:
+`platform.php` pins resolution to 7.1.33 whatever PHP is running composer, and
 `platform-check` is off because several of the loosely pinned 2016 dependencies
 now resolve to releases that declare 7.2, though the app runs on 7.1 regardless.
 
@@ -49,7 +55,8 @@ Two lines, and neither of them is a rewrite:
   `AES-256-CBC`. Laravel 5.1 already prefers its OpenSSL encrypter and only
   falls back to mcrypt, so this takes the path the framework wanted anyway.
 - **`APP_KEY` is 32 raw characters**, not a `base64:` string. That prefix
-  arrived after 5.1, which uses the value as it finds it.
+  arrived after 5.1, which uses the value as it finds it; the demo's key is in
+  `docker-compose.demo.yml`.
 
 ### The assets
 
@@ -119,4 +126,5 @@ config/constants.php   the pinned ids, icons and thresholds the whole app reads
 database/migrations    38 of them
 resources/views        Blade, one folder per resource, layouts/default is the shell
 resources/assets       the sass and javascript that build into public/
+etc                    the demo harness: entrypoint, apache vhost, assets, recording
 ```
